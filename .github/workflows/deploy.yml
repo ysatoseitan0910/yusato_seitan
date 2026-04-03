@@ -17,12 +17,15 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Setup package.json
-        run: |
-          echo '{"name":"yu-gallery","version":"1.0.0","type":"module"}' > package.json
-
       - name: Install dependencies
         run: npm install @notionhq/client
+
+      - name: Debug files
+        run: |
+          echo "=== fetch.js 1行目 ==="
+          head -3 fetch.js
+          echo "=== package.json ==="
+          cat package.json || echo "package.json なし"
 
       - name: Fetch from Notion and build
         run: node fetch.js
