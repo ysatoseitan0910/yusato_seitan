@@ -496,7 +496,7 @@ async function main() {
 
   console.log("🏗️  HTMLビルド開始...");
   const pages = {
-    "index.html":      { fn: buildIndex,     active: "INDEX" },
+    "top.html":   { fn: buildIndex, active: "INDEX" },
     "committee.html":  { fn: buildCommittee, active: "COMMITTEE" },
     "activities.html": { fn: buildActivities,active: "ACTIVITIES" },
     "blog.html":       { fn: buildBlog,      active: "BLOG" },
