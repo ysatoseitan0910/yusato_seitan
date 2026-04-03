@@ -44,6 +44,15 @@ function buildCard(post) {
 
 async function run() {
   const posts = await getPosts();
+  console.log(`取得件数: ${posts.length}`);
+
+  posts.forEach((post, i) => {
+    const url = post.properties.URL?.url ?? "URLなし";
+    const platform = post.properties.Platform?.select?.name ?? "Platformなし";
+    const date = post.properties.Date?.date?.start ?? "日付なし";
+    console.log(`[${i+1}] platform=${platform} url=${url} date=${date}`);
+  });
+
   const cards = posts.map(buildCard).join("\n");
 
   let html = fs.readFileSync("index.html", "utf-8");
