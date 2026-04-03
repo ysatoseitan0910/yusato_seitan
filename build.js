@@ -208,14 +208,95 @@ function statusBadge(status) {
 
 // ── ページビルダー ──
 async function buildIndex(tpl) {
-  const pages = await queryDB(DB.yuNews);
-  const cards = pages.map(p => newsCard(p, "")).join("\n");
-  const body = `<div style="display:flex;flex-direction:column;gap:12px;">
-    <!-- GALLERY_START -->
-    ${cards}
-    <!-- GALLERY_END -->
+  const [yuNews, activities, committeeNews] = await Promise.all([
+    queryDB(DB.yuNews),
+    queryDB(DB.activities),
+    queryDB(DB.committeeNews),
+  ]);
+
+  const newsCards = yuNews.map(p => newsCard(p, "")).join("\n");
+  const activityCards = activities.map(p => {
+    const status = getSelect(p, "Status");
+    const title  = getText(p, "Name");
+    const date   = fmtDate(getDate(p));
+    const desc   = getText(p, "Description");
+    const url    = getUrl(p);
+    const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+    return `
+    <div class="card news-card" style="animation-delay:${Math.random()*0.3}s">
+      <div class="news-card-date">${date}</div>
+      <div class="news-card-body">
+        ${statusBadge(status)}
+        <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
+        ${desc ? `<p class="news-card-desc">${desc}</p>` : ""}
+        ${link}
+      </div>
+    </div>`;
+  }).join("\n");
+
+  const committeeCards = committeeNews.slice(0, 5).map(p => {
+    const status = getSelect(p, "Status");
+    const title  = getText(p, "Name");
+    const date   = fmtDate(getDate(p));
+    const url    = getUrl(p);
+    const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">→</a>` : "";
+    return `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;">
+        ${statusBadge(status)}
+        <span style="font-size:13px;color:var(--text);margin-left:${status?'8px':'0'}">${title}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;white-space:nowrap;">
+        <span style="font-size:10px;color:var(--text-light)">${date}</span>
+        ${link}
+      </div>
+    </div>`;
+  }).join("\n");
+
+  const body = `
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start;">
+
+    <!-- 左：Yu News -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">佐藤優羽 News</h2>
+        <a href="index.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${newsCards}
+      </div>
+    </div>
+
+    <!-- 右：活動報告 + 委員会News -->
+    <div style="display:flex;flex-direction:column;gap:24px;">
+
+      <!-- 活動報告 -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">活動報告</h2>
+          <a href="activities.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${activityCards}
+        </div>
+      </div>
+
+      <!-- 委員会News -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">委員会 News</h2>
+          <a href="committee.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+        </div>
+        ${committeeCards}
+        <div style="margin-top:12px;text-align:right;">
+          <a href="committee.html" style="font-size:11px;color:var(--rose);text-decoration:none;">もっと見る →</a>
+        </div>
+      </div>
+
+    </div>
   </div>`;
-  return buildPage(tpl, "NEWS", "LATEST NEWS", "佐藤<em>優羽</em> News", "佐藤優羽さんに関する最新情報をお届けします", body);
+
+  return buildPage(tpl, "トップ", "SATO YU FAN COMMITTEE", "佐藤<em>優羽</em>", "佐藤優羽さんの最新情報・委員会活動をお届けします", body);
 }
 
 async function buildCommittee(tpl) {
