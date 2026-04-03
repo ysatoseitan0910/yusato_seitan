@@ -52,6 +52,13 @@ const embed = url
 
 async function run() {
   const posts = await getPosts();
+
+  posts.forEach((post, i) => {
+    const platformRaw = post.properties.Platform?.select?.name;
+    const url = post.properties.URL?.url;
+    console.log(`[${i+1}] Platform生の値: "${platformRaw}" / URL: ${url}`);
+  });
+
   console.log(`取得件数: ${posts.length}`);
 
   posts.forEach((post, i) => {
