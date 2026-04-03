@@ -42,7 +42,7 @@ function isPublished(page) {
 }
 function fmtDate(d) {
   if (!d) return "";
-  return d.replace(/-/g, ".");
+  return d.slice(0, 10).replace(/-/g, ".");
 }
 function badgeClass(platform) {
   const map = { Blog:"blog", X:"x", TikTok:"tiktok", YouTube:"youtube", Lemino:"lemino", "インタビュー":"interview", Web:"web" };
@@ -90,7 +90,7 @@ function buildPage(template, title, tag, h1, desc, body) {
 
 // ── カードビルダー ──
 function newsCard(page, badgeLabel) {
-  const title = getText(page,"Name");
+  const title = getText(page,"Name") || (url.includes("tiktok.com") ? "TikTok動画" : url.includes("youtu") ? "YouTube動画" : "詳細を見る");
   const date  = fmtDate(getDate(page));
   const desc  = getText(page,"Description");
   const url   = getUrl(page);
@@ -214,7 +214,7 @@ async function buildIndex(tpl) {
     queryDB(DB.committeeNews),
   ]);
 
-  const newsCards = yuNews.map(p => newsCard(p, "")).join("\n");
+  const newsCards = yuNews.slice(0, 20).map(p => newsCard(p, "")).join("\n");
   const activityCards = activities.map(p => {
     const status = getSelect(p, "Status");
     const title  = getText(p, "Name");
