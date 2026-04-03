@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佐藤優羽 SNS Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #f4a7b9;
+    --pink-light: #fde8ee;
+    --pink-dark: #d4607a;
+    --cream: #fdf6f0;
+    --text: #2a1a1f;
+    --text-muted: #9a7a84;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(212,96,122,0.10);
+    --shadow-hover: 0 8px 40px rgba(212,96,122,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── ヘッダー ── */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid #f0dde4;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--pink-dark);
+    letter-spacing: 0.02em;
+  }
+
+  .logo span {
+    font-style: normal;
+    font-size: 11px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    display: block;
+    margin-top: -4px;
+  }
+
+  nav {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  nav a:hover, nav a.active { color: var(--pink-dark); }
+
+  /* ── ヒーロー ── */
+  .hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #fde8ee 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--pink-light);
+    color: var(--pink-dark);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 em {
+    color: var(--pink-dark);
+    font-style: italic;
+  }
+
+  .hero p {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── フィルター ── */
+  .filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 20px 32px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 7px 20px;
+    border-radius: 20px;
+    border: 1px solid #f0dde4;
+    background: var(--white);
+    color: var(--text-muted);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--pink);
+    color: var(--pink-dark);
+  }
+
+  .filter-btn.active {
+    background: var(--pink-dark);
+    color: var(--white);
+    border-color: var(--pink-dark);
+  }
+
+  /* ── グリッド ── */
+  .gallery {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    columns: 3;
+    column-gap: 20px;
+  }
+
+  @media (max-width: 800px) { .gallery { columns: 2; } }
+  @media (max-width: 500px) { .gallery { columns: 1; } }
+
+  /* ── カード ── */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    break-inside: avoid;
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.10s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.20s; }
+  .card:nth-child(5) { animation-delay: 0.25s; }
+  .card:nth-child(6) { animation-delay: 0.30s; }
+
+  /* プラットフォームバッジ */
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px 8px;
+  }
+
+  .platform-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .platform-badge.x     { color: #000; }
+  .platform-badge.tiktok { color: #fe2c55; }
+
+  .platform-icon {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  .platform-icon.x      { background: #000; color: #fff; }
+  .platform-icon.tiktok { background: #fe2c55; color: #fff; }
+
+  .card-date {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* 埋め込みエリア */
+  .embed-wrap {
+    background: var(--pink-light);
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .embed-wrap iframe,
+  .embed-wrap blockquote {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* モック用プレースホルダー */
+  .embed-placeholder {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 0;
+    color: var(--pink-dark);
+    opacity: 0.6;
+  }
+
+  .embed-placeholder svg { width: 32px; height: 32px; }
+  .embed-placeholder span { font-size: 12px; letter-spacing: 0.04em; }
+
+  /* カードフッター */
+  .card-footer {
+    padding: 10px 14px 14px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--pink-dark);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .card-link:hover { opacity: 1; }
+
+  /* ── フッター ── */
+  footer {
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid #f0dde4;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    background: var(--white);
+  }
+
+  .footer-heart { color: var(--pink); margin: 0 2px; }
+
+  /* 最終更新 */
+  .last-updated {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header>
+  <div class="logo">
+    Yuha Gallery
+    <span>佐藤優羽 SNS まとめ</span>
+  </div>
+  <nav>
+    <a href="#" class="active">ギャラリー</a>
+    <a href="#">ブログ</a>
+    <a href="#">プロフィール</a>
+    <a href="#">委員会について</a>
+  </nav>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-tag">SATO YUHA FAN COMMITTEE</div>
+  <h1>SNS <em>Gallery</em></h1>
+  <p>佐藤優羽のXとTikTokの投稿をまとめています</p>
+</section>
+
+<!-- フィルター -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filter('all', this)">すべて</button>
+  <button class="filter-btn" onclick="filter('x', this)">X (Twitter)</button>
+  <button class="filter-btn" onclick="filter('tiktok', this)">TikTok</button>
+</div>
+
+<!-- 最終更新 -->
+<p class="last-updated" id="last-updated">最終更新：読み込み中…</p>
+
+<!-- ギャラリー -->
+<div class="gallery" id="gallery">
+<!-- GALLERY_START -->
+<!-- GALLERY_END -->
+</div><!-- /gallery -->
+
+<!-- フッター -->
+<footer>
+  <p>佐藤優羽生誕祭実行委員会 <span class="footer-heart">♥</span> Sato Yuha Fan Committee</p>
+</footer>
+
+<script>
+  // 最終更新日時
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('last-updated').textContent =
+    `最終更新：${y}.${m}.${d} ${hh}:${mm}`;
+
+  // フィルター
+  function filter(platform, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.card').forEach(card => {
+      if (platform === 'all' || card.dataset.platform === platform) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
