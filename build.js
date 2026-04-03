@@ -21,7 +21,12 @@ function prop(page, key) { return page.properties[key]; }
 function getText(page, key) { return prop(page,key)?.title?.[0]?.plain_text || prop(page,key)?.rich_text?.[0]?.plain_text || ""; }
 function getUrl(page, key="URL") { return prop(page,key)?.url || ""; }
 function getDate(page, key="Date") { return prop(page,key)?.date?.start || ""; }
-function getSelect(page, key) { return prop(page,key)?.select?.name || ""; }
+function getSelect(page, key) {
+  const p = prop(page, key);
+  if (p?.select?.name) return p.select.name;
+  if (p?.multi_select?.length) return p.multi_select[0].name;
+  return "";
+}
 function getMedia(page, key="Media") {
   const files = prop(page,key)?.files || [];
   if (!files.length) return "";
@@ -386,7 +391,7 @@ async function syncToYuNews() {
             URL:       { url },
             Date:      date ? { date: { start: date } } : undefined,
             Description: { rich_text: [{ text: { content: desc } }] },
-            Platform:  { select: { name: platform } },
+            Platform:  { multi_select: [{ name: platform }] },
             Published: { checkbox: true },
           },
         });
