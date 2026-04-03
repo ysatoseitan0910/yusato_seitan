@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTokまとめ | 佐藤優羽 ファンサイト</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose: #c8748a;
+  --rose-light: #f5e0e6;
+  --rose-pale: #fdf5f7;
+  --rose-dark: #9d4f63;
+  --gold: #c9a96e;
+  --gold-light: #f5ead8;
+  --text: #1e1218;
+  --text-muted: #8a6872;
+  --text-light: #b8959f;
+  --white: #ffffff;
+  --bg: #faf7f8;
+  --border: #ecdde2;
+  --nav-h: 60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;min-height:100vh;}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(250,247,248,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--rose-dark);letter-spacing:0.08em;text-decoration:none;}
+.nav-logo small{display:block;font-family:'Noto Sans JP',sans-serif;font-size:9px;letter-spacing:0.2em;color:var(--text-light);font-weight:300;margin-top:1px;}
+.nav-links{display:flex;gap:0;align-items:center;}
+.nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--rose-dark);background:var(--rose-light);}
+
+/* ── Page hero ── */
+.page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
+.page-hero-tag{display:inline-block;font-size:10px;letter-spacing:0.25em;color:var(--rose);border:1px solid var(--rose-light);padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+.page-hero h1{font-family:'Shippori Mincho',serif;font-size:36px;font-weight:500;line-height:1.2;color:var(--text);margin-bottom:8px;}
+.page-hero h1 em{color:var(--rose-dark);font-style:normal;}
+.page-hero p{font-size:12px;color:var(--text-muted);letter-spacing:0.06em;}
+.last-updated{font-size:10px;color:var(--text-light);margin-top:6px;letter-spacing:0.04em;}
+
+/* ── Content area ── */
+.content{max-width:1100px;margin:0 auto;padding:0 40px 80px;}
+
+/* ── Footer ── */
+footer{background:var(--white);border-top:1px solid var(--border);padding:32px 40px;text-align:center;}
+footer p{font-size:10px;letter-spacing:0.12em;color:var(--text-light);}
+footer .heart{color:var(--rose);}
+
+/* ── Card base ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(200,116,138,0.12);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Grid ── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr);}.grid-2{grid-template-columns:1fr;}}
+@media(max-width:600px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+/* ── Status badge ── */
+.badge{display:inline-block;font-size:10px;letter-spacing:0.08em;padding:3px 10px;border-radius:10px;font-weight:500;}
+.badge-open{background:#e8f5e9;color:#2e7d32;}
+.badge-closed{background:#f5f5f5;color:#757575;}
+.badge-blog{background:var(--rose-light);color:var(--rose-dark);}
+.badge-x{background:#e8f0fe;color:#1a56db;}
+.badge-tiktok{background:#fff0f3;color:#fe2c55;}
+.badge-youtube{background:#fff3e0;color:#e65100;}
+.badge-lemino{background:#f3e5f5;color:#6a1b9a;}
+.badge-interview{background:var(--gold-light);color:#7d5a00;}
+.badge-web{background:#e0f7fa;color:#006064;}
+
+/* ── News list card ── */
+.news-card{padding:20px 24px;display:flex;gap:20px;align-items:flex-start;}
+.news-card-date{font-size:11px;color:var(--text-light);letter-spacing:0.06em;white-space:nowrap;padding-top:2px;min-width:80px;}
+.news-card-body{flex:1;}
+.news-card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.5;}
+.news-card-desc{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:8px;}
+.news-card-link{font-size:11px;color:var(--rose);text-decoration:none;letter-spacing:0.04em;}
+.news-card-link:hover{color:var(--rose-dark);}
+
+/* ── Media card ── */
+.media-card .media-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--rose-pale);}
+.media-card .media-body{padding:16px;}
+.media-card .media-title{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.5;}
+.media-card .media-desc{font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;}
+.media-card .media-meta{display:flex;align-items:center;justify-content:space-between;}
+.media-card .media-date{font-size:10px;color:var(--text-light);}
+
+/* ── Embed card ── */
+.embed-card .embed-header{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between;}
+.embed-card .embed-wrap{background:var(--rose-pale);min-height:300px;display:flex;align-items:center;justify-content:center;padding:8px;}
+.embed-card .embed-footer{padding:10px 16px 14px;}
+.embed-card .embed-title{font-size:12px;color:var(--text);margin-bottom:4px;}
+.embed-card .embed-link{font-size:11px;color:var(--rose);text-decoration:none;}
+
+/* ── Divider ── */
+.divider{height:1px;background:var(--border);margin:32px 0;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    佐藤優羽
+    <small>FAN COMMITTEE</small>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" >NEWS</a>
+    <a href="committee.html" >委員会</a>
+    <a href="activities.html" >活動報告</a>
+    <a href="blog.html" >ブログ</a>
+    <a href="interview.html" >インタビュー</a>
+    <a href="x.html" >X</a>
+    <a href="tiktok.html" class="active">TikTok</a>
+    <a href="youtube.html" >YouTube</a>
+    <a href="lemino.html" >Lemino</a>
+    <a href="web.html" >Web</a>
+  </div>
+</nav>
+
+
+      <div class="page-hero">
+        <div class="page-hero-tag">TIKTOK</div>
+        <h1>TikTok <em>Gallery</em></h1>
+        <p>佐藤優羽さんのTikTok動画をまとめています</p>
+        <p class="last-updated">最終更新：2026/4/4 0:29:17</p>
+      </div>
+      <div class="content"><div class="grid-3">
+    <!-- GALLERY_START -->
+    
+  <div class="card embed-card" style="animation-delay:0.19282104036532563s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.25</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445" data-video-id="7620760055905799445"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.059017281924980035s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.21</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324" data-video-id="7608490212481666324"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.10895851098590856s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.17</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309" data-video-id="7608489508908076309"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.07550769505761053s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.16</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735" data-video-id="7615986974129769735"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.014798142789393197s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.14</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989" data-video-id="7617057123523955989"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.1303327968310505s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.12</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501" data-video-id="7616276669921332501"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.1714138607247825s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.10</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541" data-video-id="7608487548066827541"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.1516139203784215s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.08</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140" data-video-id="7614845730385317140"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.20456499126734928s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.27</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341" data-video-id="7611486839597272341"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.17165782715838657s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.24</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412" data-video-id="7610273900626267412"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.05547741925910216s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.21</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652" data-video-id="7609257131681893652"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.11700857416110282s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.14</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068" data-video-id="7606674927965474068"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.15360760012766195s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.13</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749" data-video-id="7606286268388969749"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.06089407772199795s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.11</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109" data-video-id="7605591804397817109"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.29969162857656534s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.10</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546" data-video-id="7605144771568438546"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.21567293837447277s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.02.05</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453" data-video-id="7603353568199986453"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.27268194021093883s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.01.31</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757" data-video-id="7601432754269588757"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.1350089957322273s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.01.05</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768" data-video-id="7587754214189845768"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.019243081090786117s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.30</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239" data-video-id="7587341193114111239"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.07155673629388755s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858" data-video-id="7587340100586179858"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.08323471840260285s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279" data-video-id="7587363371675094279"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.24225306651018752s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.13</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023" data-video-id="7579177460609142023"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.06570606329764712s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.08</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423" data-video-id="7578677191710428423"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.018675970091977856s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.06</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360" data-video-id="7579175779100036360"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.09915888505852519s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.02</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602" data-video-id="7579174910963043602"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.2870142347550649s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.11.25</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080" data-video-id="7572070961537699080"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.25656060500939487s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.11.24</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570" data-video-id="7570986177575095570"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.21314494403611162s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.24</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405" data-video-id="7564772668453424405"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.1702777860110705s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.18</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759" data-video-id="7555428438375402759"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.15463094665112023s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.12</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968" data-video-id="7560312121964104968"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.047775944296207594s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.10</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580" data-video-id="7559546795014114580"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.19184821962995227s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.07</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752" data-video-id="7555426235413695752"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.1189989543025607s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.07</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240" data-video-id="7555708991498751240"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.23295221342215508s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.04</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064" data-video-id="7555709367526477064"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.12771559279273917s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.10.04</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351" data-video-id="7547559494352473351"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.20334287989595315s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.09.21</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176" data-video-id="7548633333022887176"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.18129119963382795s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.09.06</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282" data-video-id="7538269264701099282"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.05638625721909498s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.08.26</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252" data-video-id="7542863101532671252"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.03471052821583924s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.08.19</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928" data-video-id="7540182936650353928"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.28925771201078604s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.08.17</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735" data-video-id="7539523382568553735"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.27270247992093866s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.29</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591" data-video-id="7530957238140259591"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.2624419482760456s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.18</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949" data-video-id="7528406557671836949"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.00580977923672017s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.12</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039" data-video-id="7524307809144524039"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.045806621955427416s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.10</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015" data-video-id="7524304713425227015"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.20753408339540566s">
+    <div class="embed-header">
+      <span class="badge badge-tiktok">TikTok</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.06</span>
+    </div>
+    <div class="embed-wrap">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980" data-video-id="7523939085690440980"><section></section></blockquote>
+    </div>
+    <div class="embed-footer">
+      <p class="embed-title"></p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980" class="embed-link" target="_blank" rel="noopener">動画を見る →</a>
+    </div>
+  </div>
+    <!-- GALLERY_END -->
+  </div>
+  <script async src="https://www.tiktok.com/embed.js"></script></div>
+    
+
+<footer>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/4 0:29:17</p>
+</footer>
+
+</body>
+</html>
