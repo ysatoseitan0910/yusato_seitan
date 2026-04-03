@@ -90,10 +90,10 @@ function buildPage(template, title, tag, h1, desc, body) {
 
 // ── カードビルダー ──
 function newsCard(page, badgeLabel) {
+  const url   = getUrl(page);
   const title = getText(page,"Name") || (url.includes("tiktok.com") ? "TikTok動画" : url.includes("youtu") ? "YouTube動画" : "詳細を見る");
   const date  = fmtDate(getDate(page));
   const desc  = getText(page,"Description");
-  const url   = getUrl(page);
   const platform = getSelect(page,"Platform") || badgeLabel;
   const badge = platform ? `<span class="${badgeClass(platform)}">${platform}</span>` : "";
   const link  = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
