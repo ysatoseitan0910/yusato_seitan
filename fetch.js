@@ -49,7 +49,14 @@ async function run() {
   console.log("Notionからデータ取得中...");
   const posts = await getPosts();
   console.log(`取得件数: ${posts.length}件`);
-
+// 日付の新しい順にソート（Date未入力は末尾へ）
+  posts.sort((a, b) => {
+    const da = a.properties.Date?.date?.start ?? "";
+    const db = b.properties.Date?.date?.start ?? "";
+    if (!da) return 1;
+    if (!db) return -1;
+    return db.localeCompare(da);
+  });
   const cards = posts.map(buildCard).join("\n");
 
   let html = fs.readFileSync("index.html", "utf-8");
