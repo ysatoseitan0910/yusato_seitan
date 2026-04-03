@@ -51,7 +51,9 @@ async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
   if (!dbId) return [];
   try {
     const res = await notion.databases.query({ database_id: dbId, sorts });
-    return res.results.filter(isPublished);
+    const published = res.results.filter(isPublished);
+    console.log(`  DB(${dbId.slice(0,8)}...): ${res.results.length}件取得, ${published.length}件公開`);
+    return published;
   } catch(e) {
     console.error(`DB query error (${dbId}):`, e.message);
     return [];
