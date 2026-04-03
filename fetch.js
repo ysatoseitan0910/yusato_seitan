@@ -25,11 +25,9 @@ const embed = url
     ? platform === "tiktok"
       ? `<div class="embed-wrap">
           <blockquote class="tiktok-embed" cite="${url}"
-            data-video-id="${url.split('/video/')[1]?.split('?')[0]}"
-            style="max-width:100%;min-width:100%;">
+            data-video-id="${url.split('/video/')[1]?.split('?')[0]}">
             <section></section>
           </blockquote>
-          <script async src="https://www.tiktok.com/embed.js"><\/script>
          </div>`
       : `<div class="embed-wrap">
           <blockquote class="twitter-tweet" data-lang="ja">
