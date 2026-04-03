@@ -1,4 +1,4 @@
-name: Update Gallery
+name: Build & Deploy
 
 on:
   schedule:
@@ -20,21 +20,24 @@ jobs:
       - name: Install dependencies
         run: npm install @notionhq/client@2.2.15
 
-      - name: Debug files
-        run: |
-          echo "=== fetch.js 1行目 ==="
-          head -3 fetch.js
-          echo "=== package.json ==="
-          cat package.json || echo "package.json なし"
-
-      - name: Fetch from Notion and build
-        run: node fetch.js
+      - name: Build all pages
+        run: node build.js
         env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          DATABASE_ID: ${{ secrets.DATABASE_ID }}
+          NOTION_TOKEN:        ${{ secrets.NOTION_TOKEN }}
+          DB_COMMITTEE_NEWS:   ${{ secrets.DB_COMMITTEE_NEWS }}
+          DB_YU_NEWS:          ${{ secrets.DB_YU_NEWS }}
+          DB_ACTIVITIES:       ${{ secrets.DB_ACTIVITIES }}
+          DB_BLOG:             ${{ secrets.DB_BLOG }}
+          DB_INTERVIEW:        ${{ secrets.DB_INTERVIEW }}
+          DB_TIKTOK:           ${{ secrets.DB_TIKTOK }}
+          DB_X:                ${{ secrets.DB_X }}
+          DB_YOUTUBE:          ${{ secrets.DB_YOUTUBE }}
+          DB_LEMINO:           ${{ secrets.DB_LEMINO }}
+          DB_WEB:              ${{ secrets.DB_WEB }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+          exclude_assets: '.github,node_modules,build.js,_template.html,package.json,package-lock.json'
