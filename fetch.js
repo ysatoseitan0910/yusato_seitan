@@ -14,7 +14,7 @@ async function getPosts() {
 function buildCard(post) {
   const url = post.properties.URL?.url ?? "";
   const name = post.properties.Name?.title?.[0]?.plain_text ?? "無題";
-  const platform = post.properties.Platform?.select?.name?.toLowerCase() ?? "x";
+  const platform = url.includes("tiktok.com") ? "tiktok" : "x";
   const date = post.properties.Date?.date?.start ?? "";
 
   const icon = platform === "tiktok"
