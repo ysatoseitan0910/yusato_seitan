@@ -1,5 +1,5 @@
-import { Client } from "@notionhq/client";
-import { readFileSync, writeFileSync } from "fs";
+const { Client } = require("@notionhq/client");
+const fs = require("fs");
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
@@ -46,7 +46,7 @@ async function run() {
   const posts = await getPosts();
   const cards = posts.map(buildCard).join("\n");
 
-  let html = readFileSync("index.html", "utf-8");
+  let html = fs.readFileSync("index.html", "utf-8");
   html = html.replace(
     /<!-- GALLERY_START -->[\s\S]*?<!-- GALLERY_END -->/,
     `<!-- GALLERY_START -->\n${cards}\n<!-- GALLERY_END -->`
@@ -58,7 +58,7 @@ async function run() {
     `最終更新：${now}`
   );
 
-  writeFileSync("index.html", html, "utf-8");
+  fs.writeFileSync("index.html", html, "utf-8");
   console.log(`✅ ${posts.length}件の投稿を反映しました`);
 }
 
