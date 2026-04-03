@@ -3,740 +3,270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEWS | 佐藤優羽 ファンサイト</title>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<title>佐藤優羽 TikTok Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-:root {
-  --rose: #c8748a;
-  --rose-light: #f5e0e6;
-  --rose-pale: #fdf5f7;
-  --rose-dark: #9d4f63;
-  --gold: #c9a96e;
-  --gold-light: #f5ead8;
-  --text: #1e1218;
-  --text-muted: #8a6872;
-  --text-light: #b8959f;
-  --white: #ffffff;
-  --bg: #faf7f8;
-  --border: #ecdde2;
-  --nav-h: 60px;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;min-height:100vh;}
+  :root {
+    --pink: #f4a7b9;
+    --pink-light: #fde8ee;
+    --pink-dark: #d4607a;
+    --cream: #fdf6f0;
+    --text: #2a1a1f;
+    --text-muted: #9a7a84;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(212,96,122,0.10);
+    --shadow-hover: 0 8px 40px rgba(212,96,122,0.18);
+  }
 
-/* ── Nav ── */
-nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(250,247,248,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--rose-dark);letter-spacing:0.08em;text-decoration:none;}
-.nav-logo small{display:block;font-family:'Noto Sans JP',sans-serif;font-size:9px;letter-spacing:0.2em;color:var(--text-light);font-weight:300;margin-top:1px;}
-.nav-links{display:flex;gap:0;align-items:center;}
-.nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
-.nav-links a:hover,.nav-links a.active{color:var(--rose-dark);background:var(--rose-light);}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── Page hero ── */
-.page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
-.page-hero-tag{display:inline-block;font-size:10px;letter-spacing:0.25em;color:var(--rose);border:1px solid var(--rose-light);padding:4px 14px;border-radius:20px;margin-bottom:16px;}
-.page-hero h1{font-family:'Shippori Mincho',serif;font-size:36px;font-weight:500;line-height:1.2;color:var(--text);margin-bottom:8px;}
-.page-hero h1 em{color:var(--rose-dark);font-style:normal;}
-.page-hero p{font-size:12px;color:var(--text-muted);letter-spacing:0.06em;}
-.last-updated{font-size:10px;color:var(--text-light);margin-top:6px;letter-spacing:0.04em;}
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
 
-/* ── Content area ── */
-.content{max-width:1100px;margin:0 auto;padding:0 40px 80px;}
+  header {
+    background: var(--white);
+    border-bottom: 1px solid #f0dde4;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-/* ── Footer ── */
-footer{background:var(--white);border-top:1px solid var(--border);padding:32px 40px;text-align:center;}
-footer p{font-size:10px;letter-spacing:0.12em;color:var(--text-light);}
-footer .heart{color:var(--rose);}
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--pink-dark);
+    letter-spacing: 0.02em;
+  }
 
-/* ── Card base ── */
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
-.card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(200,116,138,0.12);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .logo span {
+    font-style: normal;
+    font-size: 11px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    display: block;
+    margin-top: -4px;
+  }
 
-/* ── Grid ── */
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
-@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr);}.grid-2{grid-template-columns:1fr;}}
-@media(max-width:600px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+  nav a {
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
 
-/* ── Status badge ── */
-.badge{display:inline-block;font-size:10px;letter-spacing:0.08em;padding:3px 10px;border-radius:10px;font-weight:500;}
-.badge-open{background:#e8f5e9;color:#2e7d32;}
-.badge-closed{background:#f5f5f5;color:#757575;}
-.badge-blog{background:var(--rose-light);color:var(--rose-dark);}
-.badge-x{background:#e8f0fe;color:#1a56db;}
-.badge-tiktok{background:#fff0f3;color:#fe2c55;}
-.badge-youtube{background:#fff3e0;color:#e65100;}
-.badge-lemino{background:#f3e5f5;color:#6a1b9a;}
-.badge-interview{background:var(--gold-light);color:#7d5a00;}
-.badge-web{background:#e0f7fa;color:#006064;}
+  nav a:hover { color: var(--pink-dark); }
 
-/* ── News list card ── */
-.news-card{padding:20px 24px;display:flex;gap:20px;align-items:flex-start;}
-.news-card-date{font-size:11px;color:var(--text-light);letter-spacing:0.06em;white-space:nowrap;padding-top:2px;min-width:80px;}
-.news-card-body{flex:1;}
-.news-card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.5;}
-.news-card-desc{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:8px;}
-.news-card-link{font-size:11px;color:var(--rose);text-decoration:none;letter-spacing:0.04em;}
-.news-card-link:hover{color:var(--rose-dark);}
+  .hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+    overflow: hidden;
+  }
 
-/* ── Media card ── */
-.media-card .media-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--rose-pale);}
-.media-card .media-body{padding:16px;}
-.media-card .media-title{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.5;}
-.media-card .media-desc{font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;}
-.media-card .media-meta{display:flex;align-items:center;justify-content:space-between;}
-.media-card .media-date{font-size:10px;color:var(--text-light);}
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #fde8ee 0%, transparent 70%);
+    pointer-events: none;
+  }
 
-/* ── Embed card ── */
-.embed-card .embed-header{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between;}
-.embed-card .embed-wrap{background:var(--rose-pale);min-height:300px;display:flex;align-items:center;justify-content:center;padding:8px;}
-.embed-card .embed-footer{padding:10px 16px 14px;}
-.embed-card .embed-title{font-size:12px;color:var(--text);margin-bottom:4px;}
-.embed-card .embed-link{font-size:11px;color:var(--rose);text-decoration:none;}
+  .hero-tag {
+    display: inline-block;
+    background: var(--pink-light);
+    color: var(--pink-dark);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
 
-/* ── Divider ── */
-.divider{height:1px;background:var(--border);margin:32px 0;}
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 em { color: var(--pink-dark); font-style: italic; }
+
+  .hero p {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .last-updated {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+
+  .gallery {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 800px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .gallery { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px 8px;
+  }
+
+  .platform-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #fe2c55;
+  }
+
+  .platform-icon {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: #fe2c55;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  .card-date {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .embed-wrap {
+    background: var(--pink-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    min-height: 400px;
+  }
+
+  .embed-wrap blockquote {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .card-footer {
+    padding: 10px 14px 14px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--pink-dark);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .card-link:hover { opacity: 1; }
+
+  footer {
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid #f0dde4;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    background: var(--white);
+  }
+
+  .footer-heart { color: var(--pink); margin: 0 2px; }
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">
-    佐藤優羽
-    <small>FAN COMMITTEE</small>
-  </a>
-  <div class="nav-links">
-    <a href="index.html" class="active">NEWS</a>
-    <a href="committee.html" >委員会</a>
-    <a href="activities.html" >活動報告</a>
-    <a href="blog.html" >ブログ</a>
-    <a href="interview.html" >インタビュー</a>
-    <a href="x.html" >X</a>
-    <a href="tiktok.html" >TikTok</a>
-    <a href="youtube.html" >YouTube</a>
-    <a href="lemino.html" >Lemino</a>
-    <a href="web.html" >Web</a>
+<header>
+  <div class="logo">
+    Yu Gallery
+    <span>佐藤優羽 TikTok まとめ</span>
   </div>
-</nav>
+  <nav>
+    <a href="#">委員会について</a>
+  </nav>
+</header>
 
+<section class="hero">
+  <div class="hero-tag">SATO YU FAN COMMITTEE</div>
+  <h1>TikTok <em>Gallery</em></h1>
+  <p>佐藤優羽のTikTok投稿をまとめています</p>
+</section>
 
-      <div class="page-hero">
-        <div class="page-hero-tag">LATEST NEWS</div>
-        <h1>佐藤<em>優羽</em> News</h1>
-        <p>佐藤優羽さんに関する最新情報をお届けします</p>
-        <p class="last-updated">最終更新：2026/4/4 0:48:03</p>
-      </div>
-      <div class="content"><div style="display:flex;flex-direction:column;gap:12px;">
-    <!-- GALLERY_START -->
-    
-  <div class="card news-card" style="animation-delay:0.0886164171423592s">
-    <div class="news-card-date">2026.03.30T18:00:00.000+09:00</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">Blog</span>
-      <p class="news-card-title" style="margin-top:6px">桜の季節の蜂蜜。</p>
-      
-      <a href="https://www.hinatazaka46.com/s/official/diary/member/list?ima=0000&ct=42&dy=20260330" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
+<p class="last-updated">最終更新：<!-- LAST_UPDATED --></p>
 
-  <div class="card news-card" style="animation-delay:0.14092176892708821s">
-    <div class="news-card-date">2026.03.30</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">Youtube</span>
-      <p class="news-card-title" style="margin-top:6px">日向坂になりましょう-#20 【瞬発力を鍛えよう！】冒頭が先行公開されました！</p>
-      
-      <a href="https://www.youtube.com/watch?v=uUXracpCICo" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.2756370609049113s">
-    <div class="news-card-date">2026.03.26</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">Blog</span>
-      <p class="news-card-title" style="margin-top:6px">終わりの季節なのか？それとも始まりの季節なのか？</p>
-      
-      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68616" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.13667056222916643s">
-    <div class="news-card-date">2026.03.25</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">Blog</span>
-      <p class="news-card-title" style="margin-top:6px">思い出すことは止められない。</p>
-      
-      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68464" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.008716556927664798s">
-    <div class="news-card-date">2026.03.25</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.12891097485329614s">
-    <div class="news-card-date">2026.03.21</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.23452586997111857s">
-    <div class="news-card-date">2026.03.21</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">Youtube</span>
-      <p class="news-card-title" style="margin-top:6px"> </p>
-      <p class="news-card-desc">/／
- コール動画公開│ ˙ᵕ˙ )꜆
-\＼
-
-</p>
-      <a href="https://www.youtube.com/watch?v=wA_lovpT5C4&list=RDwA_lovpT5C4&start_radio=1" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.08417011079577234s">
-    <div class="news-card-date">2026.03.17</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.131512105435908s">
-    <div class="news-card-date">2026.03.16</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.27711367098199924s">
-    <div class="news-card-date">2026.03.14</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.25261227951482695s">
-    <div class="news-card-date">2026.03.14</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">日向坂46公式X</span>
-      <p class="news-card-title" style="margin-top:6px"> </p>
-      <p class="news-card-desc">/／
- チャレンジ挑戦！│ ˙ᵕ˙ )꜆
-\＼
-残り21日！！
-
-本日は </p>
-      
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.04409791654988484s">
-    <div class="news-card-date">2026.03.12</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.26970094722406285s">
-    <div class="news-card-date">2026.03.10</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.09982418734586691s">
-    <div class="news-card-date">2026.03.09</div>
-    <div class="news-card-body">
-      <span class="badge badge-lemino">Lemino</span>
-      <p class="news-card-title" style="margin-top:6px">日向坂になりましょう　</p>
-      
-      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtqb3g=?pit_git_type=PIT" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.07473716318629228s">
-    <div class="news-card-date">2026.03.08</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.25426696642310737s">
-    <div class="news-card-date">2026.02.27</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.0389065423119s">
-    <div class="news-card-date">2026.02.24</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.09428460585104682s">
-    <div class="news-card-date">2026.02.21</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.07855514990754961s">
-    <div class="news-card-date">2026.02.14</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.28914645543630535s">
-    <div class="news-card-date">2026.02.13</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.20110574189989472s">
-    <div class="news-card-date">2026.02.11</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.25869314100789526s">
-    <div class="news-card-date">2026.02.10</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.14427423648375576s">
-    <div class="news-card-date">2026.02.05</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.23810568185797973s">
-    <div class="news-card-date">2026.01.31</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.11493697718095591s">
-    <div class="news-card-date">2026.01.27</div>
-    <div class="news-card-body">
-      <span class="badge badge-interview">インタビュー</span>
-      <p class="news-card-title" style="margin-top:6px">モデルプレス　2026年1月インタビュー＜後編＞</p>
-      <p class="news-card-desc">日向坂46佐藤優羽、大粒の涙で語った松田好花への想い「泣きすぎてお家に帰れなかった」 支えとなったマリオカートの夜【「クリフハンガー」インタビュー】</p>
-      <a href="https://mdpr.jp/interview/detail/4719021" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.06987392566230179s">
-    <div class="news-card-date">2026.01.26</div>
-    <div class="news-card-body">
-      <span class="badge badge-interview">インタビュー</span>
-      <p class="news-card-title" style="margin-top:6px">モデルプレス　2026年1月インタビュー＜前編＞</p>
-      <p class="news-card-desc">日向坂46佐藤優羽、成長と自信に繋がった“不安の正体” 「ひなあい」にかける熱い想いも告白【「クリフハンガー」インタビュー】</p>
-      <a href="https://mdpr.jp/interview/detail/4718437" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.03616845413273249s">
-    <div class="news-card-date">2026.01.05</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.03534519309131534s">
-    <div class="news-card-date">2025.12.30</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.07672441921436358s">
-    <div class="news-card-date">2025.12.29</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.1881125449894569s">
-    <div class="news-card-date">2025.12.29</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.2479266356342644s">
-    <div class="news-card-date">2025.12.13</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.02121696635994157s">
-    <div class="news-card-date">2025.12.08</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.05201339468944408s">
-    <div class="news-card-date">2025.12.06</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.20048745573895346s">
-    <div class="news-card-date">2025.12.02</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.021080467273355084s">
-    <div class="news-card-date">2025.11.25</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.23350730505739292s">
-    <div class="news-card-date">2025.11.24</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.08422599677603186s">
-    <div class="news-card-date">2025.10.24</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.19061816216513508s">
-    <div class="news-card-date">2025.10.20</div>
-    <div class="news-card-body">
-      <span class="badge badge-interview">インタビュー</span>
-      <p class="news-card-title" style="margin-top:6px">BRODY (ブロディ) 2025年 12月号</p>
-      <p class="news-card-desc">表紙＆巻頭グラビアに五期生が10人全員集合で初登場！
-さらに、中面グラビアでは「BRODY賞」受賞を記念して佐藤優羽ちゃんが“人生初ソログラビア”で登場！</p>
-      <a href="https://www.amazon.co.jp/dp/B0FRM43QG8" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.09971429189360186s">
-    <div class="news-card-date">2025.10.18</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.10696423085958674s">
-    <div class="news-card-date">2025.10.12</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.28207744344505764s">
-    <div class="news-card-date">2025.10.10</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.15334261038664435s">
-    <div class="news-card-date">2025.10.07</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.15819815237490498s">
-    <div class="news-card-date">2025.10.07</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.14528769848891607s">
-    <div class="news-card-date">2025.10.04</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.047475200918661906s">
-    <div class="news-card-date">2025.10.04</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.032315514737350746s">
-    <div class="news-card-date">2025.09.21</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.04710034511007386s">
-    <div class="news-card-date">2025.09.06</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.2271179418673823s">
-    <div class="news-card-date">2025.08.26</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.13989260028459707s">
-    <div class="news-card-date">2025.08.19</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.10330395454615401s">
-    <div class="news-card-date">2025.08.17</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.14510058154194347s">
-    <div class="news-card-date">2025.07.29</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.23754021803929656s">
-    <div class="news-card-date">2025.07.18</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.04582205728842043s">
-    <div class="news-card-date">2025.07.12</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.25938113420069636s">
-    <div class="news-card-date">2025.07.10</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.26329247134974393s">
-    <div class="news-card-date">2025.07.06</div>
-    <div class="news-card-body">
-      <span class="badge badge-tiktok">TikTok</span>
-      <p class="news-card-title" style="margin-top:6px"></p>
-      
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.2201857038947571s">
-    <div class="news-card-date">2025.06.13</div>
-    <div class="news-card-body">
-      <span class="badge badge-blog">Youtube</span>
-      <p class="news-card-title" style="margin-top:6px">【アーカイブ】日向坂46五期生・佐藤優羽【リレー生配信8人目】</p>
-      
-      <a href="youtube.com/watch?v=aLwWR9C1cus&pp=ygUM5L2Q6Jek5YSq5769" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.11141077340913778s">
-    <div class="news-card-date">2025.03.26</div>
-    <div class="news-card-body">
-      <span class="badge badge-web">Web</span>
-      <p class="news-card-title" style="margin-top:6px">オリコンニュース　</p>
-      
-      <a href="https://www.oricon.co.jp/prof/990004920/" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.048705976103770476s">
-    <div class="news-card-date"></div>
-    <div class="news-card-body">
-      <span class="badge badge-x">X</span>
-      <p class="news-card-title" style="margin-top:6px">BRODY2025年12月号</p>
-      
-      <a href="https://x.com/brody20150821/status/1979505796179517574" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-
-  <div class="card news-card" style="animation-delay:0.10397183347660188s">
-    <div class="news-card-date"></div>
-    <div class="news-card-body">
-      <span class="badge badge-interview">インタビュー</span>
-      <p class="news-card-title" style="margin-top:6px">Ray(レイ) 2025年 08 月号</p>
-      <p class="news-card-desc">表紙・巻頭に五期生が初登場！</p>
-      <a href="https://www.amazon.co.jp/Ray-%E3%83%AC%E3%82%A4-2025%E5%B9%B4-08-%E6%9C%88%E5%8F%B7%E3%80%90%E8%A1%A8%E7%B4%99%EF%BC%9A%E6%97%A5%E5%90%91%E5%9D%8246-%E4%BA%94%E6%9C%9F%E7%94%9F%E3%80%91/dp/B0F93HF41G" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
-    </div>
-  </div>
-    <!-- GALLERY_END -->
-  </div></div>
-    
+<div class="gallery" id="gallery">
+<!-- GALLERY_START -->
+<!-- GALLERY_END -->
+</div>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/4 0:48:03</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="footer-heart">♥</span> Sato Yu Fan Committee</p>
 </footer>
+
+<script async src="https://www.tiktok.com/embed.js"></script>
 
 </body>
 </html>
