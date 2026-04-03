@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>佐藤優羽 SNS Gallery</title>
+<title>佐藤優羽 TikTok Gallery</title>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -28,7 +28,6 @@
     min-height: 100vh;
   }
 
-  /* ── ヘッダー ── */
   header {
     background: var(--white);
     border-bottom: 1px solid #f0dde4;
@@ -60,12 +59,6 @@
     margin-top: -4px;
   }
 
-  nav {
-    display: flex;
-    gap: 28px;
-    align-items: center;
-  }
-
   nav a {
     text-decoration: none;
     font-size: 13px;
@@ -74,9 +67,8 @@
     transition: color 0.2s;
   }
 
-  nav a:hover, nav a.active { color: var(--pink-dark); }
+  nav a:hover { color: var(--pink-dark); }
 
-  /* ── ヒーロー ── */
   .hero {
     text-align: center;
     padding: 60px 20px 40px;
@@ -113,10 +105,7 @@
     margin-bottom: 10px;
   }
 
-  .hero h1 em {
-    color: var(--pink-dark);
-    font-style: italic;
-  }
+  .hero h1 em { color: var(--pink-dark); font-style: italic; }
 
   .hero p {
     font-size: 13px;
@@ -124,59 +113,31 @@
     letter-spacing: 0.05em;
   }
 
-  /* ── フィルター ── */
-  .filter-bar {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding: 20px 20px 32px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    padding: 7px 20px;
-    border-radius: 20px;
-    border: 1px solid #f0dde4;
-    background: var(--white);
+  .last-updated {
+    text-align: center;
+    font-size: 11px;
     color: var(--text-muted);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 12px;
     letter-spacing: 0.06em;
-    cursor: pointer;
-    transition: all 0.2s;
+    margin-bottom: 28px;
   }
 
-  .filter-btn:hover {
-    border-color: var(--pink);
-    color: var(--pink-dark);
-  }
-
-  .filter-btn.active {
-    background: var(--pink-dark);
-    color: var(--white);
-    border-color: var(--pink-dark);
-  }
-
-  /* ── グリッド ── */
   .gallery {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 24px 80px;
-    columns: 3;
-    column-gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 
-  @media (max-width: 800px) { .gallery { columns: 2; } }
-  @media (max-width: 500px) { .gallery { columns: 1; } }
+  @media (max-width: 800px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .gallery { grid-template-columns: 1fr; } }
 
-  /* ── カード ── */
   .card {
     background: var(--white);
     border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow);
-    margin-bottom: 20px;
-    break-inside: avoid;
     transition: transform 0.25s, box-shadow 0.25s;
     animation: fadeUp 0.5s ease both;
   }
@@ -191,14 +152,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .card:nth-child(1) { animation-delay: 0.05s; }
-  .card:nth-child(2) { animation-delay: 0.10s; }
-  .card:nth-child(3) { animation-delay: 0.15s; }
-  .card:nth-child(4) { animation-delay: 0.20s; }
-  .card:nth-child(5) { animation-delay: 0.25s; }
-  .card:nth-child(6) { animation-delay: 0.30s; }
-
-  /* プラットフォームバッジ */
   .card-header {
     display: flex;
     align-items: center;
@@ -213,21 +166,18 @@
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
+    color: #fe2c55;
   }
-
-  .platform-badge.x     { color: #000; }
-  .platform-badge.tiktok { color: #fe2c55; }
 
   .platform-icon {
     width: 18px; height: 18px;
     border-radius: 4px;
+    background: #fe2c55;
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px;
     font-weight: 900;
   }
-
-  .platform-icon.x      { background: #000; color: #fff; }
-  .platform-icon.tiktok { background: #fe2c55; color: #fff; }
 
   .card-date {
     font-size: 10px;
@@ -235,41 +185,20 @@
     letter-spacing: 0.04em;
   }
 
-  /* 埋め込みエリア */
   .embed-wrap {
     background: var(--pink-light);
-    min-height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
+    padding: 8px;
+    min-height: 400px;
   }
 
-  .embed-wrap iframe,
   .embed-wrap blockquote {
+    margin: 0 !important;
     width: 100% !important;
-    max-width: 100% !important;
-    border-radius: 8px;
-    overflow: hidden;
   }
 
-  /* モック用プレースホルダー */
-  .embed-placeholder {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 24px 0;
-    color: var(--pink-dark);
-    opacity: 0.6;
-  }
-
-  .embed-placeholder svg { width: 32px; height: 32px; }
-  .embed-placeholder span { font-size: 12px; letter-spacing: 0.04em; }
-
-  /* カードフッター */
   .card-footer {
     padding: 10px 14px 14px;
   }
@@ -295,7 +224,6 @@
 
   .card-link:hover { opacity: 1; }
 
-  /* ── フッター ── */
   footer {
     text-align: center;
     padding: 32px;
@@ -307,852 +235,1028 @@
   }
 
   .footer-heart { color: var(--pink); margin: 0 2px; }
-
-  /* 最終更新 */
-  .last-updated {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    margin-bottom: 28px;
-  }
 </style>
 </head>
 <body>
 
-<!-- ヘッダー -->
 <header>
   <div class="logo">
-    Yuha Gallery
-    <span>佐藤優羽 SNS まとめ</span>
+    Yu Gallery
+    <span>佐藤優羽 TikTok まとめ</span>
   </div>
   <nav>
-    <a href="#" class="active">ギャラリー</a>
-    <a href="#">ブログ</a>
-    <a href="#">プロフィール</a>
     <a href="#">委員会について</a>
   </nav>
 </header>
 
-<!-- ヒーロー -->
 <section class="hero">
-  <div class="hero-tag">SATO YUHA FAN COMMITTEE</div>
-  <h1>SNS <em>Gallery</em></h1>
-  <p>佐藤優羽のXとTikTokの投稿をまとめています</p>
+  <div class="hero-tag">SATO YU FAN COMMITTEE</div>
+  <h1>TikTok <em>Gallery</em></h1>
+  <p>佐藤優羽のTikTok投稿をまとめています</p>
 </section>
 
-<!-- フィルター -->
-<div class="filter-bar">
-  <button class="filter-btn active" onclick="filter('all', this)">すべて</button>
-  <button class="filter-btn" onclick="filter('x', this)">X (Twitter)</button>
-  <button class="filter-btn" onclick="filter('tiktok', this)">TikTok</button>
-</div>
+<p class="last-updated">最終更新：2026/4/3 23:28:04</p>
 
-<!-- 最終更新 -->
-<p class="last-updated" id="last-updated">最終更新：2026/4/3 23:19:24</p>
-
-<!-- ギャラリー -->
 <div class="gallery" id="gallery">
 <!-- GALLERY_START -->
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-25</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445"
-            data-video-id="7620760055905799445">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445"
+        data-video-id="7620760055905799445">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-21</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324"
-            data-video-id="7608490212481666324">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324"
+        data-video-id="7608490212481666324">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-17</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309"
-            data-video-id="7608489508908076309">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309"
+        data-video-id="7608489508908076309">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-16</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735"
-            data-video-id="7615986974129769735">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735"
+        data-video-id="7615986974129769735">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-14</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989"
-            data-video-id="7617057123523955989">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989"
+        data-video-id="7617057123523955989">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-12</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501"
-            data-video-id="7616276669921332501">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501"
+        data-video-id="7616276669921332501">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-10</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541"
-            data-video-id="7608487548066827541">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541"
+        data-video-id="7608487548066827541">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-03-08</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140"
-            data-video-id="7614845730385317140">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140"
+        data-video-id="7614845730385317140">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-27</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341"
-            data-video-id="7611486839597272341">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341"
+        data-video-id="7611486839597272341">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-24</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412"
-            data-video-id="7610273900626267412">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412"
+        data-video-id="7610273900626267412">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-21</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652"
-            data-video-id="7609257131681893652">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652"
+        data-video-id="7609257131681893652">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-14</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068"
-            data-video-id="7606674927965474068">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068"
+        data-video-id="7606674927965474068">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-13</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749"
-            data-video-id="7606286268388969749">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749"
+        data-video-id="7606286268388969749">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-11</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109"
-            data-video-id="7605591804397817109">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109"
+        data-video-id="7605591804397817109">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-10</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546"
-            data-video-id="7605144771568438546">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546"
+        data-video-id="7605144771568438546">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-02-05</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453"
-            data-video-id="7603353568199986453">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453"
+        data-video-id="7603353568199986453">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-01-31</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757"
-            data-video-id="7601432754269588757">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757"
+        data-video-id="7601432754269588757">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2026-01-05</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768"
-            data-video-id="7587754214189845768">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768"
+        data-video-id="7587754214189845768">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-30</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239"
-            data-video-id="7587341193114111239">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239"
+        data-video-id="7587341193114111239">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-29</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858"
-            data-video-id="7587340100586179858">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858"
+        data-video-id="7587340100586179858">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-29</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279"
-            data-video-id="7587363371675094279">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279"
+        data-video-id="7587363371675094279">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-13</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023"
-            data-video-id="7579177460609142023">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023"
+        data-video-id="7579177460609142023">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-08</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423"
-            data-video-id="7578677191710428423">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423"
+        data-video-id="7578677191710428423">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-06</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360"
-            data-video-id="7579175779100036360">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360"
+        data-video-id="7579175779100036360">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-12-02</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602"
-            data-video-id="7579174910963043602">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602"
+        data-video-id="7579174910963043602">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-11-25</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080"
-            data-video-id="7572070961537699080">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080"
+        data-video-id="7572070961537699080">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-11-24</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570"
-            data-video-id="7570986177575095570">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570"
+        data-video-id="7570986177575095570">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-24</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405"
-            data-video-id="7564772668453424405">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405"
+        data-video-id="7564772668453424405">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7564772668453424405" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-18</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759"
-            data-video-id="7555428438375402759">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759"
+        data-video-id="7555428438375402759">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555428438375402759" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-12</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968"
-            data-video-id="7560312121964104968">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968"
+        data-video-id="7560312121964104968">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7560312121964104968" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-10</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580"
-            data-video-id="7559546795014114580">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580"
+        data-video-id="7559546795014114580">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7559546795014114580" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-07</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752"
-            data-video-id="7555426235413695752">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752"
+        data-video-id="7555426235413695752">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555426235413695752" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-07</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240"
-            data-video-id="7555708991498751240">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240"
+        data-video-id="7555708991498751240">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555708991498751240" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-04</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064"
-            data-video-id="7555709367526477064">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064"
+        data-video-id="7555709367526477064">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7555709367526477064" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-10-04</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351"
-            data-video-id="7547559494352473351">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351"
+        data-video-id="7547559494352473351">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7547559494352473351" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-09-21</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176"
-            data-video-id="7548633333022887176">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176"
+        data-video-id="7548633333022887176">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7548633333022887176" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-09-06</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282"
-            data-video-id="7538269264701099282">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282"
+        data-video-id="7538269264701099282">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7538269264701099282" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-08-26</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252"
-            data-video-id="7542863101532671252">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252"
+        data-video-id="7542863101532671252">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7542863101532671252" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-08-19</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928"
-            data-video-id="7540182936650353928">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928"
+        data-video-id="7540182936650353928">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7540182936650353928" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-08-17</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735"
-            data-video-id="7539523382568553735">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735"
+        data-video-id="7539523382568553735">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7539523382568553735" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-07-29</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591"
-            data-video-id="7530957238140259591">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591"
+        data-video-id="7530957238140259591">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7530957238140259591" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-07-18</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949"
-            data-video-id="7528406557671836949">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949"
+        data-video-id="7528406557671836949">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7528406557671836949" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-07-12</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039"
-            data-video-id="7524307809144524039">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039"
+        data-video-id="7524307809144524039">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524307809144524039" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-07-10</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015"
-            data-video-id="7524304713425227015">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015"
+        data-video-id="7524304713425227015">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7524304713425227015" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 
-  <div class="card" data-platform="tiktok">
+  <div class="card">
     <div class="card-header">
-      <div class="platform-badge tiktok"><div class="platform-icon tiktok">♪</div> TikTok</div>
+      <div class="platform-badge">
+        <div class="platform-icon">♪</div>
+        TikTok
+      </div>
       <span class="card-date">2025-07-06</span>
     </div>
     <div class="embed-wrap">
-          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980"
-            data-video-id="7523939085690440980">
-            <section></section>
-          </blockquote>
-         </div>
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980"
+        data-video-id="7523939085690440980">
+        <section></section>
+      </blockquote>
+    </div>
     <div class="card-footer">
       <p class="card-title">無題</p>
-      <a href="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980" class="card-link" target="_blank">投稿を見る →</a>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7523939085690440980" class="card-link" target="_blank" rel="noopener">動画を見る →</a>
     </div>
   </div>
 <!-- GALLERY_END -->
-</div><!-- /gallery -->
+</div>
 
-<!-- フッター -->
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="footer-heart">♥</span> Sato Yuha Fan Committee</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="footer-heart">♥</span> Sato Yu Fan Committee</p>
 </footer>
 
-<script>
-  // 最終更新日時
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const d = String(now.getDate()).padStart(2,'0');
-  const hh = String(now.getHours()).padStart(2,'0');
-  const mm = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('last-updated').textContent =
-    `最終更新：${y}.${m}.${d} ${hh}:${mm}`;
-
-  // フィルター
-  function filter(platform, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.card').forEach(card => {
-      if (platform === 'all' || card.dataset.platform === platform) {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  }
-</script>
-<script async src="https://platform.twitter.com/widgets.js"></script>
 <script async src="https://www.tiktok.com/embed.js"></script>
-<script async src="https://platform.twitter.com/widgets.js"></script>
+
 </body>
 </html>
