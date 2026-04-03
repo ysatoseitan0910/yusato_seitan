@@ -34,9 +34,11 @@ function getMedia(page, key="Media") {
   return f.type === "external" ? f.external.url : f.file?.url || "";
 }
 function isPublished(page) {
-  const p = prop(page,"Published");
+  const p = prop(page, "Published");
+  // Publishedプロパティがない、またはチェックなしの場合も公開扱い
   if (!p) return true;
-  return p.checkbox === true;
+  if (p.checkbox === false) return false;
+  return true;
 }
 function fmtDate(d) {
   if (!d) return "";
