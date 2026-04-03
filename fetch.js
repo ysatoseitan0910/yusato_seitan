@@ -21,11 +21,21 @@ function buildCard(post) {
     ? `<div class="platform-icon tiktok">♪</div> TikTok`
     : `<div class="platform-icon x">𝕏</div> X (Twitter)`;
 
-  const embed = url
-    ? `<div class="embed-wrap">
-        <iframe src="${url}" width="100%" height="400" frameborder="0"
-          allowfullscreen loading="lazy"></iframe>
-       </div>`
+const embed = url
+    ? platform === "tiktok"
+      ? `<div class="embed-wrap">
+          <blockquote class="tiktok-embed" cite="${url}"
+            data-video-id="${url.split('/video/')[1]?.split('?')[0]}"
+            style="max-width:100%;min-width:100%;">
+            <section></section>
+          </blockquote>
+          <script async src="https://www.tiktok.com/embed.js"><\/script>
+         </div>`
+      : `<div class="embed-wrap">
+          <blockquote class="twitter-tweet" data-lang="ja">
+            <a href="${url}"></a>
+          </blockquote>
+         </div>`
     : `<div class="embed-wrap"><div class="embed-placeholder"><span>URLなし</span></div></div>`;
 
   return `
