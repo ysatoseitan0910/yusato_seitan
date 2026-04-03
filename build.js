@@ -270,17 +270,6 @@ async function buildIndex(tpl) {
     <!-- 右：活動報告 + 委員会News -->
     <div style="display:flex;flex-direction:column;gap:24px;">
 
-      <!-- 活動報告 -->
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-          <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">活動報告</h2>
-          <a href="activities.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          ${activityCards}
-        </div>
-      </div>
-
       <!-- 委員会News -->
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -290,6 +279,17 @@ async function buildIndex(tpl) {
         ${committeeCards}
         <div style="margin-top:12px;text-align:right;">
           <a href="committee.html" style="font-size:11px;color:var(--rose);text-decoration:none;">もっと見る →</a>
+        </div>
+      </div>
+
+      <!-- 活動報告 -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">活動報告</h2>
+          <a href="activities.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${activityCards}
         </div>
       </div>
 
