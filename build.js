@@ -487,8 +487,14 @@ async function syncToYuNews() {
       const url  = getUrl(page);
       const name = getText(page,"Name");
       const date = getDate(page);
-      const desc = getText(page,"Description");
+      const srcDesc = getText(page,"Description");
       if (!url || existingUrls.has(url)) continue;
+      // プラットフォーム別の説明文生成
+      let desc = srcDesc;
+      if (platform === "TikTok" && !desc) {
+        const cleanUrl = url.split("?")[0];
+        desc = `／\n📢 TikTok公開│ ˙ᵕ˙ )꜆\n＼\n\n佐藤優羽 さん登場のtiktok動画が公開されました！\nぜひご覧ください🪽\n\n${cleanUrl}`;
+      }
       const media = getMedia(page);
       const baseProps = {
         Name:        { title: [{ text: { content: name } }] },
