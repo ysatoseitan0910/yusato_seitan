@@ -154,12 +154,18 @@ async function getExistingData() {
   return { urls, maxNumber };
 }
 
+function buildDescription(article) {
+  const cleanUrl = article.url.split("?")[0];
+  return `＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／\n\n#佐藤優羽 OFFICIAL BLOG\n「${article.title}」\n\n${cleanUrl}\n⟡.· ┈┈┈┈┈┈┈┈⟡.·`;
+}
+
 async function addToNotion(article, imgUrl, number) {
   const props = {
-    Name:      { title: [{ text: { content: article.title } }] },
-    URL:       { url: article.url },
-    Published: { checkbox: true },
-    Number:    { number: number },
+    Name:        { title: [{ text: { content: article.title } }] },
+    URL:         { url: article.url },
+    Published:   { checkbox: true },
+    Number:      { number: number },
+    Description: { rich_text: [{ text: { content: buildDescription(article) } }] },
   };
   if (article.date) props["Date"] = { date: { start: article.date } };
   if (imgUrl) props["Media"] = { files: [{ name: "thumbnail", type: "external", external: { url: imgUrl } }] };

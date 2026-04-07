@@ -94,16 +94,37 @@ function newsCard(page, badgeLabel) {
   const title = getText(page,"Name") || (url.includes("tiktok.com") ? "TikTok動画" : url.includes("youtu") ? "YouTube動画" : "詳細を見る");
   const date  = fmtDate(getDate(page));
   const desc  = getText(page,"Description");
+  const img   = getMedia(page);
   const platform = getSelect(page,"Platform") || badgeLabel;
   const badge = platform ? `<span class="${badgeClass(platform)}">${platform}</span>` : "";
   const link  = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+  const descHtml = desc ? desc.replace(/\n/g, "<br>") : "";
+
+  if (img) {
+    return `
+  <div class="card news-card news-card--img" style="animation-delay:${Math.random()*0.3}s">
+    <img class="news-card-img" src="${img}" alt="${title}" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">${date}</div>
+        <div class="news-card-body">
+          ${badge}
+          <p class="news-card-title" style="margin-top:${badge?'6px':'0'}">${title}</p>
+        </div>
+      </div>
+      ${descHtml ? `<p class="news-card-desc" style="margin-top:10px;">${descHtml}</p>` : ""}
+      ${link}
+    </div>
+  </div>`;
+  }
+
   return `
   <div class="card news-card" style="animation-delay:${Math.random()*0.3}s">
     <div class="news-card-date">${date}</div>
     <div class="news-card-body">
       ${badge}
       <p class="news-card-title" style="margin-top:${badge?'6px':'0'}">${title}</p>
-      ${desc ? `<p class="news-card-desc">${desc}</p>` : ""}
+      ${descHtml ? `<p class="news-card-desc">${descHtml}</p>` : ""}
       ${link}
     </div>
   </div>`;
@@ -468,22 +489,34 @@ async function syncToYuNews() {
       const date = getDate(page);
       const desc = getText(page,"Description");
       if (!url || existingUrls.has(url)) continue;
+      const media = getMedia(page);
+      const baseProps = {
+        Name:        { title: [{ text: { content: name } }] },
+        URL:         { url },
+        Date:        date ? { date: { start: date } } : undefined,
+        Description: { rich_text: [{ text: { content: desc } }] },
+        Platform:    { multi_select: [{ name: platform }] },
+        Published:   { checkbox: true },
+      };
+      if (media) baseProps.Media = { files: [{ name: "thumbnail", type: "external", external: { url: media } }] };
       try {
-        await notion.pages.create({
-          parent: { database_id: DB.yuNews },
-          properties: {
-            Name:      { title: [{ text: { content: name } }] },
-            URL:       { url },
-            Date:      date ? { date: { start: date } } : undefined,
-            Description: { rich_text: [{ text: { content: desc } }] },
-            Platform:  { multi_select: [{ name: platform }] },
-            Published: { checkbox: true },
-          },
-        });
+        await notion.pages.create({ parent: { database_id: DB.yuNews }, properties: baseProps });
         existingUrls.add(url);
         console.log(`  ✅ Yu Newsに追加: [${platform}] ${name}`);
       } catch(e) {
-        console.error(`  ❌ Yu News追加失敗: ${name}`, e.message);
+        if (media && e.code === "validation_error" && e.message.includes("Media")) {
+          // DB_YU_NEWSにMediaプロパティがない場合はMediaなしで再試行
+          delete baseProps.Media;
+          try {
+            await notion.pages.create({ parent: { database_id: DB.yuNews }, properties: baseProps });
+            existingUrls.add(url);
+            console.log(`  ✅ Yu Newsに追加（Media未設定）: [${platform}] ${name}`);
+          } catch(e2) {
+            console.error(`  ❌ Yu News追加失敗: ${name}`, e2.message);
+          }
+        } else {
+          console.error(`  ❌ Yu News追加失敗: ${name}`, e.message);
+        }
       }
     }
   }
