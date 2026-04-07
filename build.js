@@ -155,13 +155,31 @@ function mediaCard(page, badgeLabel) {
   </div>`;
 }
 
-function tiktokCard(page) {
+async function fetchOembedThumbnail(url) {
+  try {
+    const res = await fetch(
+      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.thumbnail_url || "";
+  } catch {
+    return "";
+  }
+}
+
+function tiktokCard(page, thumbUrl = "") {
   const url = getUrl(page);
   const title = getText(page,"Name");
   const date  = fmtDate(getDate(page));
   const videoId = url.split("/video/")[1]?.split("?")[0] || "";
+  const imgTag = thumbUrl
+    ? `<img src="${thumbUrl}" alt="${title}" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">`
+    : "";
   return `
   <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
+    ${imgTag}
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">${date}</span>
@@ -422,7 +440,9 @@ async function buildX(tpl) {
 
 async function buildTiktok(tpl) {
   const pages = await queryDB(DB.tiktok);
-  const cards = pages.map(p => tiktokCard(p)).join("\n");
+  console.log(`  TikTokサムネイル取得中 (${pages.length}件)...`);
+  const thumbs = await Promise.all(pages.map(p => fetchOembedThumbnail(getUrl(p))));
+  const cards = pages.map((p, i) => tiktokCard(p, thumbs[i])).join("\n");
   const body = `<div class="grid-3">
     <!-- GALLERY_START -->
     ${cards}
