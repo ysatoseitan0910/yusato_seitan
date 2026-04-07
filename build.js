@@ -295,7 +295,7 @@ async function buildIndex(tpl) {
             <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
           </div>
         </div>
-        ${desc ? `<p class="news-card-desc" style="margin-top:10px;">${desc.split("\n")[0]}</p>` : ""}
+        ${desc ? `<p class="news-card-desc" style="margin-top:10px;">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
         ${link}
       </div>
     </div>`;
@@ -306,7 +306,7 @@ async function buildIndex(tpl) {
       <div class="news-card-body">
         ${statusBadge(status)}
         <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
-        ${desc ? `<p class="news-card-desc">${desc.split("\n")[0]}</p>` : ""}
+        ${desc ? `<p class="news-card-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
         ${link}
       </div>
     </div>`;
@@ -431,7 +431,7 @@ async function buildActivities(tpl) {
           <span class="media-date">${date}</span>
         </div>
         <p class="media-title">${title}</p>
-        ${desc ? `<p class="media-desc">${desc.split("\n")[0]}</p>` : ""}
+        ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
         <div class="media-meta"><span></span>${link}</div>
       </div>
     </div>`;
