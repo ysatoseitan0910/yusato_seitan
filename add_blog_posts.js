@@ -133,8 +133,9 @@ async function fetchThumbnail(url) {
 
 // ── Notion ──
 
-async function getExistingUrls() {
+async function getExistingData() {
   const urls = new Set();
+  let maxNumber = 0;
   let cursor;
   do {
     const res = await notion.databases.query({
@@ -144,18 +145,21 @@ async function getExistingUrls() {
     });
     for (const p of res.results) {
       const u = p.properties["URL"]?.url;
-      if (u) urls.add(u.split("?")[0]); // クエリパラメータを除いて比較
+      if (u) urls.add(u.split("?")[0]);
+      const n = p.properties["Number"]?.number;
+      if (n && n > maxNumber) maxNumber = n;
     }
     cursor = res.has_more ? res.next_cursor : undefined;
   } while (cursor);
-  return urls;
+  return { urls, maxNumber };
 }
 
-async function addToNotion(article, imgUrl) {
+async function addToNotion(article, imgUrl, number) {
   const props = {
     Name:      { title: [{ text: { content: article.title } }] },
     URL:       { url: article.url },
     Published: { checkbox: true },
+    Number:    { number: number },
   };
   if (article.date) props["Date"] = { date: { start: article.date } };
   if (imgUrl) props["Media"] = { files: [{ name: "thumbnail", type: "external", external: { url: imgUrl } }] };
@@ -172,9 +176,9 @@ async function main() {
   const scraped = await scrapeAllPages();
   console.log(`\n合計 ${scraped.length} 件取得\n`);
 
-  console.log("📋 既存DBのURLを取得中...");
-  const existingUrls = await getExistingUrls();
-  console.log(`  既存: ${existingUrls.size} 件\n`);
+  console.log("📋 既存DBのURLとNumber最大値を取得中...");
+  const { urls: existingUrls, maxNumber } = await getExistingData();
+  console.log(`  既存: ${existingUrls.size} 件 / 最大Number: ${maxNumber}\n`);
 
   const newArticles = scraped.filter(a => !existingUrls.has(a.url.split("?")[0]));
   console.log(`✨ 新規追加対象: ${newArticles.length} 件\n`);
@@ -184,15 +188,20 @@ async function main() {
     return;
   }
 
+  // 古い順に並べてから連番を振る
+  newArticles.sort((a, b) => a.date.localeCompare(b.date));
+
+  let nextNumber = maxNumber + 1;
   let success = 0, fail = 0;
   for (const article of newArticles) {
-    process.stdout.write(`  追加中: ${article.title} (${article.date}) ... `);
+    process.stdout.write(`  追加中: [No.${nextNumber}] ${article.title} (${article.date}) ... `);
 
     const imgUrl = await fetchThumbnail(article.url);
 
     try {
-      await addToNotion(article, imgUrl);
+      await addToNotion(article, imgUrl, nextNumber);
       console.log(imgUrl ? `✅ (サムネイルあり)` : `✅ (サムネイルなし)`);
+      nextNumber++;
       success++;
     } catch (e) {
       console.log(`❌ ${e.message}`);
