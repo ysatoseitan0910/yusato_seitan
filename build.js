@@ -337,7 +337,7 @@ async function buildIndex(tpl) {
     <!-- 左：Yu News -->
     <div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">佐藤優羽 News</h2>
+        <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">佐藤優羽さん News</h2>
         <a href="index.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;">
