@@ -245,6 +245,21 @@ function statusBadge(status) {
   return `<span class="badge ${cls}">${status}</span>`;
 }
 
+function escAttr(s) {
+  return (s || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function actModalAttrs(p) {
+  const title  = getText(p,"Name");
+  const date   = fmtDate(getDate(p));
+  const status = getSelect(p,"Status");
+  const desc   = getText(p,"Description");
+  const url    = getUrl(p);
+  const img    = getMedia(p);
+  if (!desc) return "";
+  return `data-act-modal="1" data-title="${escAttr(title)}" data-date="${escAttr(date)}" data-status="${escAttr(status)}" data-desc="${escAttr(desc)}" data-url="${escAttr(url)}" data-img="${escAttr(img)}"`;
+}
+
 // ── ページビルダー ──
 async function buildIndex(tpl) {
   const [yuNews, activities, committeeNews] = await Promise.all([
@@ -262,9 +277,10 @@ async function buildIndex(tpl) {
     const url    = getUrl(p);
     const img    = getMedia(p);
     const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+    const modalAttrs = actModalAttrs(p);
     if (img) {
       return `
-    <div class="card news-card news-card--img" style="animation-delay:${Math.random()*0.3}s">
+    <div class="card news-card news-card--img" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
       <img class="news-card-img" src="${img}" alt="${title}" loading="lazy">
       <div class="news-card-img-body">
         <div style="display:flex;gap:16px;align-items:flex-start;">
@@ -274,18 +290,18 @@ async function buildIndex(tpl) {
             <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
           </div>
         </div>
-        ${desc ? `<p class="news-card-desc" style="margin-top:10px;">${desc}</p>` : ""}
+        ${desc ? `<p class="news-card-desc" style="margin-top:10px;">${desc.split("\n")[0]}</p>` : ""}
         ${link}
       </div>
     </div>`;
     }
     return `
-    <div class="card news-card" style="animation-delay:${Math.random()*0.3}s">
+    <div class="card news-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
       <div class="news-card-date">${date}</div>
       <div class="news-card-body">
         ${statusBadge(status)}
         <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
-        ${desc ? `<p class="news-card-desc">${desc}</p>` : ""}
+        ${desc ? `<p class="news-card-desc">${desc.split("\n")[0]}</p>` : ""}
         ${link}
       </div>
     </div>`;
@@ -400,8 +416,9 @@ async function buildActivities(tpl) {
     const url   = getUrl(p);
     const imgTag = img ? `<img class="media-img" src="${img}" alt="${title}" loading="lazy">` : "";
     const link = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+    const modalAttrs = actModalAttrs(p);
     return `
-    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s">
+    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
       ${imgTag}
       <div class="media-body">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -409,7 +426,7 @@ async function buildActivities(tpl) {
           <span class="media-date">${date}</span>
         </div>
         <p class="media-title">${title}</p>
-        ${desc ? `<p class="media-desc">${desc}</p>` : ""}
+        ${desc ? `<p class="media-desc">${desc.split("\n")[0]}</p>` : ""}
         <div class="media-meta"><span></span>${link}</div>
       </div>
     </div>`;
