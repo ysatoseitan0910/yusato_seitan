@@ -338,7 +338,7 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   const body = `
-  <div style="display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
 
     <!-- 左：Yu News -->
     <div>
