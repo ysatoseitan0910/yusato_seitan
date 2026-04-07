@@ -30,6 +30,12 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:      ${{ secrets.DB_BLOG }}
 
+      - name: Update YouTube/Lemino thumbnails
+        run: node update_media_thumbnails.js
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
+
       - name: Build all pages
         run: node build.js
         env:
@@ -50,4 +56,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,_template.html,package.json,package-lock.json'
+          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,update_media_thumbnails.js,_template.html,package.json,package-lock.json'
