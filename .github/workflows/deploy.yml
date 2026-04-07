@@ -34,6 +34,8 @@ jobs:
         run: node update_media_thumbnails.js
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DB_YOUTUBE:   ${{ secrets.DB_YOUTUBE }}
+          DB_LEMINO:    ${{ secrets.DB_LEMINO }}
           DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
 
       - name: Build all pages
