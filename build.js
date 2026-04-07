@@ -260,7 +260,25 @@ async function buildIndex(tpl) {
     const date   = fmtDate(getDate(p));
     const desc   = getText(p, "Description");
     const url    = getUrl(p);
+    const img    = getMedia(p);
     const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+    if (img) {
+      return `
+    <div class="card news-card news-card--img" style="animation-delay:${Math.random()*0.3}s">
+      <img class="news-card-img" src="${img}" alt="${title}" loading="lazy">
+      <div class="news-card-img-body">
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div class="news-card-date">${date}</div>
+          <div class="news-card-body">
+            ${statusBadge(status)}
+            <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
+          </div>
+        </div>
+        ${desc ? `<p class="news-card-desc" style="margin-top:10px;">${desc}</p>` : ""}
+        ${link}
+      </div>
+    </div>`;
+    }
     return `
     <div class="card news-card" style="animation-delay:${Math.random()*0.3}s">
       <div class="news-card-date">${date}</div>
