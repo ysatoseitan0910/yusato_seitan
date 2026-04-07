@@ -18,7 +18,12 @@ const DB = {
 
 // ── ヘルパー ──
 function prop(page, key) { return page.properties[key]; }
-function getText(page, key) { return prop(page,key)?.title?.[0]?.plain_text || prop(page,key)?.rich_text?.[0]?.plain_text || ""; }
+function getText(page, key) {
+  const p = prop(page, key);
+  if (p?.title?.length)      return p.title.map(t => t.plain_text).join("");
+  if (p?.rich_text?.length)  return p.rich_text.map(t => t.plain_text).join("");
+  return "";
+}
 function getUrl(page, key="URL") { return prop(page,key)?.url || ""; }
 function getDate(page, key="Date") { return prop(page,key)?.date?.start || ""; }
 function getSelect(page, key) {
