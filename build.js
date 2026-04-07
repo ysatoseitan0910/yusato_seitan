@@ -316,17 +316,23 @@ async function buildIndex(tpl) {
     const status = getSelect(p, "Status");
     const title  = getText(p, "Name");
     const date   = fmtDate(getDate(p));
+    const desc   = getText(p, "Description");
+    const img    = getMedia(p);
     const url    = getUrl(p);
-    const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">→</a>` : "";
+    const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+    const imgTag = img ? `<img class="media-img" src="${img}" alt="${title}" loading="lazy">` : "";
+    const modalAttrs = actModalAttrs(p);
     return `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
-      <div style="flex:1;">
-        ${statusBadge(status)}
-        <span style="font-size:13px;color:var(--text);margin-left:${status?'8px':'0'}">${title}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;white-space:nowrap;">
-        <span style="font-size:10px;color:var(--text-light)">${date}</span>
-        ${link}
+    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
+      ${imgTag}
+      <div class="media-body">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+          ${statusBadge(status)}
+          <span class="media-date">${date}</span>
+        </div>
+        <p class="media-title">${title}</p>
+        ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
+        <div class="media-meta"><span></span>${link}</div>
       </div>
     </div>`;
   }).join("\n");
@@ -388,8 +394,9 @@ async function buildCommittee(tpl) {
     const url   = getUrl(p);
     const imgTag = img ? `<img class="media-img" src="${img}" alt="${title}" loading="lazy">` : "";
     const link = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
+    const modalAttrs = actModalAttrs(p);
     return `
-    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s">
+    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
       ${imgTag}
       <div class="media-body">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -397,7 +404,7 @@ async function buildCommittee(tpl) {
           <span class="media-date">${date}</span>
         </div>
         <p class="media-title">${title}</p>
-        ${desc ? `<p class="media-desc">${desc}</p>` : ""}
+        ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
         <div class="media-meta"><span></span>${link}</div>
       </div>
     </div>`;
