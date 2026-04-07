@@ -380,7 +380,7 @@ async function buildIndex(tpl) {
     </div>
   </div>`;
 
-  return buildPage(tpl, "トップ", "SATO YU FAN COMMITTEE", "佐藤<em>優羽</em>", "佐藤優羽さんの最新情報・委員会活動をお届けします", body);
+  return buildPage(tpl, "トップ", "佐藤優羽生誕祭実行委員会", "佐藤優羽さんの最新情報・委員会活動をお届けします", body);
 }
 
 async function buildCommittee(tpl) {
