@@ -101,6 +101,20 @@ footer .heart{color:var(--rose);}
 
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}
+
+/* ── Activity Modal ── */
+.act-modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,18,24,0.55);z-index:400;align-items:center;justify-content:center;padding:20px;}
+.act-modal-overlay.open{display:flex;}
+.act-modal-box{background:var(--white);border-radius:16px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;padding:32px 36px;position:relative;}
+.act-modal-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-light);line-height:1;}
+.act-modal-close:hover{color:var(--text);}
+.act-modal-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:20px;display:block;}
+.act-modal-title{font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;line-height:1.5;margin-bottom:10px;color:var(--text);}
+.act-modal-meta{display:flex;gap:8px;align-items:center;margin-bottom:18px;}
+.act-modal-desc{font-size:13px;color:var(--text-muted);line-height:1.9;}
+.act-modal-link{display:inline-block;margin-top:18px;font-size:12px;color:var(--rose);text-decoration:none;letter-spacing:0.04em;}
+.act-modal-link:hover{color:var(--rose-dark);}
+[data-act-modal]{cursor:pointer;}
 </style>
 </head>
 <body>
@@ -132,12 +146,12 @@ footer .heart{color:var(--rose);}
         <div class="page-hero-tag">COMMITTEE NEWS</div>
         <h1>委員会 <em>News</em></h1>
         <p>佐藤優羽生誕祭実行委員会からのお知らせ</p>
-        <p class="last-updated">最終更新：2026/4/7 20:17:06</p>
+        <p class="last-updated">最終更新：2026/4/7 20:24:18</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-    <div class="card media-card" style="animation-delay:0.2850136573154624s">
+    <div class="card media-card" style="animation-delay:0.15948618084716903s">
       
       <div class="media-body">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -150,7 +164,7 @@ footer .heart{color:var(--rose);}
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.2806847223477496s">
+    <div class="card media-card" style="animation-delay:0.04225591382178788s">
       
       <div class="media-body">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -166,8 +180,52 @@ footer .heart{color:var(--rose);}
   </div></div>
     
 
+<!-- Activity Modal -->
+<div id="act-modal" class="act-modal-overlay">
+  <div class="act-modal-box">
+    <button class="act-modal-close" aria-label="閉じる">×</button>
+    <div id="act-modal-inner"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function openModal(data) {
+    var inner = document.getElementById('act-modal-inner');
+    var badgeHtml = data.status
+      ? '<span class="badge ' + (data.status.includes('募集中') ? 'badge-open' : 'badge-closed') + '">' + data.status + '</span>'
+      : '';
+    var imgHtml = data.img ? '<img class="act-modal-img" src="' + data.img + '" alt="">' : '';
+    inner.innerHTML = imgHtml +
+      '<p class="act-modal-title"></p>' +
+      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-size:11px;color:var(--text-light)"></span></div>' +
+      '<p class="act-modal-desc"></p>' +
+      (data.url ? '<a href="' + data.url + '" class="act-modal-link" target="_blank" rel="noopener">詳しく見る →</a>' : '');
+    inner.querySelector('.act-modal-title').textContent = data.title || '';
+    inner.querySelector('.act-modal-meta span').textContent = data.date || '';
+    var descEl = inner.querySelector('.act-modal-desc');
+    (data.desc || '').split('\n').forEach(function(line, i, arr) {
+      descEl.appendChild(document.createTextNode(line));
+      if (i < arr.length - 1) descEl.appendChild(document.createElement('br'));
+    });
+    document.getElementById('act-modal').classList.add('open');
+  }
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('[data-act-modal]');
+    var modal = document.getElementById('act-modal');
+    if (card) { openModal(card.dataset); return; }
+    if (modal && (e.target === modal || e.target.closest('.act-modal-close'))) {
+      modal.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { var m = document.getElementById('act-modal'); if(m) m.classList.remove('open'); }
+  });
+})();
+</script>
+
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/7 20:17:06</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/7 20:24:18</p>
 </footer>
 
 </body>
