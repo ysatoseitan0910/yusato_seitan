@@ -430,7 +430,7 @@ async function buildIndex(tpl) {
       <section>
         <div class="top-section-header">
           <h2>佐藤優羽さん News</h2>
-          <a href="index.html">すべて見る →</a>
+          <a href="yunews.html">すべて見る →</a>
         </div>
         <div class="yunews-grid">
           ${yuNewsCards}
