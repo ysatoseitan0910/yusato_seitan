@@ -313,117 +313,136 @@ function actModalAttrs(p) {
 
 // ── ページビルダー ──
 async function buildIndex(tpl) {
-  const [yuNews, activities, committeeNews] = await Promise.all([
+  const [yuNews, activities, committeeNews, youtubePages, xPages] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
     queryDB(DB.committeeNews),
+    queryDB(DB.youtube),
+    queryDB(DB.x),
   ]);
 
-  const newsCards = yuNews.slice(0, 20).map(p => newsCard(p, "")).join("\n");
-  const activityCards = activities.map(p => {
+  // ── 委員会News: リスト行（全件・クリックでモーダル） ──
+  const committeeRows = committeeNews.map(p => {
     const status = getSelect(p, "Status");
     const title  = getText(p, "Name");
     const date   = fmtDate(getDate(p));
     const desc   = getText(p, "Description");
     const url    = getUrl(p);
     const img    = getMedia(p);
-    const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
-    const modalAttrs = actModalAttrs(p);
-    if (img) {
-      return `
-    <div class="card news-card news-card--img" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
-      <img class="news-card-img" src="${img}" alt="${title}" loading="lazy">
-      <div class="news-card-img-body">
-        <div style="display:flex;gap:16px;align-items:flex-start;">
-          <div class="news-card-date">${date}</div>
-          <div class="news-card-body">
-            ${statusBadge(status)}
-            <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
-          </div>
-        </div>
-        ${desc ? `<p class="news-card-desc" style="margin-top:10px;">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
-        ${link}
-      </div>
-    </div>`;
-    }
+    const mAttrs = `data-act-modal="1" data-title="${escAttr(title)}" data-date="${escAttr(date)}" data-status="${escAttr(status)}" data-desc="${escAttr(desc)}" data-url="${escAttr(url)}" data-img="${escAttr(img)}"`;
     return `
-    <div class="card news-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
-      <div class="news-card-date">${date}</div>
-      <div class="news-card-body">
-        ${statusBadge(status)}
-        <p class="news-card-title" style="margin-top:${status?'6px':'0'}">${title}</p>
-        ${desc ? `<p class="news-card-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
-        ${link}
+    <div class="committee-list-row" ${mAttrs}>
+      <span class="committee-row-date">${date}</span>
+      <span class="committee-row-title">${title}</span>
+      ${statusBadge(status)}
+    </div>`;
+  }).join("\n");
+
+  // ── 活動報告: サムネイルグリッド ──
+  const actCards = activities.map(p => {
+    const title  = getText(p, "Name");
+    const date   = fmtDate(getDate(p));
+    const img    = getMedia(p);
+    const mAttrs = actModalAttrs(p);
+    const imgTag = img
+      ? `<img class="act-thumb-img" src="${img}" alt="${title}" loading="lazy">`
+      : `<div class="act-thumb-no-img">No Image</div>`;
+    return `
+    <div class="act-thumb-card" ${mAttrs} style="animation-delay:${Math.random()*0.3}s">
+      ${imgTag}
+      <div class="act-thumb-body">
+        <p class="act-thumb-title">${title}</p>
+        <span class="act-thumb-date">${date}</span>
       </div>
     </div>`;
   }).join("\n");
 
-  const committeeCards = committeeNews.slice(0, 5).map(p => {
-    const status = getSelect(p, "Status");
-    const title  = getText(p, "Name");
-    const date   = fmtDate(getDate(p));
-    const desc   = getText(p, "Description");
-    const img    = getMedia(p);
-    const url    = getUrl(p);
-    const link   = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
-    const imgTag = img ? `<img class="media-img" src="${img}" alt="${title}" loading="lazy">` : "";
-    const modalAttrs = actModalAttrs(p);
-    return `
-    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
-      ${imgTag}
-      <div class="media-body">
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-          ${statusBadge(status)}
-          <span class="media-date">${date}</span>
-        </div>
-        <p class="media-title">${title}</p>
-        ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
-        <div class="media-meta"><span></span>${link}</div>
-      </div>
-    </div>`;
+  // ── 佐藤優羽さんNews: 均一グリッド ──
+  const yuNewsCards = yuNews.slice(0, 20).map(p => {
+    const url      = getUrl(p);
+    const title    = getText(p, "Name") || "詳細を見る";
+    const date     = fmtDate(getDate(p));
+    const img      = getMedia(p);
+    const platform = getSelect(p, "Platform");
+    const badge    = platform ? `<span class="${badgeClass(platform)}" style="font-size:9px;padding:2px 7px;">${platform}</span>` : "";
+    const imgTag   = img
+      ? `<img class="yunews-img" src="${img}" alt="${title}" loading="lazy">`
+      : `<div class="yunews-no-img">No Image</div>`;
+    const inner = `${imgTag}<div class="yunews-body">${badge}<p class="yunews-title" style="margin-top:${badge?'4px':'0'}">${title}</p><div class="yunews-meta"><span class="yunews-date">${date}</span></div></div>`;
+    return url
+      ? `<a href="${url}" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:${Math.random()*0.3}s">${inner}</a>`
+      : `<div class="yunews-card" style="animation-delay:${Math.random()*0.3}s">${inner}</div>`;
   }).join("\n");
+
+  // ── サイドバー: YouTube（最新1件） ──
+  let ytEmbedHtml = "";
+  if (youtubePages[0]) {
+    const m = getUrl(youtubePages[0]).match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+    if (m) ytEmbedHtml = `<iframe width="100%" height="175" src="https://www.youtube.com/embed/${m[1]}" frameborder="0" allowfullscreen loading="lazy" style="display:block;"></iframe>`;
+  }
+
+  // ── サイドバー: X（最新1件・oEmbed） ──
+  const xEmbedHtml = xPages[0] ? await fetchTwitterOembed(getUrl(xPages[0])) : "";
 
   const body = `
-  <div class="top-grid">
+  <div class="top-layout">
 
-    <!-- 左：Yu News -->
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">佐藤優羽さん News</h2>
-        <a href="index.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">すべて見る →</a>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        ${newsCards}
-      </div>
-    </div>
+    <!-- メインコンテンツ -->
+    <div class="top-main">
 
-    <!-- 右：活動報告 + 委員会News -->
-    <div style="display:flex;flex-direction:column;gap:24px;">
-
-      <!-- 委員会News -->
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">委員会 News</h2>
-          <a href="committee.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">すべて見る →</a>
+      <!-- 生誕委員会News -->
+      <section>
+        <div class="top-section-header">
+          <h2>生誕委員会 News</h2>
+          <a href="committee.html">すべて見る →</a>
         </div>
-        ${committeeCards}
-        <div style="margin-top:12px;text-align:right;">
-          <a href="committee.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">もっと見る →</a>
+        <div class="committee-list">
+          ${committeeRows}
         </div>
-      </div>
+      </section>
 
       <!-- 活動報告 -->
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-          <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">活動報告</h2>
-          <a href="activities.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">すべて見る →</a>
+      <section>
+        <div class="top-section-header">
+          <h2>活動報告</h2>
+          <a href="activities.html">すべて見る →</a>
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          ${activityCards}
+        <div class="act-thumb-grid">
+          ${actCards}
         </div>
-      </div>
+      </section>
+
+      <!-- 佐藤優羽さんNews -->
+      <section>
+        <div class="top-section-header">
+          <h2>佐藤優羽さん News</h2>
+          <a href="index.html">すべて見る →</a>
+        </div>
+        <div class="yunews-grid">
+          ${yuNewsCards}
+        </div>
+      </section>
 
     </div>
+
+    <!-- サイドバー -->
+    <aside class="top-sidebar">
+
+      ${ytEmbedHtml ? `<div class="sidebar-widget">${ytEmbedHtml}</div>` : ""}
+
+      ${xEmbedHtml ? `<div class="sidebar-widget sidebar-widget-inner">
+        ${xEmbedHtml}
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"><\/script>
+      </div>` : ""}
+
+      <div class="sidebar-links">
+        <a href="terms.html">生誕委員規約</a>
+        <a href="about.html">当委員会について</a>
+        <a href="join.html">入会の流れ</a>
+      </div>
+
+    </aside>
+
   </div>`;
 
   return buildPage(tpl, "トップ","Yu Sato Birthday Celebration Committee", "佐藤優羽生誕祭実行委員会", "佐藤優羽さんの最新情報・委員会活動をお届けします", body);
