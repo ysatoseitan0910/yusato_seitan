@@ -1,4 +1,7 @@
 {
   "name": "yu-gallery",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "devDependencies": {
+    "@notionhq/client": "^2.2.15"
+  }
 }

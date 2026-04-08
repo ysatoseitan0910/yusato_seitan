@@ -221,18 +221,24 @@ function tiktokCard(page, thumbUrl = "") {
   const title = getText(page,"Name");
   const date  = fmtDate(getDate(page));
   const videoId = url.split("/video/")[1]?.split("?")[0] || "";
-  const imgTag = thumbUrl
-    ? `<img src="${thumbUrl}" alt="${title}" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">`
-    : "";
+  const preview = thumbUrl
+    ? `<div class="tiktok-lite" data-id="${videoId}" style="position:relative;cursor:pointer;background:#000;overflow:hidden;">
+        <img src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;opacity:0.85;">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="width:52px;height:52px;background:rgba(0,0,0,0.65);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+            <div style="width:0;height:0;border-style:solid;border-width:11px 0 11px 20px;border-color:transparent transparent transparent #fff;margin-left:4px;"></div>
+          </div>
+        </div>
+       </div>`
+    : `<div class="tiktok-lite" data-id="${videoId}" style="width:100%;aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;background:#111;cursor:pointer;">
+        <div style="color:#fff;font-size:11px;">タップして再生</div>
+       </div>`;
   return `
   <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
-    ${imgTag}
+    ${preview}
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">${date}</span>
-    </div>
-    <div class="embed-wrap">
-      <blockquote class="tiktok-embed" cite="${url}" data-video-id="${videoId}"><section></section></blockquote>
     </div>
     <div class="embed-footer">
       <p class="embed-title">${title}</p>
@@ -250,7 +256,14 @@ function youtubeCard(page) {
   const m = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
   if (m) videoId = m[1];
   const embed = videoId
-    ? `<iframe width="100%" height="220" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe>`
+    ? `<div class="yt-lite" data-id="${videoId}" style="position:relative;width:100%;aspect-ratio:16/9;cursor:pointer;background:#000;border-radius:8px;overflow:hidden;">
+        <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${escAttr(title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;opacity:0.85;display:block;">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="width:56px;height:40px;background:#ff0000;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <div style="width:0;height:0;border-style:solid;border-width:9px 0 9px 18px;border-color:transparent transparent transparent #fff;margin-left:4px;"></div>
+          </div>
+        </div>
+       </div>`
     : `<a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--emerald)">動画を見る</a>`;
   return `
   <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
@@ -258,7 +271,7 @@ function youtubeCard(page) {
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">${date}</span>
     </div>
-    <div class="embed-wrap" style="min-height:220px;">${embed}</div>
+    <div class="embed-wrap" style="min-height:0;padding:0;">${embed}</div>
     <div class="embed-footer">
       <p class="embed-title">${title}</p>
       ${desc ? `<p style="font-size:11px;color:var(--text-muted);margin-top:4px;">${desc}</p>` : ""}
@@ -372,8 +385,15 @@ async function buildIndex(tpl) {
       : `<div class="yunews-card" style="animation-delay:${Math.random()*0.3}s">${inner}</div>`;
   }).join("\n");
 
-  // ── サイドバー: YouTube（固定動画） ──
-  const ytEmbedHtml = `<iframe width="100%" height="175" src="https://www.youtube.com/embed/QXQUKkvSrCQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;"></iframe>`;
+  // ── サイドバー: YouTube（固定動画・lite-embed） ──
+  const ytEmbedHtml = `<div class="yt-lite" data-id="QXQUKkvSrCQ" style="position:relative;width:100%;aspect-ratio:16/9;cursor:pointer;background:#000;overflow:hidden;">
+    <img src="https://img.youtube.com/vi/QXQUKkvSrCQ/hqdefault.jpg" alt="YouTube動画" loading="lazy" style="width:100%;height:100%;object-fit:cover;opacity:0.85;display:block;">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+      <div style="width:48px;height:34px;background:#ff0000;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+        <div style="width:0;height:0;border-style:solid;border-width:8px 0 8px 16px;border-color:transparent transparent transparent #fff;margin-left:3px;"></div>
+      </div>
+    </div>
+  </div>`;
 
   // ── サイドバー: X（固定ツイート・oEmbed） ──
   const xEmbedHtml = await fetchTwitterOembed("https://x.com/ysatoseitan/status/2040992766583550402?s=20");
@@ -426,7 +446,18 @@ async function buildIndex(tpl) {
 
       ${xEmbedHtml ? `<div class="sidebar-widget sidebar-widget-inner">
         ${xEmbedHtml}
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"><\/script>
+        <script>
+(function(){
+  function loadWidgets(){var s=document.createElement('script');s.src='https://platform.twitter.com/widgets.js';s.async=true;s.charset='utf-8';document.body.appendChild(s);}
+  var tweet=document.querySelector('.twitter-tweet');
+  if(!tweet){return;}
+  if(!('IntersectionObserver' in window)){loadWidgets();return;}
+  var obs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){loadWidgets();obs.disconnect();}
+  },{rootMargin:'300px'});
+  obs.observe(tweet);
+})();
+<\/script>
       </div>` : ""}
 
       <div class="sidebar-links">
@@ -578,7 +609,18 @@ async function buildX(tpl) {
     </section>`;
   }
 
-  body += `\n  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"><\/script>`;
+  body += `\n  <script>
+(function(){
+  function loadWidgets(){var s=document.createElement('script');s.src='https://platform.twitter.com/widgets.js';s.async=true;s.charset='utf-8';document.body.appendChild(s);}
+  var tweet=document.querySelector('.twitter-tweet');
+  if(!tweet){return;}
+  if(!('IntersectionObserver' in window)){loadWidgets();return;}
+  var obs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){loadWidgets();obs.disconnect();}
+  },{rootMargin:'300px'});
+  obs.observe(tweet);
+})();
+<\/script>`;
 
   return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body);
 }
@@ -592,8 +634,7 @@ async function buildTiktok(tpl) {
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
-  </div>
-  <script async src="https://www.tiktok.com/embed.js"><\/script>`;
+  </div>`;
   return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>Gallery</em>", "佐藤優羽さんのTikTok動画をまとめています", body);
 }
 

@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{PAGE_TITLE}} | 佐藤優羽生誕祭実行委員会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -287,6 +289,33 @@ footer .heart{color:var(--emerald);}
 <footer>
   <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：<!-- LAST_UPDATED --></p>
 </footer>
+
+<script>
+(function(){
+  // YouTube lite-embed: クリックでiframeに差し替え
+  document.addEventListener('click',function(e){
+    var lite=e.target.closest('.yt-lite');
+    if(!lite)return;
+    var id=lite.dataset.id;
+    var iframe=document.createElement('iframe');
+    iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
+    iframe.allow='accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share';
+    iframe.setAttribute('allowfullscreen','');
+    iframe.style.cssText='width:100%;aspect-ratio:16/9;border:none;border-radius:8px;display:block;';
+    lite.replaceWith(iframe);
+  });
+  // TikTok lite-embed: クリックでiframeに差し替え
+  document.addEventListener('click',function(e){
+    var lite=e.target.closest('.tiktok-lite');
+    if(!lite)return;
+    var id=lite.dataset.id;
+    var iframe=document.createElement('iframe');
+    iframe.src='https://www.tiktok.com/embed/v2/'+id;
+    iframe.style.cssText='width:100%;aspect-ratio:9/16;border:none;display:block;';
+    lite.replaceWith(iframe);
+  });
+})();
+</script>
 
 </body>
 </html>

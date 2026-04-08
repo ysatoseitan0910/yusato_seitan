@@ -12,7 +12,21 @@ const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
 };
 
-// ── サムネイル取得 ──
+// ── oEmbed / サムネイル取得 ──
+
+async function getTikTokOembed(url) {
+  try {
+    const res = await fetch(
+      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.title ? { title: data.title } : null;
+  } catch {
+    return null;
+  }
+}
 
 function getYoutubeThumbnail(url) {
   const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
@@ -62,10 +76,33 @@ function hasMedia(page) {
   return (page.properties["Media"]?.files || []).length > 0;
 }
 
+function hasName(page) {
+  const title = page.properties["Name"]?.title?.map(t => t.plain_text).join("") || "";
+  return title.trim().length > 0;
+}
+
 function getName(page) {
   return page.properties["Name"]?.title?.map(t => t.plain_text).join("")
       || page.properties["Name"]?.rich_text?.map(t => t.plain_text).join("")
       || "(無題)";
+}
+
+async function updateNameProp(page, title, label) {
+  const current = getName(page);
+  process.stdout.write(`  ${label} ${(current || "(空)").slice(0, 40)} ... `);
+  try {
+    await notion.pages.update({
+      page_id: page.id,
+      properties: {
+        Name: { title: [{ text: { content: title } }] },
+      },
+    });
+    console.log(`✅ "${title.slice(0, 60)}"`);
+    return true;
+  } catch (e) {
+    console.log(`❌ ${e.message}`);
+    return false;
+  }
 }
 
 async function updateMedia(page, imgUrl, label) {
@@ -161,12 +198,40 @@ async function processYuNewsDB(dbId) {
   console.log(`  完了: 追加 ${success}件 / スキップ ${skip}件 / 失敗 ${fail}件`);
 }
 
+async function processTiktokDB(dbId) {
+  if (!dbId) return;
+  console.log("\n🎵 DB_TIKTOK を処理中...");
+  const pages = await queryAll(dbId);
+  const targets = pages.filter(p => !!p.properties["URL"]?.url);
+  console.log(`  ${pages.length}件中 URL設定済み: ${targets.length}件`);
+  if (targets.length === 0) return;
+
+  let success = 0, skip = 0, fail = 0;
+  for (const page of targets) {
+    const url = page.properties["URL"]?.url || "";
+    if (!url) { console.log(`  ⚠️  URLなし`); skip++; continue; }
+    const oembed = await getTikTokOembed(url);
+    if (!oembed) {
+      console.log(`  ⚠️  oEmbed取得失敗: ${url.slice(0, 60)}`);
+      skip++;
+      continue;
+    }
+    const hashIdx = oembed.title.indexOf("#");
+    const title = (hashIdx > 0 ? oembed.title.slice(0, hashIdx) : oembed.title).trim();
+    const ok = await updateNameProp(page, title || oembed.title, "[TikTok]");
+    ok ? success++ : fail++;
+    await new Promise(r => setTimeout(r, 400));
+  }
+  console.log(`  完了: 更新 ${success}件 / スキップ ${skip}件 / 失敗 ${fail}件`);
+}
+
 // ── メイン ──
 
 async function main() {
   await processYoutubeDB(process.env.DB_YOUTUBE);
   await processLeminoDB(process.env.DB_LEMINO);
   await processYuNewsDB(process.env.DB_YU_NEWS);
+  await processTiktokDB(process.env.DB_TIKTOK);
 }
 
 main().catch(console.error);
