@@ -266,12 +266,26 @@ function youtubeCard(page) {
   </div>`;
 }
 
-function xCard(page) {
+async function fetchTwitterOembed(url) {
+  if (!url) return "";
+  try {
+    const oembedUrl = `https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}&lang=ja&omit_script=true`;
+    const res = await fetch(oembedUrl, { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.html || "";
+  } catch {
+    return "";
+  }
+}
+
+function xCard(page, embedHtml) {
   const url   = getUrl(page);
   const title = getText(page, "Name");
+  const fallback = `<blockquote class="twitter-tweet" data-lang="ja"><a href="${url}"></a></blockquote>`;
   return `
   <div class="x-card" style="animation-delay:${Math.random()*0.3}s">
-    <blockquote class="twitter-tweet" data-lang="ja"><a href="${url}"></a></blockquote>
+    ${embedHtml || fallback}
     ${title ? `<p class="x-card-label">${title}</p>` : ""}
   </div>`;
 }
@@ -508,6 +522,15 @@ async function buildInterview(tpl) {
 async function buildX(tpl) {
   const pages = await queryDB(DB.x);
 
+  // oEmbed HTMLをページIDをキーに並列取得
+  console.log(`  X oEmbed取得中 (${pages.length}件)...`);
+  const embedMap = new Map();
+  await Promise.all(pages.map(async (p) => {
+    const html = await fetchTwitterOembed(getUrl(p));
+    if (html) embedMap.set(p.id, html);
+  }));
+  console.log(`  oEmbed取得成功: ${embedMap.size}件`);
+
   // タグごとにグループ化（multi_select対応）
   const taggedGroups = {};
   const untagged = [];
@@ -523,7 +546,7 @@ async function buildX(tpl) {
   }
 
   const gridHtml = (ps) =>
-    `<div class="x-embed-grid">${ps.map(p => xCard(p)).join("\n")}</div>`;
+    `<div class="x-embed-grid">${ps.map(p => xCard(p, embedMap.get(p.id))).join("\n")}</div>`;
 
   let body = "";
 
@@ -542,12 +565,7 @@ async function buildX(tpl) {
     </section>`;
   }
 
-  body += `\n  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"><\/script>
-  <script>
-  window.addEventListener('load', function() {
-    if (window.twttr && twttr.widgets) twttr.widgets.load();
-  });
-  <\/script>`;
+  body += `\n  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"><\/script>`;
 
   return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body);
 }
