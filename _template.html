@@ -103,11 +103,12 @@ footer .heart{color:var(--emerald);}
 .embed-card .embed-link{font-size:11px;color:var(--emerald);text-decoration:none;}
 
 /* ── X embed grid ── */
-.x-embed-grid{columns:3;column-gap:20px;}
-.x-card{break-inside:avoid;margin-bottom:16px;}
+.x-embed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.x-card{min-width:0;}
+.x-card .twitter-tweet{margin:0 auto !important;}
 .x-card-label{font-size:11px;color:var(--text-muted);padding:4px 2px 8px;line-height:1.5;}
-@media(max-width:900px){.x-embed-grid{columns:2;}}
-@media(max-width:600px){.x-embed-grid{columns:1;}}
+@media(max-width:900px){.x-embed-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.x-embed-grid{grid-template-columns:1fr;}}
 
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}

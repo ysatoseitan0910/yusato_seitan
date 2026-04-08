@@ -523,7 +523,12 @@ async function buildX(tpl) {
     </section>`;
   }
 
-  body += `\n  <script async src="https://platform.twitter.com/widgets.js"><\/script>`;
+  body += `\n  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"><\/script>
+  <script>
+  window.addEventListener('load', function() {
+    if (window.twttr && twttr.widgets) twttr.widgets.load();
+  });
+  <\/script>`;
 
   return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body);
 }
@@ -551,10 +556,10 @@ async function buildYoutube(tpl) {
     "Lemino",
   ];
 
-  // チャンネルごとにグループ化
+  // チャンネルごとにグループ化（Select/Multi-select/rich_text に対応）
   const groups = {};
   for (const p of pages) {
-    const ch = getSelect(p, "Channel") || "その他";
+    const ch = getSelect(p, "Channel") || getText(p, "Channel") || "その他";
     if (!groups[ch]) groups[ch] = [];
     groups[ch].push(p);
   }
