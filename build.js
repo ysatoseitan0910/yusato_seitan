@@ -717,6 +717,34 @@ async function syncToYuNews() {
   const existingUrls = await queryAllUrls(DB.yuNews);
   console.log(`  既存URL: ${existingUrls.size}件`);
 
+  // ── 既存レコードのDescription更新（YouTube/TikTok） ──
+  console.log("  既存レコードのDescription同期中...");
+  for (const platform of ["YouTube", "TikTok"]) {
+    const dbId = platform === "YouTube" ? DB.youtube : DB.tiktok;
+    const srcPages = await queryDB(dbId);
+    const withDesc = srcPages.filter(p => getText(p, "Description"));
+    for (const page of withDesc) {
+      const url  = getUrl(page);
+      const desc = getText(page, "Description");
+      if (!url) continue;
+      try {
+        const res = await notion.databases.query({
+          database_id: DB.yuNews,
+          filter: { property: "URL", url: { equals: url } },
+        });
+        for (const yuPage of res.results) {
+          await notion.pages.update({
+            page_id: yuPage.id,
+            properties: { Description: { rich_text: [{ text: { content: desc } }] } },
+          });
+          console.log(`  ✅ Description更新: [${platform}] ${getText(page,"Name")}`);
+        }
+      } catch(e) {
+        console.error(`  ❌ Description更新失敗: ${getText(page,"Name")}`, e.message);
+      }
+    }
+  }
+
   for (const { db, platform } of sources) {
     const pages = await queryDB(db);
     for (const page of pages) {
