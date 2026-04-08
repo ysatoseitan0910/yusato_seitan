@@ -95,7 +95,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","WEB"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","ABOUT","TERMS","JOIN"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -647,7 +647,6 @@ async function buildYoutube(tpl) {
     "Lemino",
   ];
 
-  // チャンネルごとにグループ化（Select/Multi-select/rich_text に対応）
   const groups = {};
   for (const p of pages) {
     const ch = getSelect(p, "Channel") || getText(p, "Channel") || "その他";
@@ -655,7 +654,6 @@ async function buildYoutube(tpl) {
     groups[ch].push(p);
   }
 
-  // 指定順 → 残りのチャンネルをアルファベット順で追加
   const orderedChannels = [
     ...channelOrder.filter(ch => groups[ch]),
     ...Object.keys(groups).filter(ch => !channelOrder.includes(ch)),
@@ -671,6 +669,17 @@ async function buildYoutube(tpl) {
   }).join("\n");
 
   return buildPage(tpl, "YouTubeまとめ", "YOUTUBE", "YouTube <em>まとめ</em>", "佐藤優羽さんのYouTube動画をまとめています", body);
+}
+
+async function buildYuNews(tpl) {
+  const pages = await queryDB(DB.yuNews);
+  const cards = pages.map(p => newsCard(p)).join("\n");
+  const body = `<div class="grid-3">
+    <!-- GALLERY_START -->
+    ${cards}
+    <!-- GALLERY_END -->
+  </div>`;
+  return buildPage(tpl, "佐藤優羽さんNews", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body);
 }
 
 async function buildLemino(tpl) {
@@ -689,16 +698,6 @@ async function buildLemino(tpl) {
   return buildPage(tpl, "Leminoまとめ", "LEMINO", "Lemino <em>まとめ</em>", "佐藤優羽さんのLemino配信をまとめています", body);
 }
 
-async function buildWeb(tpl) {
-  const pages = await queryDB(DB.web);
-  const cards = pages.map(p => mediaCard(p, "Web")).join("\n");
-  const body = `<div class="grid-2">
-    <!-- GALLERY_START -->
-    ${cards}
-    <!-- GALLERY_END -->
-  </div>`;
-  return buildPage(tpl, "その他Webまとめ", "WEB", "Web <em>まとめ</em>", "佐藤優羽さんのWeb記事・メディア情報をまとめています", body);
-}
 
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──
 async function syncToYuNews() {
@@ -806,13 +805,13 @@ async function main() {
     "top.html":        { fn: buildIndex,     active: "INDEX" },
     "committee.html":  { fn: buildCommittee, active: "COMMITTEE" },
     "activities.html": { fn: buildActivities,active: "ACTIVITIES" },
+    "yunews.html":     { fn: buildYuNews,    active: "YUNEWS" },
     "blog.html":       { fn: buildBlog,      active: "BLOG" },
     "interview.html":  { fn: buildInterview, active: "INTERVIEW" },
     "x.html":          { fn: buildX,         active: "X" },
     "tiktok.html":     { fn: buildTiktok,    active: "TIKTOK" },
     "youtube.html":    { fn: buildYoutube,   active: "YOUTUBE" },
     "lemino.html":     { fn: buildLemino,    active: "LEMINO" },
-    "web.html":        { fn: buildWeb,       active: "WEB" },
   };
 
   for (const [filename, { fn, active }] of Object.entries(pages)) {
