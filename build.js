@@ -313,11 +313,10 @@ function actModalAttrs(p) {
 
 // ── ページビルダー ──
 async function buildIndex(tpl) {
-  const [yuNews, activities, committeeNews, youtubePages, xPages] = await Promise.all([
+  const [yuNews, activities, committeeNews, xPages] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
     queryDB(DB.committeeNews),
-    queryDB(DB.youtube),
     queryDB(DB.x),
   ]);
 
@@ -374,12 +373,8 @@ async function buildIndex(tpl) {
       : `<div class="yunews-card" style="animation-delay:${Math.random()*0.3}s">${inner}</div>`;
   }).join("\n");
 
-  // ── サイドバー: YouTube（最新1件） ──
-  let ytEmbedHtml = "";
-  if (youtubePages[0]) {
-    const m = getUrl(youtubePages[0]).match(/(?:v=|youtu\.be\/)([^&?/]+)/);
-    if (m) ytEmbedHtml = `<iframe width="100%" height="175" src="https://www.youtube.com/embed/${m[1]}" frameborder="0" allowfullscreen loading="lazy" style="display:block;"></iframe>`;
-  }
+  // ── サイドバー: YouTube（固定動画） ──
+  const ytEmbedHtml = `<iframe width="100%" height="175" src="https://www.youtube.com/embed/QXQUKkvSrCQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;"></iframe>`;
 
   // ── サイドバー: X（最新1件・oEmbed） ──
   const xEmbedHtml = xPages[0] ? await fetchTwitterOembed(getUrl(xPages[0])) : "";
