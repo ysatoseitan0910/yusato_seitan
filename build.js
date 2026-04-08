@@ -32,6 +32,12 @@ function getSelect(page, key) {
   if (p?.multi_select?.length) return p.multi_select[0].name;
   return "";
 }
+function getTags(page, key) {
+  const p = prop(page, key);
+  if (p?.multi_select?.length) return p.multi_select.map(s => s.name);
+  if (p?.select?.name) return [p.select.name];
+  return [];
+}
 function getMedia(page, key="Media") {
   const files = prop(page,key)?.files || [];
   if (!files.length) return "";
@@ -242,22 +248,12 @@ function youtubeCard(page) {
 }
 
 function xCard(page) {
-  const url = getUrl(page);
-  const title = getText(page,"Name");
-  const date  = fmtDate(getDate(page));
+  const url   = getUrl(page);
+  const title = getText(page, "Name");
   return `
-  <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
-    <div class="embed-header">
-      <span class="badge badge-x">X (Twitter)</span>
-      <span style="font-size:10px;color:var(--text-light)">${date}</span>
-    </div>
-    <div class="embed-wrap" style="min-height:200px;">
-      <blockquote class="twitter-tweet" data-lang="ja"><a href="${url}"></a></blockquote>
-    </div>
-    <div class="embed-footer">
-      <p class="embed-title">${title}</p>
-      <a href="${url}" class="embed-link" target="_blank" rel="noopener">投稿を見る →</a>
-    </div>
+  <div class="x-card" style="animation-delay:${Math.random()*0.3}s">
+    <blockquote class="twitter-tweet" data-lang="ja"><a href="${url}"></a></blockquote>
+    ${title ? `<p class="x-card-label">${title}</p>` : ""}
   </div>`;
 }
 
@@ -492,13 +488,43 @@ async function buildInterview(tpl) {
 
 async function buildX(tpl) {
   const pages = await queryDB(DB.x);
-  const cards = pages.map(p => xCard(p)).join("\n");
-  const body = `<div class="grid-3">
-    <!-- GALLERY_START -->
-    ${cards}
-    <!-- GALLERY_END -->
-  </div>
-  <script async src="https://platform.twitter.com/widgets.js"><\/script>`;
+
+  // タグごとにグループ化（multi_select対応）
+  const taggedGroups = {};
+  const untagged = [];
+  for (const p of pages) {
+    const tags = getTags(p, "Tag");
+    if (tags.length === 0) {
+      untagged.push(p);
+    } else {
+      const tag = tags[0];
+      if (!taggedGroups[tag]) taggedGroups[tag] = [];
+      taggedGroups[tag].push(p);
+    }
+  }
+
+  const gridHtml = (ps) =>
+    `<div class="x-embed-grid">${ps.map(p => xCard(p)).join("\n")}</div>`;
+
+  let body = "";
+
+  for (const [tag, ps] of Object.entries(taggedGroups)) {
+    body += `
+    <section style="margin-bottom:48px;">
+      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">${tag}</h2>
+      ${gridHtml(ps)}
+    </section>`;
+  }
+
+  if (untagged.length > 0) {
+    body += `
+    <section style="margin-bottom:48px;">
+      ${gridHtml(untagged)}
+    </section>`;
+  }
+
+  body += `\n  <script async src="https://platform.twitter.com/widgets.js"><\/script>`;
+
   return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body);
 }
 
@@ -518,12 +544,36 @@ async function buildTiktok(tpl) {
 
 async function buildYoutube(tpl) {
   const pages = await queryDB(DB.youtube);
-  const cards = pages.map(p => youtubeCard(p)).join("\n");
-  const body = `<div class="grid-3">
-    <!-- GALLERY_START -->
-    ${cards}
-    <!-- GALLERY_END -->
-  </div>`;
+
+  const channelOrder = [
+    "日向坂ちゃんねる",
+    "日向坂46 OFFICIAL YouTube CHANNEL",
+    "Lemino",
+  ];
+
+  // チャンネルごとにグループ化
+  const groups = {};
+  for (const p of pages) {
+    const ch = getSelect(p, "Channel") || "その他";
+    if (!groups[ch]) groups[ch] = [];
+    groups[ch].push(p);
+  }
+
+  // 指定順 → 残りのチャンネルをアルファベット順で追加
+  const orderedChannels = [
+    ...channelOrder.filter(ch => groups[ch]),
+    ...Object.keys(groups).filter(ch => !channelOrder.includes(ch)),
+  ];
+
+  const body = orderedChannels.map(ch => {
+    const cards = groups[ch].map(p => youtubeCard(p)).join("\n");
+    return `
+    <section style="margin-bottom:48px;">
+      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">${ch}</h2>
+      <div class="grid-3">${cards}</div>
+    </section>`;
+  }).join("\n");
+
   return buildPage(tpl, "YouTubeまとめ", "YOUTUBE", "YouTube <em>まとめ</em>", "佐藤優羽さんのYouTube動画をまとめています", body);
 }
 
