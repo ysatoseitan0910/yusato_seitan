@@ -759,7 +759,10 @@ async function syncToYuNews() {
         const cleanUrl = url.split("?")[0];
         desc = `／\n📢 TikTok公開│ ˙ᵕ˙ )꜆\n＼\n\n佐藤優羽 さん登場のtiktok動画が公開されました！\nぜひご覧ください🪽\n\n${cleanUrl}`;
       }
-      const media = getMedia(page);
+      // TikTokはoEmbedから新鮮なサムネイルURLを取得（保存済みURLは期限切れの場合があるため）
+      const media = platform === "TikTok"
+        ? (await fetchOembedThumbnail(url) || getMedia(page))
+        : getMedia(page);
       const baseProps = {
         Name:        { title: [{ text: { content: name } }] },
         URL:         { url },
