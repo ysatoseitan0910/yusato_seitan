@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佐藤優羽さんについて | 佐藤優羽生誕祭実行委員会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--emerald:#3DAA78;--emerald-light:#d0ece0;--emerald-pale:#edf8f2;--emerald-dark:#1e7a4f;--gold:#c9a96e;--gold-light:#f5ead8;--text:#0f1e16;--text-muted:#4d7062;--text-light:#8aae9a;--white:#ffffff;--bg:#f4faf7;--border:#c8e0d4;--nav-h:60px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;min-height:100vh;}
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}
+.nav-links{display:flex;gap:0;align-items:center;}
+.nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
+.hamburger:hover{background:var(--emerald-light);}
+
+.hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:900px;margin:0 auto;}
+.hero-tag{display:inline-block;font-size:10px;letter-spacing:0.25em;color:var(--emerald);border:1px solid var(--emerald-light);padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+.hero h1{font-family:'Shippori Mincho',serif;font-size:36px;font-weight:500;line-height:1.2;color:var(--text);margin-bottom:8px;}
+.hero h1 em{color:var(--emerald-dark);font-style:normal;}
+.hero-lead{font-size:14px;color:var(--text-muted);letter-spacing:0.06em;line-height:1.8;margin-top:4px;}
+.content{max-width:900px;margin:0 auto;padding:0 40px 80px;}
+.section{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px 40px;margin-bottom:24px;}
+.section h2{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:500;color:var(--emerald-dark);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--emerald-light);}
+.section p{font-size:14px;line-height:1.9;color:var(--text-muted);margin-bottom:14px;}
+.section p:last-child{margin-bottom:0;}
+
+/* Profile */
+.profile-wrap{display:grid;grid-template-columns:1fr 220px;gap:32px;align-items:start;}
+.profile-dl{display:grid;grid-template-columns:130px 1fr;gap:0;}
+.profile-dl dt{font-size:13px;font-weight:500;color:var(--emerald-dark);padding:12px 0;border-bottom:1px solid var(--emerald-light);}
+.profile-dl dd{font-size:13px;color:var(--text-muted);padding:12px 0 12px 16px;border-bottom:1px solid var(--emerald-light);}
+.profile-dl dt:last-of-type,.profile-dl dd:last-of-type{border-bottom:none;}
+.profile-dl a{color:var(--emerald-dark);text-decoration:none;}
+.profile-dl a:hover{text-decoration:underline;}
+.profile-img-box{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--emerald-pale);aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;}
+.profile-img-placeholder{text-align:center;color:var(--text-light);font-size:11px;line-height:2;}
+
+/* Cyalume */
+.cyalume-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--emerald);vertical-align:middle;margin-right:4px;}
+
+/* Charm section */
+.charm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4px;}
+.charm-card{background:var(--emerald-pale);border-radius:12px;padding:20px 18px;}
+.charm-card-label{font-size:10px;letter-spacing:0.2em;color:var(--emerald-dark);margin-bottom:8px;}
+.charm-card-title{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px;}
+.charm-card-desc{font-size:12px;color:var(--text-muted);line-height:1.7;}
+
+/* Link grid */
+.link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.link-card{display:block;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;}
+.link-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(61,170,120,0.12);}
+.link-card-label{font-size:10px;letter-spacing:0.2em;color:var(--emerald);margin-bottom:8px;}
+.link-card-title{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.link-card-desc{font-size:12px;color:var(--text-muted);line-height:1.6;}
+
+footer{background:var(--white);border-top:1px solid var(--border);padding:32px 40px;text-align:center;}
+footer p{font-size:10px;letter-spacing:0.12em;color:var(--text-light);}
+footer .heart{color:var(--emerald);}
+
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
+  .hero h1{font-size:26px;}
+  .content{padding:0 16px 48px;}
+  .section{padding:24px 20px;}
+  .profile-wrap{grid-template-columns:1fr;}
+  .profile-img-box{max-width:200px;}
+  .profile-dl{grid-template-columns:96px 1fr;}
+  .charm-grid{grid-template-columns:1fr;}
+  .link-grid{grid-template-columns:1fr;}
+  footer{padding:24px 16px;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">佐藤優羽生誕祭実行委員会</a>
+  <div class="nav-links">
+    <a href="top.html">NEWS</a>
+    <a href="yu.html" class="active">佐藤優羽さんについて</a>
+    <a href="committee.html">委員会</a>
+    <a href="activities.html">活動報告</a>
+    <a href="yunews.html">佐藤優羽さんNews</a>
+    <a href="blog.html">ブログ</a>
+    <a href="interview.html">インタビュー</a>
+    <a href="x.html">X</a>
+    <a href="tiktok.html">TikTok</a>
+    <a href="youtube.html">YouTube</a>
+    <a href="lemino.html">Lemino</a>
+    <a href="about.html">当委員会について</a>
+    <a href="terms.html">委員規約</a>
+    <a href="join.html">ご参加希望の方へ</a>
+  </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">ABOUT YU</div>
+  <h1>佐藤優羽<em>さんとは？</em></h1>
+  <p class="hero-lead">日向坂46 五期生。私たちが大好きな、あの子のことを知ってほしくて。</p>
+</div>
+
+<div class="content">
+
+  <!-- プロフィール -->
+  <div class="section">
+    <h2>プロフィール</h2>
+    <div class="profile-wrap">
+      <dl class="profile-dl">
+        <dt>漢字表記</dt>
+        <dd>佐藤 優羽</dd>
+        <dt>読み方</dt>
+        <dd>さとう ゆう</dd>
+        <dt>グループ</dt>
+        <dd>日向坂46</dd>
+        <dt>期生</dt>
+        <dd>五期生</dd>
+        <dt>生年月日</dt>
+        <dd>2006年9月10日</dd>
+        <dt>星座</dt>
+        <dd>おとめ座</dd>
+        <dt>出身地</dt>
+        <dd>福岡県</dd>
+        <dt>サイリウムカラー</dt>
+        <dd><span class="cyalume-dot"></span><span class="cyalume-dot"></span> エメラルドグリーン × エメラルドグリーン</dd>
+        <dt>公式ブログ</dt>
+        <dd><a href="https://www.hinatazaka46.com/s/official/diary/member/list?ima=0000&ct=42" target="_blank" rel="noopener">hinatazaka46.com →</a></dd>
+        <dt>公式プロフィール</dt>
+        <dd><a href="https://www.hinatazaka46.com/s/official/page/5th_generation_member?ima=0000" target="_blank" rel="noopener">日向坂46公式サイト →</a></dd>
+      </dl>
+      <div class="profile-img-box">
+        <div class="profile-img-placeholder">
+          <div style="font-size:32px;margin-bottom:8px;">🌿</div>
+          <div>Yu Sato</div>
+          <div>佐藤 優羽</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 魅力 -->
+  <div class="section">
+    <h2>私たちが語る、優羽ちゃんの魅力</h2>
+    <p>優羽ちゃんに出会って、こんなにも誰かを応援することが楽しいと感じたのは初めてでした。ステージ上での表情、歌声、ダンス——どれをとっても、彼女にしか出せない輝きがあります。</p>
+    <p>ひとつひとつの仕事に全力で向き合い、真剣に取り組む姿がある一方で、メンバーと笑い合うときの無邪気な表情もまた、見る人の心を温かくしてくれます。真面目さとかわいさが同居しているところが、私たちが優羽ちゃんを好きな理由のひとつです。</p>
+    <p>ブログでは日々の出来事や想いをまっすぐな言葉で綴ってくれていて、読むたびに「この子をもっと応援したい」と気持ちが新たになります。優羽ちゃんのことをまだ知らないあなたにも、ぜひこの魅力を感じてほしいと思っています。</p>
+    <div class="charm-grid">
+      <div class="charm-card">
+        <div class="charm-card-label">PERFORMANCE</div>
+        <div class="charm-card-title">全力のステージ</div>
+        <div class="charm-card-desc">歌もダンスも、一切手を抜かない。そのひたむきさがパフォーマンスに宿っています。</div>
+      </div>
+      <div class="charm-card">
+        <div class="charm-card-label">SMILE</div>
+        <div class="charm-card-title">あふれる笑顔</div>
+        <div class="charm-card-desc">見ているだけで元気になれる、優羽ちゃんの笑顔。それだけでその場が明るくなります。</div>
+      </div>
+      <div class="charm-card">
+        <div class="charm-card-label">WORDS</div>
+        <div class="charm-card-title">まっすぐな言葉</div>
+        <div class="charm-card-desc">ブログや発言に滲む誠実さ。ファンへの気持ちをまっすぐに伝えてくれます。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- もっと知るために -->
+  <div class="section">
+    <h2>もっと知るために</h2>
+    <div class="link-grid">
+      <a href="blog.html" class="link-card">
+        <div class="link-card-label">BLOG</div>
+        <div class="link-card-title">ブログまとめ</div>
+        <div class="link-card-desc">優羽ちゃんの言葉を、まとめてチェック。</div>
+      </a>
+      <a href="youtube.html" class="link-card">
+        <div class="link-card-label">YOUTUBE</div>
+        <div class="link-card-title">YouTubeまとめ</div>
+        <div class="link-card-desc">動画で見る佐藤優羽さんの活躍。</div>
+      </a>
+      <a href="tiktok.html" class="link-card">
+        <div class="link-card-label">TIKTOK</div>
+        <div class="link-card-title">TikTokギャラリー</div>
+        <div class="link-card-desc">短い動画にも全力な、その表情を。</div>
+      </a>
+      <a href="interview.html" class="link-card">
+        <div class="link-card-label">INTERVIEW</div>
+        <div class="link-card-title">インタビュー集</div>
+        <div class="link-card-desc">雑誌・メディアで語られた素顔に触れる。</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee</p>
+</footer>
+
+<script>
+(function(){
+  var btn=document.getElementById('nav-hamburger');
+  var links=document.querySelector('.nav-links');
+  if(!btn||!links)return;
+  btn.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    btn.textContent=open?'✕':'☰';
+    btn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      btn.textContent='☰';
+      btn.setAttribute('aria-label','メニューを開く');
+    });
+  });
+})();
+</script>
+</body>
+</html>
