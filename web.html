@@ -103,11 +103,12 @@ footer .heart{color:var(--emerald);}
 .embed-card .embed-link{font-size:11px;color:var(--emerald);text-decoration:none;}
 
 /* ── X embed grid ── */
-.x-embed-grid{columns:3;column-gap:20px;}
-.x-card{break-inside:avoid;margin-bottom:16px;}
+.x-embed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.x-card{min-width:0;}
+.x-card .twitter-tweet{margin:0 auto !important;}
 .x-card-label{font-size:11px;color:var(--text-muted);padding:4px 2px 8px;line-height:1.5;}
-@media(max-width:900px){.x-embed-grid{columns:2;}}
-@media(max-width:600px){.x-embed-grid{columns:1;}}
+@media(max-width:900px){.x-embed-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.x-embed-grid{grid-template-columns:1fr;}}
 
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}
@@ -183,12 +184,12 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">WEB</div>
         <h1>Web <em>まとめ</em></h1>
         <p>佐藤優羽さんのWeb記事・メディア情報をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 11:15:58</p>
+        <p class="last-updated">最終更新：2026/4/8 11:27:59</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.1545934664172951s">
+  <div class="card media-card" style="animation-delay:0.038313354424479494s">
     <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-web">Web</span>
@@ -269,7 +270,7 @@ footer .heart{color:var(--emerald);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 11:15:58</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 11:27:59</p>
 </footer>
 
 </body>

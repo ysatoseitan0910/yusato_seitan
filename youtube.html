@@ -103,11 +103,12 @@ footer .heart{color:var(--emerald);}
 .embed-card .embed-link{font-size:11px;color:var(--emerald);text-decoration:none;}
 
 /* ── X embed grid ── */
-.x-embed-grid{columns:3;column-gap:20px;}
-.x-card{break-inside:avoid;margin-bottom:16px;}
+.x-embed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.x-card{min-width:0;}
+.x-card .twitter-tweet{margin:0 auto !important;}
 .x-card-label{font-size:11px;color:var(--text-muted);padding:4px 2px 8px;line-height:1.5;}
-@media(max-width:900px){.x-embed-grid{columns:2;}}
-@media(max-width:600px){.x-embed-grid{columns:1;}}
+@media(max-width:900px){.x-embed-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.x-embed-grid{grid-template-columns:1fr;}}
 
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}
@@ -183,13 +184,13 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">YOUTUBE</div>
         <h1>YouTube <em>まとめ</em></h1>
         <p>佐藤優羽さんのYouTube動画をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 11:15:57</p>
+        <p class="last-updated">最終更新：2026/4/8 11:27:58</p>
       </div>
       <div class="content">
     <section style="margin-bottom:48px;">
-      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">その他</h2>
+      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">日向坂ちゃんねる</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.06572763254259063s">
+  <div class="card embed-card" style="animation-delay:0.26585494055761477s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.04.06</span>
@@ -201,20 +202,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.10666309579640133s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2026.03.30</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/uUXracpCICo" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
-  冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.016091195307099924s">
+  <div class="card embed-card" style="animation-delay:0.031313160175920896s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.21</span>
@@ -226,20 +214,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.24860571063217127s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2026.03.02</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/6X358INogu8" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【五期生のゲームセンスを確かめましょう！】日向坂になりましょう-五期生成長バラエティ-#18
-  冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.2550381303172254s">
+  <div class="card embed-card" style="animation-delay:0.12804692682729538s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.28</span>
@@ -251,7 +226,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19140971957126707s">
+  <div class="card embed-card" style="animation-delay:0.13024102796895567s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.10</span>
@@ -263,19 +238,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.021823110861022975s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2026.01.26</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/MlNNxI0MNDI" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">日向坂46『好きになるクレッシェンド』MUSIC VIDEO</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.2541296986497664s">
+  <div class="card embed-card" style="animation-delay:0.033608333597315784s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.17</span>
@@ -287,19 +250,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.15044432722208007s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2026.01.15</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/2WEOnuwvoXE" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">日向坂46『君と生きる』MUSIC VIDEO</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.06575004020183207s">
+  <div class="card embed-card" style="animation-delay:0.18994523830644652s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.03</span>
@@ -311,33 +262,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2944159005686264s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/WugUvihWPCM" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【お正月なのでバラエティ対決で盛り上がろう！】日向坂になりましょう-五期生成長バラエティ-#14
-  冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.07772607227630368s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.12.22</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/w-6VnijfdaE" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【年末総決算！激動の1年をみんなで振り返りましょう！】日向坂になりましょう-五期生成長バラエティ-#13
-  冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.03423005254279674s">
+  <div class="card embed-card" style="animation-delay:0.07394265555340362s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.13</span>
@@ -349,7 +274,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.17700257717049597s">
+  <div class="card embed-card" style="animation-delay:0.0311359237349488s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.25</span>
@@ -361,32 +286,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.27111680843817654s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.11.24</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/OsQgjErrUuM" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【表現の幅を広げましょう！！】日向坂になりましょう-五期生成長バラエティ- #11 冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.2732003545540502s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.11.10</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/w3NeREtw1Fs" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【人情あふれる街ブラロケに挑戦しよう！！】日向坂になりましょう-五期生成長バラエティ-#10
-  冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.09803360819720335s">
+  <div class="card embed-card" style="animation-delay:0.005738501450026656s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.05</span>
@@ -398,7 +298,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.10238985761760304s">
+  <div class="card embed-card" style="animation-delay:0.20373647338933779s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.20</span>
@@ -410,32 +310,131 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1179699317069956s">
+  <div class="card embed-card" style="animation-delay:0.02510342844731974s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.09.29</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.08.30</span>
     </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/26ZSLQRs1jk" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/KN4BWm6sPCs" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
     <div class="embed-footer">
-      <p class="embed-title">【ザ・ハイテンション】日向坂になりましょう-五期生成長バラエティ-#7冒頭先行公開</p>
+      <p class="embed-title">【同期対決】真剣勝負の4人麻雀！熱戦を制したのは！？【雀魂】</p>
       
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2943020862768252s">
+  <div class="card embed-card" style="animation-delay:0.28394731138636076s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.09.15</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.08.11</span>
     </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/IX4nUAdJo54" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/O3jt_42tRHA" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
     <div class="embed-footer">
-      <p class="embed-title">【アイドルの基本！ポージングを学ぼう！】日向坂になりましょう-五期生成長バラエティ-#6
-  冒頭先行公開</p>
+      <p class="embed-title">鬼ミッションも余裕？】五期生冠番組発表会見に潜入したのワシやないかい！【日向坂になりましょう】</p>
       
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19382168877769637s">
+  <div class="card embed-card" style="animation-delay:0.0777029745387275s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.25</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/j1qLcPOrEPw" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【ミッションに挑戦】福岡のこと、もっと知りたいっちゃん！【全国ツアー2025キャンペーン】</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.2752835996802861s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.06.16</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/CiA5Qv2qYsA" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">日向坂46「五期生ドキュメンタリー」〜おもてなし会への道のり〜</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.12884269133174533s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.06.13</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/aLwWR9C1cus" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【アーカイブ】日向坂46五期生・佐藤優羽【リレー生配信8人目】</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.17405784404105418s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.06.04</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/dHniiKkgPk8" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【BRAND NEW LIVE】日向坂46五期生に差し入れしてみた！【出張！平尾食堂】</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.041279763676905286s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.04.12</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/OX49NzoSKJY" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">日向坂46「五期生ドキュメンタリー」〜6回目のひな誕祭への道のり〜</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.03965880587891222s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.03.14</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/QXQUKkvSrCQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">日向坂46 五期生 「はじめまして、佐藤 優羽です。」</p>
+      
+    </div>
+  </div></div>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">日向坂46 OFFICIAL YouTube CHANNEL</h2>
+      <div class="grid-3">
+  <div class="card embed-card" style="animation-delay:0.13353887020175179s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.01.26</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/MlNNxI0MNDI" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">日向坂46『好きになるクレッシェンド』MUSIC VIDEO</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.07647110466655933s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.01.15</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/2WEOnuwvoXE" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">日向坂46『君と生きる』MUSIC VIDEO</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.046467736606227474s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.08</span>
@@ -448,7 +447,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23574369877028634s">
+  <div class="card embed-card" style="animation-delay:0.06862207749993085s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.07</span>
@@ -460,7 +459,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.14633689158181243s">
+  <div class="card embed-card" style="animation-delay:0.21412116302459483s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.04</span>
@@ -473,130 +472,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2560214079293513s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.08.30</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/KN4BWm6sPCs" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【同期対決】真剣勝負の4人麻雀！熱戦を制したのは！？【雀魂】</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.16532350197031556s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.08.18</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/OB4WkootR2k" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【アザトカワイイ仕草を身につけよう！】日向坂になりましょう-五期生成長バラエティ-#4冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.2924357300917469s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.08.11</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/O3jt_42tRHA" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">鬼ミッションも余裕？】五期生冠番組発表会見に潜入したのワシやないかい！【日向坂になりましょう】</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.2803349950762714s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.07.25</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/j1qLcPOrEPw" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【ミッションに挑戦】福岡のこと、もっと知りたいっちゃん！【全国ツアー2025キャンペーン】</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.10259711461797465s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.07.21</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/ojqGPOs3pDQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【五期生の魅力を届けましょう！！後半戦】日向坂になりましょう
-  -五期生成長バラエティ-#2　冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.030677663152873545s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/-6rze_Cg0gc" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【無料独占公開】日向坂になりましょう
-  -五期生成長バラエティ- #0</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.07695865799330555s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/20G5ZUBYvuI" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【五期生の魅力を届けましょう！！】日向坂になりましょう
-  -五期生成長バラエティ- #1 冒頭先行公開</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.010562729442478136s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.06.16</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/CiA5Qv2qYsA" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">日向坂46「五期生ドキュメンタリー」〜おもてなし会への道のり〜</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.1952703570069087s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.06.13</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/aLwWR9C1cus" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【アーカイブ】日向坂46五期生・佐藤優羽【リレー生配信8人目】</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.01864137504566461s">
-    <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.06.04</span>
-    </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/dHniiKkgPk8" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
-    <div class="embed-footer">
-      <p class="embed-title">【BRAND NEW LIVE】日向坂46五期生に差し入れしてみた！【出張！平尾食堂】</p>
-      
-    </div>
-  </div>
-
-  <div class="card embed-card" style="animation-delay:0.2652784214017984s">
+  <div class="card embed-card" style="animation-delay:0.08995981528287375s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.05.15</span>
@@ -616,28 +492,161 @@ footer .heart{color:var(--emerald);}
   </p>
       
     </div>
-  </div>
+  </div></div>
+    </section>
 
-  <div class="card embed-card" style="animation-delay:0.03969994061680493s">
+    <section style="margin-bottom:48px;">
+      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">Lemino</h2>
+      <div class="grid-3">
+  <div class="card embed-card" style="animation-delay:0.09491832254656171s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.04.12</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.30</span>
     </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/OX49NzoSKJY" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/uUXracpCICo" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
     <div class="embed-footer">
-      <p class="embed-title">日向坂46「五期生ドキュメンタリー」〜6回目のひな誕祭への道のり〜</p>
+      <p class="embed-title">【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
+  冒頭先行公開</p>
       
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23635779759742115s">
+  <div class="card embed-card" style="animation-delay:0.06149526204840156s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
-      <span style="font-size:10px;color:var(--text-light)">2025.03.14</span>
+      <span style="font-size:10px;color:var(--text-light)">2026.03.02</span>
     </div>
-    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/QXQUKkvSrCQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/6X358INogu8" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
     <div class="embed-footer">
-      <p class="embed-title">日向坂46 五期生 「はじめまして、佐藤 優羽です。」</p>
+      <p class="embed-title">【五期生のゲームセンスを確かめましょう！】日向坂になりましょう-五期生成長バラエティ-#18
+  冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.05084342880521535s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/WugUvihWPCM" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【お正月なのでバラエティ対決で盛り上がろう！】日向坂になりましょう-五期生成長バラエティ-#14
+  冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.22428762770688598s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.12.22</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/w-6VnijfdaE" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【年末総決算！激動の1年をみんなで振り返りましょう！】日向坂になりましょう-五期生成長バラエティ-#13
+  冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.2698257367511809s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.11.24</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/OsQgjErrUuM" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【表現の幅を広げましょう！！】日向坂になりましょう-五期生成長バラエティ- #11 冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.2654335760944842s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.11.10</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/w3NeREtw1Fs" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【人情あふれる街ブラロケに挑戦しよう！！】日向坂になりましょう-五期生成長バラエティ-#10
+  冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.19405952561818765s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.09.29</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/26ZSLQRs1jk" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【ザ・ハイテンション】日向坂になりましょう-五期生成長バラエティ-#7冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.24443577260996402s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.09.15</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/IX4nUAdJo54" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【アイドルの基本！ポージングを学ぼう！】日向坂になりましょう-五期生成長バラエティ-#6
+  冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.02211432715336925s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.08.18</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/OB4WkootR2k" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【アザトカワイイ仕草を身につけよう！】日向坂になりましょう-五期生成長バラエティ-#4冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.27803421677682943s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.21</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/ojqGPOs3pDQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【五期生の魅力を届けましょう！！後半戦】日向坂になりましょう
+  -五期生成長バラエティ-#2　冒頭先行公開</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.19197257854575975s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/-6rze_Cg0gc" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【無料独占公開】日向坂になりましょう
+  -五期生成長バラエティ- #0</p>
+      
+    </div>
+  </div>
+
+  <div class="card embed-card" style="animation-delay:0.040056446485067475s">
+    <div class="embed-header">
+      <span class="badge badge-youtube">YouTube</span>
+      <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
+    </div>
+    <div class="embed-wrap" style="min-height:220px;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/20G5ZUBYvuI" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe></div>
+    <div class="embed-footer">
+      <p class="embed-title">【五期生の魅力を届けましょう！！】日向坂になりましょう
+  -五期生成長バラエティ- #1 冒頭先行公開</p>
       
     </div>
   </div></div>
@@ -709,7 +718,7 @@ footer .heart{color:var(--emerald);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 11:15:57</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 11:27:58</p>
 </footer>
 
 </body>
