@@ -70,7 +70,7 @@ async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","COMMITTEE","ACTIVITIES","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","WEB"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","WEB"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -135,12 +135,12 @@ function newsCard(page, badgeLabel) {
   </div>`;
 }
 
-function mediaCard(page, badgeLabel) {
+function mediaCard(page, badgeLabel, overrideImg) {
   const title = getText(page,"Name");
   const date  = fmtDate(getDate(page));
   const desc  = getText(page,"Description");
   const url   = getUrl(page);
-  const img   = getMedia(page);
+  const img   = overrideImg !== undefined ? overrideImg : getMedia(page);
   const platform = getSelect(page,"Platform") || badgeLabel;
   const badge = platform ? `<span class="${badgeClass(platform)}">${platform}</span>` : "";
   const imgTag = img ? `<img class="media-img" src="${img}" alt="${title}" loading="lazy">` : `<div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>`;
@@ -158,6 +158,23 @@ function mediaCard(page, badgeLabel) {
       </div>
     </div>
   </div>`;
+}
+
+async function fetchLeminoThumbnail(url) {
+  if (!url) return "";
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    const m = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+           || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+    return m ? m[1] : "";
+  } catch {
+    return "";
+  }
 }
 
 async function fetchOembedThumbnail(url) {
@@ -209,7 +226,7 @@ function youtubeCard(page) {
   if (m) videoId = m[1];
   const embed = videoId
     ? `<iframe width="100%" height="220" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen loading="lazy" style="display:block;border-radius:8px;"></iframe>`
-    : `<a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--rose)">動画を見る</a>`;
+    : `<a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--emerald)">動画を見る</a>`;
   return `
   <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
     <div class="embed-header">
@@ -338,13 +355,13 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   const body = `
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+  <div class="top-grid">
 
     <!-- 左：Yu News -->
     <div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">佐藤優羽さん News</h2>
-        <a href="index.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+        <a href="index.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">すべて見る →</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         ${newsCards}
@@ -358,11 +375,11 @@ async function buildIndex(tpl) {
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">委員会 News</h2>
-          <a href="committee.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+          <a href="committee.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">すべて見る →</a>
         </div>
         ${committeeCards}
         <div style="margin-top:12px;text-align:right;">
-          <a href="committee.html" style="font-size:11px;color:var(--rose);text-decoration:none;">もっと見る →</a>
+          <a href="committee.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">もっと見る →</a>
         </div>
       </div>
 
@@ -370,7 +387,7 @@ async function buildIndex(tpl) {
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
           <h2 style="font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;">活動報告</h2>
-          <a href="activities.html" style="font-size:11px;color:var(--rose);text-decoration:none;">すべて見る →</a>
+          <a href="activities.html" style="font-size:11px;color:var(--emerald);text-decoration:none;">すべて見る →</a>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           ${activityCards}
@@ -512,7 +529,12 @@ async function buildYoutube(tpl) {
 
 async function buildLemino(tpl) {
   const pages = await queryDB(DB.lemino);
-  const cards = pages.map(p => mediaCard(p, "Lemino")).join("\n");
+  console.log(`  Leminoサムネイル取得中 (${pages.length}件)...`);
+  const thumbs = await Promise.all(pages.map(p => {
+    const stored = getMedia(p);
+    return stored ? Promise.resolve(stored) : fetchLeminoThumbnail(getUrl(p));
+  }));
+  const cards = pages.map((p, i) => mediaCard(p, "Lemino", thumbs[i])).join("\n");
   const body = `<div class="grid-2">
     <!-- GALLERY_START -->
     ${cards}
