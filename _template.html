@@ -180,6 +180,16 @@ footer .heart{color:var(--emerald);}
   .embed-card .embed-wrap{min-height:200px;}
 }
 
+/* ── Schedule widget ── */
+.schedule-list{background:var(--white);}
+.schedule-row{display:flex;align-items:baseline;gap:8px;padding:7px 14px;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;transition:background 0.15s;}
+.schedule-row:last-child{border-bottom:none;}
+a.schedule-row:hover{background:var(--emerald-pale);}
+.schedule-date{font-size:10px;color:var(--text-light);white-space:nowrap;min-width:58px;}
+.schedule-date--past{color:var(--text-light);opacity:0.6;}
+.schedule-title{flex:1;font-size:12px;color:var(--text);line-height:1.4;}
+.schedule-title--past{color:var(--text-muted);opacity:0.6;}
+
 /* ── Activity Modal ── */
 .act-modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,20,0.55);z-index:400;align-items:center;justify-content:center;padding:20px;}
 .act-modal-overlay.open{display:flex;}

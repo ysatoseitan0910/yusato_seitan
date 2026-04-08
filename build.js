@@ -14,6 +14,7 @@ const DB = {
   youtube:       process.env.DB_YOUTUBE,
   lemino:        process.env.DB_LEMINO,
   web:           process.env.DB_WEB,
+  schedule:      process.env.DB_SCHEDULE,
 };
 
 // ── ヘルパー ──
@@ -326,10 +327,11 @@ function actModalAttrs(p) {
 
 // ── ページビルダー ──
 async function buildIndex(tpl) {
-  const [yuNews, activities, committeeNews] = await Promise.all([
+  const [yuNews, activities, committeeNews, schedule] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
     queryDB(DB.committeeNews),
+    queryDB(DB.schedule, [{ property: "Date", direction: "ascending" }]),
   ]);
 
   // ── 委員会News: リスト行（全件・クリックでモーダル） ──
@@ -383,6 +385,24 @@ async function buildIndex(tpl) {
     return url
       ? `<a href="${url}" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:${Math.random()*0.3}s">${inner}</a>`
       : `<div class="yunews-card" style="animation-delay:${Math.random()*0.3}s">${inner}</div>`;
+  }).join("\n");
+
+  // ── サイドバー: スケジュール ──
+  const today = new Date().toISOString().slice(0, 10);
+  const scheduleRows = schedule.map(p => {
+    const title  = getText(p, "Name");
+    const date   = getDate(p);
+    const status = getSelect(p, "Status");
+    const url    = getUrl(p);
+    const isPast = date && date < today;
+    const dateStr = fmtDate(date);
+    const inner = `
+      <span class="schedule-date${isPast ? " schedule-date--past" : ""}">${dateStr}</span>
+      <span class="schedule-title${isPast ? " schedule-title--past" : ""}">${title}</span>
+      ${status ? `<span class="badge ${status.includes("募集中") ? "badge-open" : "badge-closed"}" style="font-size:9px;padding:2px 6px;white-space:nowrap;">${status}</span>` : ""}`;
+    return url
+      ? `<a href="${url}" class="schedule-row" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="schedule-row">${inner}</div>`;
   }).join("\n");
 
   // ── サイドバー: YouTube（固定動画・lite-embed） ──
@@ -441,6 +461,12 @@ async function buildIndex(tpl) {
 
     <!-- サイドバー -->
     <aside class="top-sidebar">
+
+      ${scheduleRows ? `
+      <div class="sidebar-widget">
+        <div style="padding:10px 14px 6px;font-family:'Shippori Mincho',serif;font-size:13px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border);">スケジュール</div>
+        <div class="schedule-list">${scheduleRows}</div>
+      </div>` : ""}
 
       ${ytEmbedHtml ? `<div class="sidebar-widget">${ytEmbedHtml}</div>` : ""}
 

@@ -53,6 +53,7 @@ jobs:
           DB_YOUTUBE:          ${{ secrets.DB_YOUTUBE }}
           DB_LEMINO:           ${{ secrets.DB_LEMINO }}
           DB_WEB:              ${{ secrets.DB_WEB }}
+          DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
