@@ -73,6 +73,25 @@ async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
   }
 }
 
+// syncToYuNews専用: 全件のURLをページネーションで取得（Published問わず重複チェック用）
+async function queryAllUrls(dbId) {
+  const urls = new Set();
+  let cursor;
+  do {
+    const res = await notion.databases.query({
+      database_id: dbId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+    for (const p of res.results) {
+      const u = getUrl(p);
+      if (u) urls.add(u);
+    }
+    cursor = res.has_more ? res.next_cursor : undefined;
+  } while (cursor);
+  return urls;
+}
+
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
@@ -621,9 +640,10 @@ async function syncToYuNews() {
     { db: DB.web,       platform: "Web" },
   ];
 
-  // 既存のYu NewsのURLを取得（重複登録防止）
-  const existing = await queryDB(DB.yuNews);
-  const existingUrls = new Set(existing.map(p => getUrl(p)).filter(Boolean));
+  // 既存のYu NewsのURLを全件取得（ページネーション対応・Published問わず）
+  console.log("  既存URLを全件確認中...");
+  const existingUrls = await queryAllUrls(DB.yuNews);
+  console.log(`  既存URL: ${existingUrls.size}件`);
 
   for (const { db, platform } of sources) {
     const pages = await queryDB(db);
