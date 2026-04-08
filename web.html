@@ -30,6 +30,11 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,
 .nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
+.hamburger:hover{background:var(--emerald-light);}
+
+/* ── Top grid ── */
+.top-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;}
 
 /* ── Page hero ── */
 .page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
@@ -100,6 +105,32 @@ footer .heart{color:var(--emerald);}
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}
 
+/* ── Mobile ── */
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
+  .page-hero h1{font-size:26px;}
+  .content{padding:0 16px 48px;}
+  footer{padding:24px 16px;}
+  .top-grid{grid-template-columns:1fr;gap:24px;}
+  .act-modal-box{padding:24px 20px;}
+  .grid-3{grid-template-columns:1fr;}
+  /* カードのモバイル最適化 */
+  .news-card{padding:14px 16px;gap:12px;}
+  .news-card-img-body{padding:12px 14px 14px;}
+  .news-card-date{font-size:10px;min-width:64px;}
+  .news-card-title{font-size:13px;}
+  .news-card-desc{font-size:11px;}
+  .media-card .media-body{padding:12px;}
+  .media-card .media-title{font-size:12px;}
+  .grid-2{grid-template-columns:1fr;}
+  .embed-card .embed-wrap{min-height:200px;}
+}
+
 /* ── Activity Modal ── */
 .act-modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,20,0.55);z-index:400;align-items:center;justify-content:center;padding:20px;}
 .act-modal-overlay.open{display:flex;}
@@ -123,6 +154,7 @@ footer .heart{color:var(--emerald);}
   </a>
   <div class="nav-links">
     <a href="top.html" >NEWS</a>
+    <a href="yu.html" >佐藤優羽さんについて</a>
     <a href="committee.html" >委員会</a>
     <a href="activities.html" >活動報告</a>
     <a href="blog.html" >ブログ</a>
@@ -136,6 +168,7 @@ footer .heart{color:var(--emerald);}
     <a href="terms.html" {{ACTIVE_TERMS}}>委員規約</a>
     <a href="join.html" {{ACTIVE_JOIN}}>ご参加希望の方へ</a>
   </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
 
 
@@ -143,12 +176,12 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">WEB</div>
         <h1>Web <em>まとめ</em></h1>
         <p>佐藤優羽さんのWeb記事・メディア情報をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 8:53:58</p>
+        <p class="last-updated">最終更新：2026/4/8 9:08:15</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.19829730695043205s">
+  <div class="card media-card" style="animation-delay:0.08714741724166693s">
     <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-web">Web</span>
@@ -208,8 +241,28 @@ footer .heart{color:var(--emerald);}
 })();
 </script>
 
+<script>
+(function(){
+  var btn=document.getElementById('nav-hamburger');
+  var links=document.querySelector('.nav-links');
+  if(!btn||!links)return;
+  btn.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    btn.textContent=open?'✕':'☰';
+    btn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      btn.textContent='☰';
+      btn.setAttribute('aria-label','メニューを開く');
+    });
+  });
+})();
+</script>
+
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 8:53:58</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 9:08:15</p>
 </footer>
 
 </body>

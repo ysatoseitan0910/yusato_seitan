@@ -30,6 +30,11 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,
 .nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
+.hamburger:hover{background:var(--emerald-light);}
+
+/* ── Top grid ── */
+.top-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;}
 
 /* ── Page hero ── */
 .page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
@@ -100,6 +105,32 @@ footer .heart{color:var(--emerald);}
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}
 
+/* ── Mobile ── */
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
+  .page-hero h1{font-size:26px;}
+  .content{padding:0 16px 48px;}
+  footer{padding:24px 16px;}
+  .top-grid{grid-template-columns:1fr;gap:24px;}
+  .act-modal-box{padding:24px 20px;}
+  .grid-3{grid-template-columns:1fr;}
+  /* カードのモバイル最適化 */
+  .news-card{padding:14px 16px;gap:12px;}
+  .news-card-img-body{padding:12px 14px 14px;}
+  .news-card-date{font-size:10px;min-width:64px;}
+  .news-card-title{font-size:13px;}
+  .news-card-desc{font-size:11px;}
+  .media-card .media-body{padding:12px;}
+  .media-card .media-title{font-size:12px;}
+  .grid-2{grid-template-columns:1fr;}
+  .embed-card .embed-wrap{min-height:200px;}
+}
+
 /* ── Activity Modal ── */
 .act-modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,20,0.55);z-index:400;align-items:center;justify-content:center;padding:20px;}
 .act-modal-overlay.open{display:flex;}
@@ -123,6 +154,7 @@ footer .heart{color:var(--emerald);}
   </a>
   <div class="nav-links">
     <a href="top.html" >NEWS</a>
+    <a href="yu.html" >佐藤優羽さんについて</a>
     <a href="committee.html" >委員会</a>
     <a href="activities.html" >活動報告</a>
     <a href="blog.html" >ブログ</a>
@@ -136,6 +168,7 @@ footer .heart{color:var(--emerald);}
     <a href="terms.html" {{ACTIVE_TERMS}}>委員規約</a>
     <a href="join.html" {{ACTIVE_JOIN}}>ご参加希望の方へ</a>
   </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
 
 
@@ -143,13 +176,13 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">TIKTOK</div>
         <h1>TikTok <em>Gallery</em></h1>
         <p>佐藤優羽さんのTikTok動画をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 8:53:57</p>
+        <p class="last-updated">最終更新：2026/4/8 9:08:14</p>
       </div>
       <div class="content"><div class="grid-3">
     <!-- GALLERY_START -->
     
-  <div class="card embed-card" style="animation-delay:0.0996841892598956s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIffwmscwCBFQ5UIAQkA8AAiV6DgdpdmDEREEG~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=ofp5pfm5qILLE9IfxOn4OdyueMc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.19063427746368083s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIffwmscwCBFQ5UIAQkA8AAiV6DgdpdmDEREEG~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=ljnNCuwL3AFOECZVto9Fy0A36P4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.25</span>
@@ -163,8 +196,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1607779136377765s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/owItQABAVkJlAJDpwFE1flKMKm4CBEAgUWswCf~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=%2F7jDbYDm37iMYR35nP2tNY4hzx0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.29046178909652903s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/owItQABAVkJlAJDpwFE1flKMKm4CBEAgUWswCf~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=85PWPyDwqoI2dHoTBGOL%2B3rvfBQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.21</span>
@@ -178,8 +211,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.06628456926391492s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oQN5E0ivADKtcpaWAABAIRywKZ0wyBCBA2iafM~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=LBHdPkCel2h0St7ct%2FcpQ8TaWhs%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.14159807604391214s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oQN5E0ivADKtcpaWAABAIRywKZ0wyBCBA2iafM~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=IeAVvZl499TU4FcBKECKgh1OOvE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.17</span>
@@ -193,8 +226,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.17876090386318957s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/okAWAAFnIylBYA8uovlarEChSbxxaii0AAzBq~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=pvnDW9E0U4BmG7FbEkYEzWxPIZE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.11075348205066633s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/okAWAAFnIylBYA8uovlarEChSbxxaii0AAzBq~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=OX%2FYimD%2BSiSL1twuAwBJXeIJetA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.16</span>
@@ -208,8 +241,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1491466595845268s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEw9IZAfEQeJ4AADnOTI1MREaI9noWA8AAfWCj~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=RL1lkfTBB%2FxdFiolUYJyzW6%2FlOo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.056876602983219525s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEw9IZAfEQeJ4AADnOTI1MREaI9noWA8AAfWCj~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=LB07PbRIjnF0pN%2BhOksg3n5lE1M%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.14</span>
@@ -223,8 +256,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.237798470604769s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYsZBn4MTC5YpPeWQGfO4AgoIDgk8ZfAhjgr9j~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=e1MFnm7CCFkqaVlfqRd2p8UuE6g%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.2944092958962265s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYsZBn4MTC5YpPeWQGfO4AgoIDgk8ZfAhjgr9j~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=I05W6j6wKM3T%2B7U8oLaG2a%2FJW0A%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.12</span>
@@ -238,8 +271,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.25324864728013063s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYABFcpcAxVbEQeCFsACgEIDWgcplAQCQDfYx3~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=DkUOpLBsNK4jcHFF3fQxUI3D91o%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.012206831832369947s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYABFcpcAxVbEQeCFsACgEIDWgcplAQCQDfYx3~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=Ef7sjZzucb89bY5TuVoSIIQf1Ig%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.10</span>
@@ -253,8 +286,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.29470038100256934s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ooj6AD3IWAFVBGofEg7aocpeuFRBrAapEQ4CAh~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=LiN%2BHz7nOLH%2BItjttAuIhDsyMWw%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.004396818191251572s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ooj6AD3IWAFVBGofEg7aocpeuFRBrAapEQ4CAh~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=TRyi%2BfSde0hAHqql3uJS66qxYjA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.08</span>
@@ -268,8 +301,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.07392647663882183s">
-    <img src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIiIIqUfLwvIEoCIrb00DEid75VB7CwAAV1ChA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=TJn7cV2JqwfdBdneyavJKuQipL4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.16745694381791845s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIiIIqUfLwvIEoCIrb00DEid75VB7CwAAV1ChA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=zSwH8XNb2ajYEQ7vfx0JENNHBLs%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.27</span>
@@ -283,8 +316,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.24133057727019977s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIBH9D6fTuDAoPzdC3FEAfDFIOAj4rpIITfP4j~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=sI3kZJBcQP8k4cecwnRnmJgV1oQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.194959586970893s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIBH9D6fTuDAoPzdC3FEAfDFIOAj4rpIITfP4j~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=Z3GFOalr4JHpDnoKpl1NBPSSx94%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.24</span>
@@ -298,8 +331,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23851551620045738s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8xuETidABKL11PZAABAIGz0It0wgBCCAMiAfl~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=7pDqtYL1kTvD8StBE2Cm3j9LAGA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.2962862430733619s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8xuETidABKL11PZAABAIGz0It0wgBCCAMiAfl~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=2g8WHiRYX%2F8dj3WMLuCQ%2F%2BKa9kg%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.21</span>
@@ -313,8 +346,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.26923684680532733s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4DDFCXsFEzAQCaQEAApEfzQcVkVpIAebB7RgC~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=1SGq8Ri%2BUO2pounSD9sYlhiG16A%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.17493734878590264s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4DDFCXsFEzAQCaQEAApEfzQcVkVpIAebB7RgC~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=lkuZAUiiOqeBxLQZ3PGDlKb02U4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.14</span>
@@ -328,8 +361,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2125488855886352s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0jGOZmIO5sGgFm9ATQReeILLRAG6GOklffIwI~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=UBN48C12uRpOA6ACYp4CgH18xzI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.2659309224449411s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0jGOZmIO5sGgFm9ATQReeILLRAG6GOklffIwI~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=xrkJhcTuumdsX0akafSouqluQfg%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.13</span>
@@ -343,8 +376,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23645680897385155s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oMmpFC106A1jPROmgQF2jgcDpfTJ7BHEBEBeMQ~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=mxdWj0PCRONdchr%2FmWDKjU83FfM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.23722750215406896s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oMmpFC106A1jPROmgQF2jgcDpfTJ7BHEBEBeMQ~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=igqaulF931yY4lUQh6LntX89UL0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.11</span>
@@ -358,8 +391,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.18645976386882443s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/owB3kA4GTE5eKBrLIAAcSAEbIDfKeFVAujIuCL~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=mU9YK6G5GrfOXEwDT7JZ7LMroJ8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.03800096636653627s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/owB3kA4GTE5eKBrLIAAcSAEbIDfKeFVAujIuCL~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=LRTQG4thDJhOQCkTWvh61JwDevI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.10</span>
@@ -373,8 +406,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.13848327858762552s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oM0AIYz9aiUIiAEnzSa5v8cJCYEABitEnyABA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=7fRTYC7moy1krCsncIfzmx3N5r4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.21691436736485217s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oM0AIYz9aiUIiAEnzSa5v8cJCYEABitEnyABA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=fnVlKV38ethkUOWQjhBWiDPATJs%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.05</span>
@@ -388,8 +421,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.011506600800852773s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUZttAAmSBD5mrf9EjFEAbDWIfAjgYAIEvfu4b~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=0%2BE1AcVo55O1cipg7D%2Bki7lBswE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.06955088258384601s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUZttAAmSBD5mrf9EjFEAbDWIfAjgYAIEvfu4b~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=ej6HUACVw7QvV3neVgxzcgaEdYg%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.31</span>
@@ -403,8 +436,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.06002166151865724s">
-    <img src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ogAARQAPa7pAQnePg2EhCFTCVBBDig4U8IfCQ6~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=EjT1rZ%2FkKQZ4WvpcjXly05X%2BjFM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.09498799414906231s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ogAARQAPa7pAQnePg2EhCFTCVBBDig4U8IfCQ6~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=exyeSFe4wU6rg0F3uCxZNGIWUUE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.05</span>
@@ -418,8 +451,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.04368446315128287s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0EzApFlqLBApE0AESIGfnefIAa7AzcbDoLtur~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=f98IpydkH%2Br3B7l7z3vXIYAv%2Bec%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.06250732080145562s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0EzApFlqLBApE0AESIGfnefIAa7AzcbDoLtur~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=Zqgn4Hby08ABfOzhscw8AIbJKEA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.30</span>
@@ -433,8 +466,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.035664941015287256s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ooAAeephA7pE0CSSrMKFDNuOTII8EALLABAleG~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=Uh%2BQlltx7g9H7TSj5Ehb53qzEQY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.04265124503175113s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ooAAeephA7pE0CSSrMKFDNuOTII8EALLABAleG~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=mqJPlSsG7lqScfQCt6jrGQ8xjPE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
@@ -448,8 +481,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.21158700803963473s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8k56AqlalMAuYiYAqABijBIAABiPUhLK6AuE~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=LikbNgoYhbT2O4qD7kYZfqK4aeA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.02547562186004901s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8k56AqlalMAuYiYAqABijBIAABiPUhLK6AuE~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=so%2BAD0k9T35bu8pT26rdF921AFE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
@@ -463,8 +496,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.07870055126856705s">
-    <img src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/og1BAAWfAuM0iAAzELauKpNBwihBK1A4kUlVIA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=X6TCYssAWMocNEh3yIW4XpH0PBw%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.0865831900704689s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/og1BAAWfAuM0iAAzELauKpNBwihBK1A4kUlVIA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=Sg%2FJ23yH4mz6PRqmcSh5h3pj3pE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.13</span>
@@ -478,8 +511,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.11387492137090643s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUDZApBkQCOLEIEfUfVvCmvBV69ENgcNAOAAFp~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=MQ2LmTG8qQoKHMHFfXJqCRpltTo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.18722565522514553s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUDZApBkQCOLEIEfUfVvCmvBV69ENgcNAOAAFp~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=s3ULFCqMUNiuAr0mFAMm1ZvIQH0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.08</span>
@@ -493,8 +526,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.04721274519865219s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/owIDpLAfoLaqCCKChqQBzhAAEAUBuYAESgfFVp~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=cTlNCz89Mi7c1Hd1gGsgcRDC2GU%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.13315263945500042s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/owIDpLAfoLaqCCKChqQBzhAAEAUBuYAESgfFVp~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=jK9MMSeBfHeqdLQHg0JbbJ8VMDE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.06</span>
@@ -508,8 +541,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23609016538708366s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUPupjaq7VQ9lYqAO6AZNCoATiAASB1iIEBAM~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=l7iVIkdB6LA7zlSQHClBRE21uY8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.0679016176144962s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUPupjaq7VQ9lYqAO6AZNCoATiAASB1iIEBAM~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=gSxBJcOrz4rUq2YRoFcEHGuT%2FO4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.02</span>
@@ -523,8 +556,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.10361401047581349s">
-    <img src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4B8AZNiEiAAaBrAE0iB4jfPIAUTwMgaAKVaJK~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=5PeWOZ2m%2Frz%2ByJQt0KGl7yhHmHM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.28741789122744227s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4B8AZNiEiAAaBrAE0iB4jfPIAUTwMgaAKVaJK~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=t%2Bbe7tb%2FwV4HfiCvdoV7ClxEaxA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.25</span>
@@ -538,8 +571,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19634643363282683s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUpeQkUVACyYNADIBAgFxExxIfFQpOECcAuwjA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=%2FzcMX84dqYb17SQx1%2Bi0fdOAPEc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.02802518094125972s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUpeQkUVACyYNADIBAgFxExxIfFQpOECcAuwjA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=eLhfWdH82QNoDJdL8DnTxcLdaDE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.24</span>
@@ -553,8 +586,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.17201837634484624s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIcbFeAeIQiu0jADveRI2MKE9Q7z4tA8AAmWHj~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=yXb1fNjcmBbGBEu8W3T6tgaDTns%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.24979742348670428s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oIcbFeAeIQiu0jADveRI2MKE9Q7z4tA8AAmWHj~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=kQzm09ljQofLodBpw8SZf8esqZM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.24</span>
@@ -568,8 +601,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1540133253899555s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0hLLAKB0BR5hEziiAAS8AEpBADafb1wtKIZDO~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=aMRRiJFWZv8OWwBDSVLRlwNnqEA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.022455948114024314s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0hLLAKB0BR5hEziiAAS8AEpBADafb1wtKIZDO~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=nbUtP2HWsNOI5o%2B7aMnKxFvYKK8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.18</span>
@@ -583,8 +616,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.012216643400572247s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYEnvOEBArGD3B1YFa7IurAqYwAZAgKiAFoil~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=oydBa3mQIFiOoxh%2Fl8dLsMuHvz4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.29497151044783154s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYEnvOEBArGD3B1YFa7IurAqYwAZAgKiAFoil~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=VsMwrr6yS0xlhviyWS8yKLdV048%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.12</span>
@@ -598,8 +631,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.029680415288716875s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUxQjPaVBOAiv15AnEA5GoDKBaI6EaYA8ALil~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=SSraRfpIfoqlk6hRwVYdafYEFQU%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.25520007107616277s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUxQjPaVBOAiv15AnEA5GoDKBaI6EaYA8ALil~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=1btg%2FoYdCR8STFIzznRfGfSGIog%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.10</span>
@@ -613,8 +646,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.26139063111475674s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYOcEXCoBgAIADVfAEW5fA7AaQ8D2FvOkUqQzC~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=oEVXM1RMEDF5d6A6sOO84TVj0Yo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.013746577378767987s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYOcEXCoBgAIADVfAEW5fA7AaQ8D2FvOkUqQzC~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=JgI2DZrMaW5s9MRdHN6%2ByrBpUc8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.07</span>
@@ -628,8 +661,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.17876477374255534s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEEbIADArRftARGRjLDKeNAivoOEpIAAoeoREN~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=18SDIF9pYNoo5DTSsfebFpHAWes%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.09690536867924641s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEEbIADArRftARGRjLDKeNAivoOEpIAAoeoREN~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=pYhnKoYllhj7VqcCgI3UW2K5p%2Bs%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.07</span>
@@ -643,8 +676,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.019077921252333294s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/osXJIhKKABcaQDBDAAwiVbWkEfRn0ziBiAK6bA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=idSykeJFMh9lqQEpolH5gg%2BVDoA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.18886277565735168s">
+    <img src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/osXJIhKKABcaQDBDAAwiVbWkEfRn0ziBiAK6bA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=rfpMpFLz9mt0vNU1RXMVPHDtJ0Q%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.04</span>
@@ -658,8 +691,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.04468301594152526s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0lCAvAF6F6aACUAoohZVQgAEEIufBcDQeURmp~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=LA%2BO%2F2fwiSv9043UeGanW5gxBOA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.2662241243813935s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0lCAvAF6F6aACUAoohZVQgAEEIufBcDQeURmp~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=tJWo0mpEH94QnSiy6S45JAyaZM0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.04</span>
@@ -673,8 +706,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.17515267027494344s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oY9RIMFFAAUoRGeEBADAQHwqVcogQCGCAiE3fF~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=9KY6IiPN7txs0fQzPptSiIOmo9A%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.013360701322389023s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oY9RIMFFAAUoRGeEBADAQHwqVcogQCGCAiE3fF~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=0y9lKFtwt8e72BCR4TH%2Fvk%2B1asY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.21</span>
@@ -688,8 +721,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.13808590562685358s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEcABrfBUExCV7oCqTmqCnxUdC4AUifAiAADIg~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=QH0t8POUakE8vjO7eWk92n1Pq1o%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.17761743662686286s">
+    <img src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEcABrfBUExCV7oCqTmqCnxUdC4AUifAiAADIg~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=JteQFRJw2OZ15K3XfLFFp2CSLpk%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.06</span>
@@ -703,8 +736,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.18990190960715267s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8WAgEI0fxGAjeAVPUAYLK2De0oAKRgIhjQzUq~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=AdK%2Fitqf%2BmbwTulbC0yuuJqVb9E%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.01779426017501833s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8WAgEI0fxGAjeAVPUAYLK2De0oAKRgIhjQzUq~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=VjByVSXJOxGrJHURe0JDBCLIeKI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.26</span>
@@ -718,8 +751,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1394786463388972s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4FVDEgSIOoAwLCDQCIAyUFAXpWeOBfBv5Auwd~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=ooEbqh6Gfc8XLL2lp9t5FH%2F3vu0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.010418184897676408s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4FVDEgSIOoAwLCDQCIAyUFAXpWeOBfBv5Auwd~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=zEci8jECSt8vzx5lW6LLW7TkVj0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.19</span>
@@ -733,8 +766,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.06601667143809742s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oECqAiNoeFFA4EcAIoED1SfQQAsbgSBNBUDVdR~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=x2I1WnFHk0go11uzmM2kRUDGiw8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.13955960658254227s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oECqAiNoeFFA4EcAIoED1SfQQAsbgSBNBUDVdR~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=KCBLdRsE8hZTQ%2FKjVBKCmbgaNXI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.17</span>
@@ -748,8 +781,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.009488735620592381s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEEBDPAlYNTIC4RnlAAiBi8UWtBaiIAmAAVAV~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=%2BAr7purTXF7REX305URSNBGTUlA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.07634089870577372s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oEEBDPAlYNTIC4RnlAAiBi8UWtBaiIAmAAVAV~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=rwQkDTbF1oRP7dWpoHKYLa2PSLg%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.29</span>
@@ -763,8 +796,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.16351964712602154s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oITlQwn9AvFjAIseQAQDFmW2I7D0oI8iEeAeMA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=dThOvPJzsLwuBJHrUTyz5iMUXTk%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.04603346830460784s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oITlQwn9AvFjAIseQAQDFmW2I7D0oI8iEeAeMA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=j9LLxJRd4nMH%2FFi050ZQ0gtQpME%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.18</span>
@@ -778,8 +811,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19613850630935661s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUA7AfjgDBBoFAWCtrEt7wEWaCUIeM8g62VHVA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=4iT4d8gazPVhVoMEx%2FpYGIDg6XE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.18513117967001s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oUA7AfjgDBBoFAWCtrEt7wEWaCUIeM8g62VHVA~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=4Zk%2BzHR%2FhQBPKrRk97MGa%2FvjZm4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.12</span>
@@ -793,8 +826,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.27013588393881827s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8QDoaA05yH7CCWaEeMBiCAAEDUgXzAIKgfFVZ~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=6BkPEtiCvHIM%2F4EU6KNlLfgc1HQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.10779032278178435s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o8QDoaA05yH7CCWaEeMBiCAAEDUgXzAIKgfFVZ~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=vj3BNHy6hXwWKYxWS4GoGGqCsrM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.10</span>
@@ -808,8 +841,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.26823669596238825s">
-    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYaxZAbyQEVE75IAGYsilA6pBv4YBAiqBvVAm~tplv-tiktokx-origin.image?dr=9636&x-expires=1775775600&x-signature=mAdaEwDmxRQcasmRLKAIM8A4NGk%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
+  <div class="card embed-card" style="animation-delay:0.18817764761649705s">
+    <img src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYaxZAbyQEVE75IAGYsilA6pBv4YBAiqBvVAm~tplv-tiktokx-origin.image?dr=9636&x-expires=1775779200&x-signature=MG%2BIE%2FwOWPk6FnZlzOo8AmMbSM0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="" loading="lazy" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block;">
     <div class="embed-header">
       <span class="badge badge-tiktok">TikTok</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.06</span>
@@ -871,8 +904,28 @@ footer .heart{color:var(--emerald);}
 })();
 </script>
 
+<script>
+(function(){
+  var btn=document.getElementById('nav-hamburger');
+  var links=document.querySelector('.nav-links');
+  if(!btn||!links)return;
+  btn.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    btn.textContent=open?'✕':'☰';
+    btn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      btn.textContent='☰';
+      btn.setAttribute('aria-label','メニューを開く');
+    });
+  });
+})();
+</script>
+
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 8:53:57</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 9:08:14</p>
 </footer>
 
 </body>

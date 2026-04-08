@@ -30,6 +30,11 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,
 .nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
+.hamburger:hover{background:var(--emerald-light);}
+
+/* ── Top grid ── */
+.top-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;}
 
 /* ── Page hero ── */
 .page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
@@ -100,6 +105,32 @@ footer .heart{color:var(--emerald);}
 /* ── Divider ── */
 .divider{height:1px;background:var(--border);margin:32px 0;}
 
+/* ── Mobile ── */
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
+  .page-hero h1{font-size:26px;}
+  .content{padding:0 16px 48px;}
+  footer{padding:24px 16px;}
+  .top-grid{grid-template-columns:1fr;gap:24px;}
+  .act-modal-box{padding:24px 20px;}
+  .grid-3{grid-template-columns:1fr;}
+  /* カードのモバイル最適化 */
+  .news-card{padding:14px 16px;gap:12px;}
+  .news-card-img-body{padding:12px 14px 14px;}
+  .news-card-date{font-size:10px;min-width:64px;}
+  .news-card-title{font-size:13px;}
+  .news-card-desc{font-size:11px;}
+  .media-card .media-body{padding:12px;}
+  .media-card .media-title{font-size:12px;}
+  .grid-2{grid-template-columns:1fr;}
+  .embed-card .embed-wrap{min-height:200px;}
+}
+
 /* ── Activity Modal ── */
 .act-modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,20,0.55);z-index:400;align-items:center;justify-content:center;padding:20px;}
 .act-modal-overlay.open{display:flex;}
@@ -123,6 +154,7 @@ footer .heart{color:var(--emerald);}
   </a>
   <div class="nav-links">
     <a href="top.html" >NEWS</a>
+    <a href="yu.html" >佐藤優羽さんについて</a>
     <a href="committee.html" >委員会</a>
     <a href="activities.html" >活動報告</a>
     <a href="blog.html" >ブログ</a>
@@ -136,6 +168,7 @@ footer .heart{color:var(--emerald);}
     <a href="terms.html" {{ACTIVE_TERMS}}>委員規約</a>
     <a href="join.html" {{ACTIVE_JOIN}}>ご参加希望の方へ</a>
   </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
 
 
@@ -143,12 +176,12 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">INTERVIEW</div>
         <h1>インタビュー <em>集</em></h1>
         <p>佐藤優羽さんのインタビュー記事をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 8:53:55</p>
+        <p class="last-updated">最終更新：2026/4/8 9:08:12</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.14500689879998596s">
+  <div class="card media-card" style="animation-delay:0.26515671154996395s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/1RgI/wm/1RgIV5wg9KEQDVdN3BXa33ixULASorQC47WZ166JeYM.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜後編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー</span>
@@ -161,7 +194,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14723563263194822s">
+  <div class="card media-card" style="animation-delay:0.08864968356827074s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/zPaj/wm/zPajhkvm3JUAVSkeC9EqMXpBe1AmH_8nkmewso0H9a0.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜前編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー</span>
@@ -174,8 +207,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.20478392811269946s">
-    <img class="media-img" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/e9728fd0-3f53-810c-bd4e-0003d0b09af4/856e9b9c-8aaf-462e-98a5-5272f67e5426/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664KF73U76%2F20260407%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260407T235355Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLXdlc3QtMiJHMEUCIQCn73SoPPdyR42iflTaSUpOcZkxbOGXpLsSZdqee%2FoqYQIgV8Du9NJwpzv6ZAK8j8BFF%2BrMqVRHPbfa8mO3955wsIgqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLFdR%2BSmwlcXIyU%2FpircA9rCG85tThsi%2FEMFirv8P0DCt5X7jnyd%2FHgf5%2FXXD4I1RrMziX0WqUN4Yo%2F%2BuMRo%2FyCSehjAL1EEuOSgzOaCWmeI9HrcL79YzowiWcOsNWWexJPGLyaalob7TUvuPpyUfkRmbkdMpAe7zSmLDcGjKDqCa%2FtjeijgdWoAcPOeAKPrPoF%2FNgH0ikwiauB2sZP%2Bsg2EkZjK951BnrklJXbdp6Bxu26n8IknEMjqom0muwZwRzjKJOxaDTvLLSMbYNxdWKpRwmSfEKKMZiDoD4Q50AhqWFX378i%2FAZ068tavgab18hFEjPF8KuY%2BcYRhutFKhCEWfC1rg3Ekbcx4rbim4V%2BoO7BZ6D0WZHq%2BAor0D78iUfXPRtVABRINQBPMDfqcVQiMCd0OJCp%2BUmmxI3BVPuK6ZVjnaaWAuK9YvWssv%2BEQF8QB%2FrENdYXLe0VdBr0gYs7dcGg2VofYvoxk2rPtdG4fS1swAlrriyN%2BkIzemxO3VcHiJPdevJDr3i7vb7xeIbJ9KmPPKf%2BmJmzIXeJuK7FG%2BhVn88aiz2zKAR2f5lF6pBtOyA9K9aFm%2FKhR%2BfY3eKl8YzXcFcucBHMgD%2BJFR8F4oy0wvJ0ypbAVR9DCkCKL3ivLu2YYlhHxCOMNMPmn1s4GOqUB0%2FL7lhN6MVKCYD%2Fmdgquzj1O%2F6QdyjLqmUqtdaVZG3I5ijuRvbVEwTjNHzW3fKCa2R3f6wdGjG5yxOLyCsNa%2B3j%2B04nDVp4TnGAgXEx2lyzuvPlPdhJ4x%2BkEKIop0XIRUikNwV8G89mj6m%2BUdNMO%2FQMzdF89%2Fgu7KyyAZ2TBg4o%2B%2FfrDbho0GzQRlqRoGreKa4Q4%2Bzjch3FcmdI8WAtQP0%2BSzJ42&X-Amz-Signature=d461cb3d57a85fdcf7a76895f92837719d0039e1db45a577de541714fdd879c1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt="BRODY賞" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.06319983993594548s">
+    <img class="media-img" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/e9728fd0-3f53-810c-bd4e-0003d0b09af4/856e9b9c-8aaf-462e-98a5-5272f67e5426/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667MGDVIZE%2F20260408%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260408T000812Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLXdlc3QtMiJGMEQCIDUudx6KgnuU%2Bkkx4lzDNR8sorsmJ6oPcRhVUUVjDq%2BmAiBOKSiIqbtpQQab9lwYuhtWCjdUTpuhrWntRhwl3R6%2BUyqIBAjx%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwsEpAyNgVkd0GFI7KtwDtue7ut8upJ8GSqTQWkoAdfRMZxZEA6RGUH3ZlDCFI%2BFc8rAI9NBfnMdcHjvHg2xoXq0SLOWyhJ%2FzuKUMJPqc4Q%2BdZtC5LFeUkJ%2B2DHK2MoU6gRl3Ukos6wwa%2F4Z3a%2FRO9bqSemYJjMcvcwx4Yl%2F06ZLrpzJ85yCFiqhhGNP%2FmsR46L5hRj9wWIhrhTRsNEduiSJjv512%2B3cQEkiNkAZlx4xbN4WMfqImsSe8t3YlwBIJyeypPplxndENg1RcJsbL5oD6WWJuE5Ss4fbU0pWgl8aN0A5L3jyOVbRGeX4VZXQYF2IWPd1hI7ILB1yzk%2F5erNucMNnVcETdjzyhpY45gvBxUDSK9o5iCTuUM4KOrSWwmzHWHGS3Xab327PGDRP4HEnetiNKO30A1dwVyUuoGtMRoncIddm1YbwNMMTmWLUR7E7iDljRJZrKvnhDnWqrtqmutkcBf%2BdVryKY%2FKDUVkmK0e0ASuG0%2B4MARvRa%2Bdnt3tNmgKTOnT0USjfVipfNddWvIKhP0uFRMc8NB1unoyJ5oCPl83HjxZbOnkggsYx0VhUTWeOPLqxM0FWobl1QZwpfeh1GNSyzF2Jq2L8OlbtzHVE4a1wlefdOlnKPFHsYKyCU4vk7ubPro%2Fcw%2BafWzgY6pgHrKLAFZKg30Kh7Rr%2F30W%2Fr1ZBB%2FnY2RaQeS8x2VmTlyLKlM%2B9F%2B2pe1hu%2FrtRkKN9eJ1TnmjOie7TBCyOFJ%2BBgtxPoSwm3TmcW%2FUNEj%2Fb%2FhOz%2FfMZ2gA3J%2FffNmTHPuEXvbFKgn95aGXyqu7uS9FcCEhXOqjIgAQUPb6UfSuXfWAWwZ2dwAsikIcXlgVg3Q2QY6J36sKC4ZSYXKLqgbi1tLfyIddKh&X-Amz-Signature=9c315c59b4553d911d08c63baab7db18741a75ef644916580718a0e69b14b70a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt="BRODY賞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー</span>
       <p class="media-title" style="margin-top:6px">BRODY賞</p>
@@ -187,8 +220,8 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.11293447137858574s">
-    <img class="media-img" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/e9728fd0-3f53-810c-bd4e-0003d0b09af4/dcff664a-da94-4c24-8ad3-d104892e8c12/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664KF73U76%2F20260407%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260407T235355Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLXdlc3QtMiJHMEUCIQCn73SoPPdyR42iflTaSUpOcZkxbOGXpLsSZdqee%2FoqYQIgV8Du9NJwpzv6ZAK8j8BFF%2BrMqVRHPbfa8mO3955wsIgqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLFdR%2BSmwlcXIyU%2FpircA9rCG85tThsi%2FEMFirv8P0DCt5X7jnyd%2FHgf5%2FXXD4I1RrMziX0WqUN4Yo%2F%2BuMRo%2FyCSehjAL1EEuOSgzOaCWmeI9HrcL79YzowiWcOsNWWexJPGLyaalob7TUvuPpyUfkRmbkdMpAe7zSmLDcGjKDqCa%2FtjeijgdWoAcPOeAKPrPoF%2FNgH0ikwiauB2sZP%2Bsg2EkZjK951BnrklJXbdp6Bxu26n8IknEMjqom0muwZwRzjKJOxaDTvLLSMbYNxdWKpRwmSfEKKMZiDoD4Q50AhqWFX378i%2FAZ068tavgab18hFEjPF8KuY%2BcYRhutFKhCEWfC1rg3Ekbcx4rbim4V%2BoO7BZ6D0WZHq%2BAor0D78iUfXPRtVABRINQBPMDfqcVQiMCd0OJCp%2BUmmxI3BVPuK6ZVjnaaWAuK9YvWssv%2BEQF8QB%2FrENdYXLe0VdBr0gYs7dcGg2VofYvoxk2rPtdG4fS1swAlrriyN%2BkIzemxO3VcHiJPdevJDr3i7vb7xeIbJ9KmPPKf%2BmJmzIXeJuK7FG%2BhVn88aiz2zKAR2f5lF6pBtOyA9K9aFm%2FKhR%2BfY3eKl8YzXcFcucBHMgD%2BJFR8F4oy0wvJ0ypbAVR9DCkCKL3ivLu2YYlhHxCOMNMPmn1s4GOqUB0%2FL7lhN6MVKCYD%2Fmdgquzj1O%2F6QdyjLqmUqtdaVZG3I5ijuRvbVEwTjNHzW3fKCa2R3f6wdGjG5yxOLyCsNa%2B3j%2B04nDVp4TnGAgXEx2lyzuvPlPdhJ4x%2BkEKIop0XIRUikNwV8G89mj6m%2BUdNMO%2FQMzdF89%2Fgu7KyyAZ2TBg4o%2B%2FfrDbho0GzQRlqRoGreKa4Q4%2Bzjch3FcmdI8WAtQP0%2BSzJ42&X-Amz-Signature=f5d805f0b2a98c07a87989cc654ffb73a40e83e61d06ae5860685c040764d459&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt="BRODY (ブロディ) 2025年 12月号" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.17768211055057684s">
+    <img class="media-img" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/e9728fd0-3f53-810c-bd4e-0003d0b09af4/dcff664a-da94-4c24-8ad3-d104892e8c12/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667MGDVIZE%2F20260408%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260408T000812Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLXdlc3QtMiJGMEQCIDUudx6KgnuU%2Bkkx4lzDNR8sorsmJ6oPcRhVUUVjDq%2BmAiBOKSiIqbtpQQab9lwYuhtWCjdUTpuhrWntRhwl3R6%2BUyqIBAjx%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwsEpAyNgVkd0GFI7KtwDtue7ut8upJ8GSqTQWkoAdfRMZxZEA6RGUH3ZlDCFI%2BFc8rAI9NBfnMdcHjvHg2xoXq0SLOWyhJ%2FzuKUMJPqc4Q%2BdZtC5LFeUkJ%2B2DHK2MoU6gRl3Ukos6wwa%2F4Z3a%2FRO9bqSemYJjMcvcwx4Yl%2F06ZLrpzJ85yCFiqhhGNP%2FmsR46L5hRj9wWIhrhTRsNEduiSJjv512%2B3cQEkiNkAZlx4xbN4WMfqImsSe8t3YlwBIJyeypPplxndENg1RcJsbL5oD6WWJuE5Ss4fbU0pWgl8aN0A5L3jyOVbRGeX4VZXQYF2IWPd1hI7ILB1yzk%2F5erNucMNnVcETdjzyhpY45gvBxUDSK9o5iCTuUM4KOrSWwmzHWHGS3Xab327PGDRP4HEnetiNKO30A1dwVyUuoGtMRoncIddm1YbwNMMTmWLUR7E7iDljRJZrKvnhDnWqrtqmutkcBf%2BdVryKY%2FKDUVkmK0e0ASuG0%2B4MARvRa%2Bdnt3tNmgKTOnT0USjfVipfNddWvIKhP0uFRMc8NB1unoyJ5oCPl83HjxZbOnkggsYx0VhUTWeOPLqxM0FWobl1QZwpfeh1GNSyzF2Jq2L8OlbtzHVE4a1wlefdOlnKPFHsYKyCU4vk7ubPro%2Fcw%2BafWzgY6pgHrKLAFZKg30Kh7Rr%2F30W%2Fr1ZBB%2FnY2RaQeS8x2VmTlyLKlM%2B9F%2B2pe1hu%2FrtRkKN9eJ1TnmjOie7TBCyOFJ%2BBgtxPoSwm3TmcW%2FUNEj%2Fb%2FhOz%2FfMZ2gA3J%2FffNmTHPuEXvbFKgn95aGXyqu7uS9FcCEhXOqjIgAQUPb6UfSuXfWAWwZ2dwAsikIcXlgVg3Q2QY6J36sKC4ZSYXKLqgbi1tLfyIddKh&X-Amz-Signature=79df35a411996c317ad5b5659cfe78624349eb44e83cf5329b0fd9824f6c2cc2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt="BRODY (ブロディ) 2025年 12月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー</span>
       <p class="media-title" style="margin-top:6px">BRODY (ブロディ) 2025年 12月号</p>
@@ -201,7 +234,7 @@ footer .heart{color:var(--emerald);}
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.05929988573522982s">
+  <div class="card media-card" style="animation-delay:0.1465074374509533s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/81wWuPh-6bL._SL1500_.jpg" alt="Ray(レイ) 2025年 08 月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー</span>
@@ -261,8 +294,28 @@ footer .heart{color:var(--emerald);}
 })();
 </script>
 
+<script>
+(function(){
+  var btn=document.getElementById('nav-hamburger');
+  var links=document.querySelector('.nav-links');
+  if(!btn||!links)return;
+  btn.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    btn.textContent=open?'✕':'☰';
+    btn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      btn.textContent='☰';
+      btn.setAttribute('aria-label','メニューを開く');
+    });
+  });
+})();
+</script>
+
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 8:53:55</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 9:08:12</p>
 </footer>
 
 </body>
