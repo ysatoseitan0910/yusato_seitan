@@ -50,7 +50,7 @@ function fmtDate(d) {
   return d.slice(0, 10).replace(/-/g, ".");
 }
 function badgeClass(platform) {
-  const map = { Blog:"blog", X:"x", TikTok:"tiktok", YouTube:"youtube", Lemino:"lemino", "インタビュー":"interview", Web:"web" };
+  const map = { Blog:"blog", X:"x", TikTok:"tiktok", YouTube:"youtube", Lemino:"lemino", "インタビュー、雑誌掲載":"interview", Web:"web" };
   return "badge badge-" + (map[platform] || "blog");
 }
 
@@ -481,13 +481,13 @@ async function buildBlog(tpl) {
 
 async function buildInterview(tpl) {
   const pages = await queryDB(DB.interview);
-  const cards = pages.map(p => mediaCard(p, "インタビュー")).join("\n");
+  const cards = pages.map(p => mediaCard(p, "インタビュー、雑誌掲載")).join("\n");
   const body = `<div class="grid-2">
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "インタビュー集", "INTERVIEW", "インタビュー <em>集</em>", "佐藤優羽さんのインタビュー記事をまとめています", body);
+  return buildPage(tpl, "インタビュー、雑誌掲載集", "INTERVIEW", "インタビュー、 <em>雑誌掲載集</em>", "佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています", body);
 }
 
 async function buildX(tpl) {
