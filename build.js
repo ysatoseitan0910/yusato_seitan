@@ -313,11 +313,10 @@ function actModalAttrs(p) {
 
 // ── ページビルダー ──
 async function buildIndex(tpl) {
-  const [yuNews, activities, committeeNews, xPages] = await Promise.all([
+  const [yuNews, activities, committeeNews] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
     queryDB(DB.committeeNews),
-    queryDB(DB.x),
   ]);
 
   // ── 委員会News: リスト行（全件・クリックでモーダル） ──
@@ -376,8 +375,8 @@ async function buildIndex(tpl) {
   // ── サイドバー: YouTube（固定動画） ──
   const ytEmbedHtml = `<iframe width="100%" height="175" src="https://www.youtube.com/embed/QXQUKkvSrCQ" frameborder="0" allowfullscreen loading="lazy" style="display:block;"></iframe>`;
 
-  // ── サイドバー: X（最新1件・oEmbed） ──
-  const xEmbedHtml = xPages[0] ? await fetchTwitterOembed(getUrl(xPages[0])) : "";
+  // ── サイドバー: X（固定ツイート・oEmbed） ──
+  const xEmbedHtml = await fetchTwitterOembed("https://x.com/ysatoseitan/status/2040992766583550402?s=20");
 
   const body = `
   <div class="top-layout">
