@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佐藤優羽さんNews | 佐藤優羽生誕祭実行委員会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --emerald: #3DAA78;
+  --emerald-light: #d0ece0;
+  --emerald-pale: #edf8f2;
+  --emerald-dark: #1e7a4f;
+  --gold: #c9a96e;
+  --gold-light: #f5ead8;
+  --text: #0f1e16;
+  --text-muted: #4d7062;
+  --text-light: #8aae9a;
+  --white: #ffffff;
+  --bg: #f4faf7;
+  --border: #c8e0d4;
+  --nav-h: 60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;min-height:100vh;}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
+.nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
+.hamburger:hover{background:var(--emerald-light);}
+
+/* ── Top layout ── */
+.top-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start;}
+.top-main{display:flex;flex-direction:column;gap:32px;}
+.top-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.top-section-header h2{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;}
+.top-section-header a{font-size:11px;color:var(--emerald);text-decoration:none;}
+.top-section-header a:hover{color:var(--emerald-dark);}
+.committee-list{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.committee-list-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.committee-list-row:last-child{border-bottom:none;}
+.committee-list-row:hover{background:var(--emerald-pale);}
+.committee-row-date{font-size:11px;color:var(--text-light);white-space:nowrap;min-width:72px;}
+.committee-row-title{flex:1;font-size:13px;color:var(--text);line-height:1.4;}
+.act-thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.act-thumb-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.act-thumb-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(61,170,120,0.12);}
+.act-thumb-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.act-thumb-no-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--emerald-pale);color:var(--text-light);font-size:11px;}
+.act-thumb-body{padding:8px 10px 10px;}
+.act-thumb-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.act-thumb-date{font-size:10px;color:var(--text-light);}
+.yunews-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+a.yunews-card{display:block;text-decoration:none;color:inherit;}
+.yunews-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.yunews-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(61,170,120,0.12);}
+.yunews-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.yunews-no-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--emerald-pale);color:var(--text-light);font-size:11px;}
+.yunews-body{padding:8px 10px 10px;}
+.yunews-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.yunews-meta{display:flex;align-items:center;margin-top:4px;}
+.yunews-date{font-size:10px;color:var(--text-light);}
+.top-sidebar{display:flex;flex-direction:column;gap:12px;}
+.sidebar-widget{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sidebar-widget-inner{padding:8px;}
+.sidebar-links{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sidebar-links a{display:flex;align-items:center;padding:10px 14px;font-size:12px;color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border);transition:background 0.15s;}
+.sidebar-links a:last-child{border-bottom:none;}
+.sidebar-links a:hover{background:var(--emerald-pale);color:var(--emerald-dark);}
+.sidebar-links a::before{content:'›';color:var(--emerald);margin-right:8px;font-size:14px;}
+
+/* ── Page hero ── */
+.page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
+.page-hero-tag{display:inline-block;font-size:10px;letter-spacing:0.25em;color:var(--emerald);border:1px solid var(--emerald-light);padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+.page-hero h1{font-family:'Shippori Mincho',serif;font-size:36px;font-weight:500;line-height:1.2;color:var(--text);margin-bottom:8px;}
+.page-hero h1 em{color:var(--emerald-dark);font-style:normal;}
+.page-hero p{font-size:12px;color:var(--text-muted);letter-spacing:0.06em;}
+.last-updated{font-size:10px;color:var(--text-light);margin-top:6px;letter-spacing:0.04em;}
+
+/* ── Content area ── */
+.content{max-width:1100px;margin:0 auto;padding:0 40px 80px;}
+
+/* ── Footer ── */
+footer{background:var(--white);border-top:1px solid var(--border);padding:32px 40px;text-align:center;}
+footer p{font-size:10px;letter-spacing:0.12em;color:var(--text-light);}
+footer .heart{color:var(--emerald);}
+
+/* ── Card base ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(61,170,120,0.12);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Grid ── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr);}.grid-2{grid-template-columns:1fr;}}
+@media(max-width:600px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+/* ── Status badge ── */
+.badge{display:inline-block;font-size:10px;letter-spacing:0.08em;padding:3px 10px;border-radius:10px;font-weight:500;}
+.badge-open{background:#e8f5e9;color:#2e7d32;}
+.badge-closed{background:#f5f5f5;color:#757575;}
+.badge-blog{background:var(--emerald-light);color:var(--emerald-dark);}
+.badge-x{background:#e8f0fe;color:#1a56db;}
+.badge-tiktok{background:#fff0f3;color:#fe2c55;}
+.badge-youtube{background:#fff3e0;color:#e65100;}
+.badge-lemino{background:#f3e5f5;color:#6a1b9a;}
+.badge-interview{background:var(--gold-light);color:#7d5a00;}
+.badge-web{background:#e0f7fa;color:#006064;}
+
+/* ── News list card ── */
+.news-card{padding:20px 24px;display:flex;gap:20px;align-items:flex-start;}
+.news-card--img{padding:0;flex-direction:column;}
+.news-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:12px 12px 0 0;}
+.news-card-img-body{padding:16px 20px 18px;width:100%;}
+.news-card-date{font-size:11px;color:var(--text-light);letter-spacing:0.06em;white-space:nowrap;padding-top:2px;min-width:80px;}
+.news-card-body{flex:1;}
+.news-card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.5;}
+.news-card-desc{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:8px;}
+.news-card-link{font-size:11px;color:var(--emerald);text-decoration:none;letter-spacing:0.04em;}
+.news-card-link:hover{color:var(--emerald-dark);}
+
+/* ── Media card ── */
+.media-card .media-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--emerald-pale);}
+.media-card .media-body{padding:16px;}
+.media-card .media-title{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.5;}
+.media-card .media-desc{font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;}
+.media-card .media-meta{display:flex;align-items:center;justify-content:space-between;}
+.media-card .media-date{font-size:10px;color:var(--text-light);}
+
+/* ── Embed card ── */
+.embed-card .embed-header{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between;}
+.embed-card .embed-wrap{background:var(--emerald-pale);min-height:300px;display:flex;align-items:center;justify-content:center;padding:8px;}
+.embed-card .embed-footer{padding:10px 16px 14px;}
+.embed-card .embed-title{font-size:12px;color:var(--text);margin-bottom:4px;}
+.embed-card .embed-link{font-size:11px;color:var(--emerald);text-decoration:none;}
+
+/* ── X embed grid ── */
+.x-embed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.x-card{min-width:0;}
+.x-card .twitter-tweet{margin:0 auto !important;}
+.x-card-label{font-size:11px;color:var(--text-muted);padding:4px 2px 8px;line-height:1.5;}
+@media(max-width:900px){.x-embed-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.x-embed-grid{grid-template-columns:1fr;}}
+
+/* ── Divider ── */
+.divider{height:1px;background:var(--border);margin:32px 0;}
+
+/* ── Mobile ── */
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
+  .page-hero h1{font-size:26px;}
+  .content{padding:0 16px 48px;}
+  footer{padding:24px 16px;}
+  .top-layout{grid-template-columns:1fr;}
+  .act-thumb-grid{grid-template-columns:repeat(2,1fr);}
+  .yunews-grid{grid-template-columns:repeat(2,1fr);}
+  .act-modal-box{padding:24px 20px;}
+  .grid-3{grid-template-columns:1fr;}
+  /* カードのモバイル最適化 */
+  .news-card{padding:14px 16px;gap:12px;}
+  .news-card-img-body{padding:12px 14px 14px;}
+  .news-card-date{font-size:10px;min-width:64px;}
+  .news-card-title{font-size:13px;}
+  .news-card-desc{font-size:11px;}
+  .media-card .media-body{padding:12px;}
+  .media-card .media-title{font-size:12px;}
+  .grid-2{grid-template-columns:1fr;}
+  .embed-card .embed-wrap{min-height:200px;}
+}
+
+/* ── Activity Modal ── */
+.act-modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,20,0.55);z-index:400;align-items:center;justify-content:center;padding:20px;}
+.act-modal-overlay.open{display:flex;}
+.act-modal-box{background:var(--white);border-radius:16px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;padding:32px 36px;position:relative;}
+.act-modal-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-light);line-height:1;}
+.act-modal-close:hover{color:var(--text);}
+.act-modal-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:20px;display:block;}
+.act-modal-title{font-family:'Shippori Mincho',serif;font-size:20px;font-weight:500;line-height:1.5;margin-bottom:10px;color:var(--text);}
+.act-modal-meta{display:flex;gap:8px;align-items:center;margin-bottom:18px;}
+.act-modal-desc{font-size:13px;color:var(--text-muted);line-height:1.9;}
+.act-modal-link{display:inline-block;margin-top:18px;font-size:12px;color:var(--emerald);text-decoration:none;letter-spacing:0.04em;}
+.act-modal-link:hover{color:var(--emerald-dark);}
+[data-act-modal]{cursor:pointer;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    佐藤優羽生誕祭実行委員会
+  </a>
+  <div class="nav-links">
+    <a href="top.html" >NEWS</a>
+    <a href="yu.html" >佐藤優羽さんについて</a>
+    <a href="committee.html" >委員会</a>
+    <a href="activities.html" >活動報告</a>
+    <a href="yunews.html" class="active">佐藤優羽さんNews</a>
+    <a href="blog.html" >ブログ</a>
+    <a href="interview.html" >インタビュー</a>
+    <a href="x.html" >X</a>
+    <a href="tiktok.html" >TikTok</a>
+    <a href="youtube.html" >YouTube</a>
+    <a href="lemino.html" >Lemino</a>
+    <a href="about.html" >当委員会について</a>
+    <a href="terms.html" >委員規約</a>
+    <a href="join.html" >ご参加希望の方へ</a>
+  </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
+</nav>
+
+
+      <div class="page-hero">
+        <div class="page-hero-tag">YU NEWS</div>
+        <h1>佐藤優羽さん <em>News</em></h1>
+        <p>佐藤優羽さんの最新情報をまとめています</p>
+        <p class="last-updated">最終更新：2026/4/8 19:48:40</p>
+      </div>
+      <div class="content"><div class="grid-3">
+    <!-- GALLERY_START -->
+    
+  <div class="card news-card news-card--img" style="animation-delay:0.26595017164806084s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ea/a1490ea_w1.jpg" alt="日向坂になりましょう　#20 瞬発力を鍛えよう！" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.04.06</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう　#20 瞬発力を鍛えよう！</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場！<br>日向坂になりましょう#20 「 瞬発力を鍛えよう！」が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdsYjU=?pit_git_type=PIT" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.15496797513903868s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/yB6mUjbmIIk/maxresdefault.jpg" alt="【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.04.06</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=yB6mUjbmIIk" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.0736054781843986s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobhgiZ1C.jpg" alt="二日間の感謝を。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.04.06</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">二日間の感謝を。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「二日間の感謝を。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68840<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68840?ima=0000&cd=member" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2639928588230864s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobLMASMY.jpg" alt="7回目のおめでとう。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.04.04</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">7回目のおめでとう。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「7回目のおめでとう。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68826<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68826?ima=0000&cd=member" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.06308934386429034s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobVQeG1U.jpg" alt="君じゃないといけないこの惑い。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.04.02</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">君じゃないといけないこの惑い。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「君じゃないといけないこの惑い。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68800<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68800?ima=0000&cd=member" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.18839508728047985s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/uUXracpCICo/maxresdefault.jpg" alt="【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
+  冒頭先行公開" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.30</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
+  冒頭先行公開</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    Leminoチャンネルで【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20<br>      冒頭先行公開が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=uUXracpCICo&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2957443503609439s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob5azhEb.jpg" alt="桜の季節の蜂蜜。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.30</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">桜の季節の蜂蜜。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「桜の季節の蜂蜜。」<br><br>https://www.hinatazaka46.com/s/official/diary/member/list<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68744?ima=0000&cd=member" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.05452768012447817s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobpoZ42R.jpg" alt="終わりの季節なのか？それとも始まりの季節なのか？" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.26</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">終わりの季節なのか？それとも始まりの季節なのか？</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「終わりの季節なのか？それとも始まりの季節なのか？」<br><br>https://hinatazaka46.com/s/official/diary/detail/68616<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68616" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2180975821948909s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIffwmscwCBFQ5UIAQkA8AAiV6DgdpdmDEREEG~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=4VVewwF71dwKZTJT97sSokfKwg4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="「6回目のひな誕祭」ライブ衣装で踊ってみた💃🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.25</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">「6回目のひな誕祭」ライブ衣装で踊ってみた💃🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7620760055905799445" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2165248694417969s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobVG7m1C.jpg" alt="思い出すことは止められない。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.25</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">思い出すことは止められない。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「思い出すことは止められない。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68464<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68464" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.01691293894000796s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/owItQABAVkJlAJDpwFE1flKMKm4CBEAgUWswCf~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=UAdbG8tV0UGgXuG1xhnQmOHqcAM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="執念のクリア⁉️ 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.21</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">執念のクリア⁉️ 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608490212481666324" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.07088626178546632s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/wA_lovpT5C4/maxresdefault.jpg" alt="【コール動画】どんどんどんどん声出せ〜！これを観て日向坂46をもっと好きになる🏟️🩵【好きになるクレッシェンド】" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.21</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【コール動画】どんどんどんどん声出せ〜！これを観て日向坂46をもっと好きになる🏟️🩵【好きになるクレッシェンド】</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>   <br>  日向坂ちゃんねるで【コール動画】どんどんどんどん声出せ〜！これを観て日向坂46をもっと好きになる🏟️🩵【好きになるクレッシェンド】が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=wA_lovpT5C4" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.27471541806562894s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/wA_lovpT5C4/maxresdefault.jpg" alt=" 好きになるクレッシェンドのコール動画が公開されました！" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.21</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px"> 好きになるクレッシェンドのコール動画が公開されました！</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／<br> コール動画公開│ ˙ᵕ˙ )꜆<br>\＼<br><br>#日向坂ちゃんねる にて「 #好きになるクレッシェンド」のコール動画が公開されました<br><br>五期生のコール曲！！何回も視聴して、<br>どんどんどんどん好きになって<br>#七回目のひな誕祭 を盛り上げましょう#日向坂五期生</p>
+      <a href="https://www.youtube.com/watch?v=wA_lovpT5C4&list=RDwA_lovpT5C4&start_radio=1" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2529464724169505s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob8T9M1D.jpg" alt="ずっと碇でいるから。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.20</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">ずっと碇でいるから。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「ずっと碇でいるから。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68449<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68449" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.0019344175343344538s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobxHRBxp.jpg" alt="夢惑う思いならば。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.20</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">夢惑う思いならば。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「夢惑う思いならば。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68612<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68612" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2809320411325413s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobeeBpnR.jpg" alt="思いを募らせて、咲かせて。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.19</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">思いを募らせて、咲かせて。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「思いを募らせて、咲かせて。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68441<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68441" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.020116281399234204s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobwEOfKq.jpg" alt="駆け抜けて夏になるのは早い。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.18</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">駆け抜けて夏になるのは早い。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「駆け抜けて夏になるのは早い。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68400<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68400" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.04686512408225121s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oQN5E0ivADKtcpaWAABAIRywKZ0wyBCBA2iafM~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=wPxvNKFmTifFtGd%2Fut6YQOxVG0Q%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="鶴崎の戦略的撤退⁉️ 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.17</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">鶴崎の戦略的撤退⁉️ 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608489508908076309" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.24569438353618167s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob5VpTUn.jpg" alt="桃色を咲くように踊らせて。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.17</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">桃色を咲くように踊らせて。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「桃色を咲くように踊らせて。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68380<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68380" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.24076313606725333s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobD2NUcK.jpg" alt="佐藤優羽は問いかけたい。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.17</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">佐藤優羽は問いかけたい。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「佐藤優羽は問いかけたい。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68381<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68381" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2951102579525159s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/okAWAAFnIylBYA8uovlarEChSbxxaii0AAzBq~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=fs%2Fwe1vxAQFPwz2geUpOPq2ZOU8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="究極の心理戦" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.16</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">究極の心理戦</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7615986974129769735" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.017573340661367263s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d4/a1467d4_w1.jpg" alt="日向坂になりましょう　#18 五期生のゲームセンスを確かめましょう！番外編" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.16</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう　#18 五期生のゲームセンスを確かめましょう！番外編</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場！<br>日向坂になりましょう#18 「五期生のゲームセンスを確かめましょう！」番外編が公開されました！<br>ぜひご覧ください🪽<br><br>https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtrZno=?pit_git_type=PIT</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtrZno=?pit_git_type=PIT" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.027251454036262657s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobZuaPdE.jpg" alt="その可憐さを全部瞳の中に。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.16</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">その可憐さを全部瞳の中に。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「その可憐さを全部瞳の中に。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68367<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68367" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.297634037435435s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobS8hKRY.jpg" alt="どんな季節でさえ虜にしてしまう。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.15</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">どんな季節でさえ虜にしてしまう。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「どんな季節でさえ虜にしてしまう。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68349<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68349" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2714905876323373s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oEw9IZAfEQeJ4AADnOTI1MREaI9noWA8AAfWCj~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=sllciPS1D9wZI%2BFYS3PQU6FqgSQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="／ ひな誕祭まであと21日‼︎ ＼ 2026年4月4日(土)・5日(日)に横浜スタジアムで7回目のひな誕祭を開催🏟️🩵 ひな誕祭に向けてメンバーは毎日あることにチャレンジ中💪🏻 コメントで応援してね📣❤️‍🔥" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.14</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">／ ひな誕祭まであと21日‼︎ ＼ 2026年4月4日(土)・5日(日)に横浜スタジアムで7回目のひな誕祭を開催🏟️🩵 ひな誕祭に向けてメンバーは毎日あることにチャレンジ中💪🏻 コメントで応援してね📣❤️‍🔥</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7617057123523955989" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2739353281794488s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobj4DU7a.png" alt="改めまして、佐藤優羽です。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.14</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">改めまして、佐藤優羽です。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「改めまして、佐藤優羽です。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68347<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68347" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.0167469263275811s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobwDwq8p.jpg" alt="今日はどんな世界が見えているのか知りたい。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.13</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">今日はどんな世界が見えているのか知りたい。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「今日はどんな世界が見えているのか知りたい。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68331<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68331" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.22816908879700804s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oYsZBn4MTC5YpPeWQGfO4AgoIDgk8ZfAhjgr9j~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=KU%2Fsmiok2PCYe9dnGQNU67cojRc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="さつまいもタイム🍠" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.12</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">さつまいもタイム🍠</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7616276669921332501" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.28135958568839453s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob5U6WvL.jpg" alt="笑顔を見ると菜の花を思い出す。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.12</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">笑顔を見ると菜の花を思い出す。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「笑顔を見ると菜の花を思い出す。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68324<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68324" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.11121362768172709s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob7dm1KH.jpg" alt="真っ赤にきらめいて。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.11</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">真っ赤にきらめいて。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「真っ赤にきらめいて。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68307<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68307" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.20699315494731238s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oYABFcpcAxVbEQeCFsACgEIDWgcplAQCQDfYx3~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=%2B1CMYeGDQhY%2BjEAjt27fo4mUrwI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="どのキャラクターが好み？ 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.10</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">どのキャラクターが好み？ 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7608487548066827541" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2801352025871919s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob0ixQX8.jpg" alt="止まらないのは分かっているけれど、時間に止まって欲しくなる時もある。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.10</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">止まらないのは分かっているけれど、時間に止まって欲しくなる時もある。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「止まらないのは分かっているけれど、時間に止まって欲しくなる時もある。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68243<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68243" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.11895268776256307s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobW3kNrC.png" alt="一年目、輝きを目に焼き付けた日々。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.10</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">一年目、輝きを目に焼き付けた日々。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「一年目、輝きを目に焼き付けた日々。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68296<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68296" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.24557820637860797s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d3/a1467d3_w1.jpg" alt="日向坂になりましょう　" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.09</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう　</p>
+        </div>
+      </div>
+      
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtqb3g=?pit_git_type=PIT" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.28879688714987944s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ooj6AD3IWAFVBGofEg7aocpeuFRBrAapEQ4CAh~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=em98uAm0X2f0eJGa7Ewjq4XHn5A%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="／ ひな誕祭まであと27日‼︎ ＼ 2026年4月4日(土)・5日(日)に横浜スタジアムで7回目のひな誕祭を開催🏟️🩵 ひな誕祭に向けてメンバーは毎日あることにチャレンジ中💪🏻 コメントで応援してね📣❤️‍🔥" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.08</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">／ ひな誕祭まであと27日‼︎ ＼ 2026年4月4日(土)・5日(日)に横浜スタジアムで7回目のひな誕祭を開催🏟️🩵 ひな誕祭に向けてメンバーは毎日あることにチャレンジ中💪🏻 コメントで応援してね📣❤️‍🔥</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7614845730385317140" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.135111176879947s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobKcnEdh.jpg" alt="いつだって君が笑えるような幸せを願う。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.07</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">いつだって君が笑えるような幸せを願う。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「いつだって君が笑えるような幸せを願う。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68290<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68290" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.035795817666900674s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobo0hper.jpg" alt="夏からずっと。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.05</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">夏からずっと。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「夏からずっと。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68228<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68228" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2929004280169088s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/6X358INogu8/maxresdefault.jpg" alt="【五期生のゲームセンスを確かめましょう！】日向坂になりましょう-五期生成長バラエティ-#18
+  冒頭先行公開" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.02</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【五期生のゲームセンスを確かめましょう！】日向坂になりましょう-五期生成長バラエティ-#18
+  冒頭先行公開</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    Leminoチャンネルで【五期生のゲームセンスを確かめましょう！】日向坂になりましょう-五期生成長バラエティ-#18<br>      冒頭先行公開が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=6X358INogu8&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.14572136185207965s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mobsgmV1O.jpg" alt="遅れてやってきた猫。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.03.01</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">遅れてやってきた猫。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「遅れてやってきた猫。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68128<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68128" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.046848522450937s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/vxB9-AG2LwU/maxresdefault.jpg" alt="【メンバー目線カメラ】山口陽世が16th Single ひなた坂46LIVEでカメラ回してみた！" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.28</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【メンバー目線カメラ】山口陽世が16th Single ひなた坂46LIVEでカメラ回してみた！</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【メンバー目線カメラ】山口陽世が16th Single ひなた坂46LIVEでカメラ回してみた！が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=vxB9-AG2LwU&t=3s" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.05661890822731863s">
+    <img class="news-card-img" src="https://p77-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oIiIIqUfLwvIEoCIrb00DEid75VB7CwAAV1ChA~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=NR2xVuPeuViy3p1Z9ju2yNeIZyk%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="駆け回るネコちゃん達！！🐈‍⬛💨" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.27</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">駆け回るネコちゃん達！！🐈‍⬛💨</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7611486839597272341" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.12412492608482356s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oIBH9D6fTuDAoPzdC3FEAfDFIOAj4rpIITfP4j~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=AOBao%2BqBW8fEuW09klqOeEmdQf8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="ニャンニャン😺💞" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.24</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">ニャンニャン😺💞</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7610273900626267412" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.10028010776681441s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202602/mobxKoa3E.jpg" alt="君のため僕は今、春風に吹かれてる。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.23</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">君のため僕は今、春風に吹かれてる。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「君のため僕は今、春風に吹かれてる。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68052<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68052" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.22202190771447572s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/o8xuETidABKL11PZAABAIGz0It0wgBCCAMiAfl~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=1ad%2BKNUT3f2jVnJHdEXJHGCWr6Y%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#日向坂46_好きになるクレッシェンド 「好きになるクレッシェンド」 五期生全員リレーダンス📣🩵 #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.21</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#日向坂46_好きになるクレッシェンド 「好きになるクレッシェンド」 五期生全員リレーダンス📣🩵 #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7609257131681893652" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2595699265965546s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202602/mobmO8Brx.jpg" alt="思い出になってしまう前に全て伝えたい。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.20</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">思い出になってしまう前に全て伝えたい。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「思い出になってしまう前に全て伝えたい。」<br><br>https://hinatazaka46.com/s/official/diary/detail/68026<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/68026" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.1497121140075266s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202602/mobmHMfHg.jpg" alt="半分にしたのは肉まんだけじゃない。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.16</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">半分にしたのは肉まんだけじゃない。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「半分にしたのは肉まんだけじゃない。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67968<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67968" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.09302959188729172s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/o4DDFCXsFEzAQCaQEAApEfzQcVkVpIAebB7RgC~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=9wC3280HSCSW636PkoSenDYe46s%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#日向坂46_好きになるクレッシェンド どんどんどんどん好きになれ🖤 #バレンタイン #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.14</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#日向坂46_好きになるクレッシェンド どんどんどんどん好きになれ🖤 #バレンタイン #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7606674927965474068" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.01500067363053683s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/o0jGOZmIO5sGgFm9ATQReeILLRAG6GOklffIwI~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=oPoPt1GhJDOY3egJ9jX9agRZ0CQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="Touch💞" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.13</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">Touch💞</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7606286268388969749" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.06710184145603612s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oMmpFC106A1jPROmgQF2jgcDpfTJ7BHEBEBeMQ~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=e6r5RmiKN8SAloi1w1CW%2Fnc5Ic8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#日向坂46_好きになるクレッシェンド L.O.V.E!🫶🏻🎀 みんなも踊ってみてね！ #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.11</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#日向坂46_好きになるクレッシェンド L.O.V.E!🫶🏻🎀 みんなも踊ってみてね！ #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7605591804397817109" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2570643400993367s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/owB3kA4GTE5eKBrLIAAcSAEbIDfKeFVAujIuCL~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=2K5okoPpjK4vi6zJZV7qcjtzn7o%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="＼🫶🏻祝!!100万回再生突破🫶🏻／ 16thシングル『好きになるクレッシェンド』のショートクリップ①をお届けします📣💞 フルサイズは「日向坂46 OFFICIAL YouTube CHANNEL」でチェックしてね☀️" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.10</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">＼🫶🏻祝!!100万回再生突破🫶🏻／ 16thシングル『好きになるクレッシェンド』のショートクリップ①をお届けします📣💞 フルサイズは「日向坂46 OFFICIAL YouTube CHANNEL」でチェックしてね☀️</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7605144771568438546" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.19903390274230012s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/XD0RAZz2BcE/maxresdefault.jpg" alt="【ガチ検証】日向坂でわらしべ長者やってみたら、最終的に何に変わる？" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.10</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【ガチ検証】日向坂でわらしべ長者やってみたら、最終的に何に変わる？</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【ガチ検証】日向坂でわらしべ長者やってみたら、最終的に何に変わる？が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=XD0RAZz2BcE&t=1758s" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.22034149671243963s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202602/mobiowFy4.jpg" alt="雪が降れば天使も降ってくるかもしれない。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.09</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">雪が降れば天使も降ってくるかもしれない。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「雪が降れば天使も降ってくるかもしれない。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67901<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67901" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.17911482635498746s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oM0AIYz9aiUIiAEnzSa5v8cJCYEABitEnyABA~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=RwFnd2ZhvcZe2mKmwMxwS2ZpDf0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#日向坂46_好きになるクレッシェンド 佐藤優羽🪽×鶴崎仁香🍡双子ダンスver. みんなも踊ってみてね🫶🏻 #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.05</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#日向坂46_好きになるクレッシェンド 佐藤優羽🪽×鶴崎仁香🍡双子ダンスver. みんなも踊ってみてね🫶🏻 #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7603353568199986453" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.1564833508809177s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202602/mob0vwcSh.jpg" alt="素敵な一日を過ごしてね。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.02</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">素敵な一日を過ごしてね。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「素敵な一日を過ごしてね。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67805<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67805" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.019320167951603896s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202602/mobzdZyri.jpg" alt="これまで貰った全てを。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.02.01</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">これまで貰った全てを。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「これまで貰った全てを。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67784<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67784" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2453771448592288s">
+    <img class="news-card-img" src="https://p77-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUZttAAmSBD5mrf9EjFEAbDWIfAjgYAIEvfu4b~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=pCzPfQykTXk0NQTB%2FSb217AAwRc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#日向坂46_好きになるクレッシェンド 大野愛実×佐藤優羽ver.🫧 フルサイズは「日向坂46 OFFICIAL YouTube CHANNEL」でチェックしてね☀️ #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.31</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#日向坂46_好きになるクレッシェンド 大野愛実×佐藤優羽ver.🫧 フルサイズは「日向坂46 OFFICIAL YouTube CHANNEL」でチェックしてね☀️ #日向坂46_クリフハンガー #日向坂46 #日向坂46_TikTok</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@hinatazakanews/video/7601432754269588757" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.13547840228066962s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202601/mobroVNRI.jpg" alt="僕の思い出の中。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.28</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">僕の思い出の中。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「僕の思い出の中。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67715<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67715" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.022230530530636172s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202601/mobAhhxgh.jpg" alt="同じ場所に刻まれた名前。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.27</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">同じ場所に刻まれた名前。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「同じ場所に刻まれた名前。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67684<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67684" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card" style="animation-delay:0.06100438834544397s">
+    <div class="news-card-date">2026.01.27</div>
+    <div class="news-card-body">
+      <span class="badge badge-blog">インタビュー</span>
+      <p class="news-card-title" style="margin-top:6px">モデルプレス　2026年1月インタビュー＜後編＞</p>
+      <p class="news-card-desc">日向坂46佐藤優羽、大粒の涙で語った松田好花への想い「泣きすぎてお家に帰れなかった」 支えとなったマリオカートの夜【「クリフハンガー」インタビュー】</p>
+      <a href="https://mdpr.jp/interview/detail/4719021" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2621804228006794s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/MlNNxI0MNDI/maxresdefault.jpg" alt="日向坂46『好きになるクレッシェンド』MUSIC VIDEO" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.26</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂46『好きになるクレッシェンド』MUSIC VIDEO</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂46 OFFICIAL YouTube CHANNELで日向坂46『好きになるクレッシェンド』MUSIC VIDEOが公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=MlNNxI0MNDI" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card" style="animation-delay:0.19912395966942573s">
+    <div class="news-card-date">2026.01.26</div>
+    <div class="news-card-body">
+      <span class="badge badge-blog">インタビュー</span>
+      <p class="news-card-title" style="margin-top:6px">モデルプレス　2026年1月インタビュー＜前編＞</p>
+      <p class="news-card-desc">日向坂46佐藤優羽、成長と自信に繋がった“不安の正体” 「ひなあい」にかける熱い想いも告白【「クリフハンガー」インタビュー】</p>
+      <a href="https://mdpr.jp/interview/detail/4718437" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.014848298086922162s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cc/a1467cc_w1.jpg" alt="日向坂になりましょう #14 特別番外編
+  第1回東西対抗新春プチかくし芸大会後半" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.19</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #14 特別番外編
+  第1回東西対抗新春プチかくし芸大会後半</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#14 特別番外編 第1回東西対抗新春プチかくし芸大会後半」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtlc2c=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.25109329638322825s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/xwLxNarbuzk/maxresdefault.jpg" alt="【ひなたの冬休み】五期生の年末年始を自由に撮ってもらいました！【2026年ver】" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.17</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【ひなたの冬休み】五期生の年末年始を自由に撮ってもらいました！【2026年ver】</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【ひなたの冬休み】五期生の年末年始を自由に撮ってもらいました！【2026年ver】が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=xwLxNarbuzk" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.02399875427370237s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202601/mobeqPsBq.jpg" alt="部屋のベランダ、猫の額くらい。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.17</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">部屋のベランダ、猫の額くらい。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「部屋のベランダ、猫の額くらい。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67613<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67613" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.046375855105805615s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/2WEOnuwvoXE/maxresdefault.jpg" alt="日向坂46『君と生きる』MUSIC VIDEO" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.15</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂46『君と生きる』MUSIC VIDEO</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂46 OFFICIAL YouTube CHANNELで日向坂46『君と生きる』MUSIC VIDEOが公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=2WEOnuwvoXE" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.15860859295693092s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cb/a1467cb_w1.jpg" alt="日向坂になりましょう #14 特別番外編
+  第1回東西対抗新春プチかくし芸大会前半" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.12</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #14 特別番外編
+  第1回東西対抗新春プチかくし芸大会前半</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#14 特別番外編 第1回東西対抗新春プチかくし芸大会前半」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtlM2M=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.16858685674437776s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202601/mobTErLkY.jpg" alt="走り抜けたい、このまま。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.10</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">走り抜けたい、このまま。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「走り抜けたい、このまま。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67509<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67509" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.15113459347506986s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202601/mobEamVSD.jpg" alt="もう幾つ寝ると？" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.06</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">もう幾つ寝ると？</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「もう幾つ寝ると？」<br><br>https://hinatazaka46.com/s/official/diary/detail/67453<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67453" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2556220948290487s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/ogAARQAPa7pAQnePg2EhCFTCVBBDig4U8IfCQ6~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=UOjN7RiyPyONb7nHbzcg2HJ6MzQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="5秒で答えろ！チャレンジ⏰ 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.05</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">5秒で答えろ！チャレンジ⏰ 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587754214189845768" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.07446757778955904s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ca/a1467ca_w1.jpg" alt="日向坂になりましょう #14
+  お正月なのでバラエティ対決で盛り上がろう！" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.05</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #14
+  お正月なのでバラエティ対決で盛り上がろう！</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#14 お正月なのでバラエティ対決で盛り上がろう！」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtkY28=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.08457933704237108s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202601/mobheoPsl.jpg" alt="透明な感情は染まるだけさ。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.04</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">透明な感情は染まるだけさ。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「透明な感情は染まるだけさ。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67477<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67477" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.16102209073773605s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/oVUXhTkLYus/maxresdefault.jpg" alt="【謹賀新年】メンバーそれぞれの2026年の抱負を発表します🐴" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2026.01.03</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【謹賀新年】メンバーそれぞれの2026年の抱負を発表します🐴</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【謹賀新年】メンバーそれぞれの2026年の抱負を発表します🐴が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=oVUXhTkLYus" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.19000634151627382s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mobc5CBor.jpg" alt="2025年、大晦日。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.31</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">2025年、大晦日。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「2025年、大晦日。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67392<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67392" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.19238857842558088s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/o0EzApFlqLBApE0AESIGfnefIAa7AzcbDoLtur~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=vPc0KYXx7O7EWj4fcvCtevtTJu0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="来年は更にパワーアップ！ 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.30</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">来年は更にパワーアップ！ 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587341193114111239" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.20517914273576912s">
+    <img class="news-card-img" src="https://p77-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ooAAeephA7pE0CSSrMKFDNuOTII8EALLABAleG~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=n%2B8by9wTFu1IWrMMutpfJKdaY%2Bc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="五期生を表す言葉って？ 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.29</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">五期生を表す言葉って？ 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587340100586179858" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.25984864847334627s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/o8k56AqlalMAuYiYAqABijBIAABiPUhLK6AuE~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=3i%2Bz7ikNMJlopwEXxEBBILvZaeE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#ボトルフリップ に挑戦🧴 🩵#日向坂になりましょう -五期生成長バラエティ-☀️ 第13話「年末総決算！激動の1年をみんなで振り返りましょう！」 絶賛配信中✨ #片山紗希 #坂井新奈 #佐藤優羽 #高井俐香 #日向坂46 #ひななり #Lemino" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.29</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#ボトルフリップ に挑戦🧴 🩵#日向坂になりましょう -五期生成長バラエティ-☀️ 第13話「年末総決算！激動の1年をみんなで振り返りましょう！」 絶賛配信中✨ #片山紗希 #坂井新奈 #佐藤優羽 #高井俐香 #日向坂46 #ひななり #Lemino</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7587363371675094279" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.06964338856443184s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a14333c/a14333c_w1.jpg" alt="日向坂になりましょう #13
+  年末総決算！激動の1年をみんなで振り返りましょう！" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.29</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #13
+  年末総決算！激動の1年をみんなで振り返りましょう！</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#13 年末総決算！激動の1年をみんなで振り返りましょう！」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWV1czE3enQ=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.059655827128925275s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/WugUvihWPCM/maxresdefault.jpg" alt="【お正月なのでバラエティ対決で盛り上がろう！】日向坂になりましょう-五期生成長バラエティ-#14
+  冒頭先行公開" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.29</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【お正月なのでバラエティ対決で盛り上がろう！】日向坂になりましょう-五期生成長バラエティ-#14
+  冒頭先行公開</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    Leminoチャンネルで【お正月なのでバラエティ対決で盛り上がろう！】日向坂になりましょう-五期生成長バラエティ-#14<br>      冒頭先行公開が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=WugUvihWPCM&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.00367566495941789s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mob6Xx0IQ.jpg" alt="年の瀬という言い方が何故か魅力的に感じてしまう。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.28</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">年の瀬という言い方が何故か魅力的に感じてしまう。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「年の瀬という言い方が何故か魅力的に感じてしまう。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67344<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67344" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.26802366378047876s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mobkpmbJ5.jpg" alt="空から落ちて来た星。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.25</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">空から落ちて来た星。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「空から落ちて来た星。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67289<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67289" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.07921734955893171s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/w-6VnijfdaE/maxresdefault.jpg" alt="【年末総決算！激動の1年をみんなで振り返りましょう！】日向坂になりましょう-五期生成長バラエティ-#13
+  冒頭先行公開" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.22</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【年末総決算！激動の1年をみんなで振り返りましょう！】日向坂になりましょう-五期生成長バラエティ-#13
+  冒頭先行公開</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    Leminoチャンネルで【年末総決算！激動の1年をみんなで振り返りましょう！】日向坂になりましょう-五期生成長バラエティ-#13<br>      冒頭先行公開が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=w-6VnijfdaE&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.26441521438127585s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mobZKgoc9.jpg" alt="運命だなんて言い聞かせた。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.17</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">運命だなんて言い聞かせた。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「運命だなんて言い聞かせた。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67161<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67161" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.17589326633187852s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/og1BAAWfAuM0iAAzELauKpNBwihBK1A4kUlVIA~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=BEmUA%2FTeKh28rK1oY7hoMWxBhUY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#佐藤優羽が#ラブレターズのコントに挑戦❗️ 🩵#日向坂になりましょう -五期生成長バラエティ-☀️ 第11話 番外編「表現の幅を広げましょう！！」 絶賛配信中✨ #片山紗希 #蔵盛妃那乃 #坂井新奈 #松尾桜 #日向坂46 #ひななり #Lemino" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.13</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#佐藤優羽が#ラブレターズのコントに挑戦❗️ 🩵#日向坂になりましょう -五期生成長バラエティ-☀️ 第11話 番外編「表現の幅を広げましょう！！」 絶賛配信中✨ #片山紗希 #蔵盛妃那乃 #坂井新奈 #松尾桜 #日向坂46 #ひななり #Lemino</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579177460609142023" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.13897465483897894s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/zO89sIdSpPY/maxresdefault.jpg" alt="【潜入】金村美玖が"新参者"でライブカメラマンに挑戦！【Sony α1 Ⅱ】" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.13</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【潜入】金村美玖が"新参者"でライブカメラマンに挑戦！【Sony α1 Ⅱ】</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【潜入】金村美玖が"新参者"でライブカメラマンに挑戦！【Sony α1 Ⅱ】が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=zO89sIdSpPY&t=92s" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.17243862575854396s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mob9uzjni.jpg" alt="風が頬をすり抜けていく。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.09</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">風が頬をすり抜けていく。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「風が頬をすり抜けていく。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67084<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67084" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2144582506319396s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUDZApBkQCOLEIEfUfVvCmvBV69ENgcNAOAAFp~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=o%2ByTFvG6yPxiXQPX5iJMTqhnrI8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="あやつられる五期生が可愛い😍 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.08</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">あやつられる五期生が可愛い😍 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7578677191710428423" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.14036347845800104s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a143339/a143339_w1.jpg" alt="日向坂になりましょう #11
+  表現の幅を広げましょう！！番外編" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.08</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #11
+  表現の幅を広げましょう！！番外編</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#11 表現の幅を広げましょう！！番外編」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWV1czE1d2Q=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.21496640924133437s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mobtS7YVn.jpg" alt="新参者だった日々へ。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.07</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">新参者だった日々へ。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「新参者だった日々へ。」<br><br>https://hinatazaka46.com/s/official/diary/detail/67056<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/67056" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.05920167968560827s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/owIDpLAfoLaqCCKChqQBzhAAEAUBuYAESgfFVp~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=BUtZmMT2kWq77JTXz9Ver28hs5k%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="キュンキュン妄想告白" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.06</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">キュンキュン妄想告白</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579175779100036360" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.2229210817910602s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mobm0MBbv.jpg" alt="目の前の貴方と話したいこと。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.04</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">目の前の貴方と話したいこと。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「目の前の貴方と話したいこと。」<br><br>https://hinatazaka46.com/s/official/diary/detail/66982<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/66982" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.1988363079354606s">
+    <img class="news-card-img" src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUPupjaq7VQ9lYqAO6AZNCoATiAASB1iIEBAM~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=amWtd40CkBd0GvbITXT0iKE3DuM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="#日向坂46_五期生の"ね〜選手権"🩵 🩵#日向坂になりましょう -五期生成長バラエティ-☀️ 第11話「表現の幅を広げましょう！！」 絶賛配信中✨ #片山紗希 #蔵盛妃那乃 #坂井新奈 #佐藤優羽 #松尾桜 #ラブレターズ  #日向坂46 #ひななり #Lemino" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.02</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">#日向坂46_五期生の"ね〜選手権"🩵 🩵#日向坂になりましょう -五期生成長バラエティ-☀️ 第11話「表現の幅を広げましょう！！」 絶賛配信中✨ #片山紗希 #蔵盛妃那乃 #坂井新奈 #佐藤優羽 #松尾桜 #ラブレターズ  #日向坂46 #ひななり #Lemino</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7579174910963043602" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.015032032962197461s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202512/mobI1fC8E.jpg" alt="この世界が幸せで満ちるように願うばかり。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.02</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">この世界が幸せで満ちるように願うばかり。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「この世界が幸せで満ちるように願うばかり。」<br><br>https://hinatazaka46.com/s/official/diary/detail/66930<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/66930" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.049779208612848104s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a143338/a143338_w1.jpg" alt="日向坂になりましょう #11 表現の幅を広げましょう！！" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.12.01</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #11 表現の幅を広げましょう！！</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#11 表現の幅を広げましょう！！」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWV1czE1ODI=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.05501539823962185s">
+    <img class="news-card-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202511/mobb0LNpS.jpg" alt="経験は物のように見えないけれど、何よりも輝いていて一生の相談相手である。" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.11.30</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Blog</span>
+          <p class="news-card-title" style="margin-top:6px">経験は物のように見えないけれど、何よりも輝いていて一生の相談相手である。</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／<br><br>#佐藤優羽 OFFICIAL BLOG<br>「経験は物のように見えないけれど、何よりも輝いていて一生の相談相手である。」<br><br>https://hinatazaka46.com/s/official/diary/detail/66896<br>⟡.· ┈┈┈┈┈┈┈┈⟡.·</p>
+      <a href="https://www.hinatazaka46.com/s/official/diary/detail/66896" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card" style="animation-delay:0.18176081025578797s">
+    <div class="news-card-date">2025.11.26</div>
+    <div class="news-card-body">
+      <span class="badge badge-x">X</span>
+      <p class="news-card-title" style="margin-top:6px">BRODY賞オフショット</p>
+      
+      <a href="https://x.com/brody20150821/status/1992548063811113343" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.29450105335358934s">
+    <img class="news-card-img" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/o4B8AZNiEiAAaBrAE0iB4jfPIAUTwMgaAKVaJK~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=qUFnxOLkk8upux4lJw%2BIm2sPVfQ%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="勇気が出ない" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.11.25</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">勇気が出ない</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7572070961537699080" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.044978652271734386s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/6EvLm3VcDzU/maxresdefault.jpg" alt="【新参者】初の1日2公演！日向坂五期生の奮闘劇をお届けします【好きを超えろ】" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.11.25</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【新参者】初の1日2公演！日向坂五期生の奮闘劇をお届けします【好きを超えろ】</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    日向坂ちゃんねるで【新参者】初の1日2公演！日向坂五期生の奮闘劇をお届けします【好きを超えろ】が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=6EvLm3VcDzU&t=352s" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.18536168080948562s">
+    <img class="news-card-img" src="https://p77-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUpeQkUVACyYNADIBAgFxExxIfFQpOECcAuwjA~tplv-tiktokx-origin.image?dr=14575&x-expires=1775815200&x-signature=ImjRVlgrtuk3FPozS068HYm2RGI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my" alt="覚えてキメ顔！カメラ目線チャレンジ📸 🩵" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.11.24</div>
+        <div class="news-card-body">
+          <span class="badge badge-tiktok">TikTok</span>
+          <p class="news-card-title" style="margin-top:6px">覚えてキメ顔！カメラ目線チャレンジ📸 🩵</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>📢 TikTok公開│ ˙ᵕ˙ )꜆<br>＼<br><br>佐藤優羽 さん登場のtiktok動画が公開されました！<br>ぜひご覧ください🪽</p>
+      <a href="https://www.tiktok.com/@lemino_sakamichi/video/7570986177575095570" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.07570785184050656s">
+    <img class="news-card-img" src="https://img.lemino.docomo.ne.jp/cms/a143337/a143337_w1.jpg" alt="日向坂になりましょう #10
+  人情あふれる街ブラロケに挑戦しよう!!番外編" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.11.24</div>
+        <div class="news-card-body">
+          <span class="badge badge-lemino">Lemino</span>
+          <p class="news-card-title" style="margin-top:6px">日向坂になりましょう #10
+  人情あふれる街ブラロケに挑戦しよう!!番外編</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">／<br>    📢ひななり配信開始│ ˙ᵕ˙ )꜆<br>    ＼<br>    <br>    佐藤優羽 さん登場！<br>    日向坂になりましょう「#10 人情あふれる街ブラロケに挑戦しよう!!番外編」が公開されました!<br>    ぜひご覧ください🪽</p>
+      <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWV1czE0amw=" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+
+  <div class="card news-card news-card--img" style="animation-delay:0.21239481282416273s">
+    <img class="news-card-img" src="https://img.youtube.com/vi/OsQgjErrUuM/maxresdefault.jpg" alt="【表現の幅を広げましょう！！】日向坂になりましょう-五期生成長バラエティ- #11 冒頭先行公開" loading="lazy">
+    <div class="news-card-img-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div class="news-card-date">2025.11.24</div>
+        <div class="news-card-body">
+          <span class="badge badge-blog">Youtube</span>
+          <p class="news-card-title" style="margin-top:6px">【表現の幅を広げましょう！！】日向坂になりましょう-五期生成長バラエティ- #11 冒頭先行公開</p>
+        </div>
+      </div>
+      <p class="news-card-desc" style="margin-top:10px;">/／ Youtube動画 公開│ ˙ᵕ˙ )꜆ \＼ <br>    Leminoチャンネルで【表現の幅を広げましょう！！】日向坂になりましょう-五期生成長バラエティ- #11 冒頭先行公開が公開されています！<br>    ぜひご覧ください🪽</p>
+      <a href="https://www.youtube.com/watch?v=OsQgjErrUuM&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>
+    </div>
+  </div>
+    <!-- GALLERY_END -->
+  </div></div>
+    
+
+<!-- Activity Modal -->
+<div id="act-modal" class="act-modal-overlay">
+  <div class="act-modal-box">
+    <button class="act-modal-close" aria-label="閉じる">×</button>
+    <div id="act-modal-inner"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function openModal(data) {
+    var inner = document.getElementById('act-modal-inner');
+    var badgeHtml = data.status
+      ? '<span class="badge ' + (data.status.includes('募集中') ? 'badge-open' : 'badge-closed') + '">' + data.status + '</span>'
+      : '';
+    var imgHtml = data.img ? '<img class="act-modal-img" src="' + data.img + '" alt="">' : '';
+    inner.innerHTML = imgHtml +
+      '<p class="act-modal-title"></p>' +
+      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-size:11px;color:var(--text-light)"></span></div>' +
+      '<p class="act-modal-desc"></p>' +
+      (data.url ? '<a href="' + data.url + '" class="act-modal-link" target="_blank" rel="noopener">詳しく見る →</a>' : '');
+    inner.querySelector('.act-modal-title').textContent = data.title || '';
+    inner.querySelector('.act-modal-meta span').textContent = data.date || '';
+    var descEl = inner.querySelector('.act-modal-desc');
+    (data.desc || '').split('\n').forEach(function(line, i, arr) {
+      descEl.appendChild(document.createTextNode(line));
+      if (i < arr.length - 1) descEl.appendChild(document.createElement('br'));
+    });
+    document.getElementById('act-modal').classList.add('open');
+  }
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('[data-act-modal]');
+    var modal = document.getElementById('act-modal');
+    if (card) { openModal(card.dataset); return; }
+    if (modal && (e.target === modal || e.target.closest('.act-modal-close'))) {
+      modal.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { var m = document.getElementById('act-modal'); if(m) m.classList.remove('open'); }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var btn=document.getElementById('nav-hamburger');
+  var links=document.querySelector('.nav-links');
+  if(!btn||!links)return;
+  btn.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    btn.textContent=open?'✕':'☰';
+    btn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      btn.textContent='☰';
+      btn.setAttribute('aria-label','メニューを開く');
+    });
+  });
+})();
+</script>
+
+<footer>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 19:48:40</p>
+</footer>
+
+<script>
+(function(){
+  // YouTube lite-embed: クリックでiframeに差し替え
+  document.addEventListener('click',function(e){
+    var lite=e.target.closest('.yt-lite');
+    if(!lite)return;
+    var id=lite.dataset.id;
+    var iframe=document.createElement('iframe');
+    iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
+    iframe.allow='accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share';
+    iframe.setAttribute('allowfullscreen','');
+    iframe.style.cssText='width:100%;aspect-ratio:16/9;border:none;border-radius:8px;display:block;';
+    lite.replaceWith(iframe);
+  });
+  // TikTok lite-embed: クリックでiframeに差し替え
+  document.addEventListener('click',function(e){
+    var lite=e.target.closest('.tiktok-lite');
+    if(!lite)return;
+    var id=lite.dataset.id;
+    var iframe=document.createElement('iframe');
+    iframe.src='https://www.tiktok.com/embed/v2/'+id;
+    iframe.style.cssText='width:100%;aspect-ratio:9/16;border:none;display:block;';
+    lite.replaceWith(iframe);
+  });
+})();
+</script>
+
+</body>
+</html>
