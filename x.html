@@ -33,8 +33,45 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--emerald-light);}
 
-/* ── Top grid ── */
-.top-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;}
+/* ── Top layout ── */
+.top-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start;}
+.top-main{display:flex;flex-direction:column;gap:32px;}
+.top-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.top-section-header h2{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;}
+.top-section-header a{font-size:11px;color:var(--emerald);text-decoration:none;}
+.top-section-header a:hover{color:var(--emerald-dark);}
+.committee-list{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.committee-list-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.committee-list-row:last-child{border-bottom:none;}
+.committee-list-row:hover{background:var(--emerald-pale);}
+.committee-row-date{font-size:11px;color:var(--text-light);white-space:nowrap;min-width:72px;}
+.committee-row-title{flex:1;font-size:13px;color:var(--text);line-height:1.4;}
+.act-thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.act-thumb-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.act-thumb-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(61,170,120,0.12);}
+.act-thumb-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.act-thumb-no-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--emerald-pale);color:var(--text-light);font-size:11px;}
+.act-thumb-body{padding:8px 10px 10px;}
+.act-thumb-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.act-thumb-date{font-size:10px;color:var(--text-light);}
+.yunews-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+a.yunews-card{display:block;text-decoration:none;color:inherit;}
+.yunews-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.yunews-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(61,170,120,0.12);}
+.yunews-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.yunews-no-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--emerald-pale);color:var(--text-light);font-size:11px;}
+.yunews-body{padding:8px 10px 10px;}
+.yunews-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.yunews-meta{display:flex;align-items:center;margin-top:4px;}
+.yunews-date{font-size:10px;color:var(--text-light);}
+.top-sidebar{display:flex;flex-direction:column;gap:12px;}
+.sidebar-widget{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sidebar-widget-inner{padding:8px;}
+.sidebar-links{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sidebar-links a{display:flex;align-items:center;padding:10px 14px;font-size:12px;color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border);transition:background 0.15s;}
+.sidebar-links a:last-child{border-bottom:none;}
+.sidebar-links a:hover{background:var(--emerald-pale);color:var(--emerald-dark);}
+.sidebar-links a::before{content:'›';color:var(--emerald);margin-right:8px;font-size:14px;}
 
 /* ── Page hero ── */
 .page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
@@ -124,7 +161,9 @@ footer .heart{color:var(--emerald);}
   .page-hero h1{font-size:26px;}
   .content{padding:0 16px 48px;}
   footer{padding:24px 16px;}
-  .top-grid{grid-template-columns:1fr;gap:24px;}
+  .top-layout{grid-template-columns:1fr;}
+  .act-thumb-grid{grid-template-columns:repeat(2,1fr);}
+  .yunews-grid{grid-template-columns:repeat(2,1fr);}
   .act-modal-box{padding:24px 20px;}
   .grid-3{grid-template-columns:1fr;}
   /* カードのモバイル最適化 */
@@ -184,97 +223,97 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">X / TWITTER</div>
         <h1>X <em>まとめ</em></h1>
         <p>佐藤優羽さんのX投稿をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 13:22:21</p>
+        <p class="last-updated">最終更新：2026/4/8 14:16:33</p>
       </div>
       <div class="content">
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">BRODY賞</h2>
       <div class="x-embed-grid">
-  <div class="x-card" style="animation-delay:0.009952484407478979s">
+  <div class="x-card" style="animation-delay:0.04429068554609741s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け🪽✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/aJt9GEgDpS">pic.twitter.com/aJt9GEgDpS</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1992548063811113343?ref_src=twsrc%5Etfw">2025年11月23日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.1785993069554184s">
+  <div class="x-card" style="animation-delay:0.2853632359795159s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け🪽✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/a7JULhapFJ">pic.twitter.com/a7JULhapFJ</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1989677982550827368?ref_src=twsrc%5Etfw">2025年11月15日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.13159678731874072s">
+  <div class="x-card" style="animation-delay:0.0419380530948257s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け🪽✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/UOVIo8eSx2">pic.twitter.com/UOVIo8eSx2</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1988938172072648795?ref_src=twsrc%5Etfw">2025年11月13日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.10912931112589248s">
+  <div class="x-card" style="animation-delay:0.05475064501391864s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け🪽✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/4PkiLZEofB">pic.twitter.com/4PkiLZEofB</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1988231413175595022?ref_src=twsrc%5Etfw">2025年11月11日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.07554926012717852s">
+  <div class="x-card" style="animation-delay:0.15766098070474402s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け🪽✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/YzH5xPXpa3">pic.twitter.com/YzH5xPXpa3</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1987838244680351841?ref_src=twsrc%5Etfw">2025年11月10日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.14440331696308528s">
+  <div class="x-card" style="animation-delay:0.02293977974493435s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/Mp9N4wS5nf">pic.twitter.com/Mp9N4wS5nf</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1986418847310917924?ref_src=twsrc%5Etfw">2025年11月6日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.19662664931196736s">
+  <div class="x-card" style="animation-delay:0.18517846024384346s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/nWoCftLvaG">pic.twitter.com/nWoCftLvaG</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1984856003855192139?ref_src=twsrc%5Etfw">2025年11月2日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.25663218582846165s">
+  <div class="x-card" style="animation-delay:0.26884261644351853s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんのオフショットをお届け✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/CWsQudrLTx">pic.twitter.com/CWsQudrLTx</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1983881910964371782?ref_src=twsrc%5Etfw">2025年10月30日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.18979078039033961s">
+  <div class="x-card" style="animation-delay:0.009064203056238585s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">／<br>　大好評発売中！<br>＼<br><br>現在発売中の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんの告知動画をお届け🗣️✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/lNoisd27AI">pic.twitter.com/lNoisd27AI</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1981700047478616364?ref_src=twsrc%5Etfw">2025年10月24日</a></blockquote>
 
 
     <p class="x-card-label">BRODY2025年12月号告知動画1</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.13531687377657994s">
+  <div class="x-card" style="animation-delay:0.28565275907688353s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">10月23日(木)発売の『BRODY12月号』には「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生 <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さんが“人生初ソログラビア”で登場！<br>ということで、本日はそんな佐藤さんの告知動画をお届け🗣️✨✨<br><br>HMV&amp;BOOKS onlineで本誌をご購入いただくと特典ポストカードが付いてきます！… <a href="https://t.co/m3XLzHu7Dh">pic.twitter.com/m3XLzHu7Dh</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1980585443034034666?ref_src=twsrc%5Etfw">2025年10月21日</a></blockquote>
 
 
     <p class="x-card-label">BRODY2025年12月号告知動画2</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.018303854354715442s">
+  <div class="x-card" style="animation-delay:0.008715711218064581s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">━━━━━━━━━━━━━━<br>　<a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生全員集合！<br>━━━━━━━━━━━━━━<br>10月23日(木)発売『<a href="https://twitter.com/hashtag/BRODY12%E6%9C%88%E5%8F%B7?src=hash&amp;ref_src=twsrc%5Etfw">#BRODY12月号</a>』表紙＆巻頭グラビアには <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生が10人全員集合で初登場📸<br><br>発売までの《カウントダウン動画》<br>第6弾は <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a> さん🗣️✨✨<br><br>☀️登場メンバー<a href="https://twitter.com/hashtag/%E5%A4%A7%E7%94%B0%E7%BE%8E%E6%9C%88?src=hash&amp;ref_src=twsrc%5Etfw">#大田美月</a>… <a href="https://t.co/7R9LlQiTs7">pic.twitter.com/7R9LlQiTs7</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1979505796179517574?ref_src=twsrc%5Etfw">2025年10月18日</a></blockquote>
 
 
     <p class="x-card-label">BRODY2025年12月号告知動画3</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.26702287037341577s">
+  <div class="x-card" style="animation-delay:0.24710294545342146s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">━━━━━━━━━━━━━<br>　特典ポストカード先行解禁 <br>　　　　◤ 第２弾 ◢<br>━━━━━━━━━━━━━<br><br>10月23日(木)発売の『BRODY12月号』表紙＆巻頭グラビアには <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生が10人全員集合で初登場📸✨✨<br>さらに、中面グラビアでは「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a>… <a href="https://t.co/IwwADz71bp">pic.twitter.com/IwwADz71bp</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1978031543458369736?ref_src=twsrc%5Etfw">2025年10月14日</a></blockquote>
 
 
     <p class="x-card-label">BRODY賞オフショット</p>
   </div>
 
-  <div class="x-card" style="animation-delay:0.1078486092765629s">
+  <div class="x-card" style="animation-delay:0.1721080999027175s">
     <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">━━━━━━━━━━━━<br>　付録ポスター先行解禁 <br>　　　◤ 第２弾 ◢<br>━━━━━━━━━━━━<br><br>10月23日(木)発売の『BRODY12月号』表紙＆巻頭グラビアには <a href="https://twitter.com/hashtag/%E6%97%A5%E5%90%91%E5%9D%8246?src=hash&amp;ref_src=twsrc%5Etfw">#日向坂46</a> 五期生が10人全員集合で初登場📸✨✨<br>さらに、中面グラビアでは「BRODY賞」受賞を記念して <a href="https://twitter.com/hashtag/%E4%BD%90%E8%97%A4%E5%84%AA%E7%BE%BD?src=hash&amp;ref_src=twsrc%5Etfw">#佐藤優羽</a>… <a href="https://t.co/yo6PqIn2Ey">pic.twitter.com/yo6PqIn2Ey</a></p>&mdash; BRODY編集部【公式】 (@brody20150821) <a href="https://twitter.com/brody20150821/status/1978026625523744783?ref_src=twsrc%5Etfw">2025年10月14日</a></blockquote>
 
 
@@ -349,7 +388,7 @@ footer .heart{color:var(--emerald);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 13:22:21</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 14:16:33</p>
 </footer>
 
 </body>

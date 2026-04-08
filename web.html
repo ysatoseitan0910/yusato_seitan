@@ -33,8 +33,45 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--emerald-light);}
 
-/* ── Top grid ── */
-.top-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;}
+/* ── Top layout ── */
+.top-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start;}
+.top-main{display:flex;flex-direction:column;gap:32px;}
+.top-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.top-section-header h2{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;}
+.top-section-header a{font-size:11px;color:var(--emerald);text-decoration:none;}
+.top-section-header a:hover{color:var(--emerald-dark);}
+.committee-list{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.committee-list-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.committee-list-row:last-child{border-bottom:none;}
+.committee-list-row:hover{background:var(--emerald-pale);}
+.committee-row-date{font-size:11px;color:var(--text-light);white-space:nowrap;min-width:72px;}
+.committee-row-title{flex:1;font-size:13px;color:var(--text);line-height:1.4;}
+.act-thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.act-thumb-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.act-thumb-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(61,170,120,0.12);}
+.act-thumb-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.act-thumb-no-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--emerald-pale);color:var(--text-light);font-size:11px;}
+.act-thumb-body{padding:8px 10px 10px;}
+.act-thumb-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.act-thumb-date{font-size:10px;color:var(--text-light);}
+.yunews-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+a.yunews-card{display:block;text-decoration:none;color:inherit;}
+.yunews-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.4s ease both;}
+.yunews-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(61,170,120,0.12);}
+.yunews-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.yunews-no-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:var(--emerald-pale);color:var(--text-light);font-size:11px;}
+.yunews-body{padding:8px 10px 10px;}
+.yunews-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.yunews-meta{display:flex;align-items:center;margin-top:4px;}
+.yunews-date{font-size:10px;color:var(--text-light);}
+.top-sidebar{display:flex;flex-direction:column;gap:12px;}
+.sidebar-widget{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sidebar-widget-inner{padding:8px;}
+.sidebar-links{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sidebar-links a{display:flex;align-items:center;padding:10px 14px;font-size:12px;color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border);transition:background 0.15s;}
+.sidebar-links a:last-child{border-bottom:none;}
+.sidebar-links a:hover{background:var(--emerald-pale);color:var(--emerald-dark);}
+.sidebar-links a::before{content:'›';color:var(--emerald);margin-right:8px;font-size:14px;}
 
 /* ── Page hero ── */
 .page-hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:1100px;margin:0 auto;}
@@ -124,7 +161,9 @@ footer .heart{color:var(--emerald);}
   .page-hero h1{font-size:26px;}
   .content{padding:0 16px 48px;}
   footer{padding:24px 16px;}
-  .top-grid{grid-template-columns:1fr;gap:24px;}
+  .top-layout{grid-template-columns:1fr;}
+  .act-thumb-grid{grid-template-columns:repeat(2,1fr);}
+  .yunews-grid{grid-template-columns:repeat(2,1fr);}
   .act-modal-box{padding:24px 20px;}
   .grid-3{grid-template-columns:1fr;}
   /* カードのモバイル最適化 */
@@ -184,7 +223,7 @@ footer .heart{color:var(--emerald);}
         <div class="page-hero-tag">WEB</div>
         <h1>Web <em>まとめ</em></h1>
         <p>佐藤優羽さんのWeb記事・メディア情報をまとめています</p>
-        <p class="last-updated">最終更新：2026/4/8 13:22:28</p>
+        <p class="last-updated">最終更新：2026/4/8 14:16:35</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
@@ -258,7 +297,7 @@ footer .heart{color:var(--emerald);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 13:22:28</p>
+  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Sato Yu Fan Committee｜最終更新：2026/4/8 14:16:35</p>
 </footer>
 
 </body>
