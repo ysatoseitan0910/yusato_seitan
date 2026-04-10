@@ -75,12 +75,12 @@ async function fetchPage(url, retries = 2) {
 // ── HTML パース ──
 
 function extractMemberName(html) {
-  // ページタイトル: "○○のブログ | 日向坂46公式サイト"
-  const m1 = html.match(/<title[^>]*>\s*([^|<\n]{1,20})(?:のブログ)/);
-  if (m1) return m1[1].trim();
+  // ページタイトル例: "松尾 桜公式ブログ | 日向坂46公式サイト" or "○○のブログ | ..."
+  const m1 = html.match(/<title[^>]*>\s*([^|<\n]{1,20})(?:公式ブログ|のブログ)/);
+  if (m1) return m1[1].replace(/\s/g, "").trim(); // スペース除去（例: 「松尾 桜」→「松尾桜」）
   // メンバー名要素
   const m2 = html.match(/class="[^"]*(?:l-main-sns__name|c-member__name|p-member__name)[^"]*"[^>]*>[\s\S]*?<[^>]+>([^<\n]{1,20})</);
-  if (m2) return m2[1].trim();
+  if (m2) return m2[1].replace(/\s/g, "").trim();
   return null;
 }
 
