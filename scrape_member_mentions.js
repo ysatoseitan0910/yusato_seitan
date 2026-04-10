@@ -29,7 +29,7 @@ const DB_MENTIONS = process.env.DB_MENTIONS;
 
 const BASE_URL   = "https://www.hinatazaka46.com";
 const HEADERS    = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" };
-const KEYWORDS   = ["佐藤優羽", "優羽ちゃん", "ゆうちゃん", "優羽"];
+const KEYWORDS   = ["佐藤優羽", "優羽ちゃん", "ゆうちゃん", "ゆうさん", "さとうゆ", "優羽", "佐藤"];
 const CUTOFF_DATE = "2025-04-01";
 const CUTOFF_DY   = 202504; // YYYYMM形式
 const YU_CT       = 42;
@@ -228,6 +228,7 @@ async function addToNotion({ title, date, url, memberName, ct, keywords, excerpt
   if (DRY_RUN) return;
   const props = {
     Name:      { title:     [{ text: { content: title } }] },
+    Title:     { rich_text: [{ text: { content: title } }] },
     URL:       { url },
     Member:    { rich_text: [{ text: { content: memberName } }] },
     MemberCt:  { number: ct },
