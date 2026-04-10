@@ -1,6 +1,9 @@
 const { Client } = require("@notionhq/client");
 const fs = require("fs");
 
+const SITE_URL = "https://ysatoseitan0910.github.io/yusato_seitan";
+const DEFAULT_OGP_IMAGE = `${SITE_URL}/ogp.png`;
+
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 const DB = {
@@ -103,10 +106,17 @@ function loadTemplate(active) {
   return t;
 }
 
-function buildPage(template, title, tag, h1, desc, body) {
+function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
+  const ogpTitle = `${title} | 佐藤優羽生誕祭実行委員会`;
+  const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
+  const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   return template
     .replace("{{PAGE_TITLE}}", title)
+    .replace("{{OGP_TITLE}}", ogpTitle)
+    .replace("{{OGP_DESC}}", desc)
+    .replace("{{OGP_URL}}", ogpUrl)
+    .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
       <div class="page-hero">
         <div class="page-hero-tag">${tag}</div>
@@ -496,7 +506,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ","Yu Sato Birthday Celebration Committee", "佐藤優羽生誕祭実行委員会", "佐藤優羽さんの最新情報・委員会活動をお届けします", body);
+  return buildPage(tpl, "トップ","Yu Sato Birthday Celebration Committee", "佐藤優羽生誕祭実行委員会", "佐藤優羽さんの最新情報・委員会活動をお届けします", body, "index.html");
 }
 
 async function buildCommittee(tpl) {
@@ -530,7 +540,7 @@ async function buildCommittee(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "委員会News", "COMMITTEE NEWS", "委員会 <em>News</em>", "佐藤優羽生誕祭実行委員会からのお知らせ", body);
+  return buildPage(tpl, "委員会News", "COMMITTEE NEWS", "委員会 <em>News</em>", "佐藤優羽生誕祭実行委員会からのお知らせ", body, "committee.html");
 }
 
 async function buildActivities(tpl) {
@@ -564,7 +574,7 @@ async function buildActivities(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "活動報告", "ACTIVITIES", "活動 <em>報告</em>", "委員会の活動をご紹介します", body);
+  return buildPage(tpl, "活動報告", "ACTIVITIES", "活動 <em>報告</em>", "委員会の活動をご紹介します", body, "activities.html");
 }
 
 async function buildBlog(tpl) {
@@ -575,7 +585,7 @@ async function buildBlog(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "ブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body);
+  return buildPage(tpl, "ブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body, "blog.html");
 }
 
 async function buildInterview(tpl) {
@@ -586,7 +596,7 @@ async function buildInterview(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "インタビュー、雑誌掲載集", "INTERVIEW", "インタビュー、 <em>雑誌掲載集</em>", "佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています", body);
+  return buildPage(tpl, "インタビュー、雑誌掲載集", "INTERVIEW", "インタビュー、 <em>雑誌掲載集</em>", "佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています", body, "interview.html");
 }
 
 async function buildX(tpl) {
@@ -648,7 +658,7 @@ async function buildX(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body);
+  return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body, "x.html");
 }
 
 async function buildTiktok(tpl) {
@@ -661,7 +671,7 @@ async function buildTiktok(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>Gallery</em>", "佐藤優羽さんのTikTok動画をまとめています", body);
+  return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>Gallery</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
 }
 
 async function buildYoutube(tpl) {
@@ -694,7 +704,7 @@ async function buildYoutube(tpl) {
     </section>`;
   }).join("\n");
 
-  return buildPage(tpl, "YouTubeまとめ", "YOUTUBE", "YouTube <em>まとめ</em>", "佐藤優羽さんのYouTube動画をまとめています", body);
+  return buildPage(tpl, "YouTubeまとめ", "YOUTUBE", "YouTube <em>まとめ</em>", "佐藤優羽さんのYouTube動画をまとめています", body, "youtube.html");
 }
 
 async function buildYuNews(tpl) {
@@ -705,7 +715,7 @@ async function buildYuNews(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "佐藤優羽さんNews", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body);
+  return buildPage(tpl, "佐藤優羽さんNews", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body, "yunews.html");
 }
 
 async function buildLemino(tpl) {
@@ -721,7 +731,7 @@ async function buildLemino(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "Leminoまとめ", "LEMINO", "Lemino <em>まとめ</em>", "佐藤優羽さんのLemino配信をまとめています", body);
+  return buildPage(tpl, "Leminoまとめ", "LEMINO", "Lemino <em>まとめ</em>", "佐藤優羽さんのLemino配信をまとめています", body, "lemino.html");
 }
 
 
