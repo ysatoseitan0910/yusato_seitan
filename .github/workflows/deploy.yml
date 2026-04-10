@@ -60,4 +60,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,update_media_thumbnails.js,_template.html,package.json,package-lock.json'
+          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,update_media_thumbnails.js,download_media.js,update_notion_media.js,_template.html,package.json,package-lock.json'
