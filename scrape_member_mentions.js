@@ -33,7 +33,7 @@ const KEYWORDS   = ["佐藤優羽", "優羽ちゃん", "ゆうちゃん", "優�
 const CUTOFF_DATE = "2025-04-01";
 const CUTOFF_DY   = 202504; // YYYYMM形式
 const YU_CT       = 42;
-const CT_MIN      = 1;
+const CT_MIN      = 0;
 const CT_MAX      = 46;
 
 const args     = process.argv.slice(2);
