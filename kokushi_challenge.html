@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>国士無双チャレンジ ✿</title>
+<title>東南西北白發ゆう！国士無双十三面待ちチャレンジ！</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;700;800&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -98,7 +98,19 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 }
 .sm-tile.latest{border-color:var(--em2);box-shadow:0 1px 6px rgba(34,160,122,0.4);transform:translateY(-2px);}
 .sm-tile.ron-glow{border-color:var(--pink);box-shadow:0 0 10px rgba(240,96,128,0.7);animation:ron-tile-pulse .5s ease-in-out infinite alternate;}
+.sm-tile.kokushi-discard{background:linear-gradient(160deg,#e8f8f0,#c8f0dc);border-color:var(--em2);}
+.sm-tile.kokushi-discard.latest{background:linear-gradient(160deg,#d0f8e8,#a8e8c8);}
 @keyframes ron-tile-pulse{from{box-shadow:0 0 8px rgba(240,96,128,0.5);}to{box-shadow:0 0 18px rgba(240,96,128,1);}}
+
+/* 自分の捨て牌 */
+.my-discards-panel{
+  background:var(--card2);border:1.5px solid var(--em4);border-radius:10px;
+  padding:8px 10px;margin-bottom:10px;
+}
+.my-discards-panel h4{font-size:0.62rem;color:var(--text3);letter-spacing:0.1em;margin-bottom:6px;font-weight:700;}
+.my-discards-tiles{display:flex;flex-wrap:wrap;gap:3px;min-height:20px;}
+.sm-tile.my-kokushi{background:linear-gradient(160deg,#e8f8f0,#c8f0dc);border-color:var(--em2);}
+.sm-tile.my-latest{border-color:var(--em2);box-shadow:0 1px 6px rgba(34,160,122,0.4);transform:translateY(-2px);}
 
 /* 国士収集 */
 .kokushi-card{margin-bottom:10px;}
@@ -147,6 +159,22 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
   0%,100%{box-shadow:0 0 0 2px var(--pink),0 2px 8px rgba(240,96,128,0.3);}
   50%{box-shadow:0 0 0 2.5px var(--pink),0 2px 16px rgba(240,96,128,0.7);}
 }
+/* ツモ指定モード */
+.kslot.pick-mode{cursor:pointer;}
+.kslot.pick-mode:not(.remain-0):hover{
+  transform:translateY(-3px) scale(1.06);
+  box-shadow:0 4px 14px rgba(212,168,64,0.5)!important;
+  border-color:var(--gold)!important;
+  background:linear-gradient(160deg,#fffbe8,#fef3c0)!important;
+}
+.kslot.remain-0.pick-mode{cursor:not-allowed;opacity:0.5;}
+.pick-mode-hint{
+  display:none;font-size:0.68rem;color:#a07000;
+  background:rgba(255,230,100,0.18);border:1px dashed rgba(200,160,0,0.4);
+  border-radius:8px;padding:5px 10px;margin-top:6px;
+  letter-spacing:0.04em;
+}
+.pick-mode-hint.show{display:block;}
 
 /* 手牌エリア */
 .hand-card{margin-bottom:10px;position:relative;}
@@ -208,6 +236,94 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 .btn-reset:hover{background:var(--bg2);}
 .btn:disabled{cursor:not-allowed;}
 
+/* ===== フローティングアクションバー ===== */
+#action-bar{
+  position:fixed;
+  bottom:28px;left:50%;transform:translateX(-50%) translateY(30px);
+  z-index:250;
+  display:flex;gap:12px;align-items:center;
+  background:rgba(255,255,255,0.96);
+  border-radius:50px;
+  padding:10px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18),0 2px 8px rgba(0,0,0,0.1);
+  border:1.5px solid rgba(200,220,210,0.6);
+  backdrop-filter:blur(12px);
+  opacity:0;pointer-events:none;
+  transition:opacity .25s ease, transform .25s cubic-bezier(.175,.885,.32,1.275);
+  white-space:nowrap;
+}
+#action-bar.show{
+  opacity:1;pointer-events:all;
+  transform:translateX(-50%) translateY(0);
+}
+.fab{
+  padding:12px 24px;
+  border-radius:40px;border:none;cursor:pointer;
+  font-family:'M PLUS Rounded 1c',sans-serif;
+  font-size:1rem;font-weight:800;letter-spacing:.06em;
+  transition:all .15s;white-space:nowrap;
+}
+.fab:hover{transform:translateY(-2px);}
+.fab:active{transform:translateY(0);}
+.fab-ron{
+  background:linear-gradient(135deg,#c01828,#f03040);color:#fff;
+  box-shadow:0 4px 14px rgba(200,30,50,0.5);
+  animation:fab-ron-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes fab-ron-pulse{
+  from{box-shadow:0 4px 14px rgba(200,30,50,0.4);}
+  to{box-shadow:0 4px 28px rgba(240,50,70,0.8),0 0 0 4px rgba(240,80,80,0.15);}
+}
+.fab-skip{
+  background:rgba(0,0,0,0.07);color:#444;
+  border:1.5px solid rgba(0,0,0,0.12);
+  font-size:0.88rem;padding:11px 18px;
+}
+.fab-skip:hover{background:rgba(0,0,0,0.12);}
+.fab-tsumo{
+  background:linear-gradient(135deg,#c8a020,#f0cc50);color:#2a1400;
+  box-shadow:0 4px 14px rgba(180,140,0,0.45);
+  animation:fab-tsumo-pulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes fab-tsumo-pulse{
+  from{box-shadow:0 4px 14px rgba(180,140,0,0.4);}
+  to{box-shadow:0 4px 28px rgba(220,180,0,0.8),0 0 0 4px rgba(220,180,0,0.15);}
+}
+.fab-sep{width:1px;height:32px;background:rgba(0,0,0,0.1);margin:0 2px;}
+
+/* 自動試行モード 統計パネル */
+#sim-panel{
+  display:none;
+  background:var(--card);border:1.5px solid var(--em4);border-radius:12px;
+  padding:12px 14px;margin-bottom:10px;
+}
+#sim-panel.show{display:block;}
+.sim-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sim-header h4{font-size:0.75rem;font-weight:700;color:var(--em);letter-spacing:.1em;}
+.sim-running-badge{
+  font-size:0.62rem;font-weight:700;padding:2px 10px;border-radius:20px;
+  background:linear-gradient(135deg,var(--em),var(--em2));color:#fff;
+  display:none;animation:sim-badge-pulse 1s ease-in-out infinite alternate;
+}
+.sim-running-badge.on{display:inline-block;}
+@keyframes sim-badge-pulse{from{opacity:.7;}to{opacity:1;}}
+.sim-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
+.sim-stat{background:var(--bg2);border-radius:8px;padding:8px 6px;text-align:center;}
+.sim-stat .s-lbl{font-size:0.6rem;color:var(--text3);margin-bottom:2px;}
+.sim-stat .s-val{font-size:1.1rem;font-weight:700;color:var(--em);font-family:'Kaisei Tokumin',serif;}
+.sim-hist{font-size:0.68rem;color:var(--text3);border-top:1px solid var(--em4);padding-top:8px;
+  max-height:72px;overflow-y:auto;line-height:1.8;}
+.sim-hist span{margin-right:8px;}
+.sim-hist .win13{color:var(--em);font-weight:700;}
+.sim-hist .winki{color:var(--gold);}
+.sim-hist .ryu{color:var(--text3);}
+.sim-btn-stop{
+  padding:5px 14px;border-radius:20px;border:none;cursor:pointer;
+  font-family:'M PLUS Rounded 1c',sans-serif;font-size:0.75rem;font-weight:700;
+  background:linear-gradient(135deg,#c01828,#e02030);color:#fff;
+  box-shadow:0 2px 8px rgba(200,30,50,0.35);
+}
+
 /* ログ */
 .log-area{background:var(--card2);border:1.5px solid var(--em4);border-radius:10px;padding:10px 14px;font-size:0.72rem;color:var(--text3);max-height:90px;overflow-y:auto;line-height:1.9;}
 .log-hi{color:var(--em);font-weight:700;}
@@ -224,14 +340,14 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 @keyframes f-lg{0%{opacity:0;transform:scale(.65);}15%{opacity:1;transform:scale(1.04);}100%{opacity:0;transform:scale(1.15);}}
 @keyframes f-xl{0%{opacity:0;transform:scale(.45);}10%{opacity:1;transform:scale(1.1);}35%{opacity:.9;}100%{opacity:0;transform:scale(1.25);}}
 
-#acq-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:210;pointer-events:none;text-align:center;opacity:0;}
+#acq-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:210;pointer-events:none;text-align:center;opacity:0;max-width:min(88vw,380px);width:max-content;}
 #acq-banner.b-sm{animation:b-sm 1.2s cubic-bezier(.175,.885,.32,1.275) forwards;}
 #acq-banner.b-md{animation:b-md 1.5s cubic-bezier(.175,.885,.32,1.275) forwards;}
 #acq-banner.b-lg{animation:b-lg 1.8s cubic-bezier(.175,.885,.32,1.275) forwards;}
 #acq-banner.b-xl{animation:b-xl 2.2s cubic-bezier(.175,.885,.32,1.275) forwards;}
 .b-tile{font-size:3.5rem;display:block;line-height:1.1;font-family:'Noto Emoji',sans-serif;filter:drop-shadow(0 0 10px rgba(34,160,122,.8));}
-.b-text{font-family:'Kaisei Tokumin',serif;display:block;color:var(--em);text-shadow:0 0 18px rgba(34,160,122,.8),0 2px 4px rgba(0,0,0,.3);letter-spacing:.12em;}
-.b-sub{font-size:.82rem;color:rgba(13,61,44,.8);display:block;text-shadow:0 1px 3px rgba(255,255,255,.8);letter-spacing:.08em;}
+.b-text{font-family:'Kaisei Tokumin',serif;display:block;color:var(--em);text-shadow:0 0 18px rgba(34,160,122,.8),0 2px 4px rgba(0,0,0,.3);letter-spacing:.06em;word-break:auto-phrase;overflow-wrap:break-word;line-height:1.3;}
+.b-sub{font-size:.78rem;color:rgba(13,61,44,.8);display:block;text-shadow:0 1px 3px rgba(255,255,255,.8);letter-spacing:.04em;word-break:auto-phrase;overflow-wrap:break-word;}
 @keyframes b-sm{0%{opacity:0;transform:translate(-50%,-50%) scale(.5);}20%{opacity:1;transform:translate(-50%,-50%) scale(1);}70%{opacity:1;transform:translate(-50%,-55%) scale(1);}100%{opacity:0;transform:translate(-50%,-65%) scale(.9);}}
 @keyframes b-md{0%{opacity:0;transform:translate(-50%,-50%) scale(.4);}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}25%{transform:translate(-50%,-50%) scale(1);}70%{opacity:1;transform:translate(-50%,-55%) scale(1);}100%{opacity:0;transform:translate(-50%,-68%) scale(.9);}}
 @keyframes b-lg{0%{opacity:0;transform:translate(-50%,-50%) scale(.3);}12%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}40%{transform:translate(-50%,-50%) scale(1);}70%{opacity:1;transform:translate(-50%,-56%) scale(1);}100%{opacity:0;transform:translate(-50%,-72%) scale(.85);}}
@@ -239,6 +355,129 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 
 .particle{position:fixed;pointer-events:none;z-index:205;animation:p-fly var(--dur,1.2s) ease-out forwards;}
 @keyframes p-fly{0%{opacity:1;transform:translate(0,0) scale(1) rotate(0);}100%{opacity:0;transform:translate(var(--tx,0px),var(--ty,-100px)) scale(.3) rotate(var(--rot,180deg));}}
+
+/* ===== 十三面待ち専用エフェクト ===== */
+/* レインボーフラッシュ */
+#flash-ov.f-13men{
+  animation:f-13men 2.4s ease-out forwards;
+  background:conic-gradient(
+    rgba(255,80,80,0.55),rgba(255,180,0,0.55),rgba(80,220,80,0.55),
+    rgba(0,180,255,0.55),rgba(180,80,255,0.55),rgba(255,80,80,0.55));
+}
+@keyframes f-13men{
+  0%  {opacity:0;transform:scale(.3) rotate(0deg);}
+  8%  {opacity:1;transform:scale(1.2) rotate(30deg);}
+  20% {opacity:.85;transform:scale(1.0) rotate(60deg);}
+  50% {opacity:.6;transform:scale(1.3) rotate(180deg);}
+  100%{opacity:0;transform:scale(1.8) rotate(360deg);}
+}
+/* 十三面バナー */
+#acq-banner.b-13men{animation:b-13men 3s cubic-bezier(.175,.885,.32,1.275) forwards;}
+@keyframes b-13men{
+  0%  {opacity:0;transform:translate(-50%,-50%) scale(.1) rotate(-10deg);}
+  10% {opacity:1;transform:translate(-50%,-50%) scale(1.3) rotate(3deg);}
+  18% {transform:translate(-50%,-50%) scale(.95) rotate(-1deg);}
+  26% {transform:translate(-50%,-50%) scale(1.05) rotate(.5deg);}
+  35% {transform:translate(-50%,-50%) scale(1) rotate(0);}
+  70% {opacity:1;transform:translate(-50%,-52%) scale(1);}
+  100%{opacity:0;transform:translate(-50%,-72%) scale(.85);}
+}
+.b-text-13men{
+  font-family:'Kaisei Tokumin',serif;display:block;font-size:3.2rem;
+  background:linear-gradient(135deg,#ff6060,#ffcc00,#60dd60,#40b8ff,#cc60ff,#ff6060);
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:rainbow-text 1.5s linear infinite;
+  letter-spacing:.15em;text-shadow:none;
+  filter:drop-shadow(0 2px 8px rgba(255,200,0,.5));
+}
+@keyframes rainbow-text{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+.b-sub-13men{
+  font-size:1.1rem;color:#fff;display:block;
+  text-shadow:0 0 20px rgba(255,220,0,1),0 0 40px rgba(255,160,0,.8),0 2px 4px rgba(0,0,0,.6);
+  letter-spacing:.2em;font-weight:700;font-family:'Kaisei Tokumin',serif;
+  animation:sub13-pulse 0.8s ease-in-out infinite alternate;
+}
+@keyframes sub13-pulse{from{text-shadow:0 0 16px rgba(255,220,0,.9);}to{text-shadow:0 0 32px rgba(255,160,0,1),0 0 60px rgba(255,80,80,.6);}}
+
+/* 和了オーバーレイ 十三面専用 */
+.overlay.show-13men{background:rgba(0,10,5,.85)!important;}
+.ov-box.ov-13men{
+  background:linear-gradient(160deg,#0a1a10 0%,#0d2818 60%,#0a1a10 100%)!important;
+  border:2px solid transparent!important;
+  border-radius:20px;
+  position:relative;overflow:hidden;
+}
+.ov-box.ov-13men::before{
+  content:'';position:absolute;inset:-2px;border-radius:22px;z-index:-1;
+  background:linear-gradient(135deg,#ff6060,#ffcc00,#60dd60,#40b8ff,#cc60ff,#ff6060);
+  background-size:400% 400%;
+  animation:rainbow-border 2s linear infinite;
+}
+@keyframes rainbow-border{0%{background-position:0% 50%;}100%{background-position:400% 50%;}}
+.win-13men-title{
+  font-family:'Kaisei Tokumin',serif;font-size:2.2rem;
+  background:linear-gradient(135deg,#ffd700,#ff8c00,#ffd700);
+  background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gold-text 1.2s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 12px rgba(255,200,0,.8));
+  letter-spacing:.1em;
+}
+@keyframes gold-text{from{background-position:0% 50%;filter:drop-shadow(0 0 10px rgba(255,180,0,.7));}to{background-position:200% 50%;filter:drop-shadow(0 0 22px rgba(255,220,0,1));}}
+.win-tiles-row{font-size:1.6rem;letter-spacing:.05em;margin:10px 0;line-height:1.3;word-break:break-all;}
+
+/* 和了専用高zパーティクル */
+.particle-win{position:fixed;pointer-events:none;z-index:400;animation:p-fly var(--dur,1.4s) ease-out forwards;}
+
+/* 和了ドーンバナー（オーバーレイより手前） */
+#win-banner{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
+  z-index:410;pointer-events:none;text-align:center;opacity:0;
+}
+#win-banner.show{animation:win-banner-in 2.8s cubic-bezier(.175,.885,.32,1.275) forwards;}
+@keyframes win-banner-in{
+  0%  {opacity:0;transform:translate(-50%,-50%) scale(.05) rotate(-8deg);}
+  12% {opacity:1;transform:translate(-50%,-50%) scale(1.4) rotate(2deg);}
+  22% {transform:translate(-50%,-50%) scale(.92) rotate(-1deg);}
+  30% {transform:translate(-50%,-50%) scale(1.05) rotate(.5deg);}
+  38% {transform:translate(-50%,-50%) scale(1) rotate(0);}
+  68% {opacity:1;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:0;transform:translate(-50%,-60%) scale(.9);}
+}
+.wb-main{
+  font-family:'Kaisei Tokumin',serif;font-size:clamp(2.4rem,8vw,4rem);display:block;
+  background:linear-gradient(135deg,#ffd700 0%,#ff8c00 30%,#ffd700 60%,#fffacd 80%,#ffd700 100%);
+  background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gold-text 1s linear infinite;
+  filter:drop-shadow(0 0 20px rgba(255,200,0,1)) drop-shadow(0 0 40px rgba(255,150,0,.8));
+  letter-spacing:.18em;line-height:1.1;
+}
+.wb-sub{
+  font-family:'Kaisei Tokumin',serif;font-size:clamp(1rem,3.5vw,1.6rem);display:block;color:#fff;
+  text-shadow:0 0 24px rgba(255,220,0,1),0 0 50px rgba(255,160,0,.9),0 3px 6px rgba(0,0,0,.8);
+  letter-spacing:.25em;margin-top:6px;
+  animation:sub13-pulse .7s ease-in-out infinite alternate;
+}
+.wb-tiles{font-size:clamp(1.4rem,4vw,2.2rem);display:block;margin-top:8px;line-height:1.4;
+  filter:drop-shadow(0 0 8px rgba(255,220,0,.8));}
+
+/* 十三面和了：背景に流れ星 */
+.overlay.show-13men::after{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(255,200,0,.12) 0%,transparent 30%),
+    radial-gradient(circle at 80% 70%,rgba(255,80,80,.1) 0%,transparent 30%),
+    radial-gradient(circle at 50% 10%,rgba(80,200,255,.1) 0%,transparent 25%);
+  animation:stars-drift 4s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes stars-drift{
+  0%{transform:translateX(0) translateY(0);}
+  100%{transform:translateX(20px) translateY(-15px);}
+}
+/* ov-box登場を遅らせる（バナーが先に出てから） */
+.ov-box.ov-13men{animation:ov-pop-13men .5s cubic-bezier(.175,.885,.32,1.275) 1.6s both;}
+@keyframes ov-pop-13men{from{transform:scale(.3);opacity:0;}to{transform:scale(1);opacity:1;}}
 
 /* オーバーレイ */
 .overlay{position:fixed;inset:0;background:rgba(0,30,20,.7);display:flex;align-items:center;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity .35s;backdrop-filter:blur(4px);}
@@ -251,6 +490,26 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 .ov-stats{background:var(--bg2);border-radius:10px;padding:12px;margin:14px 0;font-size:.82rem;color:var(--text2);text-align:left;}
 .ov-stats div{margin-bottom:3px;}
 .ov-stats span{font-weight:700;color:var(--em);}
+
+/* 単騎和了 選択ダイアログ */
+.choice-ov{position:fixed;inset:0;background:rgba(0,20,10,.75);display:flex;align-items:center;justify-content:center;z-index:310;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px);}
+.choice-ov.show{opacity:1;pointer-events:all;}
+.choice-box{background:var(--card);border-radius:20px;padding:32px 28px;text-align:center;max-width:420px;width:92%;border-top:4px solid var(--gold);box-shadow:0 8px 40px rgba(180,140,0,0.35),0 0 0 1px rgba(200,168,50,0.2);animation:ov-pop .35s cubic-bezier(.175,.885,.32,1.275);}
+.choice-box .c-icon{font-size:3.2rem;margin-bottom:4px;}
+.choice-win-title{font-family:'Kaisei Tokumin',serif;font-size:2rem;margin-bottom:4px;
+  background:linear-gradient(135deg,#ffd700,#ff8c00,#ffd700);background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gold-text 1.2s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 8px rgba(255,200,0,.6));letter-spacing:.08em;}
+.choice-tsumo-tile{font-size:2.4rem;display:block;margin:6px 0;line-height:1;
+  filter:drop-shadow(0 0 6px rgba(255,200,0,.7));}
+.choice-box p{font-size:.82rem;color:var(--text2);margin-bottom:18px;line-height:1.7;}
+.choice-btns{display:flex;flex-direction:column;gap:10px;}
+.btn-agari{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#3a2000;font-weight:700;border:none;padding:12px 20px;border-radius:30px;font-size:.9rem;cursor:pointer;font-family:'M PLUS Rounded 1c',sans-serif;box-shadow:0 3px 10px rgba(180,140,0,0.35);transition:all .15s;}
+.btn-agari:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(180,140,0,0.4);}
+.btn-continue{background:linear-gradient(135deg,#3060c0,#4878d8);color:#e8f0ff;font-weight:700;border:none;padding:12px 20px;border-radius:30px;font-size:.9rem;cursor:pointer;font-family:'M PLUS Rounded 1c',sans-serif;box-shadow:0 3px 10px rgba(48,96,192,0.35);transition:all .15s;}
+.btn-continue:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(48,96,192,0.4);}
+.choice-note{font-size:.7rem;color:var(--text3);margin-top:12px;}
 
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -297,9 +556,8 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 
 <div class="wrap">
   <header>
-    <div class="site-tag">佐藤優羽 Birthday Committee ✿</div>
-    <h1>国士無双 <span>✿</span> チャレンジ</h1>
-    <p>KOKUSHI MUSOU CHALLENGE — 十三面待ちを目指そう！</p>
+    <h1>東南西北白發ゆう！<br><span style="font-size:.75em;">国士無双十三面待ちチャレンジ！</span></h1>
+    <p>🪽 KOKUSHI MUSOU — 十三面待ちを目指そう！</p>
   </header>
 
   <!-- 情報 -->
@@ -323,6 +581,12 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
     <div class="opp-panel"><h4>下家（右）</h4><div class="opp-tiles" id="opp-2"></div></div>
   </div>
 
+  <!-- 自分の捨て牌 -->
+  <div class="my-discards-panel">
+    <h4>自分の捨て牌</h4>
+    <div class="my-discards-tiles" id="my-discards"></div>
+  </div>
+
   <!-- 国士収集 -->
   <div class="card kokushi-card">
     <div class="card-title" id="kokushi-title">国士無双 収集状況 (0/13)</div>
@@ -337,28 +601,69 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
     <div class="tiles-row" id="hand-tiles"></div>
   </div>
 
+  <!-- 自動試行 統計パネル -->
+  <div id="sim-panel">
+    <div class="sim-header">
+      <h4>📊 自動試行モード 統計</h4>
+      <span class="sim-running-badge" id="sim-running-badge">実行中...</span>
+      <button class="sim-btn-stop" onclick="simStop()">■ 停止</button>
+    </div>
+    <div class="sim-stats-grid">
+      <div class="sim-stat"><div class="s-lbl">試行</div><div class="s-val" id="sim-count">0</div></div>
+      <div class="sim-stat"><div class="s-lbl">和了</div><div class="s-val" id="sim-win">0</div></div>
+      <div class="sim-stat"><div class="s-lbl">平均巡目</div><div class="s-val" id="sim-avg">—</div></div>
+      <div class="sim-stat"><div class="s-lbl">最短</div><div class="s-val" id="sim-min">—</div></div>
+    </div>
+    <div class="sim-hist" id="sim-hist"></div>
+  </div>
+
   <!-- デバッグモード -->
   <div class="debug-bar" id="debug-bar">
     <label>
       <input type="checkbox" id="debug-mode-chk" onchange="onDebugToggle()">
-      🐛 デバッグモード（九種九牌スタート）
+      🐛 九種九牌スタート
     </label>
-    <span class="debug-note">配牌時に9種以上の国士牌が来るまでリセットします</span>
+    <label style="margin-left:8px;">
+      <input type="checkbox" id="pick-mode-chk" onchange="onPickModeToggle()">
+      🎯 ツモ指定モード
+    </label>
+    <label style="margin-left:8px;">
+      <input type="checkbox" id="sim-mode-chk" onchange="onSimModeToggle()">
+      📊 自動試行モード
+    </label>
     <span class="debug-mode-badge">DEBUG ON</span>
   </div>
+  <div class="pick-mode-hint" id="pick-mode-hint">🎯 収集状況の牌をタップすると、その牌をツモれます（枯れた牌は指定不可）</div>
 
   <!-- コントロール -->
   <div class="controls">
     <button class="btn btn-start" id="start-btn" onclick="startGame()">🀄 ゲーム開始</button>
     <button class="btn btn-auto"  id="auto-btn"  onclick="autoDiscard()" disabled>♻ 不要牌を切る</button>
-    <button class="btn btn-ron"   id="ron-btn"   onclick="declareRon()"  disabled>ロン！</button>
-    <button class="btn btn-skip"  id="skip-btn"  onclick="skipRon()"     disabled style="display:none;">スルー</button>
-    <button class="btn btn-tsumo" id="tsumo-btn" onclick="declareTsumo()" disabled>ツモ和了！</button>
+    <!-- ロン/スルー/ツモ和了はフローティングバーのみで操作 -->
+    <button id="ron-btn"   onclick="declareRon()"   disabled style="display:none;"></button>
+    <button id="skip-btn"  onclick="skipRon()"      disabled style="display:none;"></button>
+    <button id="tsumo-btn" onclick="declareTsumo()" disabled style="display:none;"></button>
 
   </div>
 
   <!-- ログ -->
   <div class="log-area" id="log"></div>
+</div>
+
+<!-- フローティングアクションバー -->
+<div id="action-bar">
+  <button class="fab fab-tsumo" id="fab-tsumo" onclick="declareTsumo()" style="display:none;">🀄 ツモ和了！</button>
+  <div class="fab-sep" id="fab-sep-tsumo" style="display:none;"></div>
+  <button class="fab fab-ron"   id="fab-ron"   onclick="declareRon()"  style="display:none;">ロン！</button>
+  <div class="fab-sep" id="fab-sep-ron" style="display:none;"></div>
+  <button class="fab fab-skip"  id="fab-skip"  onclick="skipRon()"     style="display:none;">スルー</button>
+</div>
+
+<!-- 和了ドーンバナー -->
+<div id="win-banner">
+  <span class="wb-main" id="wb-main">国士無双！</span>
+  <span class="wb-sub" id="wb-sub">KOKUSHI MUSOU</span>
+  <span class="wb-tiles" id="wb-tiles"></span>
 </div>
 
 <!-- 演出 -->
@@ -370,13 +675,28 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
 </div>
 
 <!-- 勝利 -->
+<!-- 単騎待ちツモ和了 選択ダイアログ -->
+<div class="choice-ov" id="choice-ov">
+  <div class="choice-box">
+    <div class="c-icon">🀄</div>
+    <div class="choice-win-title">国士無双 ツモ！</div>
+    <span class="choice-tsumo-tile" id="choice-tsumo-tile"></span>
+    <p id="choice-desc">和了しますか？それともフリテン十三面待ちで継続しますか？</p>
+    <div class="choice-btns">
+      <button class="btn-agari" onclick="choiceAgari()">🪽 和了する</button>
+      <button class="btn-continue" onclick="choiceContinue()">🔄 フリテン十三面待ちで継続する</button>
+    </div>
+    <div class="choice-note">※継続する場合、重複する国士牌を1枚捨てフリテンになります</div>
+  </div>
+</div>
+
 <div class="overlay" id="win-ov">
   <div class="ov-box" id="win-box">
     <div class="ov-icon">🀄</div>
     <h2 id="win-h2">国士無双！</h2>
     <p id="win-p">役満おめでとうございます！</p>
     <div class="ov-stats" id="win-stats"></div>
-    <button class="btn btn-start" onclick="startGame();document.getElementById('win-ov').classList.remove('show')">もう一度挑戦 ✿</button>
+    <button class="btn btn-start" onclick="startGame();document.getElementById('win-ov').classList.remove('show')">もう一度挑戦 🪽</button>
   </div>
 </div>
 
@@ -387,7 +707,7 @@ header p{font-size:0.72rem;color:var(--text3);margin-top:6px;letter-spacing:0.08
     <h2 style="color:var(--text2)">流局</h2>
     <p>牌山が尽きてしまいました。</p>
     <div class="ov-stats" id="lose-stats"></div>
-    <button class="btn btn-start" onclick="startGame();document.getElementById('lose-ov').classList.remove('show')">再挑戦 ✿</button>
+    <button class="btn btn-start" onclick="startGame();document.getElementById('lose-ov').classList.remove('show')">再挑戦 🪽</button>
   </div>
 </div>
 
@@ -451,8 +771,184 @@ function buildWall() {
 // デバッグモード
 // ================================================================
 function onDebugToggle() {
-  const on = document.getElementById('debug-mode-chk').checked;
+  const on = document.getElementById('debug-mode-chk').checked
+          || document.getElementById('pick-mode-chk').checked
+          || document.getElementById('sim-mode-chk').checked;
   document.getElementById('debug-bar').classList.toggle('active', on);
+}
+
+// ================================================================
+// 自動試行モード
+// ================================================================
+let SIM = { running:false, count:0, wins:0, totalTurns:0, minTurns:Infinity, hist:[] };
+
+function onSimModeToggle(){
+  const on = document.getElementById('sim-mode-chk').checked;
+  document.getElementById('debug-bar').classList.toggle('active',
+    document.getElementById('debug-mode-chk').checked ||
+    document.getElementById('pick-mode-chk').checked || on);
+  document.getElementById('sim-panel').classList.toggle('show', on);
+  if(on){
+    SIM = { running:false, count:0, wins:0, totalTurns:0, minTurns:Infinity, hist:[] };
+    simUpdateStats();
+  }
+}
+
+function simIsOn(){ return document.getElementById('sim-mode-chk').checked; }
+
+function simStart(){
+  if(!simIsOn() || SIM.running) return;
+  SIM.running = true;
+  document.getElementById('sim-running-badge').classList.add('on');
+  simNextGame();
+}
+
+function simStop(){
+  SIM.running = false;
+  document.getElementById('sim-running-badge').classList.remove('on');
+}
+
+function simNextGame(){
+  if(!SIM.running || !simIsOn()){ simStop(); return; }
+  // UIオーバーレイを閉じて即スタート
+  document.getElementById('win-ov').classList.remove('show');
+  document.getElementById('lose-ov').classList.remove('show');
+  startGame();
+}
+
+function simOnWin(turns, winType){
+  SIM.count++;
+  SIM.wins++;
+  SIM.totalTurns += turns;
+  if(turns < SIM.minTurns) SIM.minTurns = turns;
+  const label = winType==='ron' ? `<span class="win13">${turns}巡ロン</span>`
+              : `<span class="win13">${turns}巡ツモ</span>`;
+  SIM.hist.unshift(label);
+  simUpdateStats();
+  // 少し間を置いて次のゲーム
+  setTimeout(simNextGame, 80);
+}
+
+function simOnRyukyoku(turns){
+  SIM.count++;
+  SIM.hist.unshift(`<span class="ryu">${turns}巡流局</span>`);
+  simUpdateStats();
+  setTimeout(simNextGame, 80);
+}
+
+function simUpdateStats(){
+  document.getElementById('sim-count').textContent = SIM.count;
+  document.getElementById('sim-win').textContent = SIM.wins;
+  document.getElementById('sim-avg').textContent =
+    SIM.wins > 0 ? (SIM.totalTurns / SIM.wins).toFixed(1) : '—';
+  document.getElementById('sim-min').textContent =
+    SIM.minTurns < Infinity ? SIM.minTurns + '巡' : '—';
+  const histEl = document.getElementById('sim-hist');
+  histEl.innerHTML = SIM.hist.slice(0,60).map(h=>`<span>${h}</span>`).join('');
+}
+
+function onPickModeToggle() {
+  const on = document.getElementById('pick-mode-chk').checked;
+  document.getElementById('pick-mode-hint').classList.toggle('show', on);
+  document.getElementById('debug-bar').classList.toggle('active',
+    document.getElementById('debug-mode-chk').checked || on);
+
+  // OFFに切り替えたとき、ツモ指定待ち状態なら自動でツモる
+  if(!on && G.phase === 'playing' && G.tsumoPai === null) {
+    drawTile();
+  } else {
+    render(); // kslotのpick-modeクラスを更新
+  }
+}
+
+// 収集状況スロットをタップしてツモ指定
+function debugTsumo(tileId) {
+  if(G.phase !== 'playing') return;
+  if(!document.getElementById('pick-mode-chk').checked) return;
+  if(G.tsumoPai !== null) return; // すでにツモ牌がある（打牌待ち中）は不可
+
+  // 残り枚数チェック（手牌＋他家捨て牌＋自捨て牌で消費数を確認）
+  const oppC = {};
+  G.oppDiscards.forEach(opp => opp.forEach(t => { oppC[t] = (oppC[t]||0)+1; }));
+  const myC = {};
+  G.discards.forEach(t => { myC[t] = (myC[t]||0)+1; });
+  const handC = {};
+  G.hand.forEach(t => { handC[t] = (handC[t]||0)+1; });
+  const remain = 4 - (handC[tileId]||0) - (oppC[tileId]||0) - (myC[tileId]||0);
+  if(remain <= 0) {
+    addLog(`⚠ ${tLabel(tileId)}は枯れています`, 'warn');
+    return;
+  }
+
+  // 牌山から該当牌を取り出す（なければ末尾の牌と置き換え）
+  const wallIdx = G.wall.lastIndexOf(tileId);
+  if(wallIdx === -1) {
+    addLog(`⚠ 牌山に${tLabel(tileId)}がありません`, 'warn');
+    return;
+  }
+  // 牌山からwallIdxの牌を末尾と入れ替えてpop
+  G.wall[wallIdx] = G.wall[G.wall.length - 1];
+  G.wall.pop();
+
+  // ツモとして処理
+  const prevCnt = kokushiCount(G.hand);
+  G.tsumoPai = tileId;
+  G.turn++;
+  G.draws++;
+
+  if(G.turn === 1) {
+    addLog('ゲーム開始！配牌完了。', 'hi');
+    addLog(`牌山残り ${G.wall.length} 枚`);
+  }
+
+  addLog(`🎯 [指定ツモ] 【${G.turn}巡目】ツモ：${tLabel(tileId)}`);
+  setPhase(`${G.turn}巡目 — ツモ（指定）`);
+
+  const hc = {};
+  G.hand.forEach(t => hc[t] = (hc[t]||0)+1);
+  const isNew = KSET.has(tileId) && !hc[tileId];
+
+  const h14 = [...G.hand, tileId];
+  const canTsumo = canKokushi(h14);
+  if(canTsumo) {
+    if(!G.isFuriten && G.discards.includes(tileId)) G.isFuriten = true;
+    const waitCount = getWaitTiles(G.hand).length;
+    const is13men = waitCount === 13;
+
+    if(!is13men && !G.isFuriten){
+      // 単騎待ちかつフリテンなし → 選択ダイアログ（drawTileと同じ処理）
+      G._pendingWinH14 = h14;
+      if(simIsOn()){
+        choiceContinue();
+        return;
+      }
+      updateAutoBtn();
+      render();
+      document.getElementById('hand-card').className = 'card hand-card';
+      updateFuritenBadge();
+      document.getElementById('choice-tsumo-tile').textContent = tileChar(tileId);
+      document.getElementById('choice-desc').innerHTML =
+        `単騎待ち：${tileChar(tileId)}${tLabel(tileId)}`;
+      const fl = document.getElementById('flash-ov');
+      fl.className=''; void fl.offsetWidth; fl.className='f-xl';
+      setTimeout(()=>{ document.getElementById('choice-ov').classList.add('show'); }, 120);
+      return;
+    }
+    // 十三面待ち or フリテン → ツモ和了ボタンを有効化
+    setBtn('tsumo-btn', false);
+  } else {
+    setBtn('tsumo-btn', true);
+  }
+
+  if(isNew) setTimeout(() => showAcq(tileId, prevCnt+1, h14), 80);
+  updateAutoBtn();
+  render();
+
+  const waits14 = getWaitTiles14(h14);
+  const isTenpaiNow = waits14.length > 0;
+  const hc2 = document.getElementById('hand-card');
+  hc2.className = 'card hand-card' + (isTenpaiNow ? (G.isFuriten?' tenpai-furiten':' tenpai-glow') : '');
+  updateFuritenBadge();
 }
 
 // ================================================================
@@ -486,13 +982,15 @@ function startGame() {
   setBtn('ron-btn', true);
   setBtn('skip-btn', true);
   document.getElementById('skip-btn').style.display='none';
-  document.getElementById('start-btn').textContent='🔄 リセット';
+  if(!simIsOn()) document.getElementById('start-btn').textContent='🔄 リセット';
   document.getElementById('win-ov').classList.remove('show');
   document.getElementById('lose-ov').classList.remove('show');
   document.getElementById('hand-card').className='card hand-card';
   document.getElementById('furiten-badge').className='furiten-badge';
 
   drawTile();
+  // 自動試行モード中はsimStartで制御
+  if(simIsOn() && !SIM.running) simStart();
 }
 
 // ================================================================
@@ -513,7 +1011,7 @@ function drawTile() {
       const kinds = new Set(G.hand.filter(t => KSET.has(t))).size;
       addLog(`配牌中の国士牌：${kinds}種類`);
     } else {
-      addLog('ゲーム開始！配牌完了。国士無双を目指せ！', 'hi');
+      if(!simIsOn()) addLog('ゲーム開始！配牌完了。国士無双を目指せ！', 'hi');
     }
     addLog(`牌山残り ${G.wall.length} 枚（約${Math.floor(G.wall.length/4)}巡）`);
   }
@@ -531,22 +1029,53 @@ function drawTile() {
   const canTsumo = canKokushi(h14);
   if(canTsumo){
     if(!G.isFuriten && G.discards.includes(G.tsumoPai)) G.isFuriten=true;
+    const waitCount = getWaitTiles(G.hand).length;
+    const is13men = waitCount === 13;
+
+    if(!is13men && !G.isFuriten){
+      if(simIsOn()){
+        // 自動試行モード：単騎待ちは自動でフリテン継続
+        G._pendingWinH14 = h14;
+        choiceContinue();
+        return;
+      }
+      // 単騎待ちかつフリテンなし → ツモった瞬間に選択ダイアログ
+      G._pendingWinH14 = h14;
+      updateAutoBtn();
+      render();
+      document.getElementById('hand-card').className='card hand-card';
+      updateFuritenBadge();
+      document.getElementById('choice-tsumo-tile').textContent = tileChar(G.tsumoPai);
+      document.getElementById('choice-desc').innerHTML =
+        `単騎待ち：${tileChar(G.tsumoPai)}${tLabel(G.tsumoPai)}`;
+      const fl=document.getElementById('flash-ov');
+      fl.className=''; void fl.offsetWidth; fl.className='f-xl';
+      setTimeout(()=>{
+        document.getElementById('choice-ov').classList.add('show');
+      }, 120);
+      return;
+    }
+    // 十三面待ち or フリテン → ツモ和了ボタンを有効化
     setBtn('tsumo-btn', false);
   } else {
     setBtn('tsumo-btn', true);
   }
 
-  if(isNew) setTimeout(()=>showAcq(G.tsumoPai, prevCnt+1), 80);
+  if(!simIsOn() && isNew) setTimeout(()=>showAcq(G.tsumoPai, prevCnt+1, [...G.hand, G.tsumoPai]), 80);
   updateAutoBtn();
-  render();
+  if(!simIsOn()) render();
 
-  // テンパイglow: 手牌13枚でのテンパイ判定（単騎・十三面両対応）
-  // canTsumo=true のときも手牌+ツモ牌でテンパイ形が成立している
-  const tp13 = isTenpai(G.hand); // 13枚でのテンパイ（ツモ前の待ち形）
-  const isTenpaiNow = tp13 || canTsumo;
-  const hc2=document.getElementById('hand-card');
-  hc2.className='card hand-card'+(isTenpaiNow ? (G.isFuriten?' tenpai-furiten':' tenpai-glow'):'');
-  updateFuritenBadge();
+  // テンパイglow（自動試行中はスキップ）
+  if(!simIsOn()){
+    const waits14 = getWaitTiles14(h14);
+    const isTenpaiNow = waits14.length > 0;
+    const hc2=document.getElementById('hand-card');
+    hc2.className='card hand-card'+(isTenpaiNow ? (G.isFuriten?' tenpai-furiten':' tenpai-glow'):'');
+    updateFuritenBadge();
+  } else {
+    // 自動試行：即座に不要牌を切る
+    autoDiscard();
+  }
 }
 
 // ================================================================
@@ -610,44 +1139,48 @@ function otherTurn() {
 
   if(G.ronTarget!==null){
     const {oppIdx,tile}=G.ronTarget;
+    G.tsumoPai = null; // ロン待ち中はツモ牌を非表示に
     addLog(`🀄 ロン可能！${['上家','対面','下家'][oppIdx]}が${tLabel(tile)}を捨てました！`, 'hi');
     setBtn('ron-btn',false);
     document.getElementById('skip-btn').style.display='';
     setBtn('skip-btn',false);
     setPhase(`${G.turn}巡目 — ロン可能！`);
     render();
+    updateActionBar();
     return;
   }
 
   setBtn('ron-btn',true);
   if(G.wall.length===0){ endGame(); return; }
+
+  // ツモ指定モードONのときは自動ツモせず待機（自動試行中は無視）
+  const pickMode = !simIsOn() && document.getElementById('pick-mode-chk') &&
+                   document.getElementById('pick-mode-chk').checked;
+  if(pickMode){
+    setPhase(`${G.turn}巡目 — ツモ指定待ち`);
+    render();
+    return;
+  }
   drawTile();
 }
 
 // ================================================================
 // 待ち牌計算（国士無双）
 // ================================================================
-// 国士の13枚形での待ち：
-//   13種1枚ずつ（テンパイ）→ 13種すべてが待ち牌（十三面待ち）
-//   12種＋1種ペア → 足りない1種が待ち牌（単騎待ち）
+// 13枚形での待ち牌を返す
+//   13種1枚ずつ → 十三面待ち（全13種）
+//   12種＋1種ペア → 単騎待ち（足りない1種）
 function getWaitTiles(tiles13) {
   const c={};
-  tiles13.forEach(t=>c[t]=(c[t]||0)+1);
+  tiles13.slice(0,13).forEach(t=>c[t]=(c[t]||0)+1);
   const have=KOKUSHI.filter(t=>c[t]>=1).length;
   const pairs=KOKUSHI.filter(t=>c[t]>=2).length;
-
-  if(have===13){
-    // 十三面待ち（全13種）
-    return [...KOKUSHI];
-  }
-  if(have===12 && pairs===1){
-    // 単騎待ち（足りない1種）
-    return KOKUSHI.filter(t=>!c[t]);
-  }
+  if(have===13)              return [...KOKUSHI];         // 十三面待ち
+  if(have===12 && pairs===1) return KOKUSHI.filter(t=>!c[t]); // 単騎待ち
   return [];
 }
 
-// 14枚での和了判定
+// 14枚での和了判定（13種保有＋いずれか1種ペア）
 function canKokushi(tiles14) {
   const c={};
   tiles14.forEach(t=>c[t]=(c[t]||0)+1);
@@ -656,7 +1189,21 @@ function canKokushi(tiles14) {
   return KOKUSHI.some(t=>c[t]>=2);
 }
 
-// 13枚でのテンパイ判定
+// 14枚から最適な13枚を選んでテンパイ形の待ち牌を返す
+// 「どれか1枚を除いた13枚でテンパイになるか」を全探索
+function getWaitTiles14(tiles14) {
+  const seen = new Set();
+  for(let i=0;i<tiles14.length;i++){
+    if(seen.has(tiles14[i])) continue; // 同種は1回だけ試す
+    seen.add(tiles14[i]);
+    const t13 = tiles14.filter((_,j)=>j!==i);
+    const w = getWaitTiles(t13);
+    if(w.length>0) return w;
+  }
+  return [];
+}
+
+// テンパイ判定：13枚でのテンパイ形チェック
 function isTenpai(tiles) {
   return getWaitTiles(tiles.slice(0,13)).length>0;
 }
@@ -697,7 +1244,7 @@ function updateAutoBtn(){
     btn.disabled=true; btn.textContent='♻ 不要牌を切る'; return;
   }
   if(canKokushi([...G.hand,G.tsumoPai])){
-    btn.disabled=true; btn.textContent='✦ 和了できます！'; return;
+    btn.disabled=true; btn.textContent='🪽 和了できます！'; return;
   }
   const {tile,fromTsumo}=bestDiscard(G.hand,G.tsumoPai);
   btn.textContent=`♻ 不要牌を切る（${fromTsumo?'ツモ切り':tLabel(tile)}）`;
@@ -711,18 +1258,19 @@ function declareRon(){
   if(G.phase!=='playing'||G.ronTarget===null) return;
   G.phase='ended';
   document.getElementById('skip-btn').style.display='none';
+  updateActionBar();
   const {tile}=G.ronTarget;
   showWin([...G.hand,tile], false, 'ron');
 }
 
 function skipRon(){
   if(!G.ronTarget) return;
-  G.isFuriten=true;
+  // リーチなしの見逃しはフリテンにならない（同巡フリテンのみ。次の自分のツモで解消）
   G.ronTarget=null;
   setBtn('ron-btn',true);
   document.getElementById('skip-btn').style.display='none';
-  addLog('ロンを見逃し。以降フリテンになります。','warn');
-  updateFuritenBadge();
+  updateActionBar();
+  addLog('ロンをスルーしました。');
   if(G.wall.length===0){ endGame(); return; }
   drawTile();
 }
@@ -731,60 +1279,138 @@ function declareTsumo(){
   if(G.phase!=='playing') return;
   const h14=[...G.hand,G.tsumoPai];
   if(canKokushi(h14)){
-    G.phase='ended';
-    // 十三面待ちか単騎待ちか判定
+    // ツモ和了ボタンが有効な状態 = 十三面待ち or フリテン → 即和了
     const waitCount=getWaitTiles(G.hand).length;
     const is13men=waitCount===13;
+    G.phase='ended';
     showWin(h14, G.isFuriten, 'tsumo', is13men);
   }
+}
+
+// 選択：和了する
+function choiceAgari(){
+  document.getElementById('choice-ov').classList.remove('show');
+  // テンパイglow・フリテンバッジをリセット
+  document.getElementById('hand-card').className='card hand-card';
+  document.getElementById('furiten-badge').className='furiten-badge';
+  G.phase='ended';
+  showWin(G._pendingWinH14, false, 'tsumo', false);
+  G._pendingWinH14 = null;
+}
+
+// 選択：フリテン十三面待ちで継続
+function choiceContinue(){
+  document.getElementById('choice-ov').classList.remove('show');
+  // ツモ牌を手牌に加え、14枚から重複している国士牌を1枚捨てることで
+  // 12種＋ペアのテンパイ形（単騎待ち）を維持する
+  const h14 = [...G.hand, G.tsumoPai];
+  G.tsumoPai = null;
+  G._pendingWinH14 = null;
+
+  // 重複している国士牌を探す（これが捨て牌候補）
+  const c = {};
+  h14.forEach(t => c[t] = (c[t]||0)+1);
+  const dupTile = KOKUSHI.find(t => c[t] >= 2);
+
+  // dupTileを1枚だけh14から除いて手牌にする
+  let removed = false;
+  G.hand = h14.filter(t => {
+    if(!removed && t === dupTile){ removed = true; return false; }
+    return true;
+  });
+  const disc = dupTile;
+  G.discards.push(disc);
+  G.isFuriten = true;
+
+  addLog(`フリテン継続：${tLabel(disc)}を捨てました。フリテン単騎待ちで継続します。`, 'warn');
+  setPhase(`${G.turn}巡目 — 打牌待ち`);
+  setBtn('tsumo-btn', true);
+  setBtn('auto-btn', true);
+  setBtn('ron-btn', true);
+  document.getElementById('hand-card').className = 'card hand-card tenpai-glow-furiten';
+  updateFuritenBadge();
+  otherTurn();
+  render();
 }
 
 // ================================================================
 // 勝利表示
 // ================================================================
 function showWin(h14, isFuriten, winType, is13men){
+  if(simIsOn()){
+    simOnWin(G.turn, winType);
+    return;
+  }
   const elapsed=Math.round((Date.now()-G.startTime)/1000);
   const waitCount=getWaitTiles(G.hand.length===13?G.hand:h14.slice(0,13)).length;
   const is13=waitCount===13||is13men;
 
   const box=document.getElementById('win-box');
+  // 前回の十三面装飾をリセット
+  box.className='ov-box';
+  box.style.borderTop='';
+  document.getElementById('win-ov').classList.remove('show-13men');
+  box.querySelector('.ov-icon').innerHTML='';
   const h2=document.getElementById('win-h2');
   const p=document.getElementById('win-p');
   const stats=document.getElementById('win-stats');
 
+  // ov-iconデフォルト
+  box.querySelector('.ov-icon').textContent='🀄';
+
   if(isFuriten){
-    h2.textContent='フリテン国士無双！';
-    h2.style.color='#3060c0';
-    p.textContent='フリテン十三面待ちでのツモ和了！非公式扱いです。';
+    h2.innerHTML='フリテン国士無双！'; h2.style.color='#3060c0';
+    p.textContent='フリテン十三面待ちでのツモ和了！';
     box.style.borderTop='4px solid #3060c0';
-  } else if(is13 && winType==='ron'){
-    h2.textContent='国士無双！ロン！';
-    h2.style.color='var(--pink)';
-    p.textContent='十三面待ちロン和了！最高の役満です！';
-    box.style.borderTop='4px solid var(--pink)';
-    spawnParticles(24,'xl');
-  } else if(is13 && winType==='tsumo'){
-    h2.textContent='国士無双！ツモ！';
-    h2.style.color='var(--em)';
-    p.textContent='十三面待ちツモ和了！見事な役満です！';
-    box.style.borderTop='4px solid var(--em2)';
-    spawnParticles(20,'xl');
+  } else if(is13 && (winType==='ron'||winType==='tsumo')){
+    // ===== 十三面待ち和了 → 最高演出 =====
+    box.className='ov-box ov-13men';
+    document.getElementById('win-ov').classList.add('show-13men');
+    h2.innerHTML=`<span class="win-13men-title">国士無双！${winType==='ron'?'ロン！':'ツモ！'}</span>`;
+    h2.style.color='';
+    p.innerHTML=`${winType==='ron'?'十三面待ちロン和了！':'十三面待ちツモ和了！'}<br><span style="font-size:.8rem;color:#a8edd8;">最高位の役満達成！</span>`;
+    box.querySelector('.ov-icon').textContent='';
+    const tilesDiv=document.createElement('div');
+    tilesDiv.className='win-tiles-row';
+    tilesDiv.textContent=KOKUSHI.map(tileChar).join('');
+    box.querySelector('.ov-icon').appendChild(tilesDiv);
+
+    // ① 即座にレインボーフラッシュ（オーバーレイ表示前）
+    const fl2=document.getElementById('flash-ov');
+    fl2.className=''; void fl2.offsetWidth; fl2.className='f-13men';
+
+    // ② ドーンバナー（オーバーレイより手前、z:410）
+    const wb=document.getElementById('win-banner');
+    document.getElementById('wb-main').textContent=winType==='ron'?'国士無双ロン！':'国士無双ツモ！';
+    document.getElementById('wb-sub').textContent='KOKUSHI MUSOU 🪽 十三面待ち';
+    document.getElementById('wb-tiles').textContent=KOKUSHI.map(tileChar).join('');
+    wb.className=''; void wb.offsetWidth; wb.className='show';
+
+    // ③ オーバーレイは少し遅れて表示（バナーが主役の間は隠す）
+    document.getElementById('win-ov').style.opacity='0';
+    document.getElementById('win-ov').classList.add('show');
+    setTimeout(()=>{ document.getElementById('win-ov').style.opacity=''; }, 1500);
+
+    // ④ z:400の和了専用花火を大量・長時間発射
+    spawnParticles13menWin();
+    setTimeout(spawnParticles13menWin, 1200);
+    setTimeout(spawnParticles13menWin, 2600);
+    // ⑤ 2回目のレインボーフラッシュ
+    setTimeout(()=>{ fl2.className=''; void fl2.offsetWidth; fl2.className='f-13men'; }, 700);
   } else if(winType==='ron'){
-    h2.textContent='国士無双！ロン！';
-    h2.style.color='var(--pink)';
+    h2.innerHTML='国士無双！ロン！'; h2.style.color='var(--pink)';
     p.textContent='単騎待ちロン和了！役満おめでとうございます！';
     box.style.borderTop='4px solid var(--pink)';
     spawnParticles(14,'lg');
   } else {
-    h2.textContent='国士無双！ツモ！';
-    h2.style.color='var(--em)';
+    h2.innerHTML='国士無双！ツモ！'; h2.style.color='var(--em)';
     p.textContent='単騎待ちツモ和了！役満おめでとうございます！';
     box.style.borderTop='4px solid var(--em2)';
     spawnParticles(14,'lg');
   }
 
   const waitLabel = is13 ? '十三面待ち' : '単騎待ち';
-  const furitenNote = isFuriten ? '<div style="color:#3060c0;margin-top:6px;font-size:.78rem;">※フリテンのため非公式扱い</div>' : '';
+  const furitenNote = '';
   stats.innerHTML=`
     <div>待ち形：<span>${waitLabel}</span></div>
     <div>和了：<span>${winType==='ron'?'ロン':'ツモ'}</span></div>
@@ -800,6 +1426,10 @@ function showWin(h14, isFuriten, winType, is13men){
 // ================================================================
 function endGame(){
   G.phase='ended';
+  if(simIsOn()){
+    simOnRyukyoku(G.turn);
+    return;
+  }
   const cnt=kokushiCount(G.hand);
   const elapsed=Math.round((Date.now()-G.startTime)/1000);
   document.getElementById('lose-stats').innerHTML=`
@@ -814,10 +1444,29 @@ function endGame(){
 // レンダリング
 // ================================================================
 function render(){
+  if(!G.hand) return; // ゲーム未開始
   renderHand();
   renderKokushi();
   renderOpponents();
+  renderMyDiscards();
   renderInfo();
+}
+
+function renderMyDiscards(){
+  const cont = document.getElementById('my-discards');
+  cont.innerHTML = '';
+  G.discards.forEach((t, idx) => {
+    const isLast = idx === G.discards.length - 1;
+    const isKokushi = KSET.has(t);
+    const d = document.createElement('div');
+    d.className = 'sm-tile'
+      + (isLast ? ' my-latest' : '')
+      + (isKokushi ? ' my-kokushi' : '');
+    d.textContent = tileChar(t);
+    d.title = tLabel(t);
+    cont.appendChild(d);
+  });
+  cont.scrollTop = cont.scrollHeight;
 }
 
 function renderHand(){
@@ -849,6 +1498,8 @@ function makeTile(id){
 function renderKokushi(){
   const cont=document.getElementById('kokushi-slots');
   cont.innerHTML='';
+  // ゲーム未開始の場合は初期スロット表示のみ
+  if(!G.hand){ initSlots(); return; }
   const all=G.tsumoPai?[...G.hand,G.tsumoPai]:[...G.hand];
   const handC={};
   all.forEach(t=>handC[t]=(handC[t]||0)+1);
@@ -860,9 +1511,9 @@ function renderKokushi(){
   const myC={};
   G.discards.forEach(t=>{ myC[t]=(myC[t]||0)+1; });
 
-  // 待ち牌リスト（テンパイ中のみ）
-  const hand13 = G.hand.slice(0,13);
-  const waitTiles = new Set(getWaitTiles(hand13));
+  // 待ち牌リスト：14枚全探索（ツモ牌がある場合）または13枚判定
+  const hand14now = G.tsumoPai ? [...G.hand, G.tsumoPai] : G.hand;
+  const waitTiles = new Set(G.tsumoPai ? getWaitTiles14(hand14now) : getWaitTiles(G.hand));
 
   let have=0;
   KOKUSHI.forEach(t=>{
@@ -878,6 +1529,9 @@ function renderKokushi(){
     const isWait=waitTiles.has(t);
     if(hasTile) have++;
 
+    const pickMode = document.getElementById('pick-mode-chk') &&
+                     document.getElementById('pick-mode-chk').checked &&
+                     G.phase === 'playing' && G.tsumoPai === null;
     let cls='kslot';
     if(isPair)       cls+=' pair-have';
     else if(hasTile) cls+=' have';
@@ -886,7 +1540,9 @@ function renderKokushi(){
     else if(remain===2) cls+=' remain-2';
     else if(remain===3) cls+=' remain-3';
     if(isWait)       cls+=' wait-tile';
+    if(pickMode)     cls+=' pick-mode';
     s.className=cls;
+    if(pickMode) s.onclick = () => debugTsumo(t);
 
     // 保有済みには残り枚数を表示しない（未入手のみ表示）
     const remainLabel = !hasTile ? (remain<=0 ? '枯れ' : `残${remain}枚`) : '';
@@ -910,11 +1566,16 @@ function renderOpponents(){
       const isLast=idx===G.oppDiscards[i].length-1;
       const isRon=G.ronTarget&&G.ronTarget.oppIdx===i&&isLast;
       const d=document.createElement('div');
-      d.className='sm-tile'+(isRon?' ron-glow':isLast?' latest':'');
+      const isKokushiDiscard = KSET.has(t);
+      d.className='sm-tile'
+        +(isRon?' ron-glow':isLast?' latest':'')
+        +(isKokushiDiscard?' kokushi-discard':'');
       d.textContent=tileChar(t);
       d.title=tLabel(t);
       cont.appendChild(d);
     });
+    // 最新の捨て牌が見えるよう末尾にスクロール
+    cont.scrollTop = cont.scrollHeight;
   }
 }
 
@@ -930,17 +1591,51 @@ function renderInfo(){
 // ================================================================
 // 新牌獲得演出
 // ================================================================
-function showAcq(tile, cnt){
+function showAcq(tile, cnt, h14){
+  // h14でのテンパイ判定（14枚全探索）
+  const waitsNow = h14 ? getWaitTiles14(h14) : getWaitTiles(G.hand);
+  const isTenpaiNow = waitsNow.length > 0;
+
   let lv,txt,sub;
   if(cnt<=4)       {lv='sm';txt='新しい牌！';sub=`${cnt}/13 収集`;}
   else if(cnt<=7)  {lv='md';txt='ナイスツモ！';sub=`${cnt}/13 ━ あと${13-cnt}種`;}
   else if(cnt<=10) {lv='lg';txt='好調です！';sub=`${cnt}/13 ━ あと${13-cnt}種`;}
-  else if(cnt<=12) {lv='xl';txt='もうすぐテンパイ！';sub=`${cnt}/13 ━ 残り${13-cnt}種！`;}
-  else {
+  else if(cnt<=12) {
     lv='xl';
-    const waits=getWaitTiles(G.hand);
-    if(waits.length===13){txt='✿ テンパイ ✿';sub='十三面待ち！';}
-    else{txt='✿ テンパイ ✿';sub=`単騎待ち：${waits.map(tChar).join('')}`;}
+    if(isTenpaiNow){
+      if(waitsNow.length===13){
+        txt='🪽 国士無双テンパイ 🪽'; sub='十三面待ち！';
+      } else {
+        txt='🪽 国士無双テンパイ 🪽';
+        sub=`単騎待ち：${waitsNow.map(tChar).join('')}`;
+      }
+    } else {
+      txt='もうすぐテンパイ！'; sub=`${cnt}/13 ━ 残り${13-cnt}種！`;
+    }
+  }
+  else {
+    // cnt===13: 収集完了 → テンパイ
+    if(waitsNow.length===13){
+      // 十三面待ちテンパイ → 豪華演出
+      const fl=document.getElementById('flash-ov');
+      fl.className=''; void fl.offsetWidth; fl.className='f-13men';
+      const bn=document.getElementById('acq-banner');
+      const bti=document.getElementById('b-tile');
+      bti.textContent='🀄🀅🀆';
+      bti.style.fontSize='2.2rem';
+      const btxt=document.getElementById('b-text');
+      btxt.className='b-text-13men';
+      btxt.textContent='国士無双　十三面待ち！';
+      btxt.style.fontSize='';
+      const bsub=document.getElementById('b-sub');
+      bsub.className='b-sub-13men';
+      bsub.textContent='🪽 役満テンパイ 🪽';
+      bn.className=''; void bn.offsetWidth; bn.className='b-13men';
+      spawnParticles13men();
+      return; // 以降の通常処理をスキップ
+    } else {
+      lv='xl';txt='🪽 テンパイ 🪽';sub=`単騎待ち：${waitsNow.map(tChar).join('')}`;
+    }
   }
 
   const fl=document.getElementById('flash-ov');
@@ -949,18 +1644,76 @@ function showAcq(tile, cnt){
   const bn=document.getElementById('acq-banner');
   const bti=document.getElementById('b-tile');
   bti.textContent=tileChar(tile);
+  bti.style.fontSize='';
 
-  document.getElementById('b-text').textContent=txt;
-  document.getElementById('b-sub').textContent=sub;
-  const sz={sm:'1.3rem',md:'1.8rem',lg:'2.3rem',xl:'2.8rem'};
-  document.getElementById('b-text').style.fontSize=sz[lv];
+  const btxt2=document.getElementById('b-text');
+  btxt2.className='b-text'; btxt2.textContent=txt;
+  const bsub2=document.getElementById('b-sub');
+  bsub2.className='b-sub'; bsub2.textContent=sub;
+  const sz={sm:'1.1rem',md:'1.4rem',lg:'1.8rem',xl:'2.2rem'};
+  btxt2.style.fontSize=sz[lv];
 
   bn.className=''; void bn.offsetWidth; bn.className=`b-${lv}`;
   spawnParticles({sm:3,md:6,lg:10,xl:16}[lv],lv);
 }
 
+// 十三面待ち専用パーティクル（花火）- テンパイ用（z:205）
+function spawnParticles13men(){
+  _spawnFireworks('particle', [
+    {delay:0,   count:20, cx:.5, cy:.45},
+    {delay:200, count:16, cx:.2, cy:.35},
+    {delay:350, count:16, cx:.8, cy:.35},
+    {delay:500, count:20, cx:.5, cy:.55},
+    {delay:700, count:14, cx:.3, cy:.6},
+    {delay:850, count:14, cx:.7, cy:.6},
+  ]);
+}
+
+// 和了専用パーティクル（z:400 オーバーレイより手前）
+function spawnParticles13menWin(){
+  _spawnFireworks('particle-win', [
+    {delay:0,   count:28, cx:.5, cy:.4},
+    {delay:150, count:22, cx:.15, cy:.3},
+    {delay:280, count:22, cx:.85, cy:.3},
+    {delay:420, count:28, cx:.5, cy:.6},
+    {delay:580, count:20, cx:.25, cy:.65},
+    {delay:700, count:20, cx:.75, cy:.65},
+    {delay:900, count:24, cx:.5, cy:.35},
+    {delay:1100,count:20, cx:.3, cy:.5},
+    {delay:1100,count:20, cx:.7, cy:.5},
+  ]);
+}
+
+function _spawnFireworks(cls, bursts){
+  const emojis=['🪽','★','♡','🪽','◈','🪽','🌸','💫','⭐','🌟'];
+  const cols=['#ff6060','#ffcc00','#60dd60','#40b8ff','#cc60ff','#ff9900','#ffffff','#ffd700','#ff80c0','#80ffcc'];
+  bursts.forEach(({delay,count,cx,cy})=>{
+    setTimeout(()=>{
+      const bx=window.innerWidth*cx, by=window.innerHeight*cy;
+      for(let i=0;i<count;i++){
+        const p=document.createElement('div');
+        p.className=cls;
+        const a=(Math.PI*2*i/count)+(Math.random()-.5)*.5;
+        const d=80+Math.random()*220;
+        const dur=1.0+Math.random()*.9;
+        p.style.setProperty('--tx',Math.cos(a)*d+'px');
+        p.style.setProperty('--ty',Math.sin(a)*d-80+'px');
+        p.style.setProperty('--dur',dur+'s');
+        p.style.setProperty('--rot',(Math.random()-.5)*600+'deg');
+        p.style.left=bx+(Math.random()-.5)*40+'px';
+        p.style.top=by+(Math.random()-.5)*40+'px';
+        p.style.color=cols[Math.floor(Math.random()*cols.length)];
+        p.style.fontSize=(1.0+Math.random()*1.2)+'rem';
+        p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+        document.body.appendChild(p);
+        setTimeout(()=>p.remove(),(dur+.3)*1000);
+      }
+    },delay);
+  });
+}
+
 function spawnParticles(n,lv){
-  const emojis=['✿','★','♡','✦','◈','✸'];
+  const emojis=['🪽','★','♡','🪽','◈','🪽'];
   const cols=['#2ec896','#1a7a5e','#f06080','#d4a840','#a8edd8','#ffffff'];
   const cx=window.innerWidth/2,cy=window.innerHeight/2;
   for(let i=0;i<n;i++){
@@ -1001,7 +1754,35 @@ function tLabel(id){
   return n[id]||id;
 }
 function tName(id){return tLabel(id);}
-function setBtn(id,disabled){ document.getElementById(id).disabled=disabled; }
+function setBtn(id,disabled){
+  document.getElementById(id).disabled=disabled;
+  // ron/skip/tsumoの変更時はアクションバーを更新
+  if(['ron-btn','skip-btn','tsumo-btn'].includes(id)) updateActionBar();
+}
+
+// フローティングアクションバーの表示制御
+function updateActionBar(){
+  const ronEnabled  = !document.getElementById('ron-btn').disabled;
+  const skipVisible = document.getElementById('skip-btn').style.display !== 'none';
+  const tsumoEnabled= !document.getElementById('tsumo-btn').disabled;
+
+  const fabRon  = document.getElementById('fab-ron');
+  const fabSkip = document.getElementById('fab-skip');
+  const fabTsumo= document.getElementById('fab-tsumo');
+  const sepRon  = document.getElementById('fab-sep-ron');
+  const sepTsumo= document.getElementById('fab-sep-tsumo');
+  const bar     = document.getElementById('action-bar');
+
+  fabRon.style.display   = ronEnabled  ? '' : 'none';
+  fabSkip.style.display  = skipVisible ? '' : 'none';
+  sepRon.style.display   = (ronEnabled && skipVisible) ? '' : 'none';
+  fabTsumo.style.display = tsumoEnabled? '' : 'none';
+  // ツモ和了とロンが両方表示されるケースは基本ないが区切りは出す
+  sepTsumo.style.display = (tsumoEnabled && (ronEnabled||skipVisible)) ? '' : 'none';
+
+  const anyVisible = ronEnabled || skipVisible || tsumoEnabled;
+  bar.classList.toggle('show', anyVisible);
+}
 function setPhase(t){ document.getElementById('phase-tag').textContent=t; }
 function updateFuritenBadge(){
   document.getElementById('furiten-badge').className='furiten-badge'+(G.isFuriten?' show':'');
