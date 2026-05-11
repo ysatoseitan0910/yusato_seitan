@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>トップ | 佐藤優羽生誕祭実行委員会</title>
-<meta name="description" content="佐藤優羽さんの最新情報・委員会活動をお届けします">
+<title>トップ | さとうゆポータル</title>
+<meta name="description" content="佐藤優羽さんの最新情報をお届けするファンポータルサイト｜運営：佐藤優羽生誕祭実行委員会">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="佐藤優羽生誕祭実行委員会">
-<meta property="og:title" content="トップ | 佐藤優羽生誕祭実行委員会">
+<meta property="og:site_name" content="さとうゆポータル">
+<meta property="og:title" content="トップ | さとうゆポータル">
 <meta property="og:description" content="{{OGP_DESC}}">
 <meta property="og:url" content="https://ysatoseitan0910.github.io/yusato_seitan/index.html">
 <meta property="og:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
@@ -41,9 +41,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-seri
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
+.nav-logo{display:flex;flex-direction:column;gap:1px;text-decoration:none;}
+.nav-logo-main{font-family:'Shippori Mincho',serif;font-size:16px;color:var(--emerald-dark);letter-spacing:0.08em;line-height:1.2;}
+.nav-logo-sub{font-size:9px;color:var(--text-light);letter-spacing:0.1em;}
+.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.nav-sep{display:inline-flex;width:1px;height:14px;background:var(--border);margin:0 2px;align-self:center;flex-shrink:0;}
+.nav-committee-label{display:none;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--emerald-light);}
 
@@ -171,6 +176,8 @@ footer .heart{color:var(--emerald);}
   .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
   .nav-links.open{display:flex;}
   .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .nav-sep{display:none;}
+  .nav-committee-label{display:block;font-size:9px;letter-spacing:0.15em;color:var(--text-light);padding:10px 14px 2px;border-top:1px solid var(--border);margin-top:4px;}
   .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
   .page-hero h1{font-size:26px;}
   .content{padding:0 16px 48px;}
@@ -221,33 +228,36 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 
 <nav>
   <a href="index.html" class="nav-logo">
-    佐藤優羽生誕祭実行委員会
+    <span class="nav-logo-main">さとうゆポータル</span>
+    <span class="nav-logo-sub">運営：佐藤優羽生誕祭実行委員会</span>
   </a>
   <div class="nav-links">
-    <a href="top.html" class="active">NEWS</a>
+    <a href="top.html" class="active">トップ</a>
     <a href="yu.html" >佐藤優羽さんについて</a>
-    <a href="committee.html" >委員会</a>
-    <a href="activities.html" >活動報告</a>
-    <a href="yunews.html" >佐藤優羽さんNews</a>
+    <a href="yunews.html" >News</a>
     <a href="blog.html" >ブログ</a>
     <a href="interview.html" >インタビュー</a>
     <a href="x.html" >X</a>
     <a href="tiktok.html" >TikTok</a>
     <a href="youtube.html" >YouTube</a>
     <a href="lemino.html" >Lemino</a>
-    <a href="about.html" >当委員会について</a>
-    <a href="terms.html" >委員規約</a>
-    <a href="join.html" >ご参加希望の方へ</a>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <span class="nav-committee-label">生誕委員会</span>
+    <a href="committee.html" >委員会News</a>
+    <a href="activities.html" >活動報告</a>
+    <a href="about.html" >委員会について</a>
+    <a href="terms.html" >規約</a>
+    <a href="join.html" >入会</a>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
 
 
       <div class="page-hero">
-        <div class="page-hero-tag">Yu Sato Birthday Celebration Committee</div>
-        <h1>佐藤優羽生誕祭実行委員会</h1>
-        <p>佐藤優羽さんの最新情報・委員会活動をお届けします</p>
-        <p class="last-updated">最終更新：2026/5/11 15:19:04</p>
+        <div class="page-hero-tag">SATOYU PORTAL</div>
+        <h1>さとうゆ <em>ポータル</em></h1>
+        <p>佐藤優羽さんの最新情報をお届けするファンポータルサイト｜運営：佐藤優羽生誕祭実行委員会</p>
+        <p class="last-updated">最終更新：2026/5/11 15:29:46</p>
       </div>
       <div class="content">
   <div class="top-layout">
@@ -255,10 +265,42 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <!-- メインコンテンツ -->
     <div class="top-main">
 
-      <!-- 生誕委員会News -->
+      <!-- 佐藤優羽さんNews（メイン） -->
       <section>
         <div class="top-section-header">
-          <h2>生誕委員会 News</h2>
+          <h2>佐藤優羽さん News</h2>
+          <a href="yunews.html">すべて見る →</a>
+        </div>
+        <div class="yunews-grid">
+          <a href="https://www.hinatazaka46.com/s/official/diary/detail/69274?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1803802433423484s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mobVwnYAO.jpg" alt="打鍵音は心地の良い子守唄。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">打鍵音は心地の良い子守唄。</p><div class="yunews-meta"><span class="yunews-date">2026.05.10</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69164?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.04415355737764206s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mob2YePFs.jpg" alt="泣いてくれなきゃ、涸れてしまう。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">泣いてくれなきゃ、涸れてしまう。</p><div class="yunews-meta"><span class="yunews-date">2026.05.06</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69140?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.00639666522011213s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mobLBlMxn.jpg" alt="だけど私はまだ考えてるわ。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">だけど私はまだ考えてるわ。</p><div class="yunews-meta"><span class="yunews-date">2026.05.03</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69127?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2583243007844409s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mobOve9Kz.jpg" alt="気になってしまう、どうしても。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">気になってしまう、どうしても。</p><div class="yunews-meta"><span class="yunews-date">2026.05.01</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69083?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.22501319997396932s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobrN58qC.jpg" alt="ずっと解けない魔法を纏って。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">ずっと解けない魔法を纏って。</p><div class="yunews-meta"><span class="yunews-date">2026.04.27</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69060?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2627537364632904s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobQzVr4y.jpg" alt="違う方向から物事を見てみること。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">違う方向から物事を見てみること。</p><div class="yunews-meta"><span class="yunews-date">2026.04.23</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69004?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.028530557885658524s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mob7WhNTM.jpg" alt="歩くときの擬音って何がしっくりくるんだろう？" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">歩くときの擬音って何がしっくりくるんだろう？</p><div class="yunews-meta"><span class="yunews-date">2026.04.19</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68956?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.07823409065784144s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobOJfE6p.jpg" alt="受け取らなければならないこと。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">受け取らなければならないこと。</p><div class="yunews-meta"><span class="yunews-date">2026.04.15</span></div></div></a>
+<a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdsenM%3D" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.0390512996979808s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490eb/a1490eb_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！番外編" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう #20 瞬発力を鍛えよう！番外編</p><div class="yunews-meta"><span class="yunews-date">2026.04.13</span></div></div></a>
+<a href="https://www.tiktok.com/@lemino_sakamichi/video/7618892914789240085?_r=1&_t=ZS-95WLKPCyzFy" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.0061179900531837415s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0AIwi6AKeFE0AvP7AW3Cdq707TBBBirUAyg34~tplv-tiktokx-origin.image?dr=9636&x-expires=1776319200&x-signature=JDZAUZzK5x2VGEkzFDWAfyC2MSY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast8" alt="坂井、独自の世界観。 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">坂井、独自の世界観。 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.04.13</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68901?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.0080942678978565s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobvAZaKX.jpg" alt="日差しが肌に当たったら。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">日差しが肌に当たったら。</p><div class="yunews-meta"><span class="yunews-date">2026.04.10</span></div></div></a>
+<a href="https://www.tiktok.com/@lemino_sakamichi/video/7618891848584563989?_r=1&_t=ZS-95Nf9kr4nXL&sp_source=7623804883590317586" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.12760156754378837s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oQfOEAuIrSgeQtLweAA3PgAdQAVT3QGVgj2DLF~tplv-tiktokx-origin.image?dr=9636&x-expires=1775865600&x-signature=CGL4UAPmdfhZmywm6%2BISE481vy0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="坂井の隠しきれない上品さ。 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">坂井の隠しきれない上品さ。 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.04.08</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68875?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.0694450849596886s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mob7fLbpw.jpg" alt="新しいことが始まる時の期待はどの感情なのか？" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">新しいことが始まる時の期待はどの感情なのか？</p><div class="yunews-meta"><span class="yunews-date">2026.04.08</span></div></div></a>
+<a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdsYjU=?pit_git_type=PIT" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1892527686715886s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ea/a1490ea_w1.jpg" alt="日向坂になりましょう　#20 瞬発力を鍛えよう！" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう　#20 瞬発力を鍛えよう！</p><div class="yunews-meta"><span class="yunews-date">2026.04.06</span></div></div></a>
+<a href="https://www.youtube.com/watch?v=yB6mUjbmIIk" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.11332933826397819s"><img class="yunews-img" src="https://img.youtube.com/vi/yB6mUjbmIIk/maxresdefault.jpg" alt="【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】</p><div class="yunews-meta"><span class="yunews-date">2026.04.06</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68840?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.08375478480475758s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobhgiZ1C.jpg" alt="二日間の感謝を。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">二日間の感謝を。</p><div class="yunews-meta"><span class="yunews-date">2026.04.06</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68826?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.08963364675082597s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobLMASMY.jpg" alt="7回目のおめでとう。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">7回目のおめでとう。</p><div class="yunews-meta"><span class="yunews-date">2026.04.04</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68800?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.033591166466619256s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobVQeG1U.jpg" alt="君じゃないといけないこの惑い。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">君じゃないといけないこの惑い。</p><div class="yunews-meta"><span class="yunews-date">2026.04.02</span></div></div></a>
+<a href="https://www.youtube.com/watch?v=uUXracpCICo&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.27640327444010326s"><img class="yunews-img" src="https://img.youtube.com/vi/uUXracpCICo/maxresdefault.jpg" alt="【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
+  冒頭先行公開" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
+  冒頭先行公開</p><div class="yunews-meta"><span class="yunews-date">2026.03.30</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/68744?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.0538370080100522s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob5azhEb.jpg" alt="桜の季節の蜂蜜。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">桜の季節の蜂蜜。</p><div class="yunews-meta"><span class="yunews-date">2026.03.30</span></div></div></a>
+        </div>
+      </section>
+
+      <!-- 生誕委員会からのお知らせ -->
+      <section>
+        <div class="top-section-header">
+          <h2 style="font-size:15px;color:var(--text-muted);">生誕委員会からのお知らせ</h2>
           <a href="committee.html">すべて見る →</a>
         </div>
         <div class="committee-list">
@@ -375,7 +417,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
       <!-- 活動報告 -->
       <section>
         <div class="top-section-header">
-          <h2>活動報告</h2>
+          <h2 style="font-size:15px;color:var(--text-muted);">活動報告</h2>
           <a href="activities.html">すべて見る →</a>
         </div>
         <div class="act-thumb-grid">
@@ -385,7 +427,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 4月4日、5日に横浜スタジアムにて開催の #七回目のひな誕祭 へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
 お花たっぷりの素敵な仕上がりとなりました！
-ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/d8145fba830e07f3bc49be183a0efe76#menu" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-04-04_001.png" style="animation-delay:0.2572928558489282s">
+ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/d8145fba830e07f3bc49be183a0efe76#menu" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-04-04_001.png" style="animation-delay:0.2292894030936525s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-04-04_001.png" alt="7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！</p>
@@ -406,7 +448,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 当委員会も各地で、この1年を振り返りながら
 たこ焼きをいただきました～～
 
-#ゆうちゃんたこ焼き食べたよ" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-03-14_001.png" style="animation-delay:0.14692043205664565s">
+#ゆうちゃんたこ焼き食べたよ" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-03-14_001.png" style="animation-delay:0.16185664630083132s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-03-14_001.png" alt="銀だこ創業日をお祝いしました！
 #ゆうちゃんたこ焼き食べたよ" loading="lazy">
       <div class="act-thumb-body">
@@ -424,7 +466,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 これからの2年目の活動も、
 優羽ちゃんらしく素敵な時間になりますように
 
-これからも応援しています！" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-03-14_002.png" style="animation-delay:0.08072794259467972s">
+これからも応援しています！" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-03-14_002.png" style="animation-delay:0.2923991807092326s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-03-14_002.png" alt="佐藤優羽お披露目1周年をお祝いしました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">佐藤優羽お披露目1周年をお祝いしました！</p>
@@ -435,7 +477,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <div class="act-thumb-card" data-act-modal="1" data-title="2026年の生誕委員募集を開始しました!!" data-date="2026.01.01" data-status="" data-desc="2026年1月1日(木)より、2026年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
-ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-01-01_001.png" style="animation-delay:0.0960226323872386s">
+ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-01-01_001.png" style="animation-delay:0.23527699941955335s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-01-01_001.png" alt="2026年の生誕委員募集を開始しました!!" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2026年の生誕委員募集を開始しました!!</p>
@@ -445,7 +487,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 
     <div class="act-thumb-card" data-act-modal="1" data-title="2025年度生誕祭レーン装飾を実施しました。" data-date="2025.10.19" data-status="" data-desc="2025年10月19日（日）開催
 15thシングル『お願いバッハ！』発売記念リアルミート＆グリート（個別トーク会）にて
-生誕祭レーン装飾を実施しまたした。" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-10-19_001.png" style="animation-delay:0.18016711054507062s">
+生誕祭レーン装飾を実施しまたした。" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-10-19_001.png" style="animation-delay:0.12193048055630311s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-10-19_001.png" alt="2025年度生誕祭レーン装飾を実施しました。" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2025年度生誕祭レーン装飾を実施しました。</p>
@@ -455,7 +497,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 
     <div class="act-thumb-card" data-act-modal="1" data-title="2025年生誕祭に際し企画を実施しました！" data-date="2025.09.10" data-status="" data-desc="下記画像の場所にてメセカ設置4カ所、駅広告2か所の企画を実施しました。
 
-ご協力いただきました。皆様改めましてありがとうございます。" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-09-10_001.png" style="animation-delay:0.04281906813120755s">
+ご協力いただきました。皆様改めましてありがとうございます。" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-09-10_001.png" style="animation-delay:0.2854478475675757s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-09-10_001.png" alt="2025年生誕祭に際し企画を実施しました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2025年生誕祭に際し企画を実施しました！</p>
@@ -466,7 +508,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <div class="act-thumb-card" data-act-modal="1" data-title="2025年度の生誕委員募集を開始しました!!" data-date="2025.04.11" data-status="" data-desc="2025年4月11日(金)より、2025年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
-ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-04-11_001.png" style="animation-delay:0.277539979929623s">
+ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-04-11_001.png" style="animation-delay:0.29517547047905834s">
       <img class="act-thumb-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2025-04-11_001.png" alt="2025年度の生誕委員募集を開始しました!!" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2025年度の生誕委員募集を開始しました!!</p>
@@ -477,45 +519,13 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <div class="act-thumb-card" data-act-modal="1" data-title="佐藤優羽生誕祭実行委員会 HPを開設しました！" data-date="2025.03.13" data-status="" data-desc="佐藤優羽生誕祭実行委員会のホームページへアクセスいただき誠にありがとうございます。
 このたび、当委員会の活動開始とあわせ、ホームページを開設いたしました。
 当委員会の活動をわかりやすく掲載してまいりたいと存じます。
-今後とも、なにとぞよろしくお願い申し上げます。" data-url="" data-img="" style="animation-delay:0.1263620366619836s">
+今後とも、なにとぞよろしくお願い申し上げます。" data-url="" data-img="" style="animation-delay:0.0921581367252818s">
       <div class="act-thumb-no-img">No Image</div>
       <div class="act-thumb-body">
         <p class="act-thumb-title">佐藤優羽生誕祭実行委員会 HPを開設しました！</p>
         <span class="act-thumb-date">2025.03.13</span>
       </div>
     </div>
-        </div>
-      </section>
-
-      <!-- 佐藤優羽さんNews -->
-      <section>
-        <div class="top-section-header">
-          <h2>佐藤優羽さん News</h2>
-          <a href="yunews.html">すべて見る →</a>
-        </div>
-        <div class="yunews-grid">
-          <a href="https://www.hinatazaka46.com/s/official/diary/detail/69274?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.10675255750769086s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mobVwnYAO.jpg" alt="打鍵音は心地の良い子守唄。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">打鍵音は心地の良い子守唄。</p><div class="yunews-meta"><span class="yunews-date">2026.05.10</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69164?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.07814399409829435s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mob2YePFs.jpg" alt="泣いてくれなきゃ、涸れてしまう。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">泣いてくれなきゃ、涸れてしまう。</p><div class="yunews-meta"><span class="yunews-date">2026.05.06</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69140?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2762778978515522s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mobLBlMxn.jpg" alt="だけど私はまだ考えてるわ。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">だけど私はまだ考えてるわ。</p><div class="yunews-meta"><span class="yunews-date">2026.05.03</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69127?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.28582185579539443s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202605/mobOve9Kz.jpg" alt="気になってしまう、どうしても。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">気になってしまう、どうしても。</p><div class="yunews-meta"><span class="yunews-date">2026.05.01</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69083?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.03666107758465267s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobrN58qC.jpg" alt="ずっと解けない魔法を纏って。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">ずっと解けない魔法を纏って。</p><div class="yunews-meta"><span class="yunews-date">2026.04.27</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69060?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.029827593341322966s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobQzVr4y.jpg" alt="違う方向から物事を見てみること。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">違う方向から物事を見てみること。</p><div class="yunews-meta"><span class="yunews-date">2026.04.23</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69004?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.12855643344124448s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mob7WhNTM.jpg" alt="歩くときの擬音って何がしっくりくるんだろう？" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">歩くときの擬音って何がしっくりくるんだろう？</p><div class="yunews-meta"><span class="yunews-date">2026.04.19</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68956?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.28367841935082283s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobOJfE6p.jpg" alt="受け取らなければならないこと。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">受け取らなければならないこと。</p><div class="yunews-meta"><span class="yunews-date">2026.04.15</span></div></div></a>
-<a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdsenM%3D" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1799096354482406s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490eb/a1490eb_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！番外編" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう #20 瞬発力を鍛えよう！番外編</p><div class="yunews-meta"><span class="yunews-date">2026.04.13</span></div></div></a>
-<a href="https://www.tiktok.com/@lemino_sakamichi/video/7618892914789240085?_r=1&_t=ZS-95WLKPCyzFy" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1287108430071986s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0AIwi6AKeFE0AvP7AW3Cdq707TBBBirUAyg34~tplv-tiktokx-origin.image?dr=9636&x-expires=1776319200&x-signature=JDZAUZzK5x2VGEkzFDWAfyC2MSY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast8" alt="坂井、独自の世界観。 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">坂井、独自の世界観。 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.04.13</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68901?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2908238070760095s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobvAZaKX.jpg" alt="日差しが肌に当たったら。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">日差しが肌に当たったら。</p><div class="yunews-meta"><span class="yunews-date">2026.04.10</span></div></div></a>
-<a href="https://www.tiktok.com/@lemino_sakamichi/video/7618891848584563989?_r=1&_t=ZS-95Nf9kr4nXL&sp_source=7623804883590317586" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.24775175842165922s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oQfOEAuIrSgeQtLweAA3PgAdQAVT3QGVgj2DLF~tplv-tiktokx-origin.image?dr=9636&x-expires=1775865600&x-signature=CGL4UAPmdfhZmywm6%2BISE481vy0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="坂井の隠しきれない上品さ。 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">坂井の隠しきれない上品さ。 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.04.08</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68875?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1674056284510306s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mob7fLbpw.jpg" alt="新しいことが始まる時の期待はどの感情なのか？" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">新しいことが始まる時の期待はどの感情なのか？</p><div class="yunews-meta"><span class="yunews-date">2026.04.08</span></div></div></a>
-<a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdsYjU=?pit_git_type=PIT" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.13057291026144782s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ea/a1490ea_w1.jpg" alt="日向坂になりましょう　#20 瞬発力を鍛えよう！" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう　#20 瞬発力を鍛えよう！</p><div class="yunews-meta"><span class="yunews-date">2026.04.06</span></div></div></a>
-<a href="https://www.youtube.com/watch?v=yB6mUjbmIIk" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.056638198609458956s"><img class="yunews-img" src="https://img.youtube.com/vi/yB6mUjbmIIk/maxresdefault.jpg" alt="【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【ワードウルフ】嘘つきは誰？五期生の疑心暗鬼が止まらない！【楽屋シリーズ】</p><div class="yunews-meta"><span class="yunews-date">2026.04.06</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68840?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2702275058667108s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobhgiZ1C.jpg" alt="二日間の感謝を。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">二日間の感謝を。</p><div class="yunews-meta"><span class="yunews-date">2026.04.06</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68826?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.25967803160049724s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobLMASMY.jpg" alt="7回目のおめでとう。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">7回目のおめでとう。</p><div class="yunews-meta"><span class="yunews-date">2026.04.04</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68800?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.04221185879443732s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202604/mobVQeG1U.jpg" alt="君じゃないといけないこの惑い。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">君じゃないといけないこの惑い。</p><div class="yunews-meta"><span class="yunews-date">2026.04.02</span></div></div></a>
-<a href="https://www.youtube.com/watch?v=uUXracpCICo&list=PL2lEUhaUGesRL6exa0B9QYRx5uYieRBTG" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.011061284814953675s"><img class="yunews-img" src="https://img.youtube.com/vi/uUXracpCICo/maxresdefault.jpg" alt="【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
-  冒頭先行公開" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【瞬発力を鍛えよう！】日向坂になりましょう-五期生成長バラエティ-#20
-  冒頭先行公開</p><div class="yunews-meta"><span class="yunews-date">2026.03.30</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/68744?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1335121880201097s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202603/mob5azhEb.jpg" alt="桜の季節の蜂蜜。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">桜の季節の蜂蜜。</p><div class="yunews-meta"><span class="yunews-date">2026.03.30</span></div></div></a>
         </div>
       </section>
 
@@ -610,8 +620,9 @@ a.schedule-row:hover{background:var(--emerald-pale);}
       </div>
 
       <div class="sidebar-links">
+        <a href="yu.html">佐藤優羽さんについて</a>
+        <a href="about.html">委員会について</a>
         <a href="terms.html">生誕委員規約</a>
-        <a href="about.html">当委員会について</a>
         <a href="join.html">入会の流れ</a>
       </div>
 
@@ -685,7 +696,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Yu Sato Birthday Celebration Committee｜最終更新：2026/5/11 15:19:04</p>
+  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/5/11 15:29:46</p>
 </footer>
 
 <script>

@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>委員会News | 佐藤優羽生誕祭実行委員会</title>
-<meta name="description" content="佐藤優羽生誕祭実行委員会からのお知らせ">
+<title>委員会News | さとうゆポータル</title>
+<meta name="description" content="佐藤優羽生誕祭実行委員会からのお知らせ・活動情報">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="佐藤優羽生誕祭実行委員会">
-<meta property="og:title" content="委員会News | 佐藤優羽生誕祭実行委員会">
+<meta property="og:site_name" content="さとうゆポータル">
+<meta property="og:title" content="委員会News | さとうゆポータル">
 <meta property="og:description" content="{{OGP_DESC}}">
 <meta property="og:url" content="https://ysatoseitan0910.github.io/yusato_seitan/committee.html">
 <meta property="og:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
@@ -41,9 +41,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-seri
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
+.nav-logo{display:flex;flex-direction:column;gap:1px;text-decoration:none;}
+.nav-logo-main{font-family:'Shippori Mincho',serif;font-size:16px;color:var(--emerald-dark);letter-spacing:0.08em;line-height:1.2;}
+.nav-logo-sub{font-size:9px;color:var(--text-light);letter-spacing:0.1em;}
+.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.nav-sep{display:inline-flex;width:1px;height:14px;background:var(--border);margin:0 2px;align-self:center;flex-shrink:0;}
+.nav-committee-label{display:none;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--emerald-light);}
 
@@ -171,6 +176,8 @@ footer .heart{color:var(--emerald);}
   .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
   .nav-links.open{display:flex;}
   .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .nav-sep{display:none;}
+  .nav-committee-label{display:block;font-size:9px;letter-spacing:0.15em;color:var(--text-light);padding:10px 14px 2px;border-top:1px solid var(--border);margin-top:4px;}
   .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
   .page-hero h1{font-size:26px;}
   .content{padding:0 16px 48px;}
@@ -221,23 +228,26 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 
 <nav>
   <a href="index.html" class="nav-logo">
-    佐藤優羽生誕祭実行委員会
+    <span class="nav-logo-main">さとうゆポータル</span>
+    <span class="nav-logo-sub">運営：佐藤優羽生誕祭実行委員会</span>
   </a>
   <div class="nav-links">
-    <a href="top.html" >NEWS</a>
+    <a href="top.html" >トップ</a>
     <a href="yu.html" >佐藤優羽さんについて</a>
-    <a href="committee.html" class="active">委員会</a>
-    <a href="activities.html" >活動報告</a>
-    <a href="yunews.html" >佐藤優羽さんNews</a>
+    <a href="yunews.html" >News</a>
     <a href="blog.html" >ブログ</a>
     <a href="interview.html" >インタビュー</a>
     <a href="x.html" >X</a>
     <a href="tiktok.html" >TikTok</a>
     <a href="youtube.html" >YouTube</a>
     <a href="lemino.html" >Lemino</a>
-    <a href="about.html" >当委員会について</a>
-    <a href="terms.html" >委員規約</a>
-    <a href="join.html" >ご参加希望の方へ</a>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <span class="nav-committee-label">生誕委員会</span>
+    <a href="committee.html" class="active">委員会News</a>
+    <a href="activities.html" >活動報告</a>
+    <a href="about.html" >委員会について</a>
+    <a href="terms.html" >規約</a>
+    <a href="join.html" >入会</a>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
@@ -246,13 +256,13 @@ a.schedule-row:hover{background:var(--emerald-pale);}
       <div class="page-hero">
         <div class="page-hero-tag">COMMITTEE NEWS</div>
         <h1>委員会 <em>News</em></h1>
-        <p>佐藤優羽生誕祭実行委員会からのお知らせ</p>
-        <p class="last-updated">最終更新：2026/5/11 15:19:05</p>
+        <p>佐藤優羽生誕祭実行委員会からのお知らせ・活動情報</p>
+        <p class="last-updated">最終更新：2026/5/11 15:29:47</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-    <div class="card media-card" style="animation-delay:0.0461642640278262s" >
+    <div class="card media-card" style="animation-delay:0.2506273393598944s" >
       <img class="media-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/committee/2026-12-31_001.png" alt="2026年の生誕委員募集中です！" loading="lazy">
       <div class="media-body">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -265,7 +275,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.07483630901806712s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 箱根" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
+    <div class="card media-card" style="animation-delay:0.28941067066341436s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 箱根" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
 【箱根】応援広告企画
 
 日向坂46五期生 佐藤優羽さん 二十歳のお誕生日企画
@@ -310,7 +320,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.09835350373750995s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 東京" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
+    <div class="card media-card" style="animation-delay:0.03127141802518869s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 東京" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
 【東京】応援広告企画
 日向坂46五期生 佐藤優羽さん 二十歳のお誕生日企画
 日向坂46 五期生・佐藤優羽ちゃんへ
@@ -340,7 +350,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.23671612671682937s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 宮崎" data-date="2026.09.05" data-status="募集中" data-desc="企画概要
+    <div class="card media-card" style="animation-delay:0.0865092747209932s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 宮崎" data-date="2026.09.05" data-status="募集中" data-desc="企画概要
 【宮崎】応援広告企画
 
 日向坂46五期生 佐藤優羽さん 二十歳のお誕生日企画
@@ -455,7 +465,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Yu Sato Birthday Celebration Committee｜最終更新：2026/5/11 15:19:05</p>
+  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/5/11 15:29:47</p>
 </footer>
 
 <script>

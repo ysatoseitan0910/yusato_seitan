@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTubeまとめ | 佐藤優羽生誕祭実行委員会</title>
+<title>YouTubeまとめ | さとうゆポータル</title>
 <meta name="description" content="佐藤優羽さんのYouTube動画をまとめています">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="佐藤優羽生誕祭実行委員会">
-<meta property="og:title" content="YouTubeまとめ | 佐藤優羽生誕祭実行委員会">
+<meta property="og:site_name" content="さとうゆポータル">
+<meta property="og:title" content="YouTubeまとめ | さとうゆポータル">
 <meta property="og:description" content="{{OGP_DESC}}">
 <meta property="og:url" content="https://ysatoseitan0910.github.io/yusato_seitan/youtube.html">
 <meta property="og:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
@@ -41,9 +41,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-seri
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
+.nav-logo{display:flex;flex-direction:column;gap:1px;text-decoration:none;}
+.nav-logo-main{font-family:'Shippori Mincho',serif;font-size:16px;color:var(--emerald-dark);letter-spacing:0.08em;line-height:1.2;}
+.nav-logo-sub{font-size:9px;color:var(--text-light);letter-spacing:0.1em;}
+.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.nav-sep{display:inline-flex;width:1px;height:14px;background:var(--border);margin:0 2px;align-self:center;flex-shrink:0;}
+.nav-committee-label{display:none;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--emerald-light);}
 
@@ -171,6 +176,8 @@ footer .heart{color:var(--emerald);}
   .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
   .nav-links.open{display:flex;}
   .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .nav-sep{display:none;}
+  .nav-committee-label{display:block;font-size:9px;letter-spacing:0.15em;color:var(--text-light);padding:10px 14px 2px;border-top:1px solid var(--border);margin-top:4px;}
   .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
   .page-hero h1{font-size:26px;}
   .content{padding:0 16px 48px;}
@@ -221,23 +228,26 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 
 <nav>
   <a href="index.html" class="nav-logo">
-    佐藤優羽生誕祭実行委員会
+    <span class="nav-logo-main">さとうゆポータル</span>
+    <span class="nav-logo-sub">運営：佐藤優羽生誕祭実行委員会</span>
   </a>
   <div class="nav-links">
-    <a href="top.html" >NEWS</a>
+    <a href="top.html" >トップ</a>
     <a href="yu.html" >佐藤優羽さんについて</a>
-    <a href="committee.html" >委員会</a>
-    <a href="activities.html" >活動報告</a>
-    <a href="yunews.html" >佐藤優羽さんNews</a>
+    <a href="yunews.html" >News</a>
     <a href="blog.html" >ブログ</a>
     <a href="interview.html" >インタビュー</a>
     <a href="x.html" >X</a>
     <a href="tiktok.html" >TikTok</a>
     <a href="youtube.html" class="active">YouTube</a>
     <a href="lemino.html" >Lemino</a>
-    <a href="about.html" >当委員会について</a>
-    <a href="terms.html" >委員規約</a>
-    <a href="join.html" >ご参加希望の方へ</a>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <span class="nav-committee-label">生誕委員会</span>
+    <a href="committee.html" >委員会News</a>
+    <a href="activities.html" >活動報告</a>
+    <a href="about.html" >委員会について</a>
+    <a href="terms.html" >規約</a>
+    <a href="join.html" >入会</a>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
@@ -247,13 +257,13 @@ a.schedule-row:hover{background:var(--emerald-pale);}
         <div class="page-hero-tag">YOUTUBE</div>
         <h1>YouTube <em>まとめ</em></h1>
         <p>佐藤優羽さんのYouTube動画をまとめています</p>
-        <p class="last-updated">最終更新：2026/5/11 15:19:09</p>
+        <p class="last-updated">最終更新：2026/5/11 15:29:55</p>
       </div>
       <div class="content">
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">日向坂ちゃんねる</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.04104775873817461s">
+  <div class="card embed-card" style="animation-delay:0.2355259791906758s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.04.06</span>
@@ -274,7 +284,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.11689329035321473s">
+  <div class="card embed-card" style="animation-delay:0.2272273257265009s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.21</span>
@@ -296,7 +306,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.08425358636772097s">
+  <div class="card embed-card" style="animation-delay:0.12343655977648353s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.28</span>
@@ -319,7 +329,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23680525770626437s">
+  <div class="card embed-card" style="animation-delay:0.08155152534282226s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.10</span>
@@ -340,7 +350,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.11482919175779943s">
+  <div class="card embed-card" style="animation-delay:0.25030614044782296s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.17</span>
@@ -361,7 +371,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2637988791280111s">
+  <div class="card embed-card" style="animation-delay:0.2807334601182821s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.03</span>
@@ -382,7 +392,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.28306415473382857s">
+  <div class="card embed-card" style="animation-delay:0.055628517284222447s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.13</span>
@@ -405,7 +415,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19662922798182067s">
+  <div class="card embed-card" style="animation-delay:0.18603631382095234s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.25</span>
@@ -426,7 +436,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1404353903930742s">
+  <div class="card embed-card" style="animation-delay:0.049072251153042167s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.05</span>
@@ -447,7 +457,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.14912060384606238s">
+  <div class="card embed-card" style="animation-delay:0.2666325832305193s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.20</span>
@@ -468,7 +478,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.015121217829996246s">
+  <div class="card embed-card" style="animation-delay:0.1670781795048454s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.30</span>
@@ -489,7 +499,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.20112107437255494s">
+  <div class="card embed-card" style="animation-delay:0.2485805412348911s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.11</span>
@@ -510,7 +520,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1341820062094575s">
+  <div class="card embed-card" style="animation-delay:0.022833906013328464s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.25</span>
@@ -531,7 +541,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.05587581266076436s">
+  <div class="card embed-card" style="animation-delay:0.28724241962103786s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.06.16</span>
@@ -552,7 +562,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.29787557018045646s">
+  <div class="card embed-card" style="animation-delay:0.17067283873036643s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.06.13</span>
@@ -573,7 +583,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1712028001788386s">
+  <div class="card embed-card" style="animation-delay:0.05632182351034418s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.06.04</span>
@@ -596,7 +606,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.05001348051022512s">
+  <div class="card embed-card" style="animation-delay:0.18896098145020074s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.04.12</span>
@@ -617,7 +627,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.06769046207981974s">
+  <div class="card embed-card" style="animation-delay:0.13485220253472613s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.03.14</span>
@@ -642,7 +652,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">日向坂46 OFFICIAL YouTube CHANNEL</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.17213167569795443s">
+  <div class="card embed-card" style="animation-delay:0.1212798252674438s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.26</span>
@@ -663,7 +673,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.04111227507787722s">
+  <div class="card embed-card" style="animation-delay:0.2351025174760932s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.15</span>
@@ -684,7 +694,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2459415212498828s">
+  <div class="card embed-card" style="animation-delay:0.20019146276858726s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.08</span>
@@ -708,7 +718,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.047779864732606515s">
+  <div class="card embed-card" style="animation-delay:0.0751328993135764s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.07</span>
@@ -729,7 +739,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.08446353762860474s">
+  <div class="card embed-card" style="animation-delay:0.08719928124445417s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.04</span>
@@ -756,7 +766,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.14846195407233984s">
+  <div class="card embed-card" style="animation-delay:0.14161349944298418s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.05.15</span>
@@ -784,7 +794,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">Leminoチャンネル</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.008084005901057845s">
+  <div class="card embed-card" style="animation-delay:0.18822514668071139s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.30</span>
@@ -808,7 +818,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.13986904831495595s">
+  <div class="card embed-card" style="animation-delay:0.1723066554293908s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.02</span>
@@ -832,7 +842,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.14503108409567883s">
+  <div class="card embed-card" style="animation-delay:0.1701517093894106s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
@@ -856,7 +866,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.04468507171501563s">
+  <div class="card embed-card" style="animation-delay:0.11062572100579823s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.22</span>
@@ -880,7 +890,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.23198063114092135s">
+  <div class="card embed-card" style="animation-delay:0.18893113486801366s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.24</span>
@@ -903,7 +913,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2161556967979522s">
+  <div class="card embed-card" style="animation-delay:0.04295564386645405s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.10</span>
@@ -927,7 +937,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2231469428057968s">
+  <div class="card embed-card" style="animation-delay:0.11090640508170273s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.29</span>
@@ -948,7 +958,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.011277475142164017s">
+  <div class="card embed-card" style="animation-delay:0.19951739836528196s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.15</span>
@@ -972,7 +982,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.09361749777016874s">
+  <div class="card embed-card" style="animation-delay:0.2931223174690309s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.18</span>
@@ -993,7 +1003,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.11953865743553216s">
+  <div class="card embed-card" style="animation-delay:0.07881435423143066s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.21</span>
@@ -1017,7 +1027,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.27468204845628785s">
+  <div class="card embed-card" style="animation-delay:0.11211468821307159s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
@@ -1041,7 +1051,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.29821645423574483s">
+  <div class="card embed-card" style="animation-delay:0.20059142295572813s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
@@ -1069,7 +1079,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">【公式】 ひなこいYouTubeチャンネル</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.048832949675617576s">
+  <div class="card embed-card" style="animation-delay:0.15295255640769367s">
     <div class="embed-header">
       <span class="badge badge-youtube">YouTube</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.24</span>
@@ -1157,7 +1167,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Yu Sato Birthday Celebration Committee｜最終更新：2026/5/11 15:19:09</p>
+  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/5/11 15:29:55</p>
 </footer>
 
 <script>
