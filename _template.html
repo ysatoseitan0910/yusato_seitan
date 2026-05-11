@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{PAGE_TITLE}} | 佐藤優羽生誕祭実行委員会</title>
+<title>{{PAGE_TITLE}} | さとうゆポータル</title>
 <meta name="description" content="{{OGP_DESC}}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="佐藤優羽生誕祭実行委員会">
+<meta property="og:site_name" content="さとうゆポータル">
 <meta property="og:title" content="{{OGP_TITLE}}">
 <meta property="og:description" content="{{OGP_DESC}}">
 <meta property="og:url" content="{{OGP_URL}}">
@@ -41,9 +41,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-seri
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.nav-logo{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--emerald-dark);letter-spacing:0.08em;text-decoration:none;}.nav-links{display:flex;gap:0;align-items:center;}
+.nav-logo{display:flex;flex-direction:column;gap:1px;text-decoration:none;}
+.nav-logo-main{font-family:'Shippori Mincho',serif;font-size:16px;color:var(--emerald-dark);letter-spacing:0.08em;line-height:1.2;}
+.nav-logo-sub{font-size:9px;color:var(--text-light);letter-spacing:0.1em;}
+.nav-links{display:flex;gap:0;align-items:center;}
 .nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+.nav-sep{display:inline-flex;width:1px;height:14px;background:var(--border);margin:0 2px;align-self:center;flex-shrink:0;}
+.nav-committee-label{display:none;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--emerald-light);}
 
@@ -171,6 +176,8 @@ footer .heart{color:var(--emerald);}
   .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
   .nav-links.open{display:flex;}
   .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .nav-sep{display:none;}
+  .nav-committee-label{display:block;font-size:9px;letter-spacing:0.15em;color:var(--text-light);padding:10px 14px 2px;border-top:1px solid var(--border);margin-top:4px;}
   .page-hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
   .page-hero h1{font-size:26px;}
   .content{padding:0 16px 48px;}
@@ -221,23 +228,26 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 
 <nav>
   <a href="index.html" class="nav-logo">
-    佐藤優羽生誕祭実行委員会
+    <span class="nav-logo-main">さとうゆポータル</span>
+    <span class="nav-logo-sub">運営：佐藤優羽生誕祭実行委員会</span>
   </a>
   <div class="nav-links">
-    <a href="top.html" {{ACTIVE_INDEX}}>NEWS</a>
+    <a href="top.html" {{ACTIVE_INDEX}}>トップ</a>
     <a href="yu.html" {{ACTIVE_YU}}>佐藤優羽さんについて</a>
-    <a href="committee.html" {{ACTIVE_COMMITTEE}}>委員会</a>
-    <a href="activities.html" {{ACTIVE_ACTIVITIES}}>活動報告</a>
-    <a href="yunews.html" {{ACTIVE_YUNEWS}}>佐藤優羽さんNews</a>
+    <a href="yunews.html" {{ACTIVE_YUNEWS}}>News</a>
     <a href="blog.html" {{ACTIVE_BLOG}}>ブログ</a>
     <a href="interview.html" {{ACTIVE_INTERVIEW}}>インタビュー</a>
     <a href="x.html" {{ACTIVE_X}}>X</a>
     <a href="tiktok.html" {{ACTIVE_TIKTOK}}>TikTok</a>
     <a href="youtube.html" {{ACTIVE_YOUTUBE}}>YouTube</a>
     <a href="lemino.html" {{ACTIVE_LEMINO}}>Lemino</a>
-    <a href="about.html" {{ACTIVE_ABOUT}}>当委員会について</a>
-    <a href="terms.html" {{ACTIVE_TERMS}}>委員規約</a>
-    <a href="join.html" {{ACTIVE_JOIN}}>ご参加希望の方へ</a>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <span class="nav-committee-label">生誕委員会</span>
+    <a href="committee.html" {{ACTIVE_COMMITTEE}}>委員会News</a>
+    <a href="activities.html" {{ACTIVE_ACTIVITIES}}>活動報告</a>
+    <a href="about.html" {{ACTIVE_ABOUT}}>委員会について</a>
+    <a href="terms.html" {{ACTIVE_TERMS}}>規約</a>
+    <a href="join.html" {{ACTIVE_JOIN}}>入会</a>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
@@ -309,7 +319,7 @@ a.schedule-row:hover{background:var(--emerald-pale);}
 </script>
 
 <footer>
-  <p>佐藤優羽生誕祭実行委員会 <span class="heart">♥</span> Yu Sato Birthday Celebration Committee｜最終更新：<!-- LAST_UPDATED --></p>
+  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：<!-- LAST_UPDATED --></p>
 </footer>
 
 <script>

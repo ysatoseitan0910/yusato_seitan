@@ -2,10 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# 佐藤優羽生誕祭実行委員会 ファンサイト
+# さとうゆポータル（佐藤優羽生誕祭実行委員会 運営）
 
 ## サイト概要
-日向坂46五期生・佐藤優羽（さとうゆう）さんのファン委員会サイト。
+日向坂46五期生・佐藤優羽（さとうゆう）さんのファンポータルサイト。運営：佐藤優羽生誕祭実行委員会。
 GitHub Pagesで公開。NotionのDBからデータを取得して静的HTMLを自動生成・デプロイする仕組み。
 
 ## 技術構成

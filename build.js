@@ -108,7 +108,7 @@ function loadTemplate(active) {
 
 function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
-  const ogpTitle = `${title} | 佐藤優羽生誕祭実行委員会`;
+  const ogpTitle = `${title} | さとうゆポータル`;
   const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   return template
@@ -434,10 +434,21 @@ async function buildIndex(tpl) {
     <!-- メインコンテンツ -->
     <div class="top-main">
 
-      <!-- 生誕委員会News -->
+      <!-- 佐藤優羽さんNews（メイン） -->
       <section>
         <div class="top-section-header">
-          <h2>生誕委員会 News</h2>
+          <h2>佐藤優羽さん News</h2>
+          <a href="yunews.html">すべて見る →</a>
+        </div>
+        <div class="yunews-grid">
+          ${yuNewsCards}
+        </div>
+      </section>
+
+      <!-- 生誕委員会からのお知らせ -->
+      <section>
+        <div class="top-section-header">
+          <h2 style="font-size:15px;color:var(--text-muted);">生誕委員会からのお知らせ</h2>
           <a href="committee.html">すべて見る →</a>
         </div>
         <div class="committee-list">
@@ -448,22 +459,11 @@ async function buildIndex(tpl) {
       <!-- 活動報告 -->
       <section>
         <div class="top-section-header">
-          <h2>活動報告</h2>
+          <h2 style="font-size:15px;color:var(--text-muted);">活動報告</h2>
           <a href="activities.html">すべて見る →</a>
         </div>
         <div class="act-thumb-grid">
           ${actCards}
-        </div>
-      </section>
-
-      <!-- 佐藤優羽さんNews -->
-      <section>
-        <div class="top-section-header">
-          <h2>佐藤優羽さん News</h2>
-          <a href="yunews.html">すべて見る →</a>
-        </div>
-        <div class="yunews-grid">
-          ${yuNewsCards}
         </div>
       </section>
 
@@ -497,8 +497,9 @@ async function buildIndex(tpl) {
       </div>` : ""}
 
       <div class="sidebar-links">
+        <a href="yu.html">佐藤優羽さんについて</a>
+        <a href="about.html">委員会について</a>
         <a href="terms.html">生誕委員規約</a>
-        <a href="about.html">当委員会について</a>
         <a href="join.html">入会の流れ</a>
       </div>
 
@@ -506,7 +507,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ","Yu Sato Birthday Celebration Committee", "佐藤優羽生誕祭実行委員会", "佐藤優羽さんの最新情報・委員会活動をお届けします", body, "index.html");
+  return buildPage(tpl, "トップ", "SATOYU PORTAL", "さとうゆ <em>ポータル</em>", "佐藤優羽さんの最新情報をお届けするファンポータルサイト｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
 }
 
 async function buildCommittee(tpl) {
@@ -540,7 +541,7 @@ async function buildCommittee(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "委員会News", "COMMITTEE NEWS", "委員会 <em>News</em>", "佐藤優羽生誕祭実行委員会からのお知らせ", body, "committee.html");
+  return buildPage(tpl, "委員会News", "COMMITTEE NEWS", "委員会 <em>News</em>", "佐藤優羽生誕祭実行委員会からのお知らせ・活動情報", body, "committee.html");
 }
 
 async function buildActivities(tpl) {
