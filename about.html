@@ -6,60 +6,133 @@
 <title>委員会について | さとうゆポータル</title>
 <meta name="description" content="佐藤優羽生誕祭実行委員会について。委員会の活動方針・メンバー・連絡先をご紹介します。">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="佐藤優羽生誕祭実行委員会">
-<meta property="og:title" content="当委員会について | 佐藤優羽生誕祭実行委員会">
+<meta property="og:site_name" content="さとうゆポータル">
+<meta property="og:title" content="委員会について | さとうゆポータル">
 <meta property="og:description" content="佐藤優羽生誕祭実行委員会について。委員会の活動方針・メンバー・連絡先をご紹介します。">
 <meta property="og:url" content="https://ysatoseitan0910.github.io/yusato_seitan/about.html">
 <meta property="og:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="当委員会について | 佐藤優羽生誕祭実行委員会">
+<meta name="twitter:title" content="委員会について | さとうゆポータル">
 <meta name="twitter:description" content="佐藤優羽生誕祭実行委員会について。委員会の活動方針・メンバー・連絡先をご紹介します。">
 <meta name="twitter:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--emerald:#3DAA78;--emerald-light:#d0ece0;--emerald-pale:#edf8f2;--emerald-dark:#1e7a4f;--gold:#c9a96e;--gold-light:#f5ead8;--text:#0f1e16;--text-muted:#4d7062;--text-light:#8aae9a;--white:#ffffff;--bg:#f4faf7;--border:#c8e0d4;--nav-h:60px;}
+:root{
+  --emerald:#3DAA78; --emerald-light:#d4ecde; --emerald-pale:#ecf7f0; --emerald-dark:#1f7a52;
+  --pink:#f7b6c8; --pink-pale:#fde7ed; --butter:#fff3c4; --sky:#d4ecf5;
+  --cream:#fffaf0; --gold:#c9a96e; --gold-light:#f5ead8;
+  --text:#1a2a22; --text-muted:#516259; --text-light:#9aaca3;
+  --white:#fff; --bg:#fdfcf7; --border:#e3eee6; --ink:#1a2a22; --nav-h:60px;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;min-height:100vh;}
-nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(244,250,247,0.92);backdrop-filter:blur(12px);border-top:3px solid var(--emerald);border-bottom:1px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.nav-logo{display:flex;flex-direction:column;gap:1px;text-decoration:none;}.nav-logo-main{font-family:'Shippori Mincho',serif;font-size:16px;color:var(--emerald-dark);letter-spacing:0.08em;line-height:1.2;}.nav-logo-sub{font-size:9px;color:var(--text-light);letter-spacing:0.1em;}.nav-links{display:flex;gap:0;align-items:center;}.nav-sep{display:inline-flex;width:1px;height:14px;background:var(--border);margin:0 2px;align-self:center;flex-shrink:0;}.nav-committee-label{display:none;}
-.nav-links a{text-decoration:none;font-size:11px;letter-spacing:0.1em;color:var(--text-muted);padding:6px 14px;border-radius:20px;transition:all 0.2s;white-space:nowrap;}
-.nav-links a:hover,.nav-links a.active{color:var(--emerald-dark);background:var(--emerald-light);}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Klee One','Noto Sans JP',sans-serif; font-weight:400; line-height:1.75; min-height:100vh;
+  background-image:
+    radial-gradient(circle at 8% 4%,var(--pink-pale) 0,transparent 2.5%),
+    radial-gradient(circle at 95% 16%,var(--butter) 0,transparent 3%),
+    radial-gradient(circle at 14% 92%,var(--emerald-light) 0,transparent 3%);
+  background-attachment:fixed;
+}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,252,247,0.95);backdrop-filter:blur(10px);border-bottom:2px dotted var(--emerald-light);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 28px;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-mark{width:36px;height:36px;border-radius:50%;background:var(--emerald);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Klee One',serif;font-weight:600;font-size:18px;box-shadow:0 3px 0 var(--emerald-dark);transform:rotate(-4deg);flex-shrink:0;}
+.nav-logo-text{display:flex;flex-direction:column;line-height:1.1;}
+.nav-logo-main{font-family:'Klee One',serif;font-weight:600;color:var(--emerald-dark);font-size:15px;letter-spacing:0.04em;}
+.nav-logo-sub{font-family:'Caveat',cursive;font-weight:500;font-size:12px;color:var(--pink);letter-spacing:0.04em;margin-top:-1px;}
+.nav-links{display:flex;gap:0;align-items:center;}
+.nav-links a{text-decoration:none;font-family:'Klee One',serif;font-size:12px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{background:var(--pink-pale);color:var(--emerald-dark);}
+.nav-sep{display:inline-flex;width:1px;height:14px;background:var(--border);margin:0 6px;align-self:center;flex-shrink:0;}
+.nav-committee-label{display:none;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
-.hamburger:hover{background:var(--emerald-light);}
-.hero{padding:calc(var(--nav-h) + 48px) 40px 40px;max-width:800px;margin:0 auto;}
-.hero-tag{display:inline-block;font-size:10px;letter-spacing:0.25em;color:var(--emerald);border:1px solid var(--emerald-light);padding:4px 14px;border-radius:20px;margin-bottom:16px;}
-.hero h1{font-family:'Shippori Mincho',serif;font-size:36px;font-weight:500;line-height:1.2;color:var(--text);margin-bottom:8px;}
-.hero h1 em{color:var(--emerald-dark);font-style:normal;}
-.content{max-width:800px;margin:0 auto;padding:0 40px 80px;}
-.section{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px 40px;margin-bottom:24px;}
-.section h2{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:500;color:var(--emerald-dark);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--emerald-light);}
-.section h3{font-size:15px;font-weight:500;color:var(--text);margin:20px 0 10px;}
-.section p{font-size:14px;line-height:1.9;color:var(--text-muted);margin-bottom:12px;}
-.section ul{list-style:none;margin-bottom:12px;}
-.section ul li{font-size:14px;line-height:1.9;color:var(--text-muted);padding-left:1.2em;position:relative;}
-.section ul li::before{content:'›';position:absolute;left:0;color:var(--emerald);}
-.fee-table{width:100%;border-collapse:collapse;margin:12px 0;}
-.fee-table td{padding:10px 16px;font-size:14px;color:var(--text-muted);border-bottom:1px solid var(--border);}
-.fee-table td:first-child{color:var(--text);font-weight:500;width:160px;}
-.join-btn{display:inline-flex;align-items:center;gap:8px;background:var(--emerald-dark);color:var(--white);text-decoration:none;padding:12px 28px;border-radius:24px;font-size:13px;letter-spacing:0.08em;margin-top:16px;transition:opacity 0.2s;}
-.join-btn:hover{opacity:0.85;}
-.note{background:var(--emerald-pale);border-left:3px solid var(--emerald);padding:14px 18px;border-radius:0 8px 8px 0;font-size:13px;color:var(--text-muted);line-height:1.8;margin-top:12px;}
-footer{background:var(--white);border-top:1px solid var(--border);padding:32px 40px;text-align:center;}
-footer p{font-size:10px;letter-spacing:0.12em;color:var(--text-light);}
-footer .heart{color:var(--emerald);}
+.hamburger:hover{background:var(--pink-pale);}
+
+/* Hero */
+.hero{padding:calc(var(--nav-h) + 40px) 28px 28px;max-width:880px;margin:0 auto;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--pink);color:#fff;padding:6px 14px;border-radius:99px;font-family:'Klee One',serif;font-size:11px;font-weight:600;letter-spacing:0.06em;transform:rotate(-2deg);margin-bottom:14px;}
+.hero-tag::before{content:"🌿";}
+.hero h1{font-family:'Klee One',serif;font-weight:600;font-size:40px;line-height:1.25;color:var(--text);margin-bottom:8px;}
+.hero h1 em{color:var(--emerald-dark);font-style:normal;background:linear-gradient(transparent 60%,var(--butter) 60%);padding:0 4px;}
+.hero-lead{font-family:'Klee One',serif;font-size:13px;color:var(--text-muted);line-height:1.95;margin-top:6px;}
+
+/* Content */
+.content{max-width:880px;margin:0 auto;padding:0 28px 64px;}
+.section{
+  background:#fff;border:2px solid var(--ink);border-radius:20px;
+  padding:32px 36px;margin-bottom:22px;
+  box-shadow:5px 5px 0 var(--emerald-dark);
+}
+.section:nth-of-type(2n){box-shadow:5px 5px 0 var(--pink);}
+.section:nth-of-type(3n){box-shadow:5px 5px 0 var(--butter);}
+.section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px dashed var(--emerald-light);}
+.section-head-icon{
+  width:32px;height:32px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Klee One',serif;font-weight:600;color:#fff;font-size:16px;
+  background:var(--emerald);
+  transform:rotate(-3deg);flex-shrink:0;
+}
+.section:nth-of-type(2n) .section-head-icon{background:var(--pink);}
+.section:nth-of-type(3n) .section-head-icon{background:var(--ink);}
+.section h2{font-family:'Klee One',serif;font-weight:600;font-size:20px;color:var(--text);letter-spacing:0.02em;}
+.section-head-en{font-family:'Caveat',cursive;font-size:18px;color:var(--text-light);margin-left:auto;}
+.section h3{font-family:'Klee One',serif;font-size:15px;font-weight:600;color:var(--emerald-dark);margin:18px 0 8px;}
+.section p{font-family:'Klee One',serif;font-size:14px;line-height:1.95;color:var(--text-muted);margin-bottom:12px;}
+.section p strong{color:var(--text);font-weight:600;}
+.section ul{list-style:none;margin:0 0 12px;}
+.section ul li{font-family:'Klee One',serif;font-size:13.5px;line-height:1.9;color:var(--text-muted);padding-left:1.4em;position:relative;}
+.section ul li::before{content:"🌿";position:absolute;left:0;font-size:11px;line-height:2.2;}
+
+.fee-table{width:100%;border-collapse:separate;border-spacing:0;margin:14px 0 6px;background:var(--emerald-pale);border-radius:14px;overflow:hidden;border:1.5px solid var(--ink);}
+.fee-table td{padding:12px 18px;font-family:'Klee One',serif;font-size:14px;color:var(--text-muted);border-bottom:1px dashed var(--emerald-light);}
+.fee-table tr:last-child td{border-bottom:none;}
+.fee-table td:first-child{color:var(--text);font-weight:600;width:170px;background:rgba(255,255,255,0.5);}
+.fee-table td:last-child{font-family:'Caveat',cursive;font-size:20px;font-weight:700;color:var(--emerald-dark);}
+
+.join-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--emerald-dark);color:#fff;text-decoration:none;
+  font-family:'Klee One',serif;font-size:13px;font-weight:600;
+  padding:11px 24px;border-radius:99px;
+  border:2px solid var(--ink);
+  box-shadow:3px 3px 0 var(--ink);
+  letter-spacing:0.04em;margin-top:14px;
+  transition:transform 0.15s;
+}
+.join-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);}
+
+.note{
+  background:var(--butter);
+  border:2px solid var(--ink);border-left-width:6px;
+  border-radius:0 14px 14px 0;
+  padding:14px 18px;
+  font-family:'Klee One',serif;font-size:12.5px;color:var(--text);line-height:1.85;margin-top:14px;
+}
+
+/* Footer */
+footer{background:var(--cream);border-top:2px dotted var(--emerald-light);padding:36px 28px;text-align:center;}
+footer .foot-mark{display:inline-block;font-family:'Caveat',cursive;font-weight:700;font-size:22px;color:var(--emerald-dark);margin-bottom:6px;}
+footer p{font-family:'Klee One',serif;font-size:11px;letter-spacing:0.06em;color:var(--text-light);}
+footer .heart{color:var(--pink);}
+
 @media(max-width:768px){
   nav{padding:0 16px;}
   .hamburger{display:block;}
-  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(244,250,247,0.98);border-bottom:1px solid var(--border);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(253,252,247,0.98);border-bottom:2px dotted var(--emerald-light);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
   .nav-links.open{display:flex;}
   .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
   .nav-sep{display:none;}
-  .nav-committee-label{display:block;font-size:9px;letter-spacing:0.15em;color:var(--text-light);padding:10px 14px 2px;border-top:1px solid var(--border);margin-top:4px;}
+  .nav-committee-label{display:block;font-family:'Klee One',serif;font-size:10px;letter-spacing:0.06em;color:var(--text-light);padding:10px 14px 2px;border-top:1px dashed var(--border);margin-top:4px;}
   .hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
-  .hero h1{font-size:26px;}
+  .hero h1{font-size:28px;}
   .content{padding:0 16px 48px;}
-  .section{padding:24px 20px;}
+  .section{padding:22px 18px;}
   footer{padding:24px 16px;}
 }
 </style>
@@ -67,8 +140,11 @@ footer .heart{color:var(--emerald);}
 <body>
 <nav>
   <a href="index.html" class="nav-logo">
-    <span class="nav-logo-main">さとうゆポータル</span>
-    <span class="nav-logo-sub">運営：佐藤優羽生誕祭実行委員会</span>
+    <span class="nav-logo-mark">ゆ</span>
+    <span class="nav-logo-text">
+      <span class="nav-logo-main">さとうゆポータル</span>
+      <span class="nav-logo-sub">for Sato Yu fans</span>
+    </span>
   </a>
   <div class="nav-links">
     <a href="top.html">トップ</a>
@@ -92,21 +168,30 @@ footer .heart{color:var(--emerald);}
 </nav>
 
 <div class="hero">
-  <div class="hero-tag">ABOUT</div>
+  <div class="hero-tag">ABOUT US</div>
   <h1>当委員会<em>について</em></h1>
+  <p class="hero-lead">佐藤優羽さんを応援する、私たちのこと。</p>
 </div>
 
 <div class="content">
 
   <div class="section">
-    <h2>はじめに</h2>
+    <div class="section-head">
+      <span class="section-head-icon">は</span>
+      <h2>はじめに</h2>
+      <span class="section-head-en">intro</span>
+    </div>
     <p>当委員会は、日向坂46 五期生 <strong>佐藤優羽（さとうゆう）</strong>さんのお誕生日をお祝いする企画の立案・実施、そして佐藤優羽さんの活動を応援することを目的とした私設応援団体です。</p>
     <p>ファン活動として行われているものであり、日向坂46運営事務局およびその関連組織とは関係ございません。また、メンバーおよび日向坂46運営事務局からの特別な待遇や特典を受けることも一切ありません。</p>
     <p>生誕企画は、日向坂46運営事務局への依頼・交渉により実施させていただいているものです。</p>
   </div>
 
   <div class="section">
-    <h2>活動について</h2>
+    <div class="section-head">
+      <span class="section-head-icon">活</span>
+      <h2>活動について</h2>
+      <span class="section-head-en">activities</span>
+    </div>
     <p>主な活動内容は以下の通りです。</p>
     <h3>1. 生誕祭の企画立案・実施</h3>
     <p>佐藤優羽さんのお誕生日をお祝いする企画の立案や制作を行います。</p>
@@ -123,7 +208,11 @@ footer .heart{color:var(--emerald);}
   </div>
 
   <div class="section">
-    <h2>入会資格</h2>
+    <div class="section-head">
+      <span class="section-head-icon">入</span>
+      <h2>入会資格</h2>
+      <span class="section-head-en">eligibility</span>
+    </div>
     <p>佐藤優羽さんを応援する気持ちのある方であれば、年齢・性別・居住地・ファン歴・生誕委員経験の有無等は問いません！単推し、1推しでなくても構いません。ご友人と一緒にご入会いただいてもOKです！</p>
     <div class="note">
       ※イベントの出入り禁止処分を受けた方、グループやメンバーのイメージを損なう恐れのある行為をされている方のご入会はお断りさせていただきます。<br>
@@ -132,7 +221,11 @@ footer .heart{color:var(--emerald);}
   </div>
 
   <div class="section">
-    <h2>会費</h2>
+    <div class="section-head">
+      <span class="section-head-icon">会</span>
+      <h2>会費</h2>
+      <span class="section-head-en">membership fee</span>
+    </div>
     <p>当委員会の運営は、委員からの会費でまかなわれています。会費は年度ごとに1度、銀行振込にてお支払いいただいております。</p>
     <table class="fee-table">
       <tr><td>一般</td><td>5,000円</td></tr>
@@ -147,25 +240,38 @@ footer .heart{color:var(--emerald);}
   </div>
 
   <div class="section">
-    <h2>注意事項</h2>
+    <div class="section-head">
+      <span class="section-head-icon">注</span>
+      <h2>注意事項</h2>
+      <span class="section-head-en">important</span>
+    </div>
     <p>ご入会にあたり、生誕委員規約への同意をいただいております。これは円滑な委員会運営の実施、および委員内外問わずファン同士で快く応援できるよう定めたものです。細かな注意事項・禁止事項もございますので、参加をご希望の方は必ずご一読いただきますようお願い申し上げます。</p>
     <a href="terms.html" class="join-btn">生誕委員規約を読む →</a>
   </div>
 
   <div class="section">
-    <h2>ご参加方法について</h2>
+    <div class="section-head">
+      <span class="section-head-icon">参</span>
+      <h2>ご参加方法について</h2>
+      <span class="section-head-en">how to join</span>
+    </div>
     <p>当委員会への参加方法については、別ページにてご説明させていただいております。当委員会への参加をご希望の方は、下部リンクのページをご確認ください。</p>
     <a href="join.html" class="join-btn">入会の流れを確認する →</a>
   </div>
 
   <div class="section">
-    <h2>さいごに</h2>
-    <p>当委員会は「とにかく楽しむ」ことを1番大切にしています。佐藤優羽さんを応援する者同士、時に真剣に、時に楽しくワイワイと活動しましょう！</p>
+    <div class="section-head">
+      <span class="section-head-icon">♥</span>
+      <h2>さいごに</h2>
+      <span class="section-head-en">last but not least</span>
+    </div>
+    <p>当委員会は<strong>「とにかく楽しむ」</strong>ことを1番大切にしています。佐藤優羽さんを応援する者同士、時に真剣に、時に楽しくワイワイと活動しましょう！</p>
   </div>
 
 </div>
 
 <footer>
+  <div class="foot-mark">Thank you for being here.</div>
   <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会</p>
 </footer>
 <script>
