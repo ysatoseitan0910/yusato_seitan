@@ -739,24 +739,13 @@ async function buildLemino(tpl) {
 
 // ── クイズページ ──
 async function buildQuiz(tpl) {
-  const questions = [];
-
-  if (DB.quiz) {
-    const pages = await queryDB(DB.quiz, []);
-    for (const p of pages) {
-      questions.push({
-        q:           getText(p, "Name"),
-        options: [
-          getText(p, "OptionA"),
-          getText(p, "OptionB"),
-          getText(p, "OptionC"),
-          getText(p, "OptionD"),
-        ].filter(Boolean),
-        answer:      getSelect(p, "Answer"),
-        explanation: getText(p, "Explanation"),
-        sourceTitle: getText(p, "SourceTitle"),
-        sourceUrl:   getUrl(p, "SourceURL"),
-      });
+  // quiz_questions.json から問題を読み込む（ファイルがなければ空）
+  let questions = [];
+  if (fs.existsSync("quiz_questions.json")) {
+    try {
+      questions = JSON.parse(fs.readFileSync("quiz_questions.json", "utf-8"));
+    } catch (e) {
+      console.error("  quiz_questions.json の読み込みエラー:", e.message);
     }
   }
 
