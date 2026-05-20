@@ -18,6 +18,7 @@ const DB = {
   lemino:        process.env.DB_LEMINO,
   web:           process.env.DB_WEB,
   schedule:      process.env.DB_SCHEDULE,
+  quiz:          process.env.DB_QUIZ,
 };
 
 // ── ヘルパー ──
@@ -99,7 +100,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","ABOUT","TERMS","JOIN"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -736,6 +737,332 @@ async function buildLemino(tpl) {
 }
 
 
+// ── クイズページ ──
+async function buildQuiz(tpl) {
+  const questions = [];
+
+  if (DB.quiz) {
+    const pages = await queryDB(DB.quiz, []);
+    for (const p of pages) {
+      questions.push({
+        q:           getText(p, "Name"),
+        options: [
+          getText(p, "OptionA"),
+          getText(p, "OptionB"),
+          getText(p, "OptionC"),
+          getText(p, "OptionD"),
+        ].filter(Boolean),
+        answer:      getSelect(p, "Answer"),
+        explanation: getText(p, "Explanation"),
+        sourceTitle: getText(p, "SourceTitle"),
+        sourceUrl:   getUrl(p, "SourceURL"),
+      });
+    }
+  }
+
+  const total = questions.length;
+  const questionsJson = JSON.stringify(questions);
+
+  const body = `
+<style>
+.quiz-wrap { max-width: 680px; margin: 0 auto; }
+.quiz-screen { display: none; }
+.quiz-screen.active { display: block; }
+.quiz-start-box {
+  text-align: center; padding: 48px 24px;
+  background: #fff; border: 2px solid var(--ink); border-radius: 24px;
+  box-shadow: 6px 6px 0 var(--pink);
+}
+.quiz-start-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
+.quiz-start-box h2 {
+  font-family: 'Klee One',serif; font-size: 22px; font-weight: 600;
+  color: var(--emerald-dark); margin-bottom: 12px;
+}
+.quiz-start-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+.quiz-btn {
+  display: inline-block; padding: 14px 36px;
+  background: var(--emerald); color: #fff;
+  font-family: 'Klee One',serif; font-size: 16px; font-weight: 600;
+  border: 2px solid var(--emerald-dark); border-radius: 50px;
+  box-shadow: 3px 3px 0 var(--emerald-dark); cursor: pointer;
+  text-decoration: none; transition: transform 0.1s,box-shadow 0.1s;
+}
+.quiz-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
+.quiz-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
+.quiz-btn.pink { background: var(--pink); border-color: #c8456e; box-shadow: 3px 3px 0 #c8456e; color: #fff; }
+.quiz-btn.pink:hover { box-shadow: 4px 4px 0 #c8456e; }
+
+.quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.quiz-counter { font-family: 'Caveat',cursive; font-size: 18px; color: var(--text-muted); white-space: nowrap; }
+.quiz-bar-wrap { flex: 1; height: 8px; background: var(--emerald-light); border-radius: 4px; overflow: hidden; }
+.quiz-bar { height: 100%; background: var(--emerald); border-radius: 4px; transition: width 0.4s ease; }
+.quiz-score-live { font-family: 'Caveat',cursive; font-size: 16px; color: var(--emerald-dark); white-space: nowrap; }
+
+.quiz-q-box {
+  background: #fff; border: 2px solid var(--ink); border-radius: 20px;
+  box-shadow: 5px 5px 0 var(--butter); padding: 28px 24px; margin-bottom: 20px;
+}
+.quiz-q-text { font-family: 'Klee One',serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
+
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.quiz-opt-btn {
+  width: 100%; padding: 14px 18px; text-align: left;
+  background: #fff; border: 2px solid var(--border); border-radius: 14px;
+  font-family: 'Klee One',serif; font-size: 14px; color: var(--text);
+  cursor: pointer; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  line-height: 1.6;
+}
+.quiz-opt-btn:hover:not(:disabled) {
+  border-color: var(--emerald); background: var(--emerald-pale);
+  box-shadow: 2px 2px 0 var(--emerald-light);
+}
+.quiz-opt-btn.correct {
+  border-color: var(--emerald-dark); background: var(--emerald-pale);
+  box-shadow: 3px 3px 0 var(--emerald-dark); font-weight: 600;
+}
+.quiz-opt-btn.wrong {
+  border-color: #c8456e; background: var(--pink-pale);
+  box-shadow: 3px 3px 0 #c8456e;
+}
+.quiz-opt-btn:disabled { cursor: default; }
+
+.quiz-result-box {
+  background: var(--cream); border: 2px dashed var(--emerald);
+  border-radius: 16px; padding: 20px 22px; margin-bottom: 20px;
+  animation: fadeUp 0.3s ease;
+}
+.quiz-result-label { font-size: 22px; margin-bottom: 8px; }
+.quiz-result-exp { font-size: 13px; color: var(--text-muted); line-height: 1.85; margin-bottom: 14px; }
+.quiz-source-link {
+  display: inline-block; font-family: 'Klee One',serif; font-size: 12px;
+  color: var(--emerald-dark); text-decoration: none; border-bottom: 1px solid var(--emerald-light);
+  margin-bottom: 16px;
+}
+.quiz-source-link:hover { color: var(--pink); border-color: var(--pink); }
+.quiz-next-wrap { text-align: right; }
+
+.quiz-final-box {
+  text-align: center; padding: 48px 24px;
+  background: #fff; border: 2px solid var(--ink); border-radius: 24px;
+  box-shadow: 6px 6px 0 var(--emerald-light);
+}
+.quiz-score-circle {
+  width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 24px;
+  background: var(--emerald); border: 4px solid var(--emerald-dark);
+  box-shadow: 4px 4px 0 var(--emerald-dark);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.quiz-score-circle .score-num {
+  font-family: 'Caveat',cursive; font-size: 48px; font-weight: 700;
+  color: #fff; line-height: 1;
+}
+.quiz-score-circle .score-den {
+  font-family: 'Caveat',cursive; font-size: 16px; color: rgba(255,255,255,0.8);
+}
+.quiz-final-msg { font-family: 'Klee One',serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.quiz-final-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+.quiz-final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .quiz-q-text { font-size: 15px; }
+  .quiz-opt-btn { font-size: 13px; padding: 12px 14px; }
+}
+</style>
+
+<div class="quiz-wrap">
+
+  <!-- ── スタート画面 ── -->
+  <div id="quiz-start" class="quiz-screen active">
+    <div class="quiz-start-box">
+      <div class="quiz-start-icon">✨</div>
+      <h2>ゆさんブログクイズ</h2>
+      <p>
+        佐藤優羽さんのブログから出題！<br>
+        全${total}問からランダム10問に挑戦しよう♪
+      </p>
+      ${total === 0
+        ? `<p style="font-size:12px;color:var(--text-light);">問題を準備中です…もうしばらくお待ちください</p>`
+        : `<button class="quiz-btn" onclick="startQuiz()">スタート！</button>`}
+    </div>
+  </div>
+
+  <!-- ── 問題画面 ── -->
+  <div id="quiz-question" class="quiz-screen">
+    <div class="quiz-header">
+      <span class="quiz-counter">問 <span id="q-num">1</span> / <span id="q-total">10</span></span>
+      <div class="quiz-bar-wrap">
+        <div class="quiz-bar" id="q-bar" style="width:10%"></div>
+      </div>
+      <span class="quiz-score-live">正解 <span id="q-score">0</span></span>
+    </div>
+
+    <div class="quiz-q-box">
+      <p class="quiz-q-text" id="q-text"></p>
+    </div>
+
+    <div class="quiz-options" id="q-options"></div>
+
+    <div id="q-result" class="quiz-result-box" style="display:none">
+      <div class="quiz-result-label" id="q-label"></div>
+      <p class="quiz-result-exp" id="q-exp"></p>
+      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener">元ブログを読む →</a>
+      <div class="quiz-next-wrap">
+        <button class="quiz-btn" id="q-next-btn" onclick="nextQuestion()">次の問題 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 結果画面 ── -->
+  <div id="quiz-final" class="quiz-screen">
+    <div class="quiz-final-box">
+      <div class="quiz-score-circle">
+        <span class="score-num" id="r-score">0</span>
+        <span class="score-den">/ <span id="r-total">10</span></span>
+      </div>
+      <p class="quiz-final-msg" id="r-msg"></p>
+      <p class="quiz-final-sub" id="r-sub"></p>
+      <div class="quiz-final-actions">
+        <button class="quiz-btn pink" onclick="startQuiz()">もう一度挑戦！</button>
+        <a class="quiz-btn" href="blog.html">ブログを読む</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var ALL_QUESTIONS = ${questionsJson};
+  var QUIZ_SIZE = Math.min(10, ALL_QUESTIONS.length);
+
+  var state = { questions: [], idx: 0, score: 0 };
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function showScreen(id) {
+    ['quiz-start','quiz-question','quiz-final'].forEach(function(s){
+      var el = document.getElementById(s);
+      if (el) { el.classList.remove('active'); }
+    });
+    var target = document.getElementById(id);
+    if (target) target.classList.add('active');
+  }
+
+  window.startQuiz = function() {
+    state.questions = shuffle(ALL_QUESTIONS).slice(0, QUIZ_SIZE);
+    state.idx = 0;
+    state.score = 0;
+    showScreen('quiz-question');
+    renderQuestion();
+  };
+
+  function renderQuestion() {
+    var q = state.questions[state.idx];
+    var num = state.idx + 1;
+    var total = state.questions.length;
+
+    document.getElementById('q-num').textContent = num;
+    document.getElementById('q-total').textContent = total;
+    document.getElementById('q-score').textContent = state.score;
+    document.getElementById('q-bar').style.width = (num / total * 100) + '%';
+    document.getElementById('q-text').textContent = q.q;
+
+    var optDiv = document.getElementById('q-options');
+    optDiv.innerHTML = '';
+    q.options.forEach(function(opt, i) {
+      var btn = document.createElement('button');
+      btn.className = 'quiz-opt-btn';
+      btn.textContent = opt;
+      btn.dataset.idx = i;
+      btn.onclick = function() { selectAnswer(i, q); };
+      optDiv.appendChild(btn);
+    });
+
+    var resBox = document.getElementById('q-result');
+    resBox.style.display = 'none';
+  }
+
+  function selectAnswer(choiceIdx, q) {
+    var opts = document.querySelectorAll('.quiz-opt-btn');
+    opts.forEach(function(b) { b.disabled = true; });
+
+    var labels = ['A','B','C','D'];
+    var chosen = labels[choiceIdx];
+    var correct = (q.answer || '').toUpperCase();
+    var isCorrect = chosen === correct;
+
+    if (isCorrect) {
+      state.score++;
+      opts[choiceIdx].classList.add('correct');
+    } else {
+      opts[choiceIdx].classList.add('wrong');
+      var correctIdx = labels.indexOf(correct);
+      if (correctIdx >= 0 && opts[correctIdx]) opts[correctIdx].classList.add('correct');
+    }
+
+    document.getElementById('q-score').textContent = state.score;
+    document.getElementById('q-label').textContent = isCorrect ? '⭕ 正解！' : '❌ 不正解';
+    document.getElementById('q-exp').textContent = q.explanation || '';
+
+    var srcEl = document.getElementById('q-source');
+    if (q.sourceUrl) {
+      srcEl.href = q.sourceUrl;
+      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '元ブログ') + 'を読む →';
+      srcEl.style.display = '';
+    } else {
+      srcEl.style.display = 'none';
+    }
+
+    var nextBtn = document.getElementById('q-next-btn');
+    var isLast = state.idx >= state.questions.length - 1;
+    nextBtn.textContent = isLast ? '結果を見る ✨' : '次の問題 →';
+
+    document.getElementById('q-result').style.display = '';
+  }
+
+  window.nextQuestion = function() {
+    state.idx++;
+    if (state.idx >= state.questions.length) {
+      showFinal();
+    } else {
+      renderQuestion();
+    }
+  };
+
+  function showFinal() {
+    var s = state.score;
+    var t = state.questions.length;
+    document.getElementById('r-score').textContent = s;
+    document.getElementById('r-total').textContent = t;
+
+    var msgs = [
+      [t,     '🌟 全問正解！ゆさんブログマスター！',   'ゆさんのことを知り尽くしてる…！すごい！'],
+      [t * 0.8, '✨ すばらしい！',                     'ゆさんのブログ、ちゃんと読んでるんですね♪'],
+      [t * 0.6, '💪 なかなか良い！',                   'もっとブログを読めばパーフェクトも夢じゃない！'],
+      [t * 0.4, '🌱 もう少し！',                       'ゆさんのブログを読んで再挑戦しよう！'],
+      [0,       '📖 ブログを読んで復習しよう！',        'ゆさんのブログはとても面白いですよ♪'],
+    ];
+    var msg = msgs[msgs.length - 1];
+    for (var i = 0; i < msgs.length; i++) {
+      if (s >= msgs[i][0]) { msg = msgs[i]; break; }
+    }
+    document.getElementById('r-msg').textContent = msg[1];
+    document.getElementById('r-sub').textContent = msg[2];
+    showScreen('quiz-final');
+  }
+})();
+<\/script>`;
+
+  return buildPage(tpl, "ゆクイズ", "YU QUIZ", "ゆ <em>クイズ</em>", `佐藤優羽さんのブログから出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
+}
+
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──
 async function syncToYuNews() {
   const sources = [
@@ -849,6 +1176,7 @@ async function main() {
     "tiktok.html":     { fn: buildTiktok,    active: "TIKTOK" },
     "youtube.html":    { fn: buildYoutube,   active: "YOUTUBE" },
     "lemino.html":     { fn: buildLemino,    active: "LEMINO" },
+    "quiz.html":       { fn: buildQuiz,      active: "QUIZ" },
   };
 
   for (const [filename, { fn, active }] of Object.entries(pages)) {

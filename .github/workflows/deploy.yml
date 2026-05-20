@@ -22,7 +22,16 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install @notionhq/client@2.2.15
+        run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@0.39.0
+
+      - name: Generate quiz questions from blog posts
+        run: node generate_quiz.js
+        continue-on-error: true
+        env:
+          NOTION_TOKEN:     ${{ secrets.NOTION_TOKEN }}
+          DB_BLOG:          ${{ secrets.DB_BLOG }}
+          DB_QUIZ:          ${{ secrets.DB_QUIZ }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
       - name: Add new blog posts
         run: node add_blog_posts.js
@@ -54,10 +63,11 @@ jobs:
           DB_LEMINO:           ${{ secrets.DB_LEMINO }}
           DB_WEB:              ${{ secrets.DB_WEB }}
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
+          DB_QUIZ:             ${{ secrets.DB_QUIZ }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,update_media_thumbnails.js,download_media.js,update_notion_media.js,_template.html,package.json,package-lock.json'
+          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,update_media_thumbnails.js,download_media.js,update_notion_media.js,generate_quiz.js,_template.html,package.json,package-lock.json'
