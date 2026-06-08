@@ -131,12 +131,12 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
 }
 
 // ── カードビルダー ──
-function newsCard(page, badgeLabel) {
+function newsCard(page, badgeLabel, overrideImg) {
   const url   = getUrl(page);
   const title = getText(page,"Name") || (url.includes("tiktok.com") ? "TikTok動画" : url.includes("youtu") ? "YouTube動画" : "詳細を見る");
   const date  = fmtDate(getDate(page));
   const desc  = getText(page,"Description");
-  const img   = getMedia(page);
+  const img   = overrideImg !== undefined ? overrideImg : getMedia(page);
   const platform = getSelect(page,"Platform") || badgeLabel;
   const badge = platform ? `<span class="${badgeClass(platform)}">${platform}</span>` : "";
   const link  = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
@@ -382,13 +382,31 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   // ── 佐藤優羽さんNews: 均一グリッド ──
-  const yuNewsCards = yuNews.slice(0, 20).map(p => {
+  const yuNewsSlice = yuNews.slice(0, 20);
+
+  // TikTok で Media 未設定のものをoEmbedで並列取得
+  const tiktokTargetsIdx = yuNewsSlice.map(p =>
+    !getMedia(p) && getUrl(p).includes("tiktok.com") ? getUrl(p) : null
+  );
+  const tiktokThumbs = await Promise.all(
+    tiktokTargetsIdx.map(u => u ? fetchOembedThumbnail(u) : Promise.resolve(""))
+  );
+
+  const yuNewsCards = yuNewsSlice.map((p, i) => {
     const url      = getUrl(p);
     const title    = getText(p, "Name") || "詳細を見る";
     const date     = fmtDate(getDate(p));
-    const img      = getMedia(p);
     const platform = getSelect(p, "Platform");
     const badge    = platform ? `<span class="${badgeClass(platform)}" style="font-size:9px;padding:2px 7px;">${platform}</span>` : "";
+
+    // サムネイル: Notion保存済み → YouTube自動生成 → TikTok oEmbed → なし
+    let img = getMedia(p);
+    if (!img) {
+      const ytMatch = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+      if (ytMatch) img = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    }
+    if (!img) img = tiktokThumbs[i] || "";
+
     const imgTag   = img
       ? `<img class="yunews-img" src="${img}" alt="${title}" loading="lazy">`
       : `<div class="yunews-no-img">No Image</div>`;
@@ -713,7 +731,28 @@ async function buildYoutube(tpl) {
 
 async function buildYuNews(tpl) {
   const pages = await queryDB(DB.yuNews);
-  const cards = pages.map(p => newsCard(p)).join("\n");
+
+  // TikTok で Media 未設定のものをoEmbedで並列取得
+  const tiktokTargets = pages.map(p =>
+    !getMedia(p) && getUrl(p).includes("tiktok.com") ? getUrl(p) : null
+  );
+  const hasTiktok = tiktokTargets.some(Boolean);
+  if (hasTiktok) console.log(`  Yu News TikTokサムネイル取得中...`);
+  const tiktokThumbs = await Promise.all(
+    tiktokTargets.map(u => u ? fetchOembedThumbnail(u) : Promise.resolve(""))
+  );
+
+  const cards = pages.map((p, i) => {
+    let img = getMedia(p);
+    if (!img) {
+      const url = getUrl(p);
+      const ytMatch = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+      if (ytMatch) img = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    }
+    if (!img) img = tiktokThumbs[i] || "";
+    return newsCard(p, undefined, img);
+  }).join("\n");
+
   const body = `<div class="grid-3">
     <!-- GALLERY_START -->
     ${cards}
