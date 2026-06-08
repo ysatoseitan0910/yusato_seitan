@@ -259,7 +259,7 @@ function tiktokCard(page, thumbUrl = "") {
   </div>`;
 }
 
-function youtubeCard(page) {
+function youtubeCard(page, channelLabel = "YouTube") {
   const url = getUrl(page);
   const title = getText(page,"Name");
   const date  = fmtDate(getDate(page));
@@ -280,7 +280,7 @@ function youtubeCard(page) {
   return `
   <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
     <div class="embed-header">
-      <span class="badge badge-youtube">YouTube</span>
+      <span class="badge badge-youtube">${escAttr(channelLabel)}</span>
       <span style="font-size:10px;color:var(--text-light)">${date}</span>
     </div>
     <div class="embed-wrap" style="min-height:0;padding:0;">${embed}</div>
@@ -679,54 +679,32 @@ async function buildTiktok(tpl) {
 async function buildYoutube(tpl) {
   const pages = await queryDB(DB.youtube);
 
-  const channelOrder = [
-    "日向坂ちゃんねる",
-    "日向坂46 OFFICIAL YouTube CHANNEL",
-    "Lemino",
+  const typeOrder = [
+    "個人PV", "ドキュメンタリー", "企画", "生配信", "MV", "コール動画", "ひななり", "ひなこい",
   ];
 
-  // Channel → Type → pages の2階層グループ化
+  // Type でグループ化（Channel はカードのバッジに表示）
   const groups = {};
   for (const p of pages) {
-    const ch   = getSelect(p, "Channel") || getText(p, "Channel") || "その他";
-    const type = getSelect(p, "Type") || "";
-    if (!groups[ch]) groups[ch] = {};
-    if (!groups[ch][type]) groups[ch][type] = [];
-    groups[ch][type].push(p);
+    const type = getSelect(p, "Type") || "その他";
+    if (!groups[type]) groups[type] = [];
+    groups[type].push(p);
   }
 
-  const orderedChannels = [
-    ...channelOrder.filter(ch => groups[ch]),
-    ...Object.keys(groups).filter(ch => !channelOrder.includes(ch)),
+  const orderedTypes = [
+    ...typeOrder.filter(t => groups[t]),
+    ...Object.keys(groups).filter(t => !typeOrder.includes(t)),
   ];
 
-  const body = orderedChannels.map(ch => {
-    const typeMap = groups[ch];
-    const types = Object.keys(typeMap);
-
-    // Type が1種類 or 全て空の場合はフラット表示
-    const hasMultipleTypes = types.length > 1 || (types.length === 1 && types[0] !== "");
-
-    let inner;
-    if (hasMultipleTypes) {
-      inner = types.map(type => {
-        const cards = typeMap[type].map(p => youtubeCard(p)).join("\n");
-        const label = type || "その他";
-        return `
-      <div style="margin-bottom:32px;">
-        <h3 style="font-family:'Klee One',serif;font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:12px;padding:4px 10px;background:var(--emerald-pale);border-left:3px solid var(--emerald);border-radius:0 6px 6px 0;display:inline-block;">${label}</h3>
-        <div class="grid-3">${cards}</div>
-      </div>`;
-      }).join("\n");
-    } else {
-      const cards = (typeMap[types[0]] || []).map(p => youtubeCard(p)).join("\n");
-      inner = `<div class="grid-3">${cards}</div>`;
-    }
-
+  const body = orderedTypes.map(type => {
+    const cards = groups[type].map(p => {
+      const ch = getSelect(p, "Channel") || getText(p, "Channel") || "YouTube";
+      return youtubeCard(p, ch);
+    }).join("\n");
     return `
     <section style="margin-bottom:48px;">
-      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">${ch}</h2>
-      ${inner}
+      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">${type}</h2>
+      <div class="grid-3">${cards}</div>
     </section>`;
   }).join("\n");
 
