@@ -1098,7 +1098,6 @@ async function syncToYuNews() {
   const sources = [
     { db: DB.blog,      platform: "Blog" },
     { db: DB.interview, platform: "インタビュー" },
-    { db: DB.x,         platform: "X" },
     { db: DB.tiktok,    platform: "TikTok" },
     { db: DB.youtube,   platform: "YouTube" },
     { db: DB.lemino,    platform: "Lemino" },
