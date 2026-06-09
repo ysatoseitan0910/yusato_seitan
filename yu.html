@@ -57,62 +57,6 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-deep);padding:4px 8px;line-height:1;border-radius:6px;}
 .hamburger:hover{background:var(--pink-pale);}
 
-/* Hero — Profile */
-.hero{
-  margin:24px 28px 0;
-  background:var(--cream);
-  border:2px solid var(--ink);
-  border-radius:24px;
-  padding:36px 40px;
-  position:relative;
-  box-shadow:6px 6px 0 var(--emerald-deep);
-}
-.hero-row{display:grid;grid-template-columns:1fr 300px;gap:32px;align-items:center;}
-.hero-cap{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--pink);color:#fff;
-  padding:6px 14px;border-radius:99px;
-  font-family:'Klee One',serif;font-size:12px;font-weight:600;letter-spacing:0.06em;
-  transform:rotate(-2deg);
-}
-.hero-cap::before{content:"🌿";}
-.hero h1{
-  font-family:'Klee One',serif;
-  font-weight:600;font-size:48px;line-height:1.2;color:var(--ink);
-  margin-top:14px;
-}
-.hero h1 .ruby{display:block;font-size:14px;color:var(--ink-soft);letter-spacing:0.4em;margin-bottom:8px;font-weight:400;}
-.hero h1 em{color:var(--emerald-deep);font-style:normal;background:linear-gradient(transparent 60%,var(--butter) 60%);padding:0 4px;}
-.hero h1 b{color:var(--pink);font-weight:600;}
-.hero-lead{font-size:14px;color:var(--ink-soft);line-height:1.95;margin-top:16px;max-width:520px;}
-.hero-meta{display:flex;gap:24px;margin-top:22px;flex-wrap:wrap;}
-.hero-meta-item{font-family:'Klee One',serif;}
-.hero-meta-label{font-family:'Caveat',cursive;font-size:14px;color:var(--pink);letter-spacing:0.04em;}
-.hero-meta-val{font-size:14px;color:var(--ink);font-weight:600;margin-top:-2px;}
-.hero-stamp{
-  position:relative;
-  width:260px;height:260px;margin:0 auto;
-  border-radius:50%;
-  background:
-    radial-gradient(circle,var(--pink-pale) 0%,var(--emerald-soft) 70%,var(--butter) 100%);
-  border:3px dashed var(--emerald);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-family:'Klee One',serif;font-weight:600;
-  color:var(--emerald-deep);
-  transform:rotate(-3deg);
-}
-.hero-stamp-mark{font-size:120px;line-height:1;}
-.hero-stamp-sub{font-family:'Klee One',serif;font-weight:600;font-size:14px;letter-spacing:0.24em;color:var(--ink);margin-top:4px;}
-.hero-stamp-en{font-family:'Caveat',cursive;font-size:14px;color:var(--ink-soft);letter-spacing:0.1em;}
-.hero-sticker{
-  position:absolute;
-  font-family:'Caveat',cursive;font-weight:700;
-  background:var(--butter);color:var(--ink);
-  padding:6px 16px;border-radius:99px;border:2px solid var(--ink);
-  font-size:14px;
-}
-.hero-sticker.s1{top:-12px;right:90px;transform:rotate(8deg);}
-.hero-sticker.s2{bottom:-14px;left:60px;background:var(--pink);color:#fff;transform:rotate(-4deg);}
 
 /* Body */
 .body{padding:36px 28px 64px;display:flex;flex-direction:column;gap:42px;}
@@ -141,7 +85,17 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   background:#fff;border:2px solid var(--ink);border-radius:18px;
   padding:28px 32px;
   box-shadow:4px 4px 0 var(--emerald-deep);
-  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+  display:grid;grid-template-columns:200px 1fr 1fr;gap:24px;align-items:start;
+}
+.profile-img-wrap{display:flex;align-items:flex-start;justify-content:center;padding-top:4px;}
+.profile-img{
+  width:170px;height:170px;
+  border-radius:18px;
+  object-fit:contain;
+  border:2px solid var(--ink);
+  background:var(--emerald-pale);
+  box-shadow:4px 4px 0 var(--emerald);
+  transform:rotate(-2deg);
 }
 .profile-dl{display:grid;grid-template-columns:120px 1fr;gap:0;align-content:start;}
 .profile-dl dt{font-family:'Klee One',serif;font-weight:600;font-size:13px;color:var(--emerald-deep);padding:10px 0;border-bottom:1px dashed var(--emerald-soft);}
@@ -150,32 +104,6 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .profile-dl a{color:var(--emerald-deep);text-decoration:none;}
 .profile-dl a:hover{text-decoration:underline;}
 .cyalume-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--emerald);vertical-align:middle;margin-right:3px;border:1px solid var(--emerald-deep);}
-
-/* Charm */
-.charm-intro{font-family:'Klee One',serif;font-size:16px;line-height:2;color:var(--ink);margin-bottom:22px;max-width:780px;}
-.charm-intro em{font-style:normal;color:var(--emerald-deep);background:linear-gradient(transparent 60%,var(--butter) 60%);padding:0 4px;}
-.charm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.charm-card{
-  background:#fff;border:2px solid var(--ink);border-radius:18px;
-  padding:24px 22px;position:relative;
-  box-shadow:4px 4px 0 var(--pink);
-}
-.charm-card:nth-child(2){box-shadow:4px 4px 0 var(--emerald-deep);transform:rotate(0.6deg);}
-.charm-card:nth-child(3){box-shadow:4px 4px 0 var(--butter);}
-.charm-card-num{
-  position:absolute;top:-12px;left:-12px;
-  width:36px;height:36px;border-radius:50%;
-  background:var(--emerald);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Caveat',cursive;font-weight:700;font-size:18px;
-  border:2px solid var(--ink);
-  transform:rotate(-8deg);
-}
-.charm-card:nth-child(2) .charm-card-num{background:var(--pink);}
-.charm-card:nth-child(3) .charm-card-num{background:var(--ink);}
-.charm-card-en{font-family:'Caveat',cursive;font-size:16px;color:var(--ink-light);letter-spacing:0.04em;}
-.charm-card-title{font-family:'Klee One',serif;font-weight:600;font-size:18px;color:var(--ink);margin-top:2px;}
-.charm-card-desc{font-size:12px;color:var(--ink-soft);line-height:1.85;margin-top:8px;}
 
 /* Best content */
 .best-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px;}
@@ -204,7 +132,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .best-thumb.t5{background:linear-gradient(160deg,var(--pink-pale) 0%,var(--butter) 100%);}
 .best-thumb-mono{font-family:'Klee One',serif;font-weight:600;font-size:64px;color:#fff;text-shadow:3px 3px 0 var(--ink);}
 .best-card.featured .best-thumb-mono{font-size:140px;}
+.best-thumb img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;}
+.best-thumb-badge,.best-thumb-pick{z-index:1;}
 .best-thumb-play{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;
   width:54px;height:54px;border-radius:50%;
   background:var(--pink);color:#fff;
   display:flex;align-items:center;justify-content:center;
@@ -295,14 +226,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
   .nav-sep{display:none;}
   .nav-committee-label{display:block;font-family:'Klee One',serif;font-size:10px;letter-spacing:0.06em;color:var(--ink-light);padding:10px 14px 2px;border-top:1px dashed var(--line);margin-top:4px;}
-  .hero{margin:18px 16px 0;padding:28px 22px;}
-  .hero-row{grid-template-columns:1fr;gap:18px;}
-  .hero h1{font-size:30px;}
-  .hero-stamp{width:220px;height:220px;}
-  .hero-stamp-mark{font-size:100px;}
-  .hero-meta{gap:16px;}
   .body{padding:24px 16px 48px;gap:30px;}
   .profile-card{grid-template-columns:1fr;padding:22px 22px;}
+  .profile-img-wrap{justify-content:flex-start;}
+  .profile-img{width:140px;height:140px;}
   .charm-grid{grid-template-columns:1fr;}
   .best-grid{grid-template-columns:1fr;}
   .best-card.featured{grid-row:auto;}
@@ -343,49 +270,6 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
 
-<header class="hero">
-  <div class="hero-sticker s1">★ ABOUT YU</div>
-  <div class="hero-sticker s2">福岡 → 日向坂46 →</div>
-  <div class="hero-row">
-    <div>
-      <span class="hero-cap">SATO YU PROFILE</span>
-      <h1>
-        <span class="ruby">さとう ゆう</span>
-        <em>佐藤</em>優羽さんの<br>
-        <b>こと</b>を、もっと。
-      </h1>
-      <p class="hero-lead">
-        日向坂46 五期生。福岡県出身、おとめ座。<br>
-        ステージで全力なのに、楽屋ではくしゃっと笑う。<br>
-        そんなあの子のことを、ここで紹介させてください。
-      </p>
-      <div class="hero-meta">
-        <div class="hero-meta-item">
-          <div class="hero-meta-label">birthday</div>
-          <div class="hero-meta-val">2006.09.10</div>
-        </div>
-        <div class="hero-meta-item">
-          <div class="hero-meta-label">from</div>
-          <div class="hero-meta-val">福岡県</div>
-        </div>
-        <div class="hero-meta-item">
-          <div class="hero-meta-label">group</div>
-          <div class="hero-meta-val">日向坂46 五期生</div>
-        </div>
-        <div class="hero-meta-item">
-          <div class="hero-meta-label">cyalume</div>
-          <div class="hero-meta-val"><span class="cyalume-dot"></span><span class="cyalume-dot"></span> Emerald × Emerald</div>
-        </div>
-      </div>
-    </div>
-    <div class="hero-stamp">
-      <div class="hero-stamp-mark">優</div>
-      <div class="hero-stamp-sub">佐 藤 優 羽</div>
-      <div class="hero-stamp-en">Sato Yu</div>
-    </div>
-  </div>
-</header>
-
 <div class="body">
 
   <!-- 01 Profile -->
@@ -398,6 +282,9 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
       </div>
     </div>
     <div class="profile-card">
+      <div class="profile-img-wrap">
+        <img src="images/image/YuSato.webp" alt="佐藤優羽" class="profile-img">
+      </div>
       <dl class="profile-dl">
         <dt>漢字表記</dt><dd>佐藤 優羽</dd>
         <dt>読み方</dt><dd>さとう ゆう</dd>
@@ -406,46 +293,12 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
         <dt>生年月日</dt><dd>2006年9月10日</dd>
       </dl>
       <dl class="profile-dl">
-        <dt>星座</dt><dd>おとめ座</dd>
         <dt>出身地</dt><dd>福岡県</dd>
-        <dt>サイリウム</dt><dd><span class="cyalume-dot"></span><span class="cyalume-dot"></span> エメラルドグリーン × エメラルドグリーン</dd>
-        <dt>公式ブログ</dt><dd><a href="#">hinatazaka46.com →</a></dd>
-        <dt>公式プロフィール</dt><dd><a href="#">日向坂46公式サイト →</a></dd>
+        <dt>サイリウムカラー</dt><dd> エメラルドグリーン × エメラルドグリーン</dd>
+        <dt>公式ブログ</dt><dd><a href="https://www.hinatazaka46.com/s/official/diary/member/list?ima=0000&ct=42" target="_blank" rel="noopener">佐藤 優羽 公式ブログ →</a></dd>
+        <dt>公式プロフィール</dt><dd><a href="https://www.hinatazaka46.com/s/official/artist/42?ima=0000" target="_blank" rel="noopener">日向坂46公式サイト →</a></dd>
+        <dt>お披露目サイトプロフィール</dt><dd><a href="https://www.hinatazaka46.com/s/official/page/5th_generation_member?ima=0000&m=QXQUKkvSrCQ" target="_blank" rel="noopener">日向坂46 五期生 お披露目サイト →</a></dd>
       </dl>
-    </div>
-  </section>
-
-  <!-- 02 Charm -->
-  <section>
-    <div class="sec-h">
-      <div class="sec-h-l">
-        <span class="sec-h-icon c2">魅</span>
-        <h2>私たちが語る、優羽ちゃんの魅力</h2>
-        <span class="sec-h-en">why we love yu</span>
-      </div>
-    </div>
-    <p class="charm-intro">
-      優羽ちゃんに出会って、こんなにも誰かを応援することが楽しいと感じたのは初めてでした。<em>ステージ上での表情、歌声、ダンス</em>——どれをとっても、彼女にしか出せない輝きがあります。真面目さとかわいさが同居しているところが、私たちが優羽ちゃんを好きな理由のひとつです。
-    </p>
-    <div class="charm-grid">
-      <div class="charm-card">
-        <div class="charm-card-num">01</div>
-        <div class="charm-card-en">performance</div>
-        <div class="charm-card-title">全力のステージ</div>
-        <p class="charm-card-desc">歌もダンスも、一切手を抜かない。そのひたむきさがパフォーマンスに宿っています。</p>
-      </div>
-      <div class="charm-card">
-        <div class="charm-card-num">02</div>
-        <div class="charm-card-en">smile</div>
-        <div class="charm-card-title">あふれる笑顔</div>
-        <p class="charm-card-desc">見ているだけで元気になれる、優羽ちゃんの笑顔。それだけでその場が明るくなります。</p>
-      </div>
-      <div class="charm-card">
-        <div class="charm-card-num">03</div>
-        <div class="charm-card-en">words</div>
-        <div class="charm-card-title">まっすぐな言葉</div>
-        <p class="charm-card-desc">ブログや発言に滲む誠実さ。ファンへの気持ちをまっすぐに伝えてくれます。</p>
-      </div>
     </div>
   </section>
 
@@ -454,75 +307,74 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
     <div class="sec-h">
       <div class="sec-h-l">
         <span class="sec-h-icon c3">選</span>
-        <h2>委員会セレクト・ベストコンテンツ</h2>
+        <h2>佐藤優羽さんを知りたいあなたへ！おすすめコンテンツ</h2>
         <span class="sec-h-en">editor's picks</span>
       </div>
-      <a href="#">すべてのコンテンツへ →</a>
+      <a href="youtube.html">すべてのコンテンツへ →</a>
     </div>
     <div class="best-grid">
-      <a class="best-card featured" href="#">
+      <a class="best-card featured" href="https://www.youtube.com/watch?v=QXQUKkvSrCQ" target="_blank" rel="noopener">
         <div class="best-thumb t1">
           <span class="best-thumb-pick">★ pick!</span>
-          <span class="best-thumb-badge">BLOG</span>
-          <div class="best-thumb-mono">羽</div>
-        </div>
-        <div class="best-body">
-          <p class="best-quote">「ファンの皆さんにありがとうって言える瞬間が、わたしにとっていちばん大切な時間です。」</p>
-          <div class="best-meta">
-            <span class="best-source">公式ブログ「7回目のおめでとう。」</span>
-            <span class="best-date">2026/04/05</span>
-          </div>
-        </div>
-      </a>
-      <a class="best-card" href="#">
-        <div class="best-thumb t3">
           <span class="best-thumb-badge">YOUTUBE</span>
+          <img src="https://img.youtube.com/vi/QXQUKkvSrCQ/mqdefault.jpg" alt="お披露目ティザームービー">
           <div class="best-thumb-play">▶</div>
         </div>
         <div class="best-body">
-          <p class="best-quote">五期生はじめまして配信 ─ 日向坂ちゃんねる</p>
+          <p class="best-quote">佐藤優羽さんお披露目ムービー！このティザー動画で一気に心を掴まれた方も多いのでは？</p>
           <div class="best-meta">
-            <span class="best-source">入門編に最適な1本</span>
-            <span class="best-date">2025/06/12</span>
+            <span class="best-source">お披露目ティザームービー</span>
           </div>
         </div>
       </a>
-      <a class="best-card" href="#">
+      <a class="best-card" href="https://www.youtube.com/watch?v=QiAt9JkfFpw" target="_blank" rel="noopener">
+        <div class="best-thumb t3">
+          <span class="best-thumb-badge">YOUTUBE</span>
+          <img src="https://img.youtube.com/vi/QiAt9JkfFpw/mqdefault.jpg" alt="個人PV">
+          <div class="best-thumb-play">▶</div>
+        </div>
+        <div class="best-body">
+          <p class="best-quote">個人PV「ああゆう　こうゆう　さとうゆう」── 17thシングル『Kind of love』TYPE-D収録</p>
+          <div class="best-meta">
+            <span class="best-source">日向坂46公式YouTube</span>
+          </div>
+        </div>
+      </a>
+      <a class="best-card" href="https://www.youtube.com/watch?v=OX49NzoSKJY" target="_blank" rel="noopener">
         <div class="best-thumb t2">
-          <span class="best-thumb-badge">BLOG</span>
-          <div class="best-thumb-mono">Y</div>
+          <span class="best-thumb-badge">YOUTUBE</span>
+          <img src="https://img.youtube.com/vi/OX49NzoSKJY/mqdefault.jpg" alt="五期生ドキュメンタリー">
+          <div class="best-thumb-play">▶</div>
         </div>
         <div class="best-body">
-          <p class="best-quote">日向坂になりましょう #20 瞬発力を鍛えよう！</p>
+          <p class="best-quote">日向坂46「五期生ドキュメンタリー」〜6回目のひな誕祭への道のり〜</p>
           <div class="best-meta">
-            <span class="best-source">名物連載</span>
-            <span class="best-date">2026/05/18</span>
+            <span class="best-source">日向坂ちゃんねる</span>
           </div>
         </div>
       </a>
-      <a class="best-card" href="#">
+      <a class="best-card" href="https://www.youtube.com/watch?v=6EvLm3VcDzU" target="_blank" rel="noopener">
         <div class="best-thumb t4">
-          <span class="best-thumb-badge">INTERVIEW</span>
-          <div class="best-thumb-mono">紙</div>
+          <span class="best-thumb-badge">YOUTUBE</span>
+          <img src="https://img.youtube.com/vi/6EvLm3VcDzU/mqdefault.jpg" alt="新参者ドキュメンタリー">
+          <div class="best-thumb-play">▶</div>
         </div>
         <div class="best-body">
-          <p class="best-quote">月刊BOMB 5月号「五期生のいま」</p>
+          <p class="best-quote">【新参者】初の1日2公演！日向坂五期生の奮闘劇をお届けします【好きを超えろ】</p>
           <div class="best-meta">
-            <span class="best-source">10ページ独占インタビュー</span>
-            <span class="best-date">2026/03/28</span>
+            <span class="best-source">日向坂ちゃんねる</span>
           </div>
         </div>
       </a>
-      <a class="best-card" href="#">
+      <a class="best-card" href="https://lemino.docomo.ne.jp/?crid=Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdvNDA%3D" target="_blank" rel="noopener">
         <div class="best-thumb t5">
-          <span class="best-thumb-badge">TIKTOK</span>
+          <span class="best-thumb-badge">LEMINO</span>
           <div class="best-thumb-mono">♪</div>
         </div>
         <div class="best-body">
-          <p class="best-quote">五期生の楽屋ダンス選手権！ ─ 一番くしゃくしゃ笑顔の回</p>
+          <p class="best-quote">日向坂になりましょう #22【私たちもボイトレで歌唱力を強化しましょう！】</p>
           <div class="best-meta">
-            <span class="best-source">委員会お気に入り</span>
-            <span class="best-date">2026/04/02</span>
+            <span class="best-source">Lemino</span>
           </div>
         </div>
       </a>
@@ -544,23 +396,71 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
         <div class="tl-content">
           <span class="tl-tag milestone">UPCOMING</span>
           <div class="tl-title">二十歳のお誕生日。</div>
-          <p class="tl-desc">人生で一度きりの、二十歳。委員会は東京・箱根・宮崎で生誕祭を企画中です。</p>
+          <p class="tl-desc">人生で一度きりの、二十歳。盛大にお祝いしましょう！</p>
         </div>
       </div>
       <div class="tl-row">
-        <div class="tl-date">2026.05<small>単独ライブ</small></div>
+        <div class="tl-date">2026.05.18<small>楽曲</small></div>
+        <div class="tl-content">
+          <span class="tl-tag">SONG</span>
+          <div class="tl-title">佐藤優羽さん初センター楽曲「円周率」公開</div>
+          <p class="tl-desc">佐藤優羽さんが初めてセンターを務める五期生楽曲「円周率」のMVが公開されました！</p>
+        </div>
+      </div>      
+      <div class="tl-row">
+        <div class="tl-date">2026.04.04-05<small>ライブ</small></div>
         <div class="tl-content">
           <span class="tl-tag">LIVE</span>
-          <div class="tl-title">単独ライブ「優羽祭」開催</div>
-          <p class="tl-desc">2日間の公演で、自身の歩みを振り返るセットリスト。MCで涙する場面も。</p>
+          <div class="tl-title">「7回目のひな誕祭 ～Welcome to HINATAZAKA ROCKESTRA～」出演</div>
+          <p class="tl-desc">初お披露目の「6回目のひな誕祭」から1年！サブタイトルのROCKESTRAを体現する生バンドで情熱的なパフォーマンスが披露されました！五期生楽曲「好きになるクレッシェンド」も初披露されました。</p>
         </div>
       </div>
       <div class="tl-row">
-        <div class="tl-date">2026.04.05<small>ブログ</small></div>
+        <div class="tl-date">2026.02.17-18<small>ライブ</small></div>
         <div class="tl-content">
-          <span class="tl-tag">BLOG</span>
-          <div class="tl-title">「7回目のおめでとう。」を公開</div>
-          <p class="tl-desc">日向坂46結成7周年に寄せたブログ。先輩への感謝とこれからの決意が綴られた。</p>
+          <span class="tl-tag">LIVE</span>
+          <div class="tl-title">16th Singleひなた坂LIVE出演</div>
+          <p class="tl-desc">ひなた坂楽曲「君と生きる」を携えて」行われたひなた坂LIVEは2日間全曲のセンターが入れ替わるという特別仕様！佐藤優羽さんは「君を覚えてない」、「ってか」の2曲でセンターポジションを担当しました。</p>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date">2025.11.11-11.26<small>ライブ</small></div>
+        <div class="tl-content">
+          <span class="tl-tag">LIVE</span>
+          <div class="tl-title">新参者二〇二五 in TOKYO KABUKICHO TOWER出演</div>
+          <p class="tl-desc">全国ツアーと並行する過密日程の中、「好きを超えろ」をテーマに行われた「新参者」公演。五期生は2種類のセットリスト、全30曲を披露しました。佐藤優羽さんは「ガラス窓が汚れてる」でセンターポジションを担当しました。</p>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date">2025.09.20-11.21<small>ライブ</small></div>
+        <div class="tl-content">
+          <span class="tl-tag">LIVE</span>
+          <div class="tl-title">日向坂46 ARENA TOUR 2025「MONSTER GROOVE」出演</div>
+          <p class="tl-desc">「ヤなことぜんぶ、笑い飛ばせ」をキャッチコピーに全国6か所13公演行われた全国ツアー。地方公演の終演後には五期生によるお見送り会も行われました。</p>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date">2025.05.28-29<small>ライブ</small></div>
+        <div class="tl-content">
+          <span class="tl-tag">LIVE</span>
+          <div class="tl-title">日向坂46 BRAND NEW LIVE 2025「OVER THE RAINBOW」出演</div>
+          <p class="tl-desc">「新生日向坂」を掲げたライブで五期生は多くの楽曲に出演。佐藤優羽さんは三期生とともにユニット曲「パクチー　ピーマン　グリーンピース」にも参加しました。「パピグ」はユニゾンエアーにも収録されているので、気になる方はぜひチェック！</p>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date">2025.05.27<small>ライブ</small></div>
+        <div class="tl-content">
+          <span class="tl-tag">LIVE</span>
+          <div class="tl-title">日向坂46五期生おもてなし会開催</div>
+          <p class="tl-desc">おもてなし会では薙刀を披露。会場がサイリウムカラーのエメラルドグリーンに包まれると思わず涙。</p>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date">2025.04.05<small>ライブ</small></div>
+        <div class="tl-content">
+          <span class="tl-tag">LIVE</span>
+          <div class="tl-title">「6回目のひな誕祭」で初めておひさまの前へ</div>
+          <p class="tl-desc">横浜スタジアムで行われた「6回目のひな誕祭」で初めておひさまの前に登場し、自己紹介を披露。</p>
         </div>
       </div>
       <div class="tl-row milestone">
@@ -572,10 +472,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
         </div>
       </div>
       <div class="tl-row">
-        <div class="tl-date">2024.12<small>合格</small></div>
+        <div class="tl-date">2024.11.17<small>合格</small></div>
         <div class="tl-content">
           <span class="tl-tag">AUDITION</span>
-          <div class="tl-title">日向坂46 五期生オーディション合格</div>
+          <div class="tl-title">日向坂46五期生オーディション最終審査</div>
           <p class="tl-desc">数千人の応募者の中から、五期生メンバーの一人として合格。</p>
         </div>
       </div>
