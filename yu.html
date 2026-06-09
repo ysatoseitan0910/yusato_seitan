@@ -106,7 +106,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .cyalume-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--emerald);vertical-align:middle;margin-right:3px;border:1px solid var(--emerald-deep);}
 
 /* Best content */
-.best-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px;}
+.best-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .best-card{
   background:#fff;border:2px solid var(--ink);border-radius:16px;
   overflow:hidden;text-decoration:none;color:inherit;
@@ -117,21 +117,19 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .best-card:nth-child(3){box-shadow:4px 4px 0 var(--butter);}
 .best-card:nth-child(4){box-shadow:4px 4px 0 var(--emerald);}
 .best-card:nth-child(5){box-shadow:4px 4px 0 var(--pink);}
+.best-card:nth-child(6){box-shadow:4px 4px 0 var(--emerald-deep);}
 .best-card:hover{transform:translate(-2px,-2px);}
-.best-card.featured{grid-row:span 2;}
 .best-thumb{
   width:100%;aspect-ratio:16/9;
   display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;
 }
-.best-card.featured .best-thumb{aspect-ratio:1/1;}
 .best-thumb.t1{background:linear-gradient(160deg,var(--pink-pale) 0%,var(--emerald-soft) 100%);}
 .best-thumb.t2{background:linear-gradient(160deg,var(--butter) 0%,var(--pink-pale) 100%);}
 .best-thumb.t3{background:linear-gradient(160deg,var(--sky) 0%,var(--emerald-soft) 100%);}
 .best-thumb.t4{background:linear-gradient(160deg,var(--emerald-soft) 0%,var(--butter) 100%);}
 .best-thumb.t5{background:linear-gradient(160deg,var(--pink-pale) 0%,var(--butter) 100%);}
 .best-thumb-mono{font-family:'Klee One',serif;font-weight:600;font-size:64px;color:#fff;text-shadow:3px 3px 0 var(--ink);}
-.best-card.featured .best-thumb-mono{font-size:140px;}
 .best-thumb img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;}
 .best-thumb-badge,.best-thumb-pick{z-index:1;}
 .best-thumb-play{
@@ -157,9 +155,13 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   border:1.5px solid var(--ink);
   transform:rotate(3deg);
 }
-.best-body{padding:14px 16px 16px;}
-.best-quote{font-family:'Klee One',serif;font-size:14px;line-height:1.85;color:var(--ink);font-weight:400;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-.best-card.featured .best-quote{font-size:17px;-webkit-line-clamp:4;}
+.best-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;}
+.best-card-name{font-family:'Klee One',serif;font-weight:600;font-size:13px;color:var(--ink);line-height:1.5;}
+.best-quote{font-family:'Klee One',serif;font-size:12px;line-height:1.85;color:var(--ink-soft);font-weight:400;}
+.best-thumb-link{display:block;text-decoration:none;}
+.best-tiktok-links{display:flex;gap:8px;flex-wrap:wrap;}
+.best-tiktok-links a{font-family:'Klee One',serif;font-size:11px;color:var(--emerald-deep);text-decoration:none;background:var(--emerald-pale);border:1px solid var(--emerald-soft);border-radius:99px;padding:3px 10px;}
+.best-tiktok-links a:hover{background:var(--emerald-soft);}
 .best-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ink-light);}
 .best-date{font-family:'Caveat',cursive;font-size:14px;color:var(--ink-light);letter-spacing:0.04em;}
 .best-source{font-family:'Klee One',serif;color:var(--emerald-deep);font-weight:600;}
@@ -180,7 +182,6 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .tl-row.milestone::before{background:var(--pink);border-color:var(--ink);width:18px;height:18px;left:-24px;box-shadow:0 0 0 4px var(--pink-pale);}
 .tl-date{font-family:'Caveat',cursive;font-weight:700;font-size:22px;color:var(--emerald-deep);line-height:1.3;}
 .tl-date small{display:block;font-family:'Klee One',serif;font-weight:400;font-size:11px;color:var(--ink-light);margin-top:0;}
-.tl-content{}
 .tl-tag{
   display:inline-block;font-family:'Klee One',serif;
   font-size:10px;letter-spacing:0.16em;
@@ -313,33 +314,20 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
       <a href="youtube.html">すべてのコンテンツへ →</a>
     </div>
     <div class="best-grid">
-      <a class="best-card featured" href="https://www.youtube.com/watch?v=QXQUKkvSrCQ" target="_blank" rel="noopener">
+      <!-- 左上: お披露目ティザームービー -->
+      <a class="best-card" href="https://www.youtube.com/watch?v=QXQUKkvSrCQ" target="_blank" rel="noopener">
         <div class="best-thumb t1">
-          <span class="best-thumb-pick">★ pick!</span>
           <span class="best-thumb-badge">YOUTUBE</span>
           <img src="https://img.youtube.com/vi/QXQUKkvSrCQ/mqdefault.jpg" alt="お披露目ティザームービー">
           <div class="best-thumb-play">▶</div>
         </div>
         <div class="best-body">
+          <p class="best-card-name">お披露目ティザームービー</p>
           <p class="best-quote">佐藤優羽さんお披露目ムービー！このティザー動画で一気に心を掴まれた方も多いのでは？</p>
-          <div class="best-meta">
-            <span class="best-source">お披露目ティザームービー</span>
-          </div>
+          <div class="best-meta"><span class="best-source">日向坂46公式YouTube</span></div>
         </div>
       </a>
-      <a class="best-card" href="https://www.youtube.com/watch?v=QiAt9JkfFpw" target="_blank" rel="noopener">
-        <div class="best-thumb t3">
-          <span class="best-thumb-badge">YOUTUBE</span>
-          <img src="https://img.youtube.com/vi/QiAt9JkfFpw/mqdefault.jpg" alt="個人PV">
-          <div class="best-thumb-play">▶</div>
-        </div>
-        <div class="best-body">
-          <p class="best-quote">個人PV「ああゆう　こうゆう　さとうゆう」── 17thシングル『Kind of love』TYPE-D収録</p>
-          <div class="best-meta">
-            <span class="best-source">日向坂46公式YouTube</span>
-          </div>
-        </div>
-      </a>
+      <!-- 中上: 五期生ドキュメンタリー -->
       <a class="best-card" href="https://www.youtube.com/watch?v=OX49NzoSKJY" target="_blank" rel="noopener">
         <div class="best-thumb t2">
           <span class="best-thumb-badge">YOUTUBE</span>
@@ -347,37 +335,69 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
           <div class="best-thumb-play">▶</div>
         </div>
         <div class="best-body">
-          <p class="best-quote">日向坂46「五期生ドキュメンタリー」〜6回目のひな誕祭への道のり〜</p>
-          <div class="best-meta">
-            <span class="best-source">日向坂ちゃんねる</span>
-          </div>
+          <p class="best-card-name">日向坂46「五期生ドキュメンタリー」〜6回目のひな誕祭への道のり〜</p>
+          <p class="best-quote">五期生加入からひな誕祭でおひさまにお披露目されるまでのドキュメンタリーです。初期の五期生の葛藤や努力が描かれていて必見です！</p>
+          <div class="best-meta"><span class="best-source">日向坂ちゃんねる</span></div>
         </div>
       </a>
-      <a class="best-card" href="https://www.youtube.com/watch?v=6EvLm3VcDzU" target="_blank" rel="noopener">
+      <!-- 右上: 円周率MV -->
+      <a class="best-card" href="https://www.youtube.com/watch?v=5lBX4kt4eUI" target="_blank" rel="noopener">
+        <div class="best-thumb t3">
+          <span class="best-thumb-pick">★ pick!</span>
+          <span class="best-thumb-badge">YOUTUBE</span>
+          <img src="https://img.youtube.com/vi/5lBX4kt4eUI/mqdefault.jpg" alt="円周率MV">
+          <div class="best-thumb-play">▶</div>
+        </div>
+        <div class="best-body">
+          <p class="best-card-name">日向坂46『円周率』MUSIC VIDEO</p>
+          <p class="best-quote">佐藤優羽さん初センター曲！規律の厳しい学校にやってきたアンドロイドmodel-"U"が表情豊かな五期生に触れて変化していく様子や表情にご注目ください！</p>
+          <div class="best-meta"><span class="best-source">日向坂46公式YouTube</span></div>
+        </div>
+      </a>
+      <!-- 左下: 個人PV -->
+      <a class="best-card" href="https://www.youtube.com/watch?v=QiAt9JkfFpw" target="_blank" rel="noopener">
         <div class="best-thumb t4">
+          <span class="best-thumb-badge">YOUTUBE</span>
+          <img src="https://img.youtube.com/vi/QiAt9JkfFpw/mqdefault.jpg" alt="個人PV">
+          <div class="best-thumb-play">▶</div>
+        </div>
+        <div class="best-body">
+          <p class="best-card-name">個人PV「ああゆう　こうゆう　さとうゆう」</p>
+          <p class="best-quote">17thシングル『Kind of love』TYPE-D収録。YouTubeでは予告編が公開されていますが、本編には「エンジェルさとうゆのみ～んなむざい！」も収録されていますので、ぜひ合わせてご覧ください！</p>
+          <div class="best-meta"><span class="best-source">日向坂46公式YouTube</span></div>
+        </div>
+      </a>
+      <!-- 中下: 新参者舞台裏 -->
+      <a class="best-card" href="https://www.youtube.com/watch?v=6EvLm3VcDzU" target="_blank" rel="noopener">
+        <div class="best-thumb t5">
           <span class="best-thumb-badge">YOUTUBE</span>
           <img src="https://img.youtube.com/vi/6EvLm3VcDzU/mqdefault.jpg" alt="新参者ドキュメンタリー">
           <div class="best-thumb-play">▶</div>
         </div>
         <div class="best-body">
-          <p class="best-quote">【新参者】初の1日2公演！日向坂五期生の奮闘劇をお届けします【好きを超えろ】</p>
-          <div class="best-meta">
-            <span class="best-source">日向坂ちゃんねる</span>
-          </div>
+          <p class="best-card-name">【新参者】初の1日2公演！日向坂五期生の奮闘劇をお届けします【好きを超えろ】</p>
+          <p class="best-quote">全国ツアー直後に五期生10人で挑んだ「新参者」公演の舞台裏ドキュメンタリー！挑戦的なセットリストに苦労しながら取り組んでいく姿や、五期生との絆が深まっていく様子が描かれていて必見です！</p>
+          <div class="best-meta"><span class="best-source">日向坂ちゃんねる</span></div>
         </div>
       </a>
-      <a class="best-card" href="https://lemino.docomo.ne.jp/?crid=Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdvNDA%3D" target="_blank" rel="noopener">
-        <div class="best-thumb t5">
-          <span class="best-thumb-badge">LEMINO</span>
-          <div class="best-thumb-mono">♪</div>
-        </div>
+      <!-- 右下: 日向坂になりましょう#22（Lemino・TikTokリンクあり） -->
+      <div class="best-card">
+        <a class="best-thumb-link" href="https://lemino.docomo.ne.jp/?crid=Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdvNDA%3D" target="_blank" rel="noopener">
+          <div class="best-thumb t1">
+            <span class="best-thumb-badge">LEMINO</span>
+            <img src="https://img.lemino.docomo.ne.jp/cms/a1490ee/a1490ee_w1.jpg" alt="日向坂になりましょう#22">
+          </div>
+        </a>
         <div class="best-body">
-          <p class="best-quote">日向坂になりましょう #22【私たちもボイトレで歌唱力を強化しましょう！】</p>
-          <div class="best-meta">
-            <span class="best-source">Lemino</span>
+          <p class="best-card-name">日向坂になりましょう #22【私たちもボイトレで歌唱力を強化しましょう！】</p>
+          <p class="best-quote">日向坂になりましょうでボイトレに挑む佐藤優羽さん。「知らない声が出た！」と自分でも驚く歌声の変化は必見です！Lemino未加入の方は公式TikTokの切り抜き動画もご覧ください。</p>
+          <div class="best-tiktok-links">
+            <a href="https://www.tiktok.com/@lemino_sakamichi/video/7629618206444965138" target="_blank" rel="noopener">TikTok 切り抜き①</a>
+            <a href="https://www.tiktok.com/@lemino_sakamichi/video/7629620960760565000" target="_blank" rel="noopener">TikTok 切り抜き②</a>
           </div>
+          <div class="best-meta"><span class="best-source">Lemino</span></div>
         </div>
-      </a>
+      </div>
     </div>
   </section>
 
@@ -500,28 +520,28 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
       </div>
     </div>
     <div class="more-grid">
-      <a class="more-card" href="#">
+      <a class="more-card" href="blog.html">
         <div class="more-num">01</div>
         <div class="more-en">blog</div>
         <div class="more-title">ブログまとめ</div>
         <p class="more-desc">優羽ちゃんの言葉を、まとめてチェック。</p>
         <span class="more-arrow">→</span>
       </a>
-      <a class="more-card" href="#">
+      <a class="more-card" href="youtube.html">
         <div class="more-num">02</div>
         <div class="more-en">youtube</div>
         <div class="more-title">YouTubeまとめ</div>
         <p class="more-desc">動画で見る佐藤優羽さんの活躍。</p>
         <span class="more-arrow">→</span>
       </a>
-      <a class="more-card" href="#">
+      <a class="more-card" href="tiktok.html">
         <div class="more-num">03</div>
         <div class="more-en">tiktok</div>
         <div class="more-title">TikTokギャラリー</div>
         <p class="more-desc">短い動画にも全力な、その表情を。</p>
         <span class="more-arrow">→</span>
       </a>
-      <a class="more-card" href="#">
+      <a class="more-card" href="interview.html">
         <div class="more-num">04</div>
         <div class="more-en">interview</div>
         <div class="more-title">インタビュー集</div>
