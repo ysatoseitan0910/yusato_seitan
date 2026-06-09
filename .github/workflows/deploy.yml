@@ -61,9 +61,31 @@ jobs:
           DB_WEB:              ${{ secrets.DB_WEB }}
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          exclude_assets: '.github,node_modules,build.js,add_blog_posts.js,update_blog_thumbnails.js,update_media_thumbnails.js,download_media.js,update_notion_media.js,generate_quiz.js,_template.html,package.json,package-lock.json'
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS (satoyu.info)
+        run: |
+          rsync -avz --delete \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='build.js' \
+            --exclude='add_blog_posts.js' \
+            --exclude='update_blog_thumbnails.js' \
+            --exclude='update_media_thumbnails.js' \
+            --exclude='download_media.js' \
+            --exclude='update_notion_media.js' \
+            --exclude='generate_quiz.js' \
+            --exclude='reset_tiktok_yunews.js' \
+            --exclude='deduplicate_yu_news.js' \
+            --exclude='restore_tiktok.js' \
+            --exclude='_template.html' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='*.md' \
+            --exclude='.claude' \
+            ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/satoyu/
