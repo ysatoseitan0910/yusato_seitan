@@ -678,7 +678,7 @@ async function buildX(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さんのX投稿をまとめています", body, "x.html");
+  return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さん関連のX投稿をまとめています", body, "x.html");
 }
 
 async function buildTiktok(tpl) {
