@@ -454,7 +454,7 @@ async function buildIndex(tpl) {
     <div class="top-main">
 
       <!-- 佐藤優羽さんNews（メイン） -->
-      <section>
+      <section class="top-sec-yunews">
         <div class="top-section-header">
           <h2>佐藤優羽さん News</h2>
           <a href="yunews.html">すべて見る →</a>
@@ -465,7 +465,7 @@ async function buildIndex(tpl) {
       </section>
 
       <!-- 生誕委員会からのお知らせ -->
-      <section>
+      <section class="top-sec-committee">
         <div class="top-section-header">
           <h2 style="font-size:15px;color:var(--text-muted);">生誕委員会からのお知らせ</h2>
           <a href="committee.html">すべて見る →</a>
@@ -476,7 +476,7 @@ async function buildIndex(tpl) {
       </section>
 
       <!-- 活動報告 -->
-      <section>
+      <section class="top-sec-activities">
         <div class="top-section-header">
           <h2 style="font-size:15px;color:var(--text-muted);">活動報告</h2>
           <a href="activities.html">すべて見る →</a>
@@ -492,14 +492,14 @@ async function buildIndex(tpl) {
     <aside class="top-sidebar">
 
       ${scheduleRows ? `
-      <div class="sidebar-widget">
+      <div class="sidebar-widget top-sidebar-schedule">
         <div style="padding:10px 14px 6px;font-family:'Shippori Mincho',serif;font-size:13px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border);">スケジュール</div>
         <div class="schedule-list">${scheduleRows}</div>
       </div>` : ""}
 
-      ${ytEmbedHtml ? `<div class="sidebar-widget">${ytEmbedHtml}</div>` : ""}
+      ${ytEmbedHtml ? `<div class="sidebar-widget top-sidebar-yt">${ytEmbedHtml}</div>` : ""}
 
-      ${xEmbedHtml ? `<div class="sidebar-widget sidebar-widget-inner">
+      ${xEmbedHtml ? `<div class="sidebar-widget sidebar-widget-inner top-sidebar-x">
         ${xEmbedHtml}
         <script>
 (function(){
@@ -515,8 +515,7 @@ async function buildIndex(tpl) {
 <\/script>
       </div>` : ""}
 
-      <div class="sidebar-links">
-        <a href="yu.html">佐藤優羽さんについて</a>
+      <div class="sidebar-links top-sidebar-links">
         <a href="about.html">委員会について</a>
         <a href="terms.html">生誕委員規約</a>
         <a href="join.html">入会の流れ</a>
