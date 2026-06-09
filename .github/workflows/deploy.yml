@@ -83,6 +83,9 @@ jobs:
             --exclude='reset_tiktok_yunews.js' \
             --exclude='deduplicate_yu_news.js' \
             --exclude='restore_tiktok.js' \
+            --exclude='fetch.js' \
+            --exclude='fix_member_names.js' \
+            --exclude='scrape_member_mentions.js' \
             --exclude='_template.html' \
             --exclude='package.json' \
             --exclude='package-lock.json' \
