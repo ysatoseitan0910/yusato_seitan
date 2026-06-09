@@ -528,7 +528,16 @@ footer .heart { color: var(--pink); }
   .page-hero h1 { font-size: 28px; }
   .content { padding: 0 16px 48px; }
   footer { padding: 24px 16px; }
-  .top-layout { grid-template-columns: 1fr; }
+  .top-layout { display: flex; flex-direction: column; gap: 28px; }
+  .top-main { display: contents; }
+  .top-sidebar { display: contents; }
+  .top-sec-yunews { order: 1; }
+  .top-sidebar-schedule { order: 2; }
+  .top-sidebar-yt { order: 3; }
+  .top-sec-committee { order: 4; }
+  .top-sec-activities { order: 5; }
+  .top-sidebar-x { order: 6; }
+  .top-sidebar-links { order: 7; }
   .act-thumb-grid { grid-template-columns: repeat(2,1fr); }
   .yunews-grid { grid-template-columns: repeat(2,1fr); }
   .act-modal-box { padding: 24px 22px; }
@@ -568,7 +577,7 @@ footer .heart { color: var(--pink); }
     <span class="nav-sep" aria-hidden="true"></span>
     <span class="nav-committee-label">生誕委員会</span>
     <a href="committee.html" >委員会News</a>
-    <a href="activities.html" >活動報告</a>
+    <a href="activities.html" >生誕委員会活動報告</a>
     <a href="about.html" >委員会について</a>
     <a href="terms.html" >規約</a>
     <a href="join.html" >入会</a>
@@ -581,12 +590,12 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">INTERVIEW</div>
         <h1>インタビュー、 <em>雑誌掲載集</em></h1>
         <p>佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています</p>
-        <p class="last-updated">最終更新：2026/6/9 23:21:17</p>
+        <p class="last-updated">最終更新：2026/6/9 23:42:59</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.15339970000372294s">
+  <div class="card media-card" style="animation-delay:0.2254259309250806s">
     <img class="media-img" src="https://bltweb.jp/wp/wp-content/uploads/2026/05/260417_BLT3817-1536x1024.jpg" alt="B.L.T 2026年7月号　中面グラビア&インタビュー" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -599,7 +608,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.24211415279796047s">
+  <div class="card media-card" style="animation-delay:0.2650072361108469s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/1RgI/wm/1RgIV5wg9KEQDVdN3BXa33ixULASorQC47WZ166JeYM.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜後編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -612,7 +621,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0812098515951671s">
+  <div class="card media-card" style="animation-delay:0.0189073632977661s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/zPaj/wm/zPajhkvm3JUAVSkeC9EqMXpBe1AmH_8nkmewso0H9a0.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜前編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -625,7 +634,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1116952596964947s">
+  <div class="card media-card" style="animation-delay:0.13983838036666887s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/71d+7nWc6eL._SY522_.jpg" alt="BRODY賞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -638,7 +647,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.15443796876379187s">
+  <div class="card media-card" style="animation-delay:0.2771165207578587s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/815XQDOi-fL._SY522_.jpg" alt="BRODY (ブロディ) 2025年 12月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -652,7 +661,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.03968074283616907s">
+  <div class="card media-card" style="animation-delay:0.20238111796191413s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/81wWuPh-6bL._SL1500_.jpg" alt="Ray(レイ) 2025年 08 月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -665,7 +674,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.08552802506820446s">
+  <div class="card media-card" style="animation-delay:0.1162613561368007s">
     <img class="media-img" src="https://bltweb.jp/wp/wp-content/uploads/2025/04/BLT2506_H1.jpg" alt="B.L.T. 2025年6月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -747,7 +756,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/9 23:21:17</p>
+  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/9 23:42:59</p>
 </footer>
 
 <script>

@@ -528,7 +528,16 @@ footer .heart { color: var(--pink); }
   .page-hero h1 { font-size: 28px; }
   .content { padding: 0 16px 48px; }
   footer { padding: 24px 16px; }
-  .top-layout { grid-template-columns: 1fr; }
+  .top-layout { display: flex; flex-direction: column; gap: 28px; }
+  .top-main { display: contents; }
+  .top-sidebar { display: contents; }
+  .top-sec-yunews { order: 1; }
+  .top-sidebar-schedule { order: 2; }
+  .top-sidebar-yt { order: 3; }
+  .top-sec-committee { order: 4; }
+  .top-sec-activities { order: 5; }
+  .top-sidebar-x { order: 6; }
+  .top-sidebar-links { order: 7; }
   .act-thumb-grid { grid-template-columns: repeat(2,1fr); }
   .yunews-grid { grid-template-columns: repeat(2,1fr); }
   .act-modal-box { padding: 24px 22px; }
@@ -568,7 +577,7 @@ footer .heart { color: var(--pink); }
     <span class="nav-sep" aria-hidden="true"></span>
     <span class="nav-committee-label">生誕委員会</span>
     <a href="committee.html" class="active">委員会News</a>
-    <a href="activities.html" >活動報告</a>
+    <a href="activities.html" >生誕委員会活動報告</a>
     <a href="about.html" >委員会について</a>
     <a href="terms.html" >規約</a>
     <a href="join.html" >入会</a>
@@ -581,12 +590,12 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">COMMITTEE NEWS</div>
         <h1>委員会 <em>News</em></h1>
         <p>佐藤優羽生誕祭実行委員会からのお知らせ・活動情報</p>
-        <p class="last-updated">最終更新：2026/6/9 23:21:15</p>
+        <p class="last-updated">最終更新：2026/6/9 23:42:56</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-    <div class="card media-card" style="animation-delay:0.02846081065959851s" >
+    <div class="card media-card" style="animation-delay:0.24938489895046453s" >
       <img class="media-img" src="https://ysatoseitan0910.github.io/yusato_seitan/images/committee/2026-12-31_001.png" alt="2026年の生誕委員募集中です！" loading="lazy">
       <div class="media-body">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -599,7 +608,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.21617527982128562s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 箱根" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
+    <div class="card media-card" style="animation-delay:0.05313059515847791s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 箱根" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
 【箱根】応援広告企画
 
 日向坂46五期生 佐藤優羽さん 二十歳のお誕生日企画
@@ -644,7 +653,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.18547476210478553s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 東京" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
+    <div class="card media-card" style="animation-delay:0.013397739496629701s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 東京" data-date="2026.09.10" data-status="募集中" data-desc="企画概要
 【東京】応援広告企画
 日向坂46五期生 佐藤優羽さん 二十歳のお誕生日企画
 日向坂46 五期生・佐藤優羽ちゃんへ
@@ -674,7 +683,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.040350616582345795s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 宮崎" data-date="2026.09.05" data-status="募集中" data-desc="企画概要
+    <div class="card media-card" style="animation-delay:0.08823371270409004s" data-act-modal="1" data-title="#さとうゆ生誕祭 ！20歳のお誕生日をお祝いしましょう！ in 宮崎" data-date="2026.09.05" data-status="募集中" data-desc="企画概要
 【宮崎】応援広告企画
 
 日向坂46五期生 佐藤優羽さん 二十歳のお誕生日企画
@@ -790,7 +799,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/9 23:21:15</p>
+  <p>さとうゆポータル <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/9 23:42:56</p>
 </footer>
 
 <script>
