@@ -1089,7 +1089,7 @@ async function buildQuiz(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "ゆクイズ", "YU QUIZ", "ゆ <em>クイズ</em>", `佐藤優羽さんのブログから出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
+  return buildPage(tpl, "さとうゆクイズ", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんのブログから出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
 }
 
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──
