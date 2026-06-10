@@ -2,11 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# さとうゆポータル（佐藤優羽生誕祭実行委員会 運営）
+# さとうゆ情報局（仮）（佐藤優羽生誕祭実行委員会 運営）
 
 ## サイト概要
 日向坂46五期生・佐藤優羽（さとうゆう）さんのファンポータルサイト。運営：佐藤優羽生誕祭実行委員会。
-GitHub Pagesで公開。NotionのDBからデータを取得して静的HTMLを自動生成・デプロイする仕組み。
+**公開URL**: https://satoyu.info
+ConoHa VPS上で公開。NotionのDBからデータを取得して静的HTMLを自動生成・rsyncでVPSにデプロイする仕組み。
 
 ## 技術構成
 - `build.js`：NotionのDBからデータを取得してHTMLを自動生成するメインスクリプト
@@ -14,7 +15,7 @@ GitHub Pagesで公開。NotionのDBからデータを取得して静的HTMLを�
 - `update_blog_thumbnails.js`：DB_BLOGのMediaが未設定のエントリにサムネイル画像を追加
 - `update_media_thumbnails.js`：DB_YOUTUBE・DB_LEMINO・DB_YU_NEWSのYoutube/LeminoエントリにMediaサムネイルを追加。DB_TIKTOKのName未設定エントリにoEmbedキャプションを書き込む
 - `_template.html`：全ページ共通のナビ・フッター・モーダルテンプレート（{{プレースホルダー}}で差し込み）。YouTube/TikTokのlite-embedクリックハンドラも含む
-- `.github/workflows/deploy.yml`：GitHub Actionsで1時間ごとに自動ビルド・デプロイ（add_blog_posts → update_media_thumbnails → build → gh-pages）
+- `.github/workflows/deploy.yml`：GitHub Actionsで30分ごとに自動ビルド・デプロイ（add_blog_posts → update_blog_thumbnails → update_media_thumbnails → build → rsync to VPS）
 - Notion API（@notionhq/client@2.2.15）を使用
 
 ## ビルド・デプロイ
@@ -156,13 +157,46 @@ oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列�
 - `deduplicate_yu_news.js`：DB_YU_NEWSの重複レコードを削除するスクリプト（同URLの中で最古を保持、残りをアーカイブ）
 - `reset_tiktok_yunews.js`：DB_YU_NEWSのTikTokレコードをすべてアーカイブし、DB_TIKTOKから再追加するスクリプト。oEmbedから新鮮なサムネイルURLを取得して設定する
 
+## VPS構成（satoyu.info）
+
+### サーバー情報
+- **VPS**: ConoHa（Ubuntu 24.04）、IP: `133.88.117.39`
+- **ドメイン**: `satoyu.info`（Aレコード → `133.88.117.39`）
+- **公開ディレクトリ**: `/var/www/satoyu/`
+- **nginx**: newsmindアプリと同一VPS上のDockerコンテナ（`~/newsmind/nginx/nginx.conf`）
+
+### デプロイの仕組み
+GitHub Actions（deploy.yml）がビルド後にrsyncでVPSへ転送：
+```
+rsync -avz --delete [除外ファイル一覧] ./ root@133.88.117.39:/var/www/satoyu/
+```
+
+### 必要なGitHub Secrets（yusato_seitanリポジトリ）
+| Secret名 | 内容 |
+|---|---|
+| `VPS_HOST` | `133.88.117.39` |
+| `VPS_USER` | `root` |
+| `VPS_SSH_KEY` | `/root/.ssh/github_actions_satoyu` の秘密鍵 |
+
+### nginx設定（~/newsmind/nginx/nginx.conf）
+- `server_name satoyu.info www.satoyu.info` → `/var/www/satoyu` を静的配信
+- `server_name _` + `default_server` → newsmindアプリへproxy（IP直アクセス用）
+
+### VPS操作メモ
+```bash
+ssh newsmind  # ローカルのSSH設定でエイリアス設定済み
+cd ~/newsmind
+docker compose up -d --force-recreate nginx  # nginx設定変更の反映
+docker compose exec nginx nginx -t           # 設定の文法チェック
+```
+
 ## 注意事項
 - 佐藤優羽の読み方は「さとうゆう」。ローマ字表記はYu（芸名読み）を使う
 - APIキー等の秘密情報はGitHub Secretsで管理、.envファイルはない
 - GitHub Actionsのconcurrencyグループ（`group: deploy`）で同時実行を防止
 - DB_YU_NEWSのMediaはバリデーションエラー時にMediaなしで再試行するフォールバックあり
 - TikTokのoEmbedサムネイルURLは短時間で期限切れになる。DB_YU_NEWSへの同期時は毎回oEmbedから新鮮なURLを取得する
-- 生成済みHTML（index.html等）はgh-pagesブランチにのみ存在。mainブランチにはない
+- 生成済みHTML（index.html等）はVPSの `/var/www/satoyu/` に存在。mainブランチにはない
 - `index.html` と `top.html` は同一内容（buildIndexで両方生成）
 
 ## 画像ファイル管理（images/）
@@ -190,12 +224,14 @@ oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列�
 ### Notionへの設定方法
 アップロード後のURLをNotionのMediaフィールドに**外部URL**として設定する：
 ```
-https://ysatoseitan0910.github.io/yusato_seitan/images/activities/2026-04-09_handshake.jpg
+https://satoyu.info/images/activities/2026-04-09_handshake.jpg
 ```
 ※ Notionに直接アップロードした画像は約1時間で期限切れになるため、必ず外部URLで設定すること。
 
 ## 未着手タスク
 - ~~OGP設定の追加~~（完了）
+- ~~VPS移行（satoyu.info）~~（完了）
 - OGP画像（ogp.png）の作成・アップロード
+- HTTPS設定（Let's Encrypt / certbot）
 - yu.html の強化
 - ベストコンテンツの厳選セクション
