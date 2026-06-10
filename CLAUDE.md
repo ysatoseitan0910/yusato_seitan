@@ -47,12 +47,14 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `lemino.html`：Leminoまとめ
 
 ### 静的ページ（手動管理）
-- `yu.html`：佐藤優羽さんについて（プロフィール・魅力・リンク集）
+- `yu.html`：佐藤優羽さんについて（プロフィール・魅力・リンク集）。OGP/descriptionメタタグあり
 - `about.html`：当委員会について
 - `terms.html`：生誕委員規約
 - `join.html`：ご参加希望の方へ
+- `quiz.html`：さとうゆクイズ（`quiz_questions.json` から10問中5問をランダム出題。4択・解説・参考URLつき）
 
 **注意**: 静的ページは `_template.html` を使用せず独立したCSSを持つ。ナビリンクや共通スタイルは手動で同期が必要。
+- 全ナビに共通リンク：トップ / ブログ / YouTube / TikTok / Lemino / **クイズ** / Xまとめ / 佐藤優羽さんについて / 委員会について
 
 ## Notion DB一覧
 - DB_COMMITTEE_NEWS：生誕委員会News
@@ -179,8 +181,11 @@ rsync -avz --delete [除外ファイル一覧] ./ root@133.88.117.39:/var/www/sa
 | `VPS_SSH_KEY` | `/root/.ssh/github_actions_satoyu` の秘密鍵 |
 
 ### nginx設定（~/newsmind/nginx/nginx.conf）
-- `server_name satoyu.info www.satoyu.info` → `/var/www/satoyu` を静的配信
+- `server_name satoyu.info www.satoyu.info` → `/var/www/satoyu` を静的配信（HTTPS）
+- HTTP → HTTPS リダイレクトあり（Let's Encrypt / certbot 設定済み）
 - `server_name _` + `default_server` → newsmindアプリへproxy（IP直アクセス用）
+- SSL証明書：`/etc/letsencrypt/live/satoyu.info/` にマウント（Dockerコンテナ読み取り専用）
+- webroot認証用：`/var/www/certbot` をDockerボリューム共有
 
 ### VPS操作メモ
 ```bash
@@ -189,6 +194,18 @@ cd ~/newsmind
 docker compose up -d --force-recreate nginx  # nginx設定変更の反映
 docker compose exec nginx nginx -t           # 設定の文法チェック
 ```
+
+## CSS変数（全ページ共通）
+`_template.html` および全静的ページで統一している変数名：
+- `--emerald-dark: #1f7a52`（濃いエメラルド）
+- `--emerald-light: #d4ecde`（薄いエメラルド）
+- `--emerald: #3DAA78`、`--emerald-pale: #ecf7f0`
+
+**注意**: 旧名 `--emerald-deep` / `--emerald-soft` は廃止。静的ページを新規作成・編集する際は上記の変数名を使うこと。
+
+## モバイルレイアウト（トップページ）
+スマホ縦表示では `display: contents` でサイドバーを解体し、`order` で並び順を制御。
+- `.top-sidebar-links`（クイックリンク）には `width: 100%` が必要（flex stretch が自動で効かないため）
 
 ## 注意事項
 - 佐藤優羽の読み方は「さとうゆう」。ローマ字表記はYu（芸名読み）を使う
@@ -231,7 +248,8 @@ https://satoyu.info/images/activities/2026-04-09_handshake.jpg
 ## 未着手タスク
 - ~~OGP設定の追加~~（完了）
 - ~~VPS移行（satoyu.info）~~（完了）
+- ~~HTTPS設定（Let's Encrypt / certbot）~~（完了）
+- ~~yu.html にOGP・descriptionメタタグ追加~~（完了）
+- ~~全ページナビにクイズリンク追加~~（完了）
 - OGP画像（ogp.png）の作成・アップロード
-- HTTPS設定（Let's Encrypt / certbot）
-- yu.html の強化
 - ベストコンテンツの厳選セクション
