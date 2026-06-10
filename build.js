@@ -61,8 +61,8 @@ function fmtDate(d) {
   return d.slice(0, 10).replace(/-/g, ".");
 }
 function badgeClass(platform) {
-  const map = { Blog:"blog", X:"x", TikTok:"tiktok", YouTube:"youtube", Lemino:"lemino", "インタビュー、雑誌掲載":"interview", Web:"web" };
-  return "badge badge-" + (map[platform] || "blog");
+  const map = { blog:"blog", x:"x", tiktok:"tiktok", youtube:"youtube", lemino:"lemino", "インタビュー、雑誌掲載":"interview", web:"web" };
+  return "badge badge-" + (map[platform.toLowerCase()] || "blog");
 }
 
 async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
