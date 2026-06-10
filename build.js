@@ -525,7 +525,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ", "SATOYU PORTAL", "さとうゆ <em>ポータル</em>", "佐藤優羽さんの最新情報をお届けするファンポータルサイト｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
+  return buildPage(tpl, "トップ", "SATOYU JOHO-KYOKU", "さとうゆ <em>情報局</em>（仮）", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
 }
 
 async function buildCommittee(tpl) {
@@ -904,9 +904,9 @@ async function buildQuiz(tpl) {
   <div id="quiz-start" class="quiz-screen active">
     <div class="quiz-start-box">
       <div class="quiz-start-icon">✨</div>
-      <h2>ゆさんブログクイズ</h2>
+      <h2>さとうゆクイズ</h2>
       <p>
-        佐藤優羽さんのブログから出題！<br>
+        佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！<br>
         全${total}問からランダム10問に挑戦しよう♪
       </p>
       ${total === 0
@@ -1089,7 +1089,7 @@ async function buildQuiz(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "さとうゆクイズ", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんのブログから出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
+  return buildPage(tpl, "さとうゆクイズ", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
 }
 
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──
