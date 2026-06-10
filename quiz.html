@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>さとうゆクイズ | さとうゆ情報局（仮）</title>
-<meta name="description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム10問に挑戦しよう">
+<meta name="description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="さとうゆ情報局（仮）">
 <meta property="og:title" content="さとうゆクイズ | さとうゆ情報局（仮）">
@@ -589,8 +589,8 @@ footer .heart { color: var(--pink); }
       <div class="page-hero">
         <div class="page-hero-tag">SATOYU QUIZ</div>
         <h1>さとうゆ <em>クイズ</em></h1>
-        <p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム10問に挑戦しよう</p>
-        <p class="last-updated">最終更新：2026/6/10 14:18:12</p>
+        <p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p>
+        <p class="last-updated">最終更新：2026/6/10 14:31:54</p>
       </div>
       <div class="content">
 <style>
@@ -707,7 +707,7 @@ footer .heart { color: var(--pink); }
       <h2>さとうゆクイズ</h2>
       <p>
         佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！<br>
-        全10問からランダム10問に挑戦しよう♪
+        全10問からランダム5問に挑戦しよう♪
       </p>
       <button class="quiz-btn" onclick="startQuiz()">スタート！</button>
     </div>
@@ -732,7 +732,7 @@ footer .heart { color: var(--pink); }
     <div id="q-result" class="quiz-result-box" style="display:none">
       <div class="quiz-result-label" id="q-label"></div>
       <p class="quiz-result-exp" id="q-exp"></p>
-      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener">元ブログを読む →</a>
+      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener"></a>
       <div class="quiz-next-wrap">
         <button class="quiz-btn" id="q-next-btn" onclick="nextQuestion()">次の問題 →</button>
       </div>
@@ -751,6 +751,9 @@ footer .heart { color: var(--pink); }
       <div class="quiz-final-actions">
         <button class="quiz-btn pink" onclick="startQuiz()">もう一度挑戦！</button>
         <a class="quiz-btn" href="blog.html">ブログを読む</a>
+        <a class="quiz-btn" href="youtube.html">YouTube動画を見る</a>
+        <a class="quiz-btn" href="tiktok.html">TikTok動画を見る</a>
+        <a class="quiz-btn" href="lemino.html">Lemino動画を見る</a>
       </div>
     </div>
   </div>
@@ -840,8 +843,10 @@ footer .heart { color: var(--pink); }
 
     var srcEl = document.getElementById('q-source');
     if (q.sourceUrl) {
+      var isBlog = q.sourceUrl.indexOf('hinatazaka46.com') >= 0;
+      var verb = isBlog ? 'を読む →' : 'を見る →';
       srcEl.href = q.sourceUrl;
-      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '元ブログ') + 'を読む →';
+      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '出典') + verb;
       srcEl.style.display = '';
     } else {
       srcEl.style.display = 'none';
@@ -870,11 +875,11 @@ footer .heart { color: var(--pink); }
     document.getElementById('r-total').textContent = t;
 
     var msgs = [
-      [t,     '🌟 全問正解！ゆさんブログマスター！',   'ゆさんのことを知り尽くしてる…！すごい！'],
-      [t * 0.8, '✨ すばらしい！',                     'ゆさんのブログ、ちゃんと読んでるんですね♪'],
-      [t * 0.6, '💪 なかなか良い！',                   'もっとブログを読めばパーフェクトも夢じゃない！'],
-      [t * 0.4, '🌱 もう少し！',                       'ゆさんのブログを読んで再挑戦しよう！'],
-      [0,       '📖 ブログを読んで復習しよう！',        'ゆさんのブログはとても面白いですよ♪'],
+      [t,       '🌟 全問正解！さとうゆクイズマスター！',   'さとうゆのことを知り尽くしてる…！すごい！'],
+      [t * 0.8, '✨ すばらしい！',                         'さとうゆのことをよく知ってるんですね♪'],
+      [t * 0.6, '💪 なかなか良い！',                       'もっとさとうゆを知ればパーフェクトも夢じゃない！'],
+      [t * 0.4, '🌱 もう少し！',                           'さとうゆのことをもっと知って再挑戦しよう！'],
+      [0,       '📖 さとうゆのことを知って再挑戦しよう！', '出演番組やブログでさとうゆのことを知ろう♪'],
     ];
     var msg = msgs[msgs.length - 1];
     for (var i = 0; i < msgs.length; i++) {
@@ -954,7 +959,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆ情報局（仮） <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/10 14:18:12</p>
+  <p>さとうゆ情報局（仮） <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/10 14:31:54</p>
 </footer>
 
 <script>
