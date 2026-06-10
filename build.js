@@ -907,7 +907,7 @@ async function buildQuiz(tpl) {
       <h2>さとうゆクイズ</h2>
       <p>
         佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！<br>
-        全${total}問からランダム10問に挑戦しよう♪
+        全${total}問からランダム5問に挑戦しよう♪
       </p>
       ${total === 0
         ? `<p style="font-size:12px;color:var(--text-light);">問題を準備中です…もうしばらくお待ちください</p>`
@@ -934,7 +934,7 @@ async function buildQuiz(tpl) {
     <div id="q-result" class="quiz-result-box" style="display:none">
       <div class="quiz-result-label" id="q-label"></div>
       <p class="quiz-result-exp" id="q-exp"></p>
-      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener">元ブログを読む →</a>
+      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener"></a>
       <div class="quiz-next-wrap">
         <button class="quiz-btn" id="q-next-btn" onclick="nextQuestion()">次の問題 →</button>
       </div>
@@ -953,6 +953,9 @@ async function buildQuiz(tpl) {
       <div class="quiz-final-actions">
         <button class="quiz-btn pink" onclick="startQuiz()">もう一度挑戦！</button>
         <a class="quiz-btn" href="blog.html">ブログを読む</a>
+        <a class="quiz-btn" href="youtube.html">YouTube動画を見る</a>
+        <a class="quiz-btn" href="tiktok.html">TikTok動画を見る</a>
+        <a class="quiz-btn" href="lemino.html">Lemino動画を見る</a>
       </div>
     </div>
   </div>
@@ -1042,8 +1045,10 @@ async function buildQuiz(tpl) {
 
     var srcEl = document.getElementById('q-source');
     if (q.sourceUrl) {
+      var isBlog = q.sourceUrl.indexOf('hinatazaka46.com') >= 0;
+      var verb = isBlog ? 'を読む →' : 'を見る →';
       srcEl.href = q.sourceUrl;
-      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '元ブログ') + 'を読む →';
+      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '出典') + verb;
       srcEl.style.display = '';
     } else {
       srcEl.style.display = 'none';
@@ -1072,11 +1077,11 @@ async function buildQuiz(tpl) {
     document.getElementById('r-total').textContent = t;
 
     var msgs = [
-      [t,     '🌟 全問正解！ゆさんブログマスター！',   'ゆさんのことを知り尽くしてる…！すごい！'],
-      [t * 0.8, '✨ すばらしい！',                     'ゆさんのブログ、ちゃんと読んでるんですね♪'],
-      [t * 0.6, '💪 なかなか良い！',                   'もっとブログを読めばパーフェクトも夢じゃない！'],
-      [t * 0.4, '🌱 もう少し！',                       'ゆさんのブログを読んで再挑戦しよう！'],
-      [0,       '📖 ブログを読んで復習しよう！',        'ゆさんのブログはとても面白いですよ♪'],
+      [t,       '🌟 全問正解！さとうゆクイズマスター！',   'さとうゆのことを知り尽くしてる…！すごい！'],
+      [t * 0.8, '✨ すばらしい！',                         'さとうゆのことをよく知ってるんですね♪'],
+      [t * 0.6, '💪 なかなか良い！',                       'もっとさとうゆを知ればパーフェクトも夢じゃない！'],
+      [t * 0.4, '🌱 もう少し！',                           'さとうゆのことをもっと知って再挑戦しよう！'],
+      [0,       '📖 さとうゆのことを知って再挑戦しよう！', '出演番組やブログでさとうゆのことを知ろう♪'],
     ];
     var msg = msgs[msgs.length - 1];
     for (var i = 0; i < msgs.length; i++) {
@@ -1089,7 +1094,7 @@ async function buildQuiz(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "さとうゆクイズ", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
+  return buildPage(tpl, "さとうゆクイズ", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム5問に挑戦しよう`, body, "quiz.html");
 }
 
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──
