@@ -962,7 +962,7 @@ async function buildQuiz(tpl) {
 <script>
 (function(){
   var ALL_QUESTIONS = ${questionsJson};
-  var QUIZ_SIZE = Math.min(10, ALL_QUESTIONS.length);
+  var QUIZ_SIZE = Math.min(5, ALL_QUESTIONS.length);
 
   var state = { questions: [], idx: 0, score: 0 };
 
