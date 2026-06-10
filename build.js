@@ -109,7 +109,7 @@ function loadTemplate(active) {
 
 function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
-  const ogpTitle = `${title} | さとうゆポータル`;
+  const ogpTitle = `${title} | さとうゆ情報局（仮）`;
   const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   return template
