@@ -1,5 +1,7 @@
 node_modules/
 .env
+admin-api/.env
+admin-api/node_modules/
 package-lock.json
 MEMO.md
 *.csv

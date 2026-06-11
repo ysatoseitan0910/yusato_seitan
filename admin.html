@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理ページ | さとうゆ情報局</title>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --emerald: #3DAA78;
+  --emerald-dark: #1f7a52;
+  --emerald-light: #d4ecde;
+  --emerald-pale: #ecf7f0;
+  --ink: #1a2a22;
+  --text-muted: #516259;
+  --border: #e3eee6;
+  --bg: #fdfcf7;
+  --white: #fff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+header {
+  background: var(--white); border-bottom: 3px solid var(--emerald);
+  padding: 14px 24px; display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.header-mark {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--emerald);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-family: 'Klee One', serif; font-size: 18px; font-weight: 600;
+  box-shadow: 0 3px 0 var(--emerald-dark);
+}
+header h1 { font-family: 'Klee One', serif; font-size: 16px; color: var(--emerald-dark); }
+header span { font-size: 12px; color: var(--text-muted); }
+
+.login-wrap {
+  max-width: 400px; margin: 80px auto; padding: 0 16px;
+}
+.card {
+  background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
+  padding: 32px; box-shadow: 4px 4px 0 var(--emerald);
+}
+.card h2 { font-family: 'Klee One', serif; font-size: 18px; margin-bottom: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
+.field input, .field textarea, .field select {
+  width: 100%; padding: 10px 12px; border: 2px solid var(--border); border-radius: 10px;
+  font-size: 14px; font-family: inherit; background: var(--white);
+  transition: border-color 0.15s;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  outline: none; border-color: var(--emerald);
+}
+.field textarea { min-height: 80px; resize: vertical; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 20px; border-radius: 10px; border: 2px solid var(--ink);
+  font-family: 'Klee One', serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; background: var(--emerald); color: #fff;
+  box-shadow: 3px 3px 0 var(--emerald-dark); width: 100%;
+}
+.btn:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--emerald-dark); }
+.btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: 3px 3px 0 var(--emerald-dark); }
+
+.main-wrap { display: none; max-width: 860px; margin: 0 auto; padding: 28px 16px; gap: 24px; }
+.main-wrap.visible { display: flex; }
+
+.sidebar {
+  width: 180px; flex-shrink: 0;
+}
+.sidebar-title { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 8px; padding-left: 4px; }
+.db-btn {
+  display: block; width: 100%; text-align: left; padding: 10px 14px;
+  border: none; background: transparent; cursor: pointer;
+  font-family: 'Klee One', serif; font-size: 13px; color: var(--text-muted);
+  border-radius: 10px; transition: all 0.15s; margin-bottom: 2px;
+}
+.db-btn:hover { background: var(--emerald-pale); color: var(--emerald-dark); }
+.db-btn.active {
+  background: var(--emerald-light); color: var(--emerald-dark); font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--emerald);
+}
+.logout-btn {
+  display: block; width: 100%; margin-top: 16px; padding: 8px 14px;
+  border: 2px solid var(--border); border-radius: 10px; background: transparent;
+  font-size: 12px; color: var(--text-muted); cursor: pointer; text-align: center;
+  font-family: inherit;
+}
+.logout-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+.form-area { flex: 1; min-width: 0; }
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+.form-panel h2 {
+  font-family: 'Klee One', serif; font-size: 20px; margin-bottom: 20px;
+  padding-bottom: 10px; border-bottom: 2px dashed var(--border);
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .field { margin-bottom: 0; }
+.field.full { grid-column: 1 / -1; }
+.radio-group { display: flex; gap: 10px; }
+.radio-group label {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border: 2px solid var(--border); border-radius: 10px;
+  cursor: pointer; font-size: 14px; transition: all 0.15s;
+}
+.radio-group input[type="radio"] { display: none; }
+.radio-group input[type="radio"]:checked + span {
+  font-weight: 600; color: var(--emerald-dark);
+}
+.radio-group label:has(input:checked) {
+  border-color: var(--emerald); background: var(--emerald-pale);
+}
+.submit-row { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
+.submit-btn {
+  padding: 11px 32px; width: auto; font-size: 15px;
+}
+.status {
+  font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px;
+  display: none;
+}
+.status.ok  { display: inline-block; background: var(--emerald-pale); color: var(--emerald-dark); border: 1px solid var(--emerald-light); }
+.status.err { display: inline-block; background: #fde7e7; color: #c00; border: 1px solid #f5c0c0; }
+
+@media (max-width: 600px) {
+  .main-wrap { flex-direction: column; }
+  .sidebar { width: 100%; }
+  .sidebar { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sidebar-title { width: 100%; }
+  .db-btn { width: auto; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-mark">ゆ</div>
+  <div>
+    <h1>さとうゆ情報局（仮）</h1>
+    <span>管理ページ</span>
+  </div>
+</header>
+
+<!-- ログイン -->
+<div class="login-wrap" id="loginSection">
+  <div class="card">
+    <h2>🔐 ログイン</h2>
+    <div class="field">
+      <label>パスワード</label>
+      <input type="password" id="passwordInput" placeholder="管理パスワード" autocomplete="current-password">
+    </div>
+    <button class="btn" id="loginBtn" onclick="login()">ログイン</button>
+    <div id="loginError" class="status err" style="margin-top:12px;display:none;">パスワードが違います</div>
+  </div>
+</div>
+
+<!-- メイン -->
+<div class="main-wrap" id="mainSection">
+  <div class="sidebar">
+    <div class="sidebar-title">データベース</div>
+    <button class="db-btn active" onclick="switchDB('quiz')">📝 クイズ</button>
+    <button class="db-btn" onclick="switchDB('committee')">📢 委員会News</button>
+    <button class="db-btn" onclick="switchDB('activities')">🌿 活動報告</button>
+    <button class="db-btn" onclick="switchDB('x')">𝕏 X</button>
+    <button class="db-btn" onclick="switchDB('tiktok')">🎵 TikTok</button>
+    <button class="db-btn" onclick="switchDB('youtube')">▶ YouTube</button>
+    <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
+    <button class="logout-btn" onclick="logout()">ログアウト</button>
+  </div>
+
+  <div class="form-area">
+
+    <!-- クイズ -->
+    <div class="form-panel active" id="panel-quiz">
+      <h2>📝 クイズ問題を追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>問題文 <span style="color:#c00">*</span></label>
+          <textarea id="quiz-q" placeholder="問題文を入力..."></textarea>
+        </div>
+        <div class="field">
+          <label>選択肢 A <span style="color:#c00">*</span></label>
+          <input type="text" id="quiz-optA" placeholder="選択肢A">
+        </div>
+        <div class="field">
+          <label>選択肢 B <span style="color:#c00">*</span></label>
+          <input type="text" id="quiz-optB" placeholder="選択肢B">
+        </div>
+        <div class="field">
+          <label>選択肢 C <span style="color:#c00">*</span></label>
+          <input type="text" id="quiz-optC" placeholder="選択肢C">
+        </div>
+        <div class="field">
+          <label>選択肢 D <span style="color:#c00">*</span></label>
+          <input type="text" id="quiz-optD" placeholder="選択肢D">
+        </div>
+        <div class="field full">
+          <label>正解</label>
+          <div class="radio-group">
+            <label><input type="radio" name="quiz-answer" value="A" checked><span>A</span></label>
+            <label><input type="radio" name="quiz-answer" value="B"><span>B</span></label>
+            <label><input type="radio" name="quiz-answer" value="C"><span>C</span></label>
+            <label><input type="radio" name="quiz-answer" value="D"><span>D</span></label>
+          </div>
+        </div>
+        <div class="field full">
+          <label>解説</label>
+          <textarea id="quiz-explanation" placeholder="解説文..."></textarea>
+        </div>
+        <div class="field">
+          <label>参考URL</label>
+          <input type="url" id="quiz-sourceUrl" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>参考リンクのタイトル</label>
+          <input type="text" id="quiz-sourceTitle" placeholder="リンクのラベル">
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('quiz')">追加する</button>
+        <span class="status" id="status-quiz"></span>
+      </div>
+    </div>
+
+    <!-- 委員会News -->
+    <div class="form-panel" id="panel-committee">
+      <h2>📢 委員会Newsを追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="committee-name" placeholder="タイトル">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="committee-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="committee-url" placeholder="https://...">
+        </div>
+        <div class="field full">
+          <label>説明</label>
+          <textarea id="committee-description" placeholder="説明文..."></textarea>
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('committee')">追加する</button>
+        <span class="status" id="status-committee"></span>
+      </div>
+    </div>
+
+    <!-- 活動報告 -->
+    <div class="form-panel" id="panel-activities">
+      <h2>🌿 活動報告を追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="activities-name" placeholder="タイトル">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="activities-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="activities-url" placeholder="https://...">
+        </div>
+        <div class="field full">
+          <label>説明</label>
+          <textarea id="activities-description" placeholder="説明文..."></textarea>
+        </div>
+        <div class="field full">
+          <label>画像URL（satoyu.info/images/... または外部URL）</label>
+          <input type="url" id="activities-mediaUrl" placeholder="https://satoyu.info/images/activities/...">
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('activities')">追加する</button>
+        <span class="status" id="status-activities"></span>
+      </div>
+    </div>
+
+    <!-- X -->
+    <div class="form-panel" id="panel-x">
+      <h2>𝕏 Xポストを追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="x-name" placeholder="投稿の説明">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="x-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="x-url" placeholder="https://x.com/...">
+        </div>
+        <div class="field full">
+          <label>タグ（カンマ区切り）</label>
+          <input type="text" id="x-tags" placeholder="例: 生誕委員会, お知らせ">
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('x')">追加する</button>
+        <span class="status" id="status-x"></span>
+      </div>
+    </div>
+
+    <!-- TikTok -->
+    <div class="form-panel" id="panel-tiktok">
+      <h2>🎵 TikTokを追加</h2>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">タイトルはupdate_media_thumbnails.jsで自動補完されます。URLのみ入力すればOKです。</p>
+      <div class="form-grid">
+        <div class="field full">
+          <label>URL <span style="color:#c00">*</span></label>
+          <input type="url" id="tiktok-url" placeholder="https://www.tiktok.com/@...">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="tiktok-date">
+        </div>
+        <div class="field">
+          <label>タイトル（任意）</label>
+          <input type="text" id="tiktok-name" placeholder="省略可">
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('tiktok')">追加する</button>
+        <span class="status" id="status-tiktok"></span>
+      </div>
+    </div>
+
+    <!-- YouTube -->
+    <div class="form-panel" id="panel-youtube">
+      <h2>▶ YouTubeを追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="youtube-name" placeholder="動画タイトル">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="youtube-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div class="field full">
+          <label>チャンネル</label>
+          <select id="youtube-channel">
+            <option value="">— 選択 —</option>
+            <option value="日向坂ちゃんねる">日向坂ちゃんねる</option>
+            <option value="日向坂46 OFFICIAL YouTube CHANNEL">日向坂46 OFFICIAL YouTube CHANNEL</option>
+            <option value="Lemino">Lemino</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('youtube')">追加する</button>
+        <span class="status" id="status-youtube"></span>
+      </div>
+    </div>
+
+    <!-- Lemino -->
+    <div class="form-panel" id="panel-lemino">
+      <h2>🎬 Leminoを追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="lemino-name" placeholder="コンテンツタイトル">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="lemino-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="lemino-url" placeholder="https://lemino.docomo.ne.jp/...">
+        </div>
+        <div class="field full">
+          <label>説明</label>
+          <textarea id="lemino-description" placeholder="説明文..."></textarea>
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('lemino')">追加する</button>
+        <span class="status" id="status-lemino"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_BASE = "/admin-api";
+
+function getPassword() {
+  return sessionStorage.getItem("admin_token") || "";
+}
+
+async function login() {
+  const pw = document.getElementById("passwordInput").value.trim();
+  if (!pw) return;
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true;
+  btn.textContent = "確認中...";
+  try {
+    const res = await fetch(`${API_BASE}/health`, {
+      headers: { Authorization: `Bearer ${pw}` }
+    });
+    // health は認証不要なので別途チェック
+    // パスワードをテストするため add エンドポイントに空リクエスト
+    const testRes = await fetch(`${API_BASE}/add/quiz`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${pw}` },
+      body: JSON.stringify({})
+    });
+    if (testRes.status === 401) {
+      document.getElementById("loginError").style.display = "block";
+    } else {
+      // 400 (バリデーションエラー) = 認証OK
+      sessionStorage.setItem("admin_token", pw);
+      showMain();
+    }
+  } catch (e) {
+    document.getElementById("loginError").style.display = "block";
+    document.getElementById("loginError").textContent = "接続エラー: " + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = "ログイン";
+}
+
+function showMain() {
+  document.getElementById("loginSection").style.display = "none";
+  document.getElementById("mainSection").classList.add("visible");
+}
+
+function logout() {
+  sessionStorage.removeItem("admin_token");
+  location.reload();
+}
+
+function switchDB(name) {
+  document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".form-panel").forEach(p => p.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+  document.getElementById("panel-" + name).classList.add("active");
+}
+
+function val(id) { return (document.getElementById(id)?.value || "").trim(); }
+function setStatus(db, type, msg) {
+  const el = document.getElementById("status-" + db);
+  el.className = "status " + type;
+  el.textContent = msg;
+  if (type === "ok") setTimeout(() => { el.className = "status"; }, 4000);
+}
+
+function getPayload(db) {
+  if (db === "quiz") return {
+    q: val("quiz-q"), optionA: val("quiz-optA"), optionB: val("quiz-optB"),
+    optionC: val("quiz-optC"), optionD: val("quiz-optD"),
+    answer: document.querySelector('input[name="quiz-answer"]:checked')?.value || "A",
+    explanation: val("quiz-explanation"), sourceUrl: val("quiz-sourceUrl"),
+    sourceTitle: val("quiz-sourceTitle"),
+  };
+  if (db === "committee") return { name: val("committee-name"), date: val("committee-date"), url: val("committee-url"), description: val("committee-description") };
+  if (db === "activities") return { name: val("activities-name"), date: val("activities-date"), url: val("activities-url"), description: val("activities-description"), mediaUrl: val("activities-mediaUrl") };
+  if (db === "x") return { name: val("x-name"), date: val("x-date"), url: val("x-url"), tags: val("x-tags") };
+  if (db === "tiktok") return { name: val("tiktok-name"), date: val("tiktok-date"), url: val("tiktok-url") };
+  if (db === "youtube") return { name: val("youtube-name"), date: val("youtube-date"), url: val("youtube-url"), channel: val("youtube-channel") };
+  if (db === "lemino") return { name: val("lemino-name"), date: val("lemino-date"), url: val("lemino-url"), description: val("lemino-description") };
+}
+
+function clearForm(db) {
+  const panel = document.getElementById("panel-" + db);
+  panel.querySelectorAll("input[type=text], input[type=url], input[type=date], textarea").forEach(el => el.value = "");
+  panel.querySelectorAll("select").forEach(el => el.selectedIndex = 0);
+  const firstRadio = panel.querySelector('input[type=radio]');
+  if (firstRadio) firstRadio.checked = true;
+}
+
+async function submit(db) {
+  const payload = getPayload(db);
+  const btn = document.querySelector(`#panel-${db} .submit-btn`);
+  btn.disabled = true;
+  btn.textContent = "送信中...";
+  setStatus(db, "", "");
+  try {
+    const res = await fetch(`${API_BASE}/add/${db}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getPassword()}` },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setStatus(db, "ok", "✅ 追加しました！");
+      clearForm(db);
+    } else if (res.status === 401) {
+      setStatus(db, "err", "❌ 認証エラー。再ログインしてください。");
+      logout();
+    } else {
+      setStatus(db, "err", "❌ " + (data.error || "エラーが発生しました"));
+    }
+  } catch (e) {
+    setStatus(db, "err", "❌ 接続エラー: " + e.message);
+  }
+  btn.disabled = false;
+  btn.textContent = "追加する";
+}
+
+// Enterキーでログイン
+document.getElementById("passwordInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") login();
+});
+
+// セッション継続チェック
+if (getPassword()) showMain();
+</script>
+</body>
+</html>
