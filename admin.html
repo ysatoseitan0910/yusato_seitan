@@ -28,11 +28,11 @@ header {
 .header-mark {
   width: 36px; height: 36px; border-radius: 50%; background: var(--emerald);
   color: #fff; display: flex; align-items: center; justify-content: center;
-  font-family: 'Klee One', serif; font-size: 18px; font-weight: 600;
+  font-family: 'Klee One', serif; font-size: 20px; font-weight: 600;
   box-shadow: 0 3px 0 var(--emerald-dark);
 }
-header h1 { font-family: 'Klee One', serif; font-size: 16px; color: var(--emerald-dark); }
-header span { font-size: 12px; color: var(--text-muted); }
+header h1 { font-family: 'Klee One', serif; font-size: 18px; color: var(--emerald-dark); }
+header span { font-size: 13px; color: var(--text-muted); }
 
 .login-wrap {
   max-width: 400px; margin: 80px auto; padding: 0 16px;
@@ -41,12 +41,12 @@ header span { font-size: 12px; color: var(--text-muted); }
   background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
   padding: 32px; box-shadow: 4px 4px 0 var(--emerald);
 }
-.card h2 { font-family: 'Klee One', serif; font-size: 18px; margin-bottom: 20px; }
+.card h2 { font-family: 'Klee One', serif; font-size: 20px; margin-bottom: 20px; }
 .field { margin-bottom: 16px; }
-.field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
+.field label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
 .field input, .field textarea, .field select {
   width: 100%; padding: 10px 12px; border: 2px solid var(--border); border-radius: 10px;
-  font-size: 14px; font-family: inherit; background: var(--white);
+  font-size: 15px; font-family: inherit; background: var(--white);
   transition: border-color 0.15s;
 }
 .field input:focus, .field textarea:focus, .field select:focus {
@@ -56,7 +56,7 @@ header span { font-size: 12px; color: var(--text-muted); }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 10px 20px; border-radius: 10px; border: 2px solid var(--ink);
-  font-family: 'Klee One', serif; font-size: 14px; font-weight: 600;
+  font-family: 'Klee One', serif; font-size: 16px; font-weight: 600;
   cursor: pointer; transition: all 0.15s; background: var(--emerald); color: #fff;
   box-shadow: 3px 3px 0 var(--emerald-dark); width: 100%;
 }
@@ -70,11 +70,11 @@ header span { font-size: 12px; color: var(--text-muted); }
 .sidebar {
   width: 180px; flex-shrink: 0;
 }
-.sidebar-title { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 8px; padding-left: 4px; }
+.sidebar-title { font-size: 13px; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 8px; padding-left: 4px; }
 .db-btn {
   display: block; width: 100%; text-align: left; padding: 10px 14px;
   border: none; background: transparent; cursor: pointer;
-  font-family: 'Klee One', serif; font-size: 13px; color: var(--text-muted);
+  font-family: 'Klee One', serif; font-size: 15px; color: var(--text-muted);
   border-radius: 10px; transition: all 0.15s; margin-bottom: 2px;
 }
 .db-btn:hover { background: var(--emerald-pale); color: var(--emerald-dark); }
@@ -85,7 +85,7 @@ header span { font-size: 12px; color: var(--text-muted); }
 .logout-btn {
   display: block; width: 100%; margin-top: 16px; padding: 8px 14px;
   border: 2px solid var(--border); border-radius: 10px; background: transparent;
-  font-size: 12px; color: var(--text-muted); cursor: pointer; text-align: center;
+  font-size: 13px; color: var(--text-muted); cursor: pointer; text-align: center;
   font-family: inherit;
 }
 .logout-btn:hover { border-color: var(--ink); color: var(--ink); }
@@ -94,7 +94,7 @@ header span { font-size: 12px; color: var(--text-muted); }
 .form-panel { display: none; }
 .form-panel.active { display: block; }
 .form-panel h2 {
-  font-family: 'Klee One', serif; font-size: 20px; margin-bottom: 20px;
+  font-family: 'Klee One', serif; font-size: 22px; margin-bottom: 20px;
   padding-bottom: 10px; border-bottom: 2px dashed var(--border);
 }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -104,7 +104,7 @@ header span { font-size: 12px; color: var(--text-muted); }
 .radio-group label {
   display: flex; align-items: center; gap: 6px;
   padding: 8px 14px; border: 2px solid var(--border); border-radius: 10px;
-  cursor: pointer; font-size: 14px; transition: all 0.15s;
+  cursor: pointer; font-size: 15px; transition: all 0.15s;
 }
 .radio-group input[type="radio"] { display: none; }
 .radio-group input[type="radio"]:checked + span {
@@ -115,10 +115,10 @@ header span { font-size: 12px; color: var(--text-muted); }
 }
 .submit-row { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
 .submit-btn {
-  padding: 11px 32px; width: auto; font-size: 15px;
+  padding: 11px 32px; width: auto; font-size: 17px;
 }
 .status {
-  font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: 8px;
   display: none;
 }
 .status.ok  { display: inline-block; background: var(--emerald-pale); color: var(--emerald-dark); border: 1px solid var(--emerald-light); }
@@ -313,7 +313,7 @@ header span { font-size: 12px; color: var(--text-muted); }
     <!-- TikTok -->
     <div class="form-panel" id="panel-tiktok">
       <h2>🎵 TikTokを追加</h2>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">タイトルはupdate_media_thumbnails.jsで自動補完されます。URLのみ入力すればOKです。</p>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">タイトルはupdate_media_thumbnails.jsで自動補完されます。URLのみ入力すればOKです。</p>
       <div class="form-grid">
         <div class="field full">
           <label>URL <span style="color:#c00">*</span></label>
