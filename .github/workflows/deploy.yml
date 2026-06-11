@@ -60,6 +60,7 @@ jobs:
           DB_LEMINO:           ${{ secrets.DB_LEMINO }}
           DB_WEB:              ${{ secrets.DB_WEB }}
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
+          DB_QUIZ:             ${{ secrets.DB_QUIZ }}
 
       - name: Setup SSH
         run: |

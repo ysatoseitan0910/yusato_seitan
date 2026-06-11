@@ -1227,10 +1227,34 @@ async function syncToYuNews() {
   }
 }
 
+// ── DB_QUIZからquiz_questions.jsonを生成 ──
+async function buildQuizJson() {
+  if (!DB.quiz) { console.log("  DB_QUIZ未設定 → スキップ"); return; }
+  const pages = await queryDB(DB.quiz);
+  const questions = pages.map(p => ({
+    q:           getText(p, "Name"),
+    options: [
+      getText(p, "OptionA"),
+      getText(p, "OptionB"),
+      getText(p, "OptionC"),
+      getText(p, "OptionD"),
+    ],
+    answer:      p.properties["Answer"]?.select?.name || "A",
+    explanation: getText(p, "Explanation"),
+    sourceUrl:   p.properties["SourceUrl"]?.url || "",
+    sourceTitle: getText(p, "SourceTitle"),
+  }));
+  fs.writeFileSync("quiz_questions.json", JSON.stringify(questions, null, 2), "utf-8");
+  console.log(`  ✅ quiz_questions.json 生成完了（${questions.length}問）`);
+}
+
 // ── メイン ──
 async function main() {
   console.log("🔄 Yu Newsへ自動集約中...");
   await syncToYuNews();
+
+  console.log("📝 クイズデータ生成中...");
+  await buildQuizJson();
 
   console.log("🏗️  HTMLビルド開始...");
   const pages = {
