@@ -92,7 +92,14 @@ jobs:
             --exclude='package-lock.json' \
             --exclude='*.md' \
             --exclude='.claude' \
+            --exclude='admin-api/.env' \
+            --exclude='admin-api/node_modules' \
             ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/satoyu/
+
+      - name: Restart admin API
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            'cd ~/newsmind && docker compose restart satoyu-admin 2>/dev/null || docker compose up -d satoyu-admin'
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
