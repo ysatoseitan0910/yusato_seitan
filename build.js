@@ -1141,6 +1141,42 @@ async function syncToYuNews() {
     }
   }
 
+  // ── 既存レコードのMedia同期（Blog/インタビュー/Lemino） ──
+  // syncToYuNews新規追加時にMediaが未設定だったエントリをソースDBから遡って補完する
+  console.log("  既存レコードのMedia同期中...");
+  const mediaSyncSources = [
+    { db: DB.blog,      platform: "Blog" },
+    { db: DB.interview, platform: "インタビュー" },
+    { db: DB.lemino,    platform: "Lemino" },
+  ];
+  for (const { db, platform } of mediaSyncSources) {
+    if (!db) continue;
+    const srcPages = await queryDB(db);
+    const withMedia = srcPages.filter(p => getMedia(p));
+    for (const page of withMedia) {
+      const url   = getUrl(page);
+      const media = getMedia(page);
+      if (!url || !media) continue;
+      try {
+        const res = await notion.databases.query({
+          database_id: DB.yuNews,
+          filter: { property: "URL", url: { equals: url } },
+        });
+        for (const yuPage of res.results) {
+          if (getMedia(yuPage)) continue; // 既にMediaあり → スキップ
+          await notion.pages.update({
+            page_id: yuPage.id,
+            properties: { Media: { files: [{ name: "thumbnail", type: "external", external: { url: media } }] } },
+          });
+          console.log(`  ✅ Media更新: [${platform}] ${getText(page,"Name")}`);
+          await new Promise(r => setTimeout(r, 400));
+        }
+      } catch(e) {
+        console.error(`  ❌ Media更新失敗: ${getText(page,"Name")}`, e.message);
+      }
+    }
+  }
+
   for (const { db, platform } of sources) {
     const pages = await queryDB(db);
     for (const page of pages) {
