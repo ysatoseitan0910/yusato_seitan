@@ -1,8 +1,8 @@
 const { Client } = require("@notionhq/client");
 const fs = require("fs");
 
-const SITE_URL = "https://ysatoseitan0910.github.io/yusato_seitan";
-const DEFAULT_OGP_IMAGE = `${SITE_URL}/ogp.png`;
+const SITE_URL = "https://satoyu.info";
+const DEFAULT_OGP_IMAGE = `${SITE_URL}/images/ogp.png`;
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
