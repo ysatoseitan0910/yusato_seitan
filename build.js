@@ -358,7 +358,7 @@ async function buildIndex(tpl) {
   const [yuNews, activities, committeeNews, schedule] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
-    queryDB(DB.committeeNews, []),
+    queryDB(DB.committeeNews, [{ property: "Priority", direction: "ascending" }]),
     queryDB(DB.schedule, [{ property: "Date", direction: "ascending" }]),
   ]);
 
@@ -551,7 +551,7 @@ async function buildIndex(tpl) {
 }
 
 async function buildCommittee(tpl) {
-  const pages = await queryDB(DB.committeeNews, []);
+  const pages = await queryDB(DB.committeeNews, [{ property: "Priority", direction: "ascending" }]);
   const cards = pages.map(p => {
     const status       = getSelect(p,"Status");
     const img          = getMedia(p);
