@@ -181,11 +181,22 @@ nav {
 }
 .committee-list-row {
   background: #fff; border: 2px solid var(--ink); border-radius: 14px;
-  padding: 11px 16px;
-  display: grid; grid-template-columns: 78px 1fr auto; gap: 12px;
+  padding: 10px 14px;
+  display: grid; grid-template-columns: 48px 78px 1fr auto; gap: 10px;
   align-items: center; cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   box-shadow: 3px 3px 0 var(--emerald-light);
+}
+.committee-row-thumb {
+  width: 48px; height: 48px; border-radius: 8px; overflow: hidden; flex-shrink: 0;
+}
+.committee-row-thumb-img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.committee-row-thumb-empty {
+  width: 100%; height: 100%; background: var(--emerald-pale);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  color: var(--emerald-light); font-size: 18px;
 }
 .committee-list-row:nth-child(2n) { box-shadow: 3px 3px 0 var(--pink-pale); }
 .committee-list-row:nth-child(3n) { box-shadow: 3px 3px 0 var(--butter); }

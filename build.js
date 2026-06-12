@@ -372,8 +372,12 @@ async function buildIndex(tpl) {
     const img      = getMedia(p);
     const deadline = getDate(p, "締め切り");
     const mAttrs = `data-act-modal="1" data-title="${escAttr(title)}" data-date="${escAttr(date)}" data-status="${escAttr(status)}" data-desc="${escAttr(desc)}" data-url="${escAttr(url)}" data-img="${escAttr(img)}" data-deadline="${escAttr(deadline)}"`;
+    const thumbEl = img
+      ? `<img class="committee-row-thumb-img" src="${img}" alt="" loading="lazy">`
+      : `<div class="committee-row-thumb-empty"></div>`;
     return `
     <div class="committee-list-row" ${mAttrs}>
+      <div class="committee-row-thumb">${thumbEl}</div>
       <span class="committee-row-date">${date}</span>
       <span class="committee-row-title">${title}</span>
       <span class="committee-row-meta">${statusBadge(status)}${deadlineBadge(deadline)}</span>
