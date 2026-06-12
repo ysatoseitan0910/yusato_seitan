@@ -11,13 +11,13 @@
 <meta property="og:site_name" content="さとうゆ情報局（仮）">
 <meta property="og:title" content="さとうゆクイズ | さとうゆ情報局（仮）">
 <meta property="og:description" content="{{OGP_DESC}}">
-<meta property="og:url" content="https://ysatoseitan0910.github.io/yusato_seitan/quiz.html">
-<meta property="og:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
+<meta property="og:url" content="https://satoyu.info/quiz.html">
+<meta property="og:image" content="https://satoyu.info/images/ogp.png">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{OGP_TITLE}}">
 <meta name="twitter:description" content="{{OGP_DESC}}">
-<meta name="twitter:image" content="https://ysatoseitan0910.github.io/yusato_seitan/ogp.png">
+<meta name="twitter:image" content="https://satoyu.info/images/ogp.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
@@ -201,6 +201,21 @@ nav {
   flex: 1; font-size: 13px; color: var(--text);
   line-height: 1.5; font-family: 'Klee One',serif;
 }
+.committee-row-meta {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
+.deadline-badge {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  padding: 2px 10px; border-radius: 99px; white-space: nowrap; letter-spacing: 0.04em;
+}
+.deadline-normal { background: #eef6fb; color: #1a5a8a; border: 1px solid #b8d8f0; }
+.deadline-soon   { background: #fff8e0; color: #8a5a00; border: 1px solid #f0d880; }
+.deadline-urgent { background: #fff0e0; color: #b04000; border: 1px solid #f0b080; }
+.deadline-today  { background: #ffe0e0; color: #c00000; border: 1px solid #f08080; animation: deadline-pulse 1s ease-in-out infinite alternate; }
+.deadline-past   { background: #f0f0f0; color: #888; border: 1px solid #ccc; }
+@keyframes deadline-pulse { from { opacity: 0.8; } to { opacity: 1; } }
+.announce-date { font-size: 12px; color: var(--text-muted); font-family: 'Klee One',serif; }
+.media-date-small { font-size: 11px; color: var(--text-light); font-family: 'Caveat',cursive; }
 
 /* 活動報告サムネイル（ポラロイド風） */
 .act-thumb-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
@@ -492,7 +507,7 @@ footer .heart { color: var(--pink); }
   font-family: 'Klee One',serif; font-weight: 600;
   font-size: 20px; line-height: 1.55; margin-bottom: 10px; color: var(--text);
 }
-.act-modal-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 18px; }
+.act-modal-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
 .act-modal-desc {
   font-family: 'Klee One',serif;
   font-size: 13px; color: var(--text-muted); line-height: 2;
@@ -592,7 +607,7 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">SATOYU QUIZ</div>
         <h1>さとうゆ <em>クイズ</em></h1>
         <p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p>
-        <p class="last-updated">最終更新：2026/6/12 14:19:58</p>
+        <p class="last-updated">最終更新：2026/6/12 17:09:33</p>
       </div>
       <div class="content">
 <style>
@@ -905,15 +920,30 @@ footer .heart { color: var(--pink); }
 
 <script>
 (function(){
+  function makeDeadlineBadge(deadlineStr) {
+    if (!deadlineStr) return '';
+    var dl = new Date(deadlineStr + 'T00:00:00');
+    var today = new Date(); today.setHours(0,0,0,0);
+    var days = Math.round((dl - today) / 86400000);
+    var dlFmt = deadlineStr.slice(0,10).replace(/-/g,'.');
+    var cls, label;
+    if (days < 0)       { cls = 'deadline-past';   label = '締切済 ' + dlFmt; }
+    else if (days === 0){ cls = 'deadline-today';  label = '⏰ 本日締切！'; }
+    else if (days <= 3) { cls = 'deadline-urgent'; label = '⏰ 締切 ' + dlFmt + '（あと' + days + '日）'; }
+    else if (days <= 7) { cls = 'deadline-soon';   label = '締切 ' + dlFmt + '（あと' + days + '日）'; }
+    else                { cls = 'deadline-normal';  label = '締切 ' + dlFmt; }
+    return '<span class="deadline-badge ' + cls + '">' + label + '</span>';
+  }
   function openModal(data) {
     var inner = document.getElementById('act-modal-inner');
     var badgeHtml = data.status
       ? '<span class="badge ' + (data.status.includes('募集中') ? 'badge-open' : 'badge-closed') + '">' + data.status + '</span>'
       : '';
+    var deadlineHtml = data.deadline ? makeDeadlineBadge(data.deadline) : '';
     var imgHtml = data.img ? '<img class="act-modal-img" src="' + data.img + '" alt="">' : '';
     inner.innerHTML = imgHtml +
       '<p class="act-modal-title"></p>' +
-      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-family:\'Caveat\',cursive;font-size:14px;color:var(--text-light)"></span></div>' +
+      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-family:\'Caveat\',cursive;font-size:14px;color:var(--text-light)"></span>' + deadlineHtml + '</div>' +
       '<p class="act-modal-desc"></p>' +
       (data.url ? '<a href="' + data.url + '" class="act-modal-link" target="_blank" rel="noopener">詳しく見る →</a>' : '');
     inner.querySelector('.act-modal-title').textContent = data.title || '';
@@ -961,7 +991,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆ情報局（仮） <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/12 14:19:58</p>
+  <p>さとうゆ情報局（仮） <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/12 17:09:33</p>
 </footer>
 
 <script>
