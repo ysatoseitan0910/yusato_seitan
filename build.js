@@ -321,6 +321,21 @@ function statusBadge(status) {
   return `<span class="badge ${cls}">${status}</span>`;
 }
 
+function deadlineBadge(deadlineStr) {
+  if (!deadlineStr) return "";
+  const dl = new Date(deadlineStr + "T00:00:00");
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const days = Math.round((dl - today) / 86400000);
+  const dlFmt = fmtDate(deadlineStr);
+  let cls, label;
+  if (days < 0)      { cls = "deadline-past";   label = `締切済 ${dlFmt}`; }
+  else if (days === 0){ cls = "deadline-today";  label = `⏰ 本日締切！`; }
+  else if (days <= 3) { cls = "deadline-urgent"; label = `⏰ 締切 ${dlFmt}（あと${days}日）`; }
+  else if (days <= 7) { cls = "deadline-soon";   label = `締切 ${dlFmt}（あと${days}日）`; }
+  else                { cls = "deadline-normal";  label = `締切 ${dlFmt}`; }
+  return `<span class="deadline-badge ${cls}">${label}</span>`;
+}
+
 function escAttr(s) {
   return (s || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
@@ -341,24 +356,25 @@ async function buildIndex(tpl) {
   const [yuNews, activities, committeeNews, schedule] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
-    queryDB(DB.committeeNews),
+    queryDB(DB.committeeNews, []),
     queryDB(DB.schedule, [{ property: "Date", direction: "ascending" }]),
   ]);
 
   // ── 委員会News: リスト行（全件・クリックでモーダル） ──
   const committeeRows = committeeNews.map(p => {
-    const status = getSelect(p, "Status");
-    const title  = getText(p, "Name");
-    const date   = fmtDate(getDate(p));
-    const desc   = getText(p, "Description");
-    const url    = getUrl(p);
-    const img    = getMedia(p);
-    const mAttrs = `data-act-modal="1" data-title="${escAttr(title)}" data-date="${escAttr(date)}" data-status="${escAttr(status)}" data-desc="${escAttr(desc)}" data-url="${escAttr(url)}" data-img="${escAttr(img)}"`;
+    const status   = getSelect(p, "Status");
+    const title    = getText(p, "Name");
+    const date     = fmtDate(getDate(p));
+    const desc     = getText(p, "Description");
+    const url      = getUrl(p);
+    const img      = getMedia(p);
+    const deadline = getDate(p, "締め切り");
+    const mAttrs = `data-act-modal="1" data-title="${escAttr(title)}" data-date="${escAttr(date)}" data-status="${escAttr(status)}" data-desc="${escAttr(desc)}" data-url="${escAttr(url)}" data-img="${escAttr(img)}" data-deadline="${escAttr(deadline)}"`;
     return `
     <div class="committee-list-row" ${mAttrs}>
       <span class="committee-row-date">${date}</span>
       <span class="committee-row-title">${title}</span>
-      ${statusBadge(status)}
+      <span class="committee-row-meta">${statusBadge(status)}${deadlineBadge(deadline)}</span>
     </div>`;
   }).join("\n");
 
@@ -529,28 +545,35 @@ async function buildIndex(tpl) {
 }
 
 async function buildCommittee(tpl) {
-  const pages = await queryDB(DB.committeeNews);
+  const pages = await queryDB(DB.committeeNews, []);
   const cards = pages.map(p => {
-    const status = getSelect(p,"Status");
-    const img = getMedia(p);
-    const title = getText(p,"Name");
-    const date  = fmtDate(getDate(p));
-    const desc  = getText(p,"Description");
-    const url   = getUrl(p);
+    const status       = getSelect(p,"Status");
+    const img          = getMedia(p);
+    const title        = getText(p,"Name");
+    const date         = fmtDate(getDate(p));
+    const desc         = getText(p,"Description");
+    const url          = getUrl(p);
+    const deadline     = getDate(p, "締め切り");
+    const announceDate = fmtDate(getDate(p, "お知らせ日"));
     const imgTag = img ? `<img class="media-img" src="${img}" alt="${title}" loading="lazy">` : "";
     const link = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">詳しく見る →</a>` : "";
     const modalAttrs = actModalAttrs(p);
+    const deadlineAttr = deadline ? ` data-deadline="${escAttr(deadline)}"` : "";
     return `
-    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}>
+    <div class="card media-card" style="animation-delay:${Math.random()*0.3}s" ${modalAttrs}${deadlineAttr}>
       ${imgTag}
       <div class="media-body">
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
           ${statusBadge(status)}
-          <span class="media-date">${date}</span>
+          ${announceDate ? `<span class="announce-date">📢 ${announceDate}</span>` : `<span class="media-date">${date}</span>`}
+          ${deadlineBadge(deadline)}
         </div>
         <p class="media-title">${title}</p>
         ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
-        <div class="media-meta"><span></span>${link}</div>
+        <div class="media-meta">
+          ${date && announceDate ? `<span class="media-date-small">実行日：${date}</span>` : "<span></span>"}
+          ${link}
+        </div>
       </div>
     </div>`;
   }).join("\n");
