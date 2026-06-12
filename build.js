@@ -400,9 +400,9 @@ async function buildIndex(tpl) {
   // ── 佐藤優羽さんNews: 均一グリッド ──
   const yuNewsSlice = yuNews.slice(0, 20);
 
-  // TikTok で Media 未設定のものをoEmbedで並列取得
+  // TikTokは保存済みURLが期限切れになるため常にoEmbedから取得
   const tiktokTargetsIdx = yuNewsSlice.map(p =>
-    !getMedia(p) && getUrl(p).includes("tiktok.com") ? getUrl(p) : null
+    getUrl(p).includes("tiktok.com") ? getUrl(p) : null
   );
   const tiktokThumbs = await Promise.all(
     tiktokTargetsIdx.map(u => u ? fetchOembedThumbnail(u) : Promise.resolve(""))
@@ -415,13 +415,13 @@ async function buildIndex(tpl) {
     const platform = getSelect(p, "Platform");
     const badge    = platform ? `<span class="${badgeClass(platform)}" style="font-size:9px;padding:2px 7px;">${platform}</span>` : "";
 
-    // サムネイル: Notion保存済み → YouTube自動生成 → TikTok oEmbed → なし
-    let img = getMedia(p);
+    // サムネイル: TikTokは常にoEmbed → Notion保存済み → YouTube自動生成 → なし
+    let img = tiktokThumbs[i] || "";
+    if (!img) img = getMedia(p);
     if (!img) {
       const ytMatch = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
       if (ytMatch) img = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
     }
-    if (!img) img = tiktokThumbs[i] || "";
 
     const imgTag   = img
       ? `<img class="yunews-img" src="${img}" alt="${title}" loading="lazy">`
@@ -754,24 +754,24 @@ async function buildYoutube(tpl) {
 async function buildYuNews(tpl) {
   const pages = await queryDB(DB.yuNews);
 
-  // TikTok で Media 未設定のものをoEmbedで並列取得
+  // TikTokは保存済みURLが期限切れになるため常にoEmbedから取得
   const tiktokTargets = pages.map(p =>
-    !getMedia(p) && getUrl(p).includes("tiktok.com") ? getUrl(p) : null
+    getUrl(p).includes("tiktok.com") ? getUrl(p) : null
   );
   const hasTiktok = tiktokTargets.some(Boolean);
-  if (hasTiktok) console.log(`  Yu News TikTokサムネイル取得中...`);
+  if (hasTiktok) console.log(`  Yu News TikTokサムネイル取得中 (${tiktokTargets.filter(Boolean).length}件)...`);
   const tiktokThumbs = await Promise.all(
     tiktokTargets.map(u => u ? fetchOembedThumbnail(u) : Promise.resolve(""))
   );
 
   const cards = pages.map((p, i) => {
-    let img = getMedia(p);
+    let img = tiktokThumbs[i] || "";
+    if (!img) img = getMedia(p);
     if (!img) {
       const url = getUrl(p);
       const ytMatch = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
       if (ytMatch) img = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
     }
-    if (!img) img = tiktokThumbs[i] || "";
     return newsCard(p, undefined, img);
   }).join("\n");
 
