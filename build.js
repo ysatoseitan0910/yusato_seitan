@@ -111,7 +111,7 @@ function loadTemplate(active) {
 
 function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
-  const ogpTitle = `${title} | さとうゆ情報局（仮）`;
+  const ogpTitle = `${title} | さとうゆほーむ`;
   const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   return template
@@ -547,7 +547,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ", "SATOYU JOHO-KYOKU", "さとうゆ <em>情報局</em>（仮）", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
+  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
 }
 
 async function buildCommittee(tpl) {
