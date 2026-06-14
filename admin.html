@@ -232,7 +232,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   border-bottom: 2px solid var(--border);
 }
 .list-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-.list-table tr:hover td { background: var(--emerald-pale); }
+.list-table tr.list-row:hover td { background: var(--emerald-pale); }
 .list-name a { color: var(--emerald-dark); text-decoration: none; }
 .list-name a:hover { text-decoration: underline; }
 .list-date { color: var(--text-muted); white-space: nowrap; font-size: 13px; }
@@ -255,6 +255,56 @@ header span { font-size: 13px; color: var(--text-muted); }
   .panel-tab { font-size: 16px; padding: 10px 18px; }
   .list-table td:nth-child(3) { display: none; }
   .list-table th:nth-child(3) { display: none; }
+}
+
+/* 詳細モーダル */
+.detail-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.detail-modal {
+  background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
+  box-shadow: 6px 6px 0 var(--emerald-dark); max-width: 580px; width: 100%;
+  max-height: 82vh; display: flex; flex-direction: column; overflow: hidden;
+}
+.detail-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 2px solid var(--border); flex-shrink: 0;
+}
+.detail-modal-title {
+  font-family: 'Klee One', serif; font-size: 15px; font-weight: 600;
+  color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: calc(100% - 48px);
+}
+.detail-modal-close {
+  width: 30px; height: 30px; border: 2px solid var(--border); border-radius: 8px;
+  background: transparent; font-size: 18px; cursor: pointer; color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.detail-modal-close:hover { border-color: var(--ink); color: var(--ink); }
+.detail-modal-body { overflow-y: auto; padding: 16px 20px; flex: 1; }
+.detail-prop-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.detail-prop-table tr { border-bottom: 1px solid var(--border); }
+.detail-prop-key {
+  font-size: 12px; color: var(--text-muted); font-weight: 500; white-space: nowrap;
+  padding: 9px 16px 9px 0; width: 130px; letter-spacing: 0.03em; vertical-align: top;
+}
+.detail-prop-val { padding: 9px 0; color: var(--ink); word-break: break-all; vertical-align: top; line-height: 1.6; }
+.detail-prop-val a { color: var(--emerald-dark); text-decoration: none; word-break: break-all; }
+.detail-prop-val a:hover { text-decoration: underline; }
+.detail-prop-val pre { white-space: pre-wrap; font-family: inherit; margin: 0; }
+.detail-meta {
+  margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border);
+  font-size: 12px; color: var(--text-muted); line-height: 2;
+}
+.detail-loading { text-align: center; padding: 32px; color: var(--text-muted); }
+.detail-error { color: #c00; padding: 14px; background: #fde7e7; border-radius: 8px; font-size: 13px; }
+.list-row { cursor: pointer; }
+.list-row:hover td { background: var(--emerald-pale); }
+@media (max-width: 600px) {
+  .detail-modal { max-height: 90vh; }
+  .detail-prop-key { width: 100px; }
 }
 </style>
 </head>
@@ -675,7 +725,7 @@ function renderListTable(items, db) {
                : item.published === false ? '<span class="pub-badge pub-false">非公開</span>'
                : '';
     const delBtn = `<button class="list-del-btn" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}" onclick="deleteRecord('${escHtml(db)}', this)">削除</button>`;
-    return `<tr><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td>${delBtn}</td></tr>`;
+    return `<tr class="list-row" data-db="${escHtml(db)}" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}"><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td>${delBtn}</td></tr>`;
   }).join('');
   return `<table class="list-table"><thead><tr><th>タイトル</th><th>日付</th><th>公開</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
 }
@@ -988,6 +1038,99 @@ showMain = function() {
   _origShowMain();
   initDeployUI();
 };
+
+// ── 詳細モーダル ──
+async function openDetail(db, pageId, name) {
+  const overlay = document.getElementById('detail-overlay');
+  const body    = document.getElementById('detail-modal-body');
+  document.getElementById('detail-modal-title').textContent = name || '詳細';
+  body.innerHTML = '<div class="detail-loading">⏳ 読み込み中...</div>';
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  try {
+    const res = await fetch(`${API_BASE}/get/${db}/${pageId}`, {
+      headers: { Authorization: `Bearer ${getPassword()}` }
+    });
+    if (res.status === 401) { closeDetailModal(); logout(); return; }
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      body.innerHTML = `<div class="detail-error">❌ ${escHtml(d.error || 'エラー')}</div>`;
+      return;
+    }
+    const data = await res.json();
+    body.innerHTML = renderDetailBody(data);
+  } catch (e) {
+    body.innerHTML = `<div class="detail-error">❌ 接続エラー: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function renderDetailBody(data) {
+  const TYPE_LABEL = {
+    title: 'タイトル', rich_text: 'テキスト', number: '数値', select: 'セレクト',
+    multi_select: 'マルチセレクト', date: '日付', checkbox: 'チェック', url: 'URL',
+    email: 'メール', phone_number: '電話', files: 'ファイル/画像',
+    created_time: '作成日時', last_edited_time: '更新日時',
+  };
+  const rows = Object.entries(data.properties || {}).map(([key, { type, value }]) => {
+    let valHtml;
+    if (value === null || value === undefined || value === '') {
+      valHtml = '<span style="color:var(--text-muted);font-size:12px;">（未設定）</span>';
+    } else if (typeof value === 'boolean') {
+      valHtml = value
+        ? '<span class="pub-badge pub-true">✓ ON</span>'
+        : '<span class="pub-badge pub-false">✗ OFF</span>';
+    } else {
+      const s = String(value);
+      if (type === 'url' || type === 'files' || s.startsWith('http')) {
+        valHtml = s.split('\n').map(u =>
+          `<a href="${escHtml(u)}" target="_blank" rel="noopener">${escHtml(u)}</a>`
+        ).join('<br>');
+      } else {
+        valHtml = `<pre>${escHtml(s)}</pre>`;
+      }
+    }
+    const typeTag = `<span style="font-size:10px;color:var(--text-muted);margin-left:4px;">${escHtml(TYPE_LABEL[type] || type)}</span>`;
+    return `<tr><td class="detail-prop-key">${escHtml(key)}${typeTag}</td><td class="detail-prop-val">${valHtml}</td></tr>`;
+  }).join('');
+
+  const fmt = iso => iso ? new Date(iso).toLocaleString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+  const status = data.archived
+    ? '<span class="pub-badge pub-false">アーカイブ済</span>'
+    : '<span class="pub-badge pub-true">通常</span>';
+
+  return `<table class="detail-prop-table"><tbody>${rows}</tbody></table>
+    <div class="detail-meta">
+      作成: ${fmt(data.created_time)}<br>
+      更新: ${fmt(data.last_edited_time)}<br>
+      状態: ${status}
+    </div>`;
+}
+
+function closeDetailModal() {
+  document.getElementById('detail-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// 一覧行クリックで詳細表示（リンク・削除ボタンは除く）
+document.getElementById('list-content').addEventListener('click', function(e) {
+  const row = e.target.closest('.list-row');
+  if (!row) return;
+  if (e.target.closest('.list-del-btn') || e.target.closest('a')) return;
+  openDetail(row.dataset.db, row.dataset.id, row.dataset.name);
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetailModal(); });
 </script>
+
+<!-- 詳細モーダル -->
+<div id="detail-overlay" class="detail-overlay" style="display:none;" onclick="if(event.target===this)closeDetailModal()">
+  <div class="detail-modal" id="detail-modal">
+    <div class="detail-modal-header">
+      <span class="detail-modal-title" id="detail-modal-title">詳細</span>
+      <button class="detail-modal-close" onclick="closeDetailModal()">×</button>
+    </div>
+    <div class="detail-modal-body" id="detail-modal-body"></div>
+  </div>
+</div>
 </body>
 </html>

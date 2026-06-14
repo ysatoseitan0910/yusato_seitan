@@ -174,6 +174,50 @@ app.post("/add/lemino", auth, async (req, res) => {
   }
 });
 
+// プロパティを表示用文字列に変換
+function formatProperty(prop) {
+  if (!prop) return null;
+  switch (prop.type) {
+    case 'title':         return prop.title.map(s => s.plain_text).join('') || null;
+    case 'rich_text':     return prop.rich_text.map(s => s.plain_text).join('') || null;
+    case 'number':        return prop.number;
+    case 'select':        return prop.select?.name || null;
+    case 'multi_select':  return prop.multi_select.map(s => s.name).join(', ') || null;
+    case 'date':          return prop.date ? (prop.date.end ? `${prop.date.start} → ${prop.date.end}` : prop.date.start) : null;
+    case 'checkbox':      return prop.checkbox;
+    case 'url':           return prop.url;
+    case 'email':         return prop.email;
+    case 'phone_number':  return prop.phone_number;
+    case 'files':         return prop.files.map(f => f.external?.url || f.file?.url || '').filter(Boolean).join('\n') || null;
+    case 'created_time':  return prop.created_time;
+    case 'last_edited_time': return prop.last_edited_time;
+    default:              return null;
+  }
+}
+
+// レコード詳細取得
+app.get("/get/:db/:pageId", auth, async (req, res) => {
+  const { db: dbKey, pageId } = req.params;
+  if (!DB[dbKey]) return res.status(404).json({ error: "不明なDB" });
+  try {
+    const page = await notion.pages.retrieve({ page_id: pageId });
+    const properties = {};
+    for (const [key, prop] of Object.entries(page.properties)) {
+      properties[key] = { type: prop.type, value: formatProperty(prop) };
+    }
+    res.json({
+      id: page.id,
+      created_time: page.created_time,
+      last_edited_time: page.last_edited_time,
+      archived: page.archived,
+      properties,
+    });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // レコード削除（アーカイブ）
 app.delete("/delete/:db/:pageId", auth, async (req, res) => {
   const { db: dbKey, pageId } = req.params;
