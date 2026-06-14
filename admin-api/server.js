@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   if (origin === "https://satoyu.info" || origin === "https://www.satoyu.info") {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
@@ -176,5 +176,46 @@ app.post("/add/lemino", auth, async (req, res) => {
 
 // ヘルスチェック
 app.get("/health", (req, res) => res.json({ ok: true }));
+
+// テキスト取得ヘルパー
+function getText(prop) {
+  if (!prop) return "";
+  if (prop.title)     return prop.title.map(s => s.plain_text).join("");
+  if (prop.rich_text) return prop.rich_text.map(s => s.plain_text).join("");
+  return "";
+}
+
+// 一覧取得
+app.get("/list/:db", auth, async (req, res) => {
+  const dbKey = req.params.db;
+  const dbId = DB[dbKey];
+  if (!dbId) return res.status(404).json({ error: "不明なDB: " + dbKey });
+  try {
+    const results = [];
+    let cursor;
+    do {
+      const r = await notion.databases.query({
+        database_id: dbId,
+        start_cursor: cursor,
+        page_size: 100,
+        sorts: [{ timestamp: "created_time", direction: "descending" }],
+      });
+      results.push(...r.results);
+      cursor = r.has_more ? r.next_cursor : null;
+    } while (cursor);
+
+    const items = results.map(p => ({
+      id: p.id,
+      name: getText(p.properties.Name),
+      date: p.properties.Date?.date?.start || null,
+      url: p.properties.URL?.url || null,
+      published: p.properties.Published?.checkbox ?? null,
+    }));
+    res.json({ items, total: items.length });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
 
 app.listen(3001, () => console.log("satoyu admin API running on :3001"));

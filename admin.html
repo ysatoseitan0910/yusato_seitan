@@ -197,6 +197,58 @@ header span { font-size: 13px; color: var(--text-muted); }
   .status { font-size: 15px; }
   .logout-btn { font-size: 14px; }
 }
+
+/* タブ */
+.panel-tabs {
+  display: flex; gap: 0; margin-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+.panel-tab {
+  padding: 9px 22px; border: none; background: transparent;
+  font-family: 'Klee One', serif; font-size: 15px; color: var(--text-muted);
+  cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: all 0.15s; border-radius: 6px 6px 0 0;
+}
+.panel-tab:hover { color: var(--emerald-dark); background: var(--emerald-pale); }
+.panel-tab.active { color: var(--emerald-dark); font-weight: 600; border-bottom-color: var(--emerald); }
+
+/* 一覧エリア */
+.list-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.list-title { font-family: 'Klee One', serif; font-size: 20px; }
+.list-count { font-size: 13px; color: var(--text-muted); margin-left: 8px; }
+.list-refresh-btn {
+  padding: 6px 14px; border: 2px solid var(--border); border-radius: 8px;
+  background: transparent; font-size: 14px; cursor: pointer; color: var(--text-muted);
+  font-family: inherit; transition: all 0.15s;
+}
+.list-refresh-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); }
+.list-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.list-table th {
+  text-align: left; padding: 8px 10px; font-size: 12px;
+  color: var(--text-muted); font-weight: 500; letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
+}
+.list-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.list-table tr:hover td { background: var(--emerald-pale); }
+.list-name a { color: var(--emerald-dark); text-decoration: none; }
+.list-name a:hover { text-decoration: underline; }
+.list-date { color: var(--text-muted); white-space: nowrap; font-size: 13px; }
+.pub-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; white-space: nowrap;
+}
+.pub-true  { background: var(--emerald-light); color: var(--emerald-dark); }
+.pub-false { background: #f0f0f0; color: #888; }
+.list-loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 15px; }
+.list-error { padding: 16px; background: #fde7e7; border-radius: 8px; color: #c00; font-size: 14px; }
+.list-empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+@media (max-width: 600px) {
+  .panel-tab { font-size: 16px; padding: 10px 18px; }
+  .list-table td:last-child { display: none; }
+  .list-table th:last-child { display: none; }
+}
 </style>
 </head>
 <body>
@@ -252,6 +304,14 @@ header span { font-size: 13px; color: var(--text-muted); }
   </div>
 
   <div class="form-area">
+
+    <!-- タブ -->
+    <div class="panel-tabs">
+      <button class="panel-tab active" id="tab-add" onclick="switchTab('add')">＋ 追加</button>
+      <button class="panel-tab" id="tab-list" onclick="switchTab('list')">☰ 一覧</button>
+    </div>
+
+    <div id="panels-wrap">
 
     <!-- クイズ -->
     <div class="form-panel active" id="panel-quiz">
@@ -474,6 +534,20 @@ header span { font-size: 13px; color: var(--text-muted); }
       </div>
     </div>
 
+    </div><!-- /panels-wrap -->
+
+    <!-- 一覧エリア -->
+    <div id="list-area" style="display:none;">
+      <div class="list-header">
+        <div>
+          <span class="list-title" id="list-title">一覧</span>
+          <span class="list-count" id="list-count"></span>
+        </div>
+        <button class="list-refresh-btn" onclick="reloadList()">↺ 更新</button>
+      </div>
+      <div id="list-content"></div>
+    </div>
+
   </div>
 </div>
 
@@ -526,11 +600,80 @@ function logout() {
   location.reload();
 }
 
+let _currentDB  = 'quiz';
+let _currentTab = 'add';
+
 function switchDB(name) {
+  _currentDB = name;
   document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
   document.querySelectorAll(".form-panel").forEach(p => p.classList.remove("active"));
   event.currentTarget.classList.add("active");
   document.getElementById("panel-" + name).classList.add("active");
+  if (_currentTab === 'list') loadList(name);
+}
+
+function switchTab(tab) {
+  _currentTab = tab;
+  document.getElementById('tab-add').classList.toggle('active', tab === 'add');
+  document.getElementById('tab-list').classList.toggle('active', tab === 'list');
+  document.getElementById('panels-wrap').style.display = tab === 'add' ? '' : 'none';
+  document.getElementById('list-area').style.display   = tab === 'list' ? '' : 'none';
+  if (tab === 'list') loadList(_currentDB);
+}
+
+function reloadList() { loadList(_currentDB); }
+
+const DB_LABELS = {
+  quiz: '📝 クイズ', committee: '📢 委員会News', activities: '🌿 活動報告',
+  x: '𝕏 X', tiktok: '🎵 TikTok', youtube: '▶ YouTube', lemino: '🎬 Lemino',
+};
+
+async function loadList(db) {
+  const content  = document.getElementById('list-content');
+  const titleEl  = document.getElementById('list-title');
+  const countEl  = document.getElementById('list-count');
+  titleEl.textContent = DB_LABELS[db] || db;
+  countEl.textContent = '';
+  content.innerHTML = '<div class="list-loading">⏳ 読み込み中...</div>';
+  try {
+    const res = await fetch(`${API_BASE}/list/${db}`, {
+      headers: { Authorization: `Bearer ${getPassword()}` }
+    });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      content.innerHTML = `<div class="list-error">❌ ${escHtml(d.error || 'エラー')}</div>`;
+      return;
+    }
+    const data  = await res.json();
+    const items = data.items || [];
+    countEl.textContent = `（${items.length}件）`;
+    if (items.length === 0) {
+      content.innerHTML = '<div class="list-empty">データがありません</div>';
+      return;
+    }
+    content.innerHTML = renderListTable(items);
+  } catch (e) {
+    content.innerHTML = `<div class="list-error">❌ 接続エラー: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function renderListTable(items) {
+  const rows = items.map(item => {
+    const name = item.url
+      ? `<a href="${escHtml(item.url)}" target="_blank" rel="noopener">${escHtml(item.name || '（無題）')}</a>`
+      : escHtml(item.name || '（無題）');
+    const date = item.date ? item.date : '—';
+    const pub  = item.published === true  ? '<span class="pub-badge pub-true">公開</span>'
+               : item.published === false ? '<span class="pub-badge pub-false">非公開</span>'
+               : '';
+    return `<tr><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td></tr>`;
+  }).join('');
+  return `<table class="list-table"><thead><tr><th>タイトル</th><th>日付</th><th>公開</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function val(id) { return (document.getElementById(id)?.value || "").trim(); }
