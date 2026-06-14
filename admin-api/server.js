@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   if (origin === "https://satoyu.info" || origin === "https://www.satoyu.info") {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
@@ -167,6 +167,19 @@ app.post("/add/lemino", auth, async (req, res) => {
     if (url)  props.URL  = { url };
     if (description) props.Description = { rich_text: t(description) };
     await notion.pages.create({ parent: { database_id: DB.lemino }, properties: props });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// レコード削除（アーカイブ）
+app.delete("/delete/:db/:pageId", auth, async (req, res) => {
+  const { db: dbKey, pageId } = req.params;
+  if (!DB[dbKey]) return res.status(404).json({ error: "不明なDB" });
+  try {
+    await notion.pages.update({ page_id: pageId, archived: true });
     res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
