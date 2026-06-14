@@ -227,6 +227,35 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .more-desc{font-size:11px;color:var(--ink-soft);line-height:1.7;}
 .more-arrow{font-family:'Caveat',cursive;font-size:18px;color:var(--emerald-dark);align-self:flex-end;margin-top:auto;font-weight:700;}
 
+/* Hashtags */
+.hashtag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.hashtag-card{
+  background:#fff;border:2px solid var(--ink);border-radius:16px;
+  padding:20px 20px 18px;
+  box-shadow:4px 4px 0 var(--emerald);
+  display:flex;flex-direction:column;gap:8px;
+}
+.hashtag-card:nth-child(2){box-shadow:4px 4px 0 var(--pink);}
+.hashtag-card:nth-child(3){box-shadow:4px 4px 0 #c9a96e;}
+.hashtag-card:nth-child(4){box-shadow:4px 4px 0 var(--emerald-dark);}
+.hashtag-card:nth-child(5){box-shadow:4px 4px 0 var(--pink);}
+.hashtag-platform{
+  font-family:'Klee One',serif;font-size:10px;color:var(--ink-light);
+  letter-spacing:0.08em;
+}
+.hashtag-tag{
+  font-family:'Klee One',serif;font-weight:600;font-size:17px;
+  color:var(--emerald-dark);line-height:1.4;text-decoration:none;
+  word-break:break-all;
+}
+.hashtag-tag:hover{color:var(--pink);text-decoration:underline;}
+.hashtag-desc{font-size:12px;color:var(--ink-soft);line-height:1.85;flex:1;}
+.hashtag-ref{
+  margin-top:12px;font-size:11px;color:var(--ink-light);
+}
+.hashtag-ref a{color:var(--emerald-dark);text-decoration:none;}
+.hashtag-ref a:hover{text-decoration:underline;}
+
 /* Footer */
 .foot{text-align:center;padding:36px 16px;}
 .foot-mark{display:inline-block;font-family:'Caveat',cursive;font-weight:700;font-size:24px;color:var(--emerald-dark);margin-bottom:6px;}
@@ -246,6 +275,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   .profile-img-wrap{justify-content:flex-start;}
   .profile-img{width:140px;height:140px;}
   .charm-grid{grid-template-columns:1fr;}
+  .hashtag-grid{grid-template-columns:1fr 1fr;}
   .best-grid{grid-template-columns:1fr;}
   .best-card.featured{grid-row:auto;}
   .more-grid{grid-template-columns:repeat(2,1fr);}
@@ -320,6 +350,45 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
         <dt>お披露目サイトプロフィール</dt><dd><a href="https://www.hinatazaka46.com/s/official/page/5th_generation_member?ima=0000&m=QXQUKkvSrCQ" target="_blank" rel="noopener">日向坂46 五期生 お披露目サイト →</a></dd>
       </dl>
     </div>
+  </section>
+
+  <!-- 02 Hashtags -->
+  <section>
+    <div class="sec-h">
+      <div class="sec-h-l">
+        <span class="sec-h-icon c2">#</span>
+        <h2>関連ハッシュタグ</h2>
+        <span class="sec-h-en">hashtags</span>
+      </div>
+    </div>
+    <div class="hashtag-grid">
+      <div class="hashtag-card">
+        <span class="hashtag-platform">𝕏 (Twitter)</span>
+        <a class="hashtag-tag" href="https://x.com/search?q=%23satoyublog" target="_blank" rel="noopener">#satoyublog</a>
+        <p class="hashtag-desc">優羽さんのブログのハッシュタグです。感想や、ブログ内の問いかけへのお返事をポストする時にぜひお使いください。</p>
+      </div>
+      <div class="hashtag-card">
+        <span class="hashtag-platform">𝕏 (Twitter)</span>
+        <a class="hashtag-tag" href="https://x.com/search?q=%23satoyutalk" target="_blank" rel="noopener">#satoyutalk</a>
+        <p class="hashtag-desc">優羽さんのメッセージのハッシュタグです。感想や、メッセージ内の問いかけへのお返事をポストする時にぜひお使いください。</p>
+      </div>
+      <div class="hashtag-card">
+        <span class="hashtag-platform">𝕏 (Twitter)</span>
+        <a class="hashtag-tag" href="https://x.com/search?q=%23ちっちゃい佐藤" target="_blank" rel="noopener">#ちっちゃい佐藤</a>
+        <p class="hashtag-desc">優羽さんのオフィシャルグッズのハッシュタグです。グッズをお迎えした時や、一緒にお出かけをした時にぜひお使いください。</p>
+      </div>
+      <div class="hashtag-card">
+        <span class="hashtag-platform">𝕏 (Twitter)</span>
+        <a class="hashtag-tag" href="https://x.com/search?q=%23さとうゆからお返事" target="_blank" rel="noopener">#さとうゆからお返事</a>
+        <p class="hashtag-desc">優羽さんのメッセージに登場するハッシュタグです。レターで送ってくださったご質問に、佐藤さんが答えるコーナーで使われています。</p>
+      </div>
+      <div class="hashtag-card">
+        <span class="hashtag-platform">𝕏 (Twitter)</span>
+        <a class="hashtag-tag" href="https://x.com/search?q=%23satoyugreet" target="_blank" rel="noopener">#satoyugreet</a>
+        <p class="hashtag-desc">優羽さんのミート&amp;グリートのレポートにお使いください。</p>
+      </div>
+    </div>
+    <p class="hashtag-ref">参照：<a href="https://www.hinatazaka46.com/s/official/diary/detail/68612" target="_blank" rel="noopener">佐藤優羽ブログ「夢惑う思いならば。」（2026.03.25）</a></p>
   </section>
 
   <!-- 03 Best Content -->
