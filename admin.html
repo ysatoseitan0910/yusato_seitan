@@ -244,10 +244,17 @@ header span { font-size: 13px; color: var(--text-muted); }
 .list-loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 15px; }
 .list-error { padding: 16px; background: #fde7e7; border-radius: 8px; color: #c00; font-size: 14px; }
 .list-empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+.list-del-btn {
+  padding: 3px 10px; border: 1.5px solid #f5c0c0; border-radius: 6px;
+  background: #fff5f5; color: #c00; font-size: 12px; cursor: pointer;
+  font-family: inherit; transition: all 0.15s; white-space: nowrap;
+}
+.list-del-btn:hover:not(:disabled) { background: #fde7e7; border-color: #e88; }
+.list-del-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 @media (max-width: 600px) {
   .panel-tab { font-size: 16px; padding: 10px 18px; }
-  .list-table td:last-child { display: none; }
-  .list-table th:last-child { display: none; }
+  .list-table td:nth-child(3) { display: none; }
+  .list-table th:nth-child(3) { display: none; }
 }
 </style>
 </head>
@@ -652,13 +659,13 @@ async function loadList(db) {
       content.innerHTML = '<div class="list-empty">データがありません</div>';
       return;
     }
-    content.innerHTML = renderListTable(items);
+    content.innerHTML = renderListTable(items, db);
   } catch (e) {
     content.innerHTML = `<div class="list-error">❌ 接続エラー: ${escHtml(e.message)}</div>`;
   }
 }
 
-function renderListTable(items) {
+function renderListTable(items, db) {
   const rows = items.map(item => {
     const name = item.url
       ? `<a href="${escHtml(item.url)}" target="_blank" rel="noopener">${escHtml(item.name || '（無題）')}</a>`
@@ -667,9 +674,45 @@ function renderListTable(items) {
     const pub  = item.published === true  ? '<span class="pub-badge pub-true">公開</span>'
                : item.published === false ? '<span class="pub-badge pub-false">非公開</span>'
                : '';
-    return `<tr><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td></tr>`;
+    const delBtn = `<button class="list-del-btn" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}" onclick="deleteRecord('${escHtml(db)}', this)">削除</button>`;
+    return `<tr><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td>${delBtn}</td></tr>`;
   }).join('');
-  return `<table class="list-table"><thead><tr><th>タイトル</th><th>日付</th><th>公開</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<table class="list-table"><thead><tr><th>タイトル</th><th>日付</th><th>公開</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function deleteRecord(db, btnEl) {
+  const pageId = btnEl.dataset.id;
+  const name   = btnEl.dataset.name || '（無題）';
+  const row    = btnEl.closest('tr');
+  if (!confirm(`「${name}」をアーカイブ（削除）しますか？\n※ Notionからアーカイブされます。`)) return;
+  btnEl.disabled = true;
+  btnEl.textContent = '...';
+  try {
+    const res = await fetch(`${API_BASE}/delete/${db}/${pageId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${getPassword()}` }
+    });
+    if (res.status === 401) { logout(); return; }
+    if (res.ok) {
+      row.style.transition = 'opacity 0.3s';
+      row.style.opacity = '0';
+      setTimeout(() => {
+        row.remove();
+        const countEl = document.getElementById('list-count');
+        const m = countEl.textContent.match(/\d+/);
+        if (m) countEl.textContent = `（${Math.max(0, parseInt(m[0]) - 1)}件）`;
+      }, 300);
+    } else {
+      const d = await res.json().catch(() => ({}));
+      alert('削除失敗: ' + (d.error || 'エラー'));
+      btnEl.disabled = false;
+      btnEl.textContent = '削除';
+    }
+  } catch (e) {
+    alert('接続エラー: ' + e.message);
+    btnEl.disabled = false;
+    btnEl.textContent = '削除';
+  }
 }
 
 function escHtml(s) {
