@@ -92,6 +92,62 @@ header span { font-size: 13px; color: var(--text-muted); }
 }
 .logout-btn:hover { border-color: var(--ink); color: var(--ink); }
 
+.deploy-section {
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+.deploy-btn {
+  display: block; width: 100%; padding: 10px 14px;
+  border: 2px solid var(--ink); border-radius: 10px;
+  background: var(--emerald); color: #fff;
+  font-family: 'Klee One', serif; font-size: 15px; font-weight: 600;
+  cursor: pointer; text-align: center;
+  box-shadow: 3px 3px 0 var(--emerald-dark);
+  transition: all 0.15s;
+}
+.deploy-btn:hover:not(:disabled) { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--emerald-dark); }
+.deploy-btn:active:not(:disabled) { transform: translate(3px,3px); box-shadow: none; }
+.deploy-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.deploy-btn.no-token {
+  background: #fff; color: var(--text-muted);
+  border-color: var(--border); box-shadow: none;
+  font-size: 13px;
+}
+.deploy-status-area {
+  margin-top: 8px; font-size: 12px; line-height: 1.6;
+  min-height: 20px;
+}
+.deploy-status-area a { color: var(--emerald-dark); }
+.token-hint {
+  font-size: 11px; color: var(--text-light); margin-top: 4px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.token-reset-btn {
+  background: none; border: none; color: var(--text-light); cursor: pointer;
+  font-size: 11px; padding: 0; text-decoration: underline;
+}
+.token-reset-btn:hover { color: var(--ink); }
+.token-setup-area {
+  margin-top: 8px; display: none;
+}
+.token-setup-area input {
+  width: 100%; padding: 8px 10px; font-size: 13px;
+  border: 2px solid var(--border); border-radius: 8px;
+  font-family: inherit; background: var(--white);
+  margin-bottom: 6px;
+}
+.token-setup-area input:focus { outline: none; border-color: var(--emerald); }
+.token-save-btn {
+  width: 100%; padding: 7px; border: 2px solid var(--emerald); border-radius: 8px;
+  background: var(--emerald-pale); color: var(--emerald-dark);
+  font-family: 'Klee One', serif; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.token-save-btn:hover { background: var(--emerald-light); }
+@media (max-width: 600px) {
+  .deploy-btn { font-size: 16px; }
+}
+
 .form-area { flex: 1; min-width: 0; }
 .form-panel { display: none; }
 .form-panel.active { display: block; }
@@ -178,6 +234,21 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" onclick="switchDB('youtube')">▶ YouTube</button>
     <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
+
+    <!-- デプロイ -->
+    <div class="deploy-section">
+      <div class="sidebar-title">デプロイ</div>
+      <button class="deploy-btn" id="deployBtn" onclick="handleDeployClick()">🚀 今すぐデプロイ</button>
+      <div class="deploy-status-area" id="deployStatus"></div>
+      <div class="token-hint" id="tokenHint" style="display:none;">
+        <span id="tokenHintText"></span>
+        <button class="token-reset-btn" onclick="resetToken()">変更</button>
+      </div>
+      <div class="token-setup-area" id="tokenSetupArea">
+        <input type="password" id="githubTokenInput" placeholder="ghp_xxxx...（workflowスコープ）" autocomplete="off">
+        <button class="token-save-btn" onclick="saveToken()">保存してデプロイ</button>
+      </div>
+    </div>
   </div>
 
   <div class="form-area">
@@ -530,6 +601,207 @@ document.getElementById("passwordInput").addEventListener("keydown", e => {
 
 // セッション継続チェック
 if (getPassword()) showMain();
+
+// ── GitHub Actions デプロイ ──
+const GH_REPO   = "ysatoseitan0910/yusato_seitan";
+const GH_WF     = "deploy.yml";
+const GH_BRANCH = "main";
+const GH_ACTIONS_URL = `https://github.com/${GH_REPO}/actions`;
+
+function getGhToken() { return localStorage.getItem("gh_token") || ""; }
+function setGhToken(t) { localStorage.setItem("gh_token", t); }
+function clearGhToken() { localStorage.removeItem("gh_token"); }
+
+let deployPollTimer = null;
+
+function initDeployUI() {
+  const token = getGhToken();
+  const btn   = document.getElementById("deployBtn");
+  const hint  = document.getElementById("tokenHint");
+  const hintTxt = document.getElementById("tokenHintText");
+  const setup = document.getElementById("tokenSetupArea");
+  if (token) {
+    btn.className = "deploy-btn";
+    btn.textContent = "🚀 今すぐデプロイ";
+    btn.disabled = false;
+    hint.style.display = "flex";
+    hintTxt.textContent = "Token: ghp_***" + token.slice(-4);
+    setup.style.display = "none";
+    fetchLatestRunStatus();
+  } else {
+    btn.className = "deploy-btn no-token";
+    btn.textContent = "⚙ Token を設定してデプロイ";
+    hint.style.display = "none";
+    setup.style.display = "block";
+  }
+}
+
+function handleDeployClick() {
+  if (!getGhToken()) {
+    document.getElementById("tokenSetupArea").style.display = "block";
+    document.getElementById("githubTokenInput").focus();
+    return;
+  }
+  triggerDeploy();
+}
+
+function saveToken() {
+  const t = document.getElementById("githubTokenInput").value.trim();
+  if (!t) { setDeployStatus("❌ Token を入力してください", "err"); return; }
+  setGhToken(t);
+  document.getElementById("githubTokenInput").value = "";
+  initDeployUI();
+  triggerDeploy();
+}
+
+function resetToken() {
+  clearGhToken();
+  clearDeployPoll();
+  initDeployUI();
+  setDeployStatus("", "");
+}
+
+async function triggerDeploy() {
+  const token = getGhToken();
+  if (!token) return;
+  const btn = document.getElementById("deployBtn");
+  btn.disabled = true;
+  btn.textContent = "⏳ 送信中...";
+  setDeployStatus("", "");
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/actions/workflows/${GH_WF}/dispatches`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        body: JSON.stringify({ ref: GH_BRANCH }),
+      }
+    );
+    if (res.status === 204) {
+      setDeployStatus("⏳ ワークフロー起動中...", "running");
+      btn.textContent = "⏳ 実行中...";
+      setTimeout(() => pollRunStatus(0), 4000);
+    } else if (res.status === 401 || res.status === 403) {
+      setDeployStatus("❌ Token が無効です。再設定してください", "err");
+      btn.disabled = false;
+      btn.textContent = "🚀 今すぐデプロイ";
+    } else {
+      const body = await res.json().catch(() => ({}));
+      setDeployStatus("❌ エラー: " + (body.message || res.status), "err");
+      btn.disabled = false;
+      btn.textContent = "🚀 今すぐデプロイ";
+    }
+  } catch (e) {
+    setDeployStatus("❌ 接続エラー: " + e.message, "err");
+    btn.disabled = false;
+    btn.textContent = "🚀 今すぐデプロイ";
+  }
+}
+
+async function pollRunStatus(attempt) {
+  clearDeployPoll();
+  if (attempt > 40) {
+    setDeployStatus('⚠ タイムアウト — <a href="' + GH_ACTIONS_URL + '" target="_blank">Actions で確認</a>', "warn");
+    resetDeployBtn();
+    return;
+  }
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/actions/runs?per_page=1&branch=${GH_BRANCH}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getGhToken()}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      }
+    );
+    if (!res.ok) { resetDeployBtn(); return; }
+    const data = await res.json();
+    const run = data.workflow_runs?.[0];
+    if (!run) {
+      deployPollTimer = setTimeout(() => pollRunStatus(attempt + 1), 6000);
+      return;
+    }
+    const { status, conclusion, html_url } = run;
+    if (status === "completed") {
+      if (conclusion === "success") {
+        setDeployStatus('✅ デプロイ完了！ — <a href="' + html_url + '" target="_blank">ログを見る</a>', "ok");
+      } else {
+        setDeployStatus('❌ 失敗 (' + conclusion + ') — <a href="' + html_url + '" target="_blank">ログを見る</a>', "err");
+      }
+      resetDeployBtn();
+    } else {
+      const elapsed = attempt * 6;
+      setDeployStatus('⏳ 実行中... (' + elapsed + 's) — <a href="' + html_url + '" target="_blank">Actions</a>', "running");
+      deployPollTimer = setTimeout(() => pollRunStatus(attempt + 1), 6000);
+    }
+  } catch (e) {
+    deployPollTimer = setTimeout(() => pollRunStatus(attempt + 1), 10000);
+  }
+}
+
+async function fetchLatestRunStatus() {
+  if (!getGhToken()) return;
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/actions/runs?per_page=1&branch=${GH_BRANCH}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getGhToken()}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      }
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    const run = data.workflow_runs?.[0];
+    if (!run) return;
+    const { status, conclusion, html_url, updated_at } = run;
+    const updatedStr = new Date(updated_at).toLocaleString("ja-JP", { month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit" });
+    if (status === "completed") {
+      const icon = conclusion === "success" ? "✅" : "❌";
+      setDeployStatus(icon + ' 最終: ' + updatedStr + ' — <a href="' + html_url + '" target="_blank">ログ</a>', conclusion === "success" ? "ok" : "err");
+    } else {
+      setDeployStatus('⏳ 実行中... <a href="' + html_url + '" target="_blank">Actions</a>', "running");
+      deployPollTimer = setTimeout(() => pollRunStatus(0), 6000);
+      document.getElementById("deployBtn").disabled = true;
+      document.getElementById("deployBtn").textContent = "⏳ 実行中...";
+    }
+  } catch (e) { /* silent */ }
+}
+
+function resetDeployBtn() {
+  const btn = document.getElementById("deployBtn");
+  btn.disabled = false;
+  btn.textContent = "🚀 今すぐデプロイ";
+}
+
+function clearDeployPoll() {
+  if (deployPollTimer) { clearTimeout(deployPollTimer); deployPollTimer = null; }
+}
+
+function setDeployStatus(html, type) {
+  const el = document.getElementById("deployStatus");
+  el.innerHTML = html;
+  el.style.color = type === "ok" ? "var(--emerald-dark)"
+    : type === "err" ? "#c00"
+    : type === "running" ? "#7a5a00"
+    : "var(--text-muted)";
+}
+
+// ログイン後にデプロイUIを初期化
+const _origShowMain = showMain;
+showMain = function() {
+  _origShowMain();
+  initDeployUI();
+};
 </script>
 </body>
 </html>
