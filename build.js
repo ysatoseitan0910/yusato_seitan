@@ -652,17 +652,10 @@ function getMemberNames(page) {
 async function buildMemberBlog(tpl) {
   const pages = await queryDB(DB.memberBlog);
 
-  // Memberプロパティの型をログ出力（デバッグ用）
-  if (pages.length > 0) {
-    const mp = pages[0].properties["Member"];
-    console.log(`  [MemberBlog] Memberプロパティ型: ${mp?.type || "なし"}, 値: ${JSON.stringify(mp).slice(0, 120)}`);
-  }
-
   // メンバー名を五十音順に収集
   const memberSet = new Set();
   pages.forEach(p => getMemberNames(p).forEach(m => memberSet.add(m)));
   const allMembers = [...memberSet].sort((a, b) => a.localeCompare(b, "ja"));
-  console.log(`  [MemberBlog] 検出されたメンバー: ${[...allMembers].join(", ") || "なし"}`);
 
   const cards = pages.map(p => {
     const url     = getUrl(p);
