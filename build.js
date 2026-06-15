@@ -69,11 +69,17 @@ function badgeClass(platform) {
 async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
   if (!dbId) return [];
   try {
-    // sorts が空配列のときはキーを省略することで Notion 側の手動並び順を維持する
-    const query = sorts.length > 0 ? { database_id: dbId, sorts } : { database_id: dbId };
-    const res = await notion.databases.query(query);
-    const published = res.results.filter(isPublished);
-    console.log(`  DB(${dbId.slice(0,8)}...): ${res.results.length}件取得, ${published.length}件公開`);
+    const all = [];
+    let cursor;
+    do {
+      const query = { database_id: dbId, page_size: 100, start_cursor: cursor };
+      if (sorts.length > 0) query.sorts = sorts;
+      const res = await notion.databases.query(query);
+      all.push(...res.results);
+      cursor = res.has_more ? res.next_cursor : undefined;
+    } while (cursor);
+    const published = all.filter(isPublished);
+    console.log(`  DB(${dbId.slice(0,8)}...): ${all.length}件取得, ${published.length}件公開`);
     return published;
   } catch(e) {
     console.error(`DB query error (${dbId}):`, e.message);
