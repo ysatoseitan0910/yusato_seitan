@@ -1006,6 +1006,8 @@ function render() {
     canvas.height = 9999;
     const totalH = draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, true);
     canvas.height = totalH;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, tpl.w, totalH);
     draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, false);
     document.getElementById("canvas-size-note").textContent =
       `出力サイズ: ${tpl.w} × ${totalH} px`;
