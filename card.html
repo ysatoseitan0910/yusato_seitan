@@ -271,8 +271,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <div id="fields-list"></div>
       <hr class="field-divider">
       <div class="download-section">
-        <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（JPEG）</button>
-        <p class="download-note">フルサイズ・JPEG形式で保存されます</p>
+        <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
+        <p class="download-note">2倍解像度・PNG形式で保存されます</p>
       </div>
     </div>
 
@@ -1006,6 +1006,8 @@ function render() {
     canvas.height = 9999;
     const totalH = draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, true);
     canvas.height = totalH;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, tpl.w, totalH);
     draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, false);
     document.getElementById("canvas-size-note").textContent =
       `出力サイズ: ${tpl.w} × ${totalH} px`;
@@ -1113,13 +1115,30 @@ function initIconUpload() {
   });
 }
 
-// ── ダウンロード ──────────────────────────────────────
+// ── ダウンロード（2倍解像度 PNG）────────────────────────
 function download() {
   const tpl  = TEMPLATES[tplIdx];
+  const SCALE = 2;
+  const draw = DRAW_FNS[tpl.id] || drawProfileCard;
+  const getV = id => getVal(tpl, id);
+
+  const tmp = document.createElement("canvas");
+  const tc  = tmp.getContext("2d");
+  tmp.width  = tpl.w * SCALE;
+  tmp.height = 9999;
+  tc.scale(SCALE, SCALE);
+  const totalH = draw(tc, tpl.w, getV, iconImg, true);
+
+  tmp.height = totalH * SCALE;
+  tc.scale(SCALE, SCALE);
+  tc.fillStyle = "#ffffff";
+  tc.fillRect(0, 0, tpl.w, totalH);
+  draw(tc, tpl.w, getV, iconImg, false);
+
   const name = (getVal(tpl, "fan-name") || "card").replace(/[\s　]/g, "_");
-  const a    = document.createElement("a");
-  a.download = `satoyu_profile_${name}.jpg`;
-  a.href     = canvas.toDataURL("image/jpeg", 0.92);
+  const a = document.createElement("a");
+  a.download = `satoyu_profile_${name}.png`;
+  a.href = tmp.toDataURL("image/png");
   a.click();
 }
 
