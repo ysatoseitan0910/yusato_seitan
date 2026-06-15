@@ -639,6 +639,12 @@ async function buildBlog(tpl) {
 
 async function buildMemberBlog(tpl) {
   const pages = await queryDB(DB.memberBlog);
+
+  // メンバー名を五十音順に収集
+  const memberSet = new Set();
+  pages.forEach(p => getTags(p, "Member").forEach(m => memberSet.add(m)));
+  const allMembers = [...memberSet].sort((a, b) => a.localeCompare(b, "ja"));
+
   const cards = pages.map(p => {
     const url     = getUrl(p);
     const title   = getText(p, "Name");
@@ -646,17 +652,16 @@ async function buildMemberBlog(tpl) {
     const desc    = getText(p, "Description");
     const img     = getMedia(p);
     const members = getTags(p, "Member");
-    const memberBadge = members.length
-      ? members.map(m => `<span class="badge badge-member">${m}</span>`).join(" ")
-      : "";
+    const memberBadges = members.map(m => `<span class="badge badge-member">${m}</span>`).join(" ");
     const blogBadge = `<span class="badge badge-blog">ブログ</span>`;
-    const badges = [memberBadge, blogBadge].filter(Boolean).join(" ");
+    const badges = [memberBadges, blogBadge].filter(Boolean).join(" ");
+    const membersAttr = escAttr(members.join(","));
     const imgTag = img
       ? `<img class="media-img" src="${img}" alt="${escAttr(title)}" loading="lazy">`
       : `<div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>`;
     const link = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">ブログを読む →</a>` : "";
     return `
-  <div class="card media-card" style="animation-delay:${Math.random()*0.3}s">
+  <div class="card media-card mblog-card" data-members="${membersAttr}" style="animation-delay:${Math.random()*0.3}s">
     ${imgTag}
     <div class="media-body">
       ${badges}
@@ -669,11 +674,57 @@ async function buildMemberBlog(tpl) {
     </div>
   </div>`;
   }).join("\n");
-  const body = `<div class="grid-3">
-    <!-- GALLERY_START -->
-    ${cards}
-    <!-- GALLERY_END -->
-  </div>`;
+
+  const filterBtns = [
+    `<button class="mbf-btn mbf-btn--active" data-member="">すべて (${pages.length})</button>`,
+    ...allMembers.map(m => {
+      const count = pages.filter(p => getTags(p, "Member").includes(m)).length;
+      return `<button class="mbf-btn" data-member="${escAttr(m)}">${m} <span class="mbf-count">(${count})</span></button>`;
+    }),
+  ].join("\n    ");
+
+  const body = `
+<style>
+.mbf-wrap { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.mbf-btn {
+  padding:6px 16px; border:2px solid var(--border); border-radius:99px;
+  background:var(--white); font-family:'Klee One',serif; font-size:13px;
+  color:var(--text-muted); cursor:pointer; transition:all 0.15s; line-height:1.4;
+}
+.mbf-btn:hover { border-color:var(--pink); color:#7a1535; }
+.mbf-btn--active { border-color:var(--pink); background:var(--pink); color:#7a1535; font-weight:600; }
+.mbf-count { font-size:11px; opacity:0.75; }
+</style>
+<div class="mbf-wrap" id="mbf-wrap">
+  ${filterBtns}
+</div>
+<div class="grid-3" id="mbf-grid">
+  <!-- GALLERY_START -->
+  ${cards}
+  <!-- GALLERY_END -->
+</div>
+<script>
+(function(){
+  var btns = document.querySelectorAll('.mbf-btn');
+  var cards = document.querySelectorAll('.mblog-card');
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var member = this.dataset.member;
+      btns.forEach(function(b){ b.classList.remove('mbf-btn--active'); });
+      this.classList.add('mbf-btn--active');
+      cards.forEach(function(card){
+        if(!member){
+          card.style.display = '';
+        } else {
+          var ms = (card.dataset.members || '').split(',');
+          card.style.display = ms.indexOf(member) >= 0 ? '' : 'none';
+        }
+      });
+    });
+  });
+})();
+<\/script>`;
+
   return buildPage(tpl, "他メンバーブログ", "MEMBER BLOG", "他メンバー <em>ブログ</em>", "佐藤優羽さんの登場している他メンバーのブログをまとめています", body, "member-blog.html");
 }
 
