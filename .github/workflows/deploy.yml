@@ -62,6 +62,15 @@ jobs:
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
           DB_QUIZ:             ${{ secrets.DB_QUIZ }}
 
+      - name: Update thumbnails for newly synced YU_NEWS entries
+        run: node update_media_thumbnails.js
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DB_YOUTUBE:   ${{ secrets.DB_YOUTUBE }}
+          DB_LEMINO:    ${{ secrets.DB_LEMINO }}
+          DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
+          DB_TIKTOK:    ${{ secrets.DB_TIKTOK }}
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
