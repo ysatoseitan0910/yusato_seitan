@@ -77,9 +77,7 @@ nav {
 .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .nav-logo-mark {
   width: 36px; height: 36px; border-radius: 50%;
-  background: var(--emerald); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Klee One',serif; font-weight: 600; font-size: 18px;
+  object-fit: cover; display: block;
   box-shadow: 0 3px 0 var(--emerald-dark);
   transform: rotate(-4deg);
   flex-shrink: 0;
@@ -596,7 +594,7 @@ footer .heart { color: var(--pink); }
 
 <nav>
   <a href="index.html" class="nav-logo">
-    <span class="nav-logo-mark">ゆ</span>
+    <img src="/images/favicon.png" class="nav-logo-mark" alt="">
     <span class="nav-logo-text">
       <span class="nav-logo-main">さとうゆほーむ</span>
     </span>
