@@ -71,13 +71,16 @@ app.post("/add/quiz", auth, async (req, res) => {
 
 // 委員会News
 app.post("/add/committee", auth, async (req, res) => {
-  const { name, date, url, description } = req.body;
+  const { name, date, url, status, deadline, description, mediaUrl } = req.body;
   if (!name) return res.status(400).json({ error: "タイトルは必須です" });
   try {
     const props = { Name: { title: t(name) }, Published: { checkbox: true } };
-    if (date) props.Date = { date: { start: date } };
-    if (url)  props.URL  = { url };
+    if (date)     props.Date        = { date: { start: date } };
+    if (url)      props.URL         = { url };
+    if (status)   props.Status      = { select: { name: status } };
+    if (deadline) props["締め切り"] = { date: { start: deadline } };
     if (description) props.Description = { rich_text: t(description) };
+    if (mediaUrl) props.Media = { files: [{ name: "image", type: "external", external: { url: mediaUrl } }] };
     await notion.pages.create({ parent: { database_id: DB.committee }, properties: props });
     res.json({ ok: true });
   } catch (e) {
@@ -88,12 +91,13 @@ app.post("/add/committee", auth, async (req, res) => {
 
 // 活動報告
 app.post("/add/activities", auth, async (req, res) => {
-  const { name, date, url, description, mediaUrl } = req.body;
+  const { name, date, url, status, description, mediaUrl } = req.body;
   if (!name) return res.status(400).json({ error: "タイトルは必須です" });
   try {
     const props = { Name: { title: t(name) }, Published: { checkbox: true } };
-    if (date)     props.Date  = { date: { start: date } };
-    if (url)      props.URL   = { url };
+    if (date)     props.Date   = { date: { start: date } };
+    if (url)      props.URL    = { url };
+    if (status)   props.Status = { select: { name: status } };
     if (description) props.Description = { rich_text: t(description) };
     if (mediaUrl) props.Media = { files: [{ name: "image", type: "external", external: { url: mediaUrl } }] };
     await notion.pages.create({ parent: { database_id: DB.activities }, properties: props });

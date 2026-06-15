@@ -439,9 +439,21 @@ header span { font-size: 13px; color: var(--text-muted); }
           <label>URL</label>
           <input type="url" id="committee-url" placeholder="https://...">
         </div>
+        <div class="field">
+          <label>ステータス</label>
+          <input type="text" id="committee-status" placeholder="例: 募集中、終了">
+        </div>
+        <div class="field">
+          <label>締め切り日</label>
+          <input type="date" id="committee-deadline">
+        </div>
         <div class="field full">
           <label>説明</label>
           <textarea id="committee-description" placeholder="説明文..."></textarea>
+        </div>
+        <div class="field full">
+          <label>画像URL（satoyu.info/images/... または外部URL）</label>
+          <input type="url" id="committee-mediaUrl" placeholder="https://satoyu.info/images/committee/...">
         </div>
       </div>
       <div class="submit-row">
@@ -465,6 +477,10 @@ header span { font-size: 13px; color: var(--text-muted); }
         <div class="field">
           <label>URL</label>
           <input type="url" id="activities-url" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>ステータス</label>
+          <input type="text" id="activities-status" placeholder="例: 募集中、終了">
         </div>
         <div class="field full">
           <label>説明</label>
@@ -786,8 +802,8 @@ function getPayload(db) {
     explanation: val("quiz-explanation"), sourceUrl: val("quiz-sourceUrl"),
     sourceTitle: val("quiz-sourceTitle"),
   };
-  if (db === "committee") return { name: val("committee-name"), date: val("committee-date"), url: val("committee-url"), description: val("committee-description") };
-  if (db === "activities") return { name: val("activities-name"), date: val("activities-date"), url: val("activities-url"), description: val("activities-description"), mediaUrl: val("activities-mediaUrl") };
+  if (db === "committee") return { name: val("committee-name"), date: val("committee-date"), url: val("committee-url"), status: val("committee-status"), deadline: val("committee-deadline"), description: val("committee-description"), mediaUrl: val("committee-mediaUrl") };
+  if (db === "activities") return { name: val("activities-name"), date: val("activities-date"), url: val("activities-url"), status: val("activities-status"), description: val("activities-description"), mediaUrl: val("activities-mediaUrl") };
   if (db === "x") return { name: val("x-name"), date: val("x-date"), url: val("x-url"), tags: val("x-tags") };
   if (db === "tiktok") return { name: val("tiktok-name"), date: val("tiktok-date"), url: val("tiktok-url") };
   if (db === "youtube") return { name: val("youtube-name"), date: val("youtube-date"), url: val("youtube-url"), channel: val("youtube-channel") };
