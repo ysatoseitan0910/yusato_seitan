@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/images/favicon.png">
+<link rel="apple-touch-icon" href="/images/favicon.png">
+<title>カード作成 | さとうゆほーむ</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-F1LS5L1Y7B');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --emerald: #3DAA78;
+  --emerald-dark: #1f7a52;
+  --emerald-light: #d4ecde;
+  --emerald-pale: #ecf7f0;
+  --pink: #f7b6c8;
+  --pink-pale: #fde7ed;
+  --ink: #1a2a22;
+  --text-muted: #516259;
+  --text-light: #9aaca3;
+  --border: #e3eee6;
+  --bg: #fdfcf7;
+  --white: #fff;
+  --nav-h: 60px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Klee One', 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+}
+
+/* ── Nav ── */
+nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(253,252,247,0.95); backdrop-filter: blur(10px); border-bottom: 2px dotted var(--emerald-light); z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-mark { width: 36px; height: 36px; border-radius: 50%; background: var(--emerald); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 18px; box-shadow: 0 3px 0 var(--emerald-dark); transform: rotate(-4deg); flex-shrink: 0; }
+.nav-logo-main { font-weight: 600; color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em; white-space: nowrap; }
+.nav-links { display: flex; gap: 0; align-items: center; }
+.nav-links a { text-decoration: none; font-size: 12px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; }
+.nav-links a:hover, .nav-links a.active { background: var(--pink-pale); color: var(--emerald-dark); }
+.nav-sep { display: inline-flex; width: 1px; height: 14px; background: var(--border); margin: 0 6px; align-self: center; flex-shrink: 0; }
+.nav-committee-label { display: none; }
+.hamburger { display: none; background: none; border: none; cursor: pointer; font-size: 22px; color: var(--emerald-dark); padding: 4px 8px; line-height: 1; border-radius: 6px; }
+.hamburger:hover { background: var(--pink-pale); }
+
+/* ── Editor layout ── */
+.editor-page { max-width: 1100px; margin: 0 auto; padding: 28px 20px 64px; }
+.editor-heading { margin-bottom: 24px; }
+.editor-heading h1 { font-size: 22px; font-weight: 600; color: var(--emerald-dark); }
+.editor-heading p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+/* Template tabs */
+.tpl-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tpl-tab {
+  padding: 8px 20px; border: 2px solid var(--border); border-radius: 99px;
+  background: var(--white); font-family: 'Klee One', serif; font-size: 14px;
+  color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+}
+.tpl-tab:hover { border-color: var(--emerald); color: var(--emerald-dark); }
+.tpl-tab.active { border-color: var(--emerald); background: var(--emerald); color: #fff; box-shadow: 2px 2px 0 var(--emerald-dark); }
+
+/* Two-column layout */
+.editor-body { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+
+/* Canvas area */
+.canvas-wrap {
+  position: sticky; top: calc(var(--nav-h) + 12px);
+  background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
+  padding: 16px; box-shadow: 4px 4px 0 var(--emerald-dark);
+}
+.canvas-label { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.06em; }
+#preview-canvas {
+  width: 100%; height: auto; display: block;
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.canvas-size-note { font-size: 11px; color: var(--text-light); margin-top: 8px; text-align: right; }
+
+/* Controls */
+.controls {
+  background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
+  padding: 22px; box-shadow: 4px 4px 0 var(--emerald);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.controls-title { font-size: 15px; font-weight: 600; color: var(--ink); padding-bottom: 12px; border-bottom: 2px dashed var(--border); }
+
+/* Fields */
+.field-block { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.field-input, .field-ta {
+  width: 100%; padding: 9px 12px;
+  border: 2px solid var(--border); border-radius: 10px;
+  font-family: 'Klee One', serif; font-size: 14px;
+  background: var(--bg); color: var(--ink);
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+.field-input:focus, .field-ta:focus { outline: none; border-color: var(--emerald); }
+.field-ta { min-height: 72px; }
+
+/* Field options (font-size, color, font) */
+.field-options { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.field-opt-label { font-size: 11px; color: var(--text-light); }
+.field-opt-select {
+  padding: 3px 8px; border: 1.5px solid var(--border); border-radius: 6px;
+  font-size: 12px; font-family: inherit; background: var(--bg);
+  cursor: pointer;
+}
+.field-opt-color {
+  width: 28px; height: 28px; border: 2px solid var(--border); border-radius: 6px;
+  cursor: pointer; padding: 1px; background: none;
+}
+
+/* Divider */
+.field-divider { border: none; border-top: 1px dashed var(--border); }
+
+/* Icon upload */
+.icon-section { display: flex; flex-direction: column; gap: 8px; }
+.icon-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.icon-row { display: flex; align-items: center; gap: 14px; }
+.icon-thumb-wrap { position: relative; width: 68px; height: 68px; flex-shrink: 0; }
+.icon-thumb {
+  width: 68px; height: 68px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--border); display: none;
+}
+.icon-thumb-wrap.has-icon .icon-thumb { display: block; }
+.icon-thumb-wrap.has-icon .icon-thumb-empty { display: none; }
+.icon-thumb-empty {
+  width: 68px; height: 68px; border-radius: 50%;
+  border: 2px dashed var(--border); background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--text-light);
+}
+.icon-btns { display: flex; flex-direction: column; gap: 6px; }
+#icon-file { display: none; }
+.icon-select-btn {
+  padding: 7px 14px; border: 2px solid var(--emerald); border-radius: 8px;
+  background: var(--emerald-pale); color: var(--emerald-dark);
+  font-family: 'Klee One', serif; font-size: 13px; cursor: pointer;
+  transition: all 0.15s; text-align: center; display: inline-block; white-space: nowrap;
+}
+.icon-select-btn:hover { background: var(--emerald-light); }
+.icon-clear-btn {
+  padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  background: none; color: var(--text-muted); font-family: 'Klee One', serif;
+  font-size: 12px; cursor: pointer; transition: all 0.15s; display: none;
+}
+.icon-clear-btn:hover { border-color: #e88; color: #c44; }
+
+/* Download */
+.download-section { padding-top: 4px; }
+.download-btn {
+  width: 100%; padding: 13px;
+  background: var(--emerald); color: #fff;
+  border: 2px solid var(--ink); border-radius: 12px;
+  font-family: 'Klee One', serif; font-size: 16px; font-weight: 600;
+  cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark);
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.download-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
+.download-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
+.download-note { font-size: 11px; color: var(--text-light); text-align: center; margin-top: 8px; }
+
+/* Placeholder badge */
+.placeholder-badge {
+  display: inline-block; font-size: 11px; color: #8a5a00;
+  background: #fff8e0; border: 1px solid #f0d880; border-radius: 99px;
+  padding: 2px 10px; margin-left: 8px;
+}
+
+/* Footer */
+.foot { text-align: center; padding: 32px 16px; }
+.foot p { font-size: 11px; color: var(--text-light); }
+
+@media (max-width: 760px) {
+  nav { padding: 0 16px; }
+  .hamburger { display: block; }
+  .nav-links { display: none; flex-direction: column; align-items: stretch; position: absolute; top: var(--nav-h); left: 0; right: 0; background: rgba(253,252,247,0.98); border-bottom: 2px dotted var(--emerald-light); padding: 8px 16px 16px; gap: 2px; z-index: 199; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 10px 14px; font-size: 13px; border-radius: 8px; }
+  .nav-sep { display: none; }
+  .nav-committee-label { display: block; font-size: 10px; letter-spacing: 0.06em; color: var(--text-light); padding: 10px 14px 2px; border-top: 1px dashed var(--border); margin-top: 4px; }
+  .editor-body { grid-template-columns: 1fr; }
+  .canvas-wrap { position: static; }
+  .controls { order: -1; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-mark">ゆ</span>
+    <span class="nav-logo-main">さとうゆほーむ</span>
+  </a>
+  <div class="nav-links" id="nav-links">
+    <a href="top.html">トップ</a>
+    <a href="yu.html">佐藤優羽さんについて</a>
+    <a href="yunews.html">News</a>
+    <a href="blog.html">ブログ</a>
+    <a href="interview.html">インタビュー</a>
+    <a href="x.html">X</a>
+    <a href="tiktok.html">TikTok</a>
+    <a href="youtube.html">YouTube</a>
+    <a href="lemino.html">Lemino</a>
+    <a href="quiz.html">クイズ</a>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <span class="nav-committee-label">生誕委員会</span>
+    <a href="committee.html">委員会News</a>
+    <a href="activities.html">生誕委員会活動報告</a>
+    <a href="about.html">委員会について</a>
+    <a href="terms.html">規約</a>
+    <a href="join.html">入会</a>
+    <a href="card.html" class="active">カード作成</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="メニューを開く">☰</button>
+</nav>
+
+<div class="editor-page">
+
+  <div class="editor-heading">
+    <h1>カード作成ツール <span class="placeholder-badge">準備中</span></h1>
+    <p>テキストを入力してオリジナルカードを作成・ダウンロードできます。背景画像・レイアウトは順次追加予定です。</p>
+  </div>
+
+  <!-- テンプレートタブ -->
+  <div class="tpl-tabs" id="tpl-tabs"></div>
+
+  <div class="editor-body">
+
+    <!-- Canvas プレビュー -->
+    <div class="canvas-wrap">
+      <div class="canvas-label">プレビュー</div>
+      <canvas id="preview-canvas"></canvas>
+      <div class="canvas-size-note" id="canvas-size-note"></div>
+    </div>
+
+    <!-- コントロール -->
+    <div class="controls">
+      <div class="controls-title">テキスト入力</div>
+
+      <!-- アイコン画像アップロード -->
+      <div class="icon-section">
+        <div class="icon-section-label">アイコン画像（任意）</div>
+        <div class="icon-row">
+          <div class="icon-thumb-wrap" id="icon-thumb-wrap">
+            <img id="icon-preview" class="icon-thumb" alt="アイコンプレビュー">
+            <div class="icon-thumb-empty" id="icon-empty">なし</div>
+          </div>
+          <div class="icon-btns">
+            <label for="icon-file" class="icon-select-btn">画像を選択</label>
+            <input type="file" id="icon-file" accept="image/*">
+            <button class="icon-clear-btn" id="icon-clear-btn">削除</button>
+          </div>
+        </div>
+      </div>
+      <hr class="field-divider">
+
+      <div id="fields-list"></div>
+      <hr class="field-divider">
+      <div class="download-section">
+        <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
+        <p class="download-note">フルサイズで保存されます</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="foot">
+  <p>さとうゆほーむ ♥ 運営：佐藤優羽生誕祭実行委員会</p>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  テンプレート定義
+//  ── 背景画像を設定するには bgImage にパスを入れる ──
+//  ── テキストフィールドは fields 配列に追加する ──
+// ════════════════════════════════════════════════════════
+const TEMPLATES = [
+  {
+    id: "fancard-sq",
+    name: "ファンカード（正方形）",
+    w: 1080,
+    h: 1080,
+    bgImage: null,   // 例: "images/card/bg_fancard_sq.png"
+    iconSlot: { x: 540, y: 168, r: 90, border: "rgba(255,255,255,0.80)", borderW: 7 },
+    // bgImage がない場合のプレースホルダー描画
+    bgFill(ctx, w, h) {
+      const g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, "#0e3d26");
+      g.addColorStop(0.5, "#1f7a52");
+      g.addColorStop(1, "#3DAA78");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      // 装飾円
+      ctx.beginPath();
+      ctx.arc(w * 0.85, h * 0.15, 260, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.05)";
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(w * 0.15, h * 0.85, 200, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.04)";
+      ctx.fill();
+      // 枠線
+      ctx.strokeStyle = "rgba(255,255,255,0.15)";
+      ctx.lineWidth = 6;
+      ctx.strokeRect(32, 32, w - 64, h - 64);
+      // PLACEHOLDER テキスト
+      ctx.font = "600 28px 'Klee One', sans-serif";
+      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("背景画像 準備中", w / 2, h / 2 + 100);
+    },
+    fields: [
+      {
+        id: "fan-name",
+        label: "ファン名",
+        placeholder: "さとうゆのみ〜んな",
+        x: 540, y: 360,
+        maxW: 920,
+        size: 60, bold: true, color: "#ffffff",
+        align: "center",
+      },
+      {
+        id: "handle",
+        label: "X（Twitter）ID",
+        placeholder: "@satoyuhome",
+        x: 540, y: 450,
+        maxW: 920,
+        size: 30, color: "#aadecc",
+        align: "center",
+      },
+      {
+        id: "start",
+        label: "推し始めたきっかけ",
+        placeholder: "ブログを読んで一目惚れしました",
+        x: 540, y: 640,
+        maxW: 880,
+        size: 28, color: "#ffffff",
+        align: "center",
+        multiline: true, lineHeight: 46,
+      },
+      {
+        id: "fav",
+        label: "好きなところ",
+        placeholder: "笑顔と表現力",
+        x: 540, y: 830,
+        maxW: 880,
+        size: 26, color: "#d4ecde",
+        align: "center",
+        multiline: true, lineHeight: 42,
+      },
+    ],
+  },
+  {
+    id: "fancard-wide",
+    name: "ファンカード（横長）",
+    w: 1200,
+    h: 630,
+    bgImage: null,   // 例: "images/card/bg_fancard_wide.png"
+    iconSlot: { x: 175, y: 315, r: 105, border: "rgba(255,255,255,0.80)", borderW: 7 },
+    bgFill(ctx, w, h) {
+      const g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, "#0e3d26");
+      g.addColorStop(1, "#2d8a60");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 5;
+      ctx.strokeRect(24, 24, w - 48, h - 48);
+      ctx.beginPath();
+      ctx.arc(w * 0.92, h * 0.1, 180, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.04)";
+      ctx.fill();
+      ctx.font = "600 24px 'Klee One', sans-serif";
+      ctx.fillStyle = "rgba(255,255,255,0.18)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("背景画像 準備中", w / 2, h / 2 + 80);
+    },
+    fields: [
+      {
+        id: "fan-name",
+        label: "ファン名",
+        placeholder: "さとうゆのみ〜んな",
+        x: 740, y: 200,
+        maxW: 840,
+        size: 58, bold: true, color: "#ffffff",
+        align: "center",
+      },
+      {
+        id: "handle",
+        label: "X（Twitter）ID",
+        placeholder: "@satoyuhome",
+        x: 740, y: 285,
+        maxW: 840,
+        size: 28, color: "#aadecc",
+        align: "center",
+      },
+      {
+        id: "msg",
+        label: "ひとこと",
+        placeholder: "佐藤優羽さんを全力で応援しています！",
+        x: 740, y: 420,
+        maxW: 820,
+        size: 28, color: "#ffffff",
+        align: "center",
+        multiline: true, lineHeight: 48,
+      },
+    ],
+  },
+];
+
+// ════════════════════════════════════════════════════════
+//  状態管理
+// ════════════════════════════════════════════════════════
+let tplIdx = 0;
+const values = {};   // { templateId_fieldId: text }
+const bgCache = {};  // { templateId: HTMLImageElement }
+let iconImg = null;  // アップロードされたアイコン画像
+
+// ════════════════════════════════════════════════════════
+//  Canvas
+// ════════════════════════════════════════════════════════
+const canvas = document.getElementById("preview-canvas");
+const ctx    = canvas.getContext("2d");
+
+function tplKey(tpl, fieldId) { return `${tpl.id}__${fieldId}`; }
+function getVal(tpl, fieldId) { return values[tplKey(tpl, fieldId)] || ""; }
+function setVal(tpl, fieldId, v) { values[tplKey(tpl, fieldId)] = v; }
+
+// ── テキスト折り返し（日本語対応）────────────────────
+function wrapText(ctx, text, maxW) {
+  const lines = [];
+  for (const raw of text.split("\n")) {
+    if (!raw) { lines.push(""); continue; }
+    let line = "";
+    for (const ch of raw) {
+      if (ctx.measureText(line + ch).width > maxW && line.length > 0) {
+        lines.push(line);
+        line = ch;
+      } else {
+        line += ch;
+      }
+    }
+    if (line) lines.push(line);
+  }
+  return lines;
+}
+
+// ── 描画 ─────────────────────────────────────────────
+function render() {
+  const tpl = TEMPLATES[tplIdx];
+  canvas.width  = tpl.w;
+  canvas.height = tpl.h;
+  ctx.clearRect(0, 0, tpl.w, tpl.h);
+
+  // 背景
+  if (bgCache[tpl.id]) {
+    ctx.drawImage(bgCache[tpl.id], 0, 0, tpl.w, tpl.h);
+  } else {
+    tpl.bgFill(ctx, tpl.w, tpl.h);
+  }
+
+  // アイコン画像（円形クリップ）
+  if (iconImg && tpl.iconSlot) {
+    const { x, y, r, border, borderW } = tpl.iconSlot;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.clip();
+    // アスペクト比を保ちながら中央クロップ
+    const iw = iconImg.naturalWidth, ih = iconImg.naturalHeight;
+    const scale = Math.max((r * 2) / iw, (r * 2) / ih);
+    const sw = (r * 2) / scale, sh = (r * 2) / scale;
+    const sx = (iw - sw) / 2,   sy = (ih - sh) / 2;
+    ctx.drawImage(iconImg, sx, sy, sw, sh, x - r, y - r, r * 2, r * 2);
+    ctx.restore();
+    // 縁取り
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.strokeStyle = border || "rgba(255,255,255,0.8)";
+    ctx.lineWidth   = borderW || 6;
+    ctx.stroke();
+  }
+
+  // テキストフィールド
+  for (const f of tpl.fields) {
+    const text = getVal(tpl, f.id);
+    if (!text.trim()) continue;
+
+    const weight = f.bold ? "600 " : "";
+    ctx.textAlign    = f.align || "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle    = f.color || "#ffffff";
+
+    if (f.multiline) {
+      ctx.font = `${weight}${f.size}px 'Klee One', 'Noto Sans JP', sans-serif`;
+      const lines = wrapText(ctx, text, f.maxW || tpl.w - 60);
+      const lh = f.lineHeight || f.size * 1.6;
+      let y = f.y - ((lines.length - 1) * lh) / 2;
+      for (const line of lines) {
+        ctx.fillText(line, f.x, y);
+        y += lh;
+      }
+    } else {
+      // 長すぎる場合は自動縮小
+      let fs = f.size;
+      ctx.font = `${weight}${fs}px 'Klee One', 'Noto Sans JP', sans-serif`;
+      const maxW = f.maxW || tpl.w - 60;
+      while (ctx.measureText(text).width > maxW && fs > 14) {
+        fs -= 2;
+        ctx.font = `${weight}${fs}px 'Klee One', 'Noto Sans JP', sans-serif`;
+      }
+      ctx.fillText(text, f.x, f.y);
+    }
+  }
+
+  // サイズ表示更新
+  document.getElementById("canvas-size-note").textContent = `出力サイズ: ${tpl.w} × ${tpl.h} px`;
+}
+
+// ── 背景画像読み込み ──────────────────────────────────
+function loadBg(tpl) {
+  if (!tpl.bgImage) { render(); return; }
+  if (bgCache[tpl.id]) { render(); return; }
+  const img = new Image();
+  img.onload  = () => { bgCache[tpl.id] = img; render(); };
+  img.onerror = () => render();
+  img.src = tpl.bgImage;
+}
+
+// ════════════════════════════════════════════════════════
+//  UI 生成
+// ════════════════════════════════════════════════════════
+
+// ── テンプレートタブ ──────────────────────────────────
+function buildTabs() {
+  const container = document.getElementById("tpl-tabs");
+  container.innerHTML = "";
+  TEMPLATES.forEach((tpl, i) => {
+    const btn = document.createElement("button");
+    btn.className = "tpl-tab" + (i === tplIdx ? " active" : "");
+    btn.textContent = tpl.name;
+    btn.onclick = () => switchTemplate(i);
+    container.appendChild(btn);
+  });
+}
+
+// ── フィールドリスト ──────────────────────────────────
+function buildFields() {
+  const tpl = TEMPLATES[tplIdx];
+  const container = document.getElementById("fields-list");
+  container.innerHTML = "";
+
+  tpl.fields.forEach((f, idx) => {
+    const block = document.createElement("div");
+    block.className = "field-block";
+
+    const label = document.createElement("label");
+    label.className = "field-label";
+    label.textContent = f.label;
+    label.htmlFor = `fi-${tpl.id}-${f.id}`;
+
+    const el = f.multiline ? document.createElement("textarea") : document.createElement("input");
+    el.id = `fi-${tpl.id}-${f.id}`;
+    el.className = f.multiline ? "field-ta" : "field-input";
+    el.placeholder = f.placeholder || "";
+    el.value = getVal(tpl, f.id);
+    if (!f.multiline) el.type = "text";
+    el.addEventListener("input", e => {
+      setVal(tpl, f.id, e.target.value);
+      render();
+    });
+
+    block.appendChild(label);
+    block.appendChild(el);
+
+    if (idx < tpl.fields.length - 1) {
+      const hr = document.createElement("hr");
+      hr.className = "field-divider";
+      block.appendChild(hr);
+    }
+
+    container.appendChild(block);
+  });
+}
+
+// ── テンプレート切り替え ──────────────────────────────
+function switchTemplate(idx) {
+  tplIdx = idx;
+  document.querySelectorAll(".tpl-tab").forEach((b, i) => b.classList.toggle("active", i === idx));
+  buildFields();
+  loadBg(TEMPLATES[idx]);
+}
+
+// ── アイコン画像アップロード ──────────────────────────
+function initIconUpload() {
+  const fileInput = document.getElementById("icon-file");
+  const preview   = document.getElementById("icon-preview");
+  const thumbWrap = document.getElementById("icon-thumb-wrap");
+  const clearBtn  = document.getElementById("icon-clear-btn");
+
+  fileInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        iconImg = img;
+        preview.src = e.target.result;
+        thumbWrap.classList.add("has-icon");
+        clearBtn.style.display = "inline-block";
+        render();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    this.value = "";  // 同じファイルを再選択できるようにリセット
+  });
+
+  clearBtn.addEventListener("click", function () {
+    iconImg = null;
+    preview.src = "";
+    thumbWrap.classList.remove("has-icon");
+    clearBtn.style.display = "none";
+    render();
+  });
+}
+
+// ── ダウンロード ──────────────────────────────────────
+function download() {
+  const tpl = TEMPLATES[tplIdx];
+  const name = (getVal(tpl, "fan-name") || getVal(tpl, "name") || "card").replace(/\s/g, "_");
+  const a = document.createElement("a");
+  a.download = `satoyu_card_${name}.png`;
+  a.href = canvas.toDataURL("image/png");
+  a.click();
+}
+
+// ════════════════════════════════════════════════════════
+//  初期化
+// ════════════════════════════════════════════════════════
+document.fonts.ready.then(() => {
+  buildTabs();
+  switchTemplate(0);
+  document.getElementById("download-btn").addEventListener("click", download);
+  initIconUpload();
+});
+
+// ── ハンバーガーメニュー ──────────────────────────────
+(function () {
+  const btn   = document.getElementById("hamburger");
+  const links = document.getElementById("nav-links");
+  if (!btn || !links) return;
+  btn.addEventListener("click", function () {
+    const open = links.classList.toggle("open");
+    btn.textContent = open ? "✕" : "☰";
+    btn.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
+  });
+  links.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", function () {
+      links.classList.remove("open");
+      btn.textContent = "☰";
+      btn.setAttribute("aria-label", "メニューを開く");
+    });
+  });
+})();
+</script>
+</body>
+</html>
