@@ -33,8 +33,9 @@ jobs:
       - name: Update blog thumbnails
         run: node update_blog_thumbnails.js
         env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          DB_BLOG:      ${{ secrets.DB_BLOG }}
+          NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
+          DB_BLOG:         ${{ secrets.DB_BLOG }}
+          DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
 
       - name: Update YouTube/Lemino thumbnails & TikTok captions
         run: node update_media_thumbnails.js
@@ -53,6 +54,7 @@ jobs:
           DB_YU_NEWS:          ${{ secrets.DB_YU_NEWS }}
           DB_ACTIVITIES:       ${{ secrets.DB_ACTIVITIES }}
           DB_BLOG:             ${{ secrets.DB_BLOG }}
+          DB_MEMBER_BLOG:      ${{ secrets.DB_MEMBER_BLOG }}
           DB_INTERVIEW:        ${{ secrets.DB_INTERVIEW }}
           DB_TIKTOK:           ${{ secrets.DB_TIKTOK }}
           DB_X:                ${{ secrets.DB_X }}

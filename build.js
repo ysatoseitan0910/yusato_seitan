@@ -19,6 +19,7 @@ const DB = {
   web:           process.env.DB_WEB,
   schedule:      process.env.DB_SCHEDULE,
   quiz:          process.env.DB_QUIZ,
+  memberBlog:    process.env.DB_MEMBER_BLOG,
 };
 
 // ── ヘルパー ──
@@ -102,7 +103,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -634,6 +635,46 @@ async function buildBlog(tpl) {
     <!-- GALLERY_END -->
   </div>`;
   return buildPage(tpl, "ブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body, "blog.html");
+}
+
+async function buildMemberBlog(tpl) {
+  const pages = await queryDB(DB.memberBlog);
+  const cards = pages.map(p => {
+    const url     = getUrl(p);
+    const title   = getText(p, "Name");
+    const date    = fmtDate(getDate(p));
+    const desc    = getText(p, "Description");
+    const img     = getMedia(p);
+    const members = getTags(p, "Member");
+    const memberBadge = members.length
+      ? members.map(m => `<span class="badge badge-member">${m}</span>`).join(" ")
+      : "";
+    const blogBadge = `<span class="badge badge-blog">ブログ</span>`;
+    const badges = [memberBadge, blogBadge].filter(Boolean).join(" ");
+    const imgTag = img
+      ? `<img class="media-img" src="${img}" alt="${escAttr(title)}" loading="lazy">`
+      : `<div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>`;
+    const link = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">ブログを読む →</a>` : "";
+    return `
+  <div class="card media-card" style="animation-delay:${Math.random()*0.3}s">
+    ${imgTag}
+    <div class="media-body">
+      ${badges}
+      <p class="media-title" style="margin-top:6px">${title}</p>
+      ${desc ? `<p class="media-desc">${desc}</p>` : ""}
+      <div class="media-meta">
+        <span class="media-date">${date}</span>
+        ${link}
+      </div>
+    </div>
+  </div>`;
+  }).join("\n");
+  const body = `<div class="grid-3">
+    <!-- GALLERY_START -->
+    ${cards}
+    <!-- GALLERY_END -->
+  </div>`;
+  return buildPage(tpl, "他メンバーブログ", "MEMBER BLOG", "他メンバー <em>ブログ</em>", "佐藤優羽さんの登場している他メンバーのブログをまとめています", body, "member-blog.html");
 }
 
 async function buildInterview(tpl) {
@@ -1292,8 +1333,9 @@ async function main() {
     "committee.html":  { fn: buildCommittee, active: "COMMITTEE" },
     "activities.html": { fn: buildActivities,active: "ACTIVITIES" },
     "yunews.html":     { fn: buildYuNews,    active: "YUNEWS" },
-    "blog.html":       { fn: buildBlog,      active: "BLOG" },
-    "interview.html":  { fn: buildInterview, active: "INTERVIEW" },
+    "blog.html":        { fn: buildBlog,       active: "BLOG" },
+    "member-blog.html": { fn: buildMemberBlog, active: "MEMBER_BLOG" },
+    "interview.html":   { fn: buildInterview,  active: "INTERVIEW" },
     "x.html":          { fn: buildX,         active: "X" },
     "tiktok.html":     { fn: buildTiktok,    active: "TIKTOK" },
     "youtube.html":    { fn: buildYoutube,   active: "YOUTUBE" },

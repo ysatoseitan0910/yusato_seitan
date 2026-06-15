@@ -7,7 +7,8 @@
 const { Client } = require("@notionhq/client");
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
-const DB_BLOG = process.env.DB_BLOG;
+const DB_BLOG        = process.env.DB_BLOG;
+const DB_MEMBER_BLOG = process.env.DB_MEMBER_BLOG;
 
 async function fetchFirstImage(url) {
   try {
@@ -49,14 +50,13 @@ async function queryAll(dbId) {
   return results;
 }
 
-async function main() {
-  if (!DB_BLOG) { console.error("DB_BLOG が未設定です"); process.exit(1); }
+async function processDB(dbId, label) {
+  if (!dbId) { console.log(`  ${label}: DB未設定 → スキップ`); return; }
 
-  console.log("📋 ブログDBを取得中...");
-  const pages = await queryAll(DB_BLOG);
+  console.log(`📋 ${label}を取得中...`);
+  const pages = await queryAll(dbId);
   console.log(`  ${pages.length}件取得`);
 
-  // Mediaが未設定のエントリのみ対象
   const targets = pages.filter(p => {
     const files = p.properties["Media"]?.files || [];
     return files.length === 0;
@@ -94,11 +94,16 @@ async function main() {
       fail++;
     }
 
-    // レート制限対策
     await new Promise(r => setTimeout(r, 400));
   }
 
-  console.log(`\n完了: 成功 ${success}件 / スキップ ${skip}件 / 失敗 ${fail}件`);
+  console.log(`${label} 完了: 成功 ${success}件 / スキップ ${skip}件 / 失敗 ${fail}件\n`);
+}
+
+async function main() {
+  if (!DB_BLOG && !DB_MEMBER_BLOG) { console.error("DB_BLOG も DB_MEMBER_BLOG も未設定です"); process.exit(1); }
+  await processDB(DB_BLOG, "ブログDB");
+  await processDB(DB_MEMBER_BLOG, "他メンバーブログDB");
 }
 
 main().catch(console.error);
