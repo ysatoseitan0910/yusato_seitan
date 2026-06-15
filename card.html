@@ -299,27 +299,29 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 }
 
 // ════════════════════════════════════════════════════════
+//  共有フィールド定義（全テンプレート共通）
+// ════════════════════════════════════════════════════════
+const SHARED_FIELDS = [
+  { id: "fan-name",   label: "ファン名",                       placeholder: "さとうゆふんふん" },
+  { id: "handle",     label: "X（Twitter）ID",                 placeholder: "@satoyuhome" },
+  { id: "oshi-years", label: "推し歴",                         placeholder: "2023年〜 ／ ○年目" },
+  { id: "reason",     label: "好きになったきっかけ",           placeholder: "ブログを読んで一目惚れしました…", multiline: true },
+  { id: "top1",       label: "好きなところ・魅力 No.1",       placeholder: "笑顔" },
+  { id: "top2",       label: "好きなところ・魅力 No.2",       placeholder: "表現力" },
+  { id: "top3",       label: "好きなところ・魅力 No.3",       placeholder: "ブログ" },
+  { id: "episode",    label: "印象に残っているエピソード",     placeholder: "〇〇のコンサートで…", multiline: true },
+  { id: "recommend",  label: "おすすめコンテンツ",             placeholder: "〇〇のブログ / 〇〇の動画…", multiline: true },
+  { id: "love",       label: "佐藤優羽さんへの愛を叫ぼう！", placeholder: "優羽ちゃん大好き！", multiline: true },
+];
+
+// ════════════════════════════════════════════════════════
 //  テンプレート定義
 // ════════════════════════════════════════════════════════
 const TEMPLATES = [
-  {
-    id: "profile-card",
-    name: "ファンプロフィールカード",
-    w: 900,
-    customRender: true,   // drawProfileCard() を使用
-    fields: [
-      { id: "fan-name",   label: "ファン名",                       placeholder: "さとうゆのみ〜んな" },
-      { id: "handle",     label: "X（Twitter）ID",                 placeholder: "@satoyuhome" },
-      { id: "oshi-years", label: "推し歴",                         placeholder: "2023年〜 ／ ○年目" },
-      { id: "reason",     label: "好きになったきっかけ",           placeholder: "ブログを読んで一目惚れしました…", multiline: true },
-      { id: "top1",       label: "好きなところ・魅力 No.1",       placeholder: "笑顔" },
-      { id: "top2",       label: "好きなところ・魅力 No.2",       placeholder: "表現力" },
-      { id: "top3",       label: "好きなところ・魅力 No.3",       placeholder: "ブログ" },
-      { id: "episode",    label: "印象に残っているエピソード",     placeholder: "〇〇のコンサートで…", multiline: true },
-      { id: "recommend",  label: "おすすめコンテンツ",             placeholder: "〇〇のブログ / 〇〇の動画…", multiline: true },
-      { id: "love",       label: "佐藤優羽さんへの愛を叫ぼう！", placeholder: "優羽ちゃん大好き！", multiline: true },
-    ],
-  },
+  { id: "profile-card", name: "縦長プロフィール",      w: 900, customRender: true, fields: SHARED_FIELDS },
+  { id: "booklet",      name: "案4 プロフィール帳",    w: 660, customRender: true, fields: SHARED_FIELDS },
+  { id: "sticker",      name: "案5 ステッカー帳",      w: 660, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook",     name: "案6 ノート見開き",      w: 880, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -605,18 +607,406 @@ function drawProfileCard(ctx, w, getValFn, icoImg, measureOnly) {
   return sY; // 合計高さ
 }
 
+// ════════════════════════════════════════════════════════
+//  案4 プロフィール帳 描画エンジン
+// ════════════════════════════════════════════════════════
+function drawBooklet(ctx, w, getV, ico, measureOnly) {
+  const PAD = 18, GAP = 11;
+  const CW = w - PAD * 2;
+  const HALF = (CW - GAP) / 2;
+  const BPH = 14, BPT = 11, BPB = 13;
+  const PLH = 22, PLMB = 7;
+  const FS = 15.5, LH = Math.ceil(FS * 1.6);
+  const C = {
+    mint:"#3DAA78", mintDark:"#1f7a52", mintPale:"#eaf6ee",
+    pink:"#f7b6c8", pinkDeep:"#d8567f", pinkPale:"#fdeef3",
+    ink:"#1f2e25", muted:"#5b6c63", border:"#e3eee6", white:"#ffffff",
+  };
+  function f(sz,bold,fam){return`${bold?"600 ":""}${sz}px '${fam||"Klee One"}','Noto Sans JP',sans-serif`;}
+  function nLines(text,iw,sz,bold){ctx.font=f(sz,bold);const ls=wrapText(ctx,text||"",iw);return Math.max(1,ls.filter(l=>l!=="").length);}
+  function bH(cH){return BPT+PLH+PLMB+cH+BPB;}
+  function drawBoxBg(x,y,bw,bh,accent){
+    ctx.beginPath();ctx.roundRect(x,y,bw,bh,14);
+    ctx.fillStyle=accent?C.pinkPale:C.white;ctx.fill();
+    ctx.strokeStyle=accent?C.pink:C.border;ctx.lineWidth=2;ctx.stroke();
+  }
+  function drawPill(x,y,label,accent){
+    ctx.font=f(12,true);
+    const pw=ctx.measureText(label).width+22;
+    ctx.beginPath();ctx.roundRect(x,y,pw,PLH,99);
+    ctx.fillStyle=accent?C.pinkPale:C.mintPale;ctx.fill();
+    ctx.fillStyle=accent?C.pinkDeep:C.mintDark;
+    ctx.textAlign="left";ctx.textBaseline="middle";
+    ctx.fillText(label,x+11,y+PLH/2);
+  }
+  function drawTextBox(text,x,y,iw,sz,color){
+    ctx.font=f(sz);ctx.fillStyle=color||C.ink;
+    ctx.textAlign="left";ctx.textBaseline="top";
+    const ls=wrapText(ctx,text||"",iw);
+    const lh=Math.ceil(sz*1.6);
+    if(!ls.filter(l=>l).length){ctx.fillStyle="#ccc";ctx.fillText("—",x,y);return;}
+    for(const l of ls){ctx.fillText(l,x,y);y+=lh;}
+  }
+  // Header
+  const HDR_H=96;
+  if(!measureOnly){
+    const g=ctx.createLinearGradient(0,0,w*0.87,HDR_H*0.5);
+    g.addColorStop(0,C.mintDark);g.addColorStop(0.7,C.mint);g.addColorStop(1,"#6fc79b");
+    ctx.fillStyle=g;ctx.fillRect(0,0,w,HDR_H);
+    const IR=32,IX=PAD+22+IR,IY=HDR_H/2;
+    drawIconCircle(ctx,ico,IX,IY,IR,"#fff",4);
+    const TX=IX+IR+16;
+    ctx.font=f(34,true,"Caveat");ctx.fillStyle="#fff";ctx.textAlign="left";ctx.textBaseline="middle";
+    ctx.fillText("♡ さとうゆ fan profile ♡",TX,HDR_H/2-12);
+    ctx.font=f(13);ctx.fillStyle="rgba(255,255,255,0.85)";ctx.textBaseline="top";
+    ctx.fillText("my oshi profile note",TX,HDR_H/2+5);
+    ctx.font="20px sans-serif";ctx.fillStyle="rgba(255,255,255,0.4)";
+    ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillText("♥",w-PAD,HDR_H/2);
+  }
+  let sY=HDR_H+PAD;
+  const LX=PAD,RX=PAD+HALF+GAP;
+  // Row1: fan-name (span 2)
+  {
+    const iw=CW-BPH*2,lh21=Math.ceil(21*1.6);
+    const n=nLines(getV("fan-name"),iw,21,true);
+    const bh=bH(n*lh21);
+    if(!measureOnly){
+      drawBoxBg(LX,sY,CW,bh,false);drawPill(LX+BPH,sY+BPT,"ファン名",false);
+      ctx.font=f(21,true);ctx.fillStyle=C.ink;ctx.textAlign="left";ctx.textBaseline="top";
+      const ls=wrapText(ctx,getV("fan-name")||"",iw);let ty=sY+BPT+PLH+PLMB;
+      for(const l of ls){if(l)ctx.fillText(l,LX+BPH,ty);ty+=lh21;}
+    }
+    sY+=bh+GAP;
+  }
+  // Row2: handle | oshi-years
+  {
+    const iw=HALF-BPH*2;
+    const rH=Math.max(bH(nLines(getV("handle"),iw,FS,false)*LH),bH(nLines(getV("oshi-years"),iw,FS,false)*LH));
+    if(!measureOnly){
+      drawBoxBg(LX,sY,HALF,rH,false);drawPill(LX+BPH,sY+BPT,"X ID",false);
+      drawTextBox(getV("handle"),LX+BPH,sY+BPT+PLH+PLMB,iw,FS);
+      drawBoxBg(RX,sY,HALF,rH,false);drawPill(RX+BPH,sY+BPT,"推し歴",false);
+      drawTextBox(getV("oshi-years"),RX+BPH,sY+BPT+PLH+PLMB,iw,FS);
+    }
+    sY+=rH+GAP;
+  }
+  // Row3: TOP3 (span 2)
+  {
+    const iw=CW-BPH*2,BD=22,BMAR=9,twW=iw-BD-BMAR;
+    ctx.font=f(FS);
+    let topCH=0;
+    for(const k of["top1","top2","top3"]){
+      const ls=wrapText(ctx,getV(k)||"",twW);
+      topCH+=Math.max(1,ls.filter(l=>l).length)*LH+5;
+    }
+    const bh=bH(topCH);
+    if(!measureOnly){
+      drawBoxBg(LX,sY,CW,bh,false);drawPill(LX+BPH,sY+BPT,"好きなところ・魅力 TOP3",false);
+      let ty=sY+BPT+PLH+PLMB;
+      ["top1","top2","top3"].forEach((k,i)=>{
+        const cx=LX+BPH+BD/2,cy=ty+BD/2;
+        ctx.beginPath();ctx.arc(cx,cy,BD/2,0,Math.PI*2);
+        ctx.fillStyle=C.mintPale;ctx.fill();
+        ctx.font=f(13,true);ctx.fillStyle=C.mintDark;ctx.textAlign="center";ctx.textBaseline="middle";
+        ctx.fillText(String(i+1),cx,cy);
+        ctx.font=f(FS);ctx.fillStyle=C.ink;ctx.textAlign="left";ctx.textBaseline="top";
+        const tx=LX+BPH+BD+BMAR;
+        const ls=wrapText(ctx,getV(k)||"",twW);
+        if(!ls.filter(l=>l).length){ctx.fillStyle="#ccc";ctx.fillText("—",tx,ty);ty+=LH;}
+        else{for(const l of ls){ctx.fillText(l,tx,ty);ty+=LH;}}
+        ty+=5;
+      });
+    }
+    sY+=bh+GAP;
+  }
+  // Row4: reason | episode
+  {
+    const iw=HALF-BPH*2;
+    const rH=Math.max(bH(nLines(getV("reason"),iw,FS,false)*LH),bH(nLines(getV("episode"),iw,FS,false)*LH));
+    if(!measureOnly){
+      drawBoxBg(LX,sY,HALF,rH,false);drawPill(LX+BPH,sY+BPT,"好きになったきっかけ",false);
+      drawTextBox(getV("reason"),LX+BPH,sY+BPT+PLH+PLMB,iw,FS);
+      drawBoxBg(RX,sY,HALF,rH,false);drawPill(RX+BPH,sY+BPT,"印象的なエピソード",false);
+      drawTextBox(getV("episode"),RX+BPH,sY+BPT+PLH+PLMB,iw,FS);
+    }
+    sY+=rH+GAP;
+  }
+  // Row5: recommend | love (accent)
+  {
+    const iw=HALF-BPH*2;
+    const rH=Math.max(bH(nLines(getV("recommend"),iw,FS,false)*LH),bH(nLines(getV("love"),iw,FS,false)*LH));
+    if(!measureOnly){
+      drawBoxBg(LX,sY,HALF,rH,false);drawPill(LX+BPH,sY+BPT,"おすすめコンテンツ",false);
+      drawTextBox(getV("recommend"),LX+BPH,sY+BPT+PLH+PLMB,iw,FS);
+      drawBoxBg(RX,sY,HALF,rH,true);drawPill(RX+BPH,sY+BPT,"優羽さんへ愛を叫ぶ！",true);
+      drawTextBox(getV("love"),RX+BPH,sY+BPT+PLH+PLMB,iw,FS,C.pinkDeep);
+    }
+    sY+=rH+GAP;
+  }
+  // Footer
+  if(!measureOnly){
+    ctx.font=f(13);ctx.fillStyle=C.muted;ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText("♡ さとうゆほーむ ・ satoyu.info ♡",w/2,sY+4);
+  }
+  return sY+13+20;
+}
+
+// ════════════════════════════════════════════════════════
+//  案5 ステッカー帳 描画エンジン
+// ════════════════════════════════════════════════════════
+function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
+  const PAD=16,GAP=11;
+  const CW=w-PAD*2;
+  const COL3=(CW-GAP*2)/3;
+  const COL2=COL3*2+GAP;
+  const TPH=13,TPV=13,TRAD=18;
+  const FS=15,LH=Math.ceil(FS*1.55);
+  const THDR=20;
+  const C={
+    mint:"#3DAA78",mintDark:"#1f7a52",mintPale:"#e6f4ec",
+    pinkDeep:"#d8567f",pinkPale:"#fdeaf0",
+    cream:"#fff6e0",creamDark:"#9a7b2e",ink:"#23332a",muted:"#5b6c63",white:"#ffffff",
+  };
+  const X3=[PAD,PAD+COL3+GAP,PAD+COL3*2+GAP*2];
+  function f(sz,bold,fam){return`${bold?"600 ":""}${sz}px '${fam||"Klee One"}','Noto Sans JP',sans-serif`;}
+  function nLines(text,iw){ctx.font=f(FS);const ls=wrapText(ctx,text||"",iw);return Math.max(1,ls.filter(l=>l!=="").length);}
+  function tH(cH){return TPV+THDR+cH+TPV;}
+  function drawTile(x,y,tw,th,bg){ctx.beginPath();ctx.roundRect(x,y,tw,th,TRAD);ctx.fillStyle=bg;ctx.fill();}
+  function drawTHdr(x,y,emoji,label,lc){
+    ctx.font=`14px sans-serif`;ctx.fillStyle=C.ink;ctx.textAlign="left";ctx.textBaseline="middle";
+    ctx.fillText(emoji,x,y+THDR/2);
+    const ew=ctx.measureText(emoji).width;
+    ctx.font=f(12,true);ctx.fillStyle=lc||C.mintDark;ctx.fillText(label,x+ew+6,y+THDR/2);
+  }
+  function drawTText(text,x,y,iw,color){
+    ctx.font=f(FS);ctx.fillStyle=color||C.ink;ctx.textAlign="left";ctx.textBaseline="top";
+    const ls=wrapText(ctx,text||"",iw);
+    if(!ls.filter(l=>l).length){ctx.fillStyle="#ccc";ctx.fillText("—",x,y);return;}
+    for(const l of ls){ctx.fillText(l,x,y);y+=LH;}
+  }
+  // Hero
+  const IR=33,HDR_H=IR*2+36;
+  if(!measureOnly){
+    const g=ctx.createLinearGradient(0,0,w*0.9,HDR_H);
+    g.addColorStop(0,C.mint);g.addColorStop(0.6,"#6fc79b");g.addColorStop(1,"#f7b6c8");
+    ctx.fillStyle=g;ctx.fillRect(0,0,w,HDR_H);
+    const IX=20+IR,IY=HDR_H/2;
+    drawIconCircle(ctx,ico,IX,IY,IR,"#fff",4);
+    const TX=IX+IR+16;
+    ctx.font=f(22);ctx.fillStyle="#fff";ctx.textAlign="left";ctx.textBaseline="middle";
+    ctx.fillText(getV("fan-name")||"ファン名",TX,IY-15);
+    const pills=[getV("handle")||"@handle","📅 推し歴 "+(getV("oshi-years")||"〇年目")];
+    let px=TX;
+    ctx.font=f(12.5,true);
+    for(const p of pills){
+      const pw=ctx.measureText(p).width+22;
+      ctx.beginPath();ctx.roundRect(px,IY+3,pw,24,99);
+      ctx.fillStyle="rgba(255,255,255,0.9)";ctx.fill();
+      ctx.fillStyle=C.mintDark;ctx.textAlign="left";ctx.textBaseline="middle";
+      ctx.fillText(p,px+11,IY+15);px+=pw+8;
+    }
+    ctx.font=f(24,true,"Caveat");ctx.fillStyle="rgba(255,255,255,0.85)";
+    ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillText("♡ satoyu ♡",w-20,IY);
+  }
+  let sY=HDR_H+PAD;
+  // Row1: TOP1/2/3
+  {
+    const iw=COL3-TPH*2,emj=["🥇","🥈","🥉"],lbls=["好きなところ #1","好きなところ #2","好きなところ #3"];
+    const keys=["top1","top2","top3"];
+    let maxH=0;
+    for(const k of keys)maxH=Math.max(maxH,tH(nLines(getV(k),iw)*LH));
+    if(!measureOnly){
+      keys.forEach((k,i)=>{
+        drawTile(X3[i],sY,COL3,maxH,C.mintPale);
+        drawTHdr(X3[i]+TPH,sY+TPV,emj[i],lbls[i],C.mintDark);
+        drawTText(getV(k),X3[i]+TPH,sY+TPV+THDR,iw);
+      });
+    }
+    sY+=maxH+GAP;
+  }
+  // Row2: reason (3col)
+  {
+    const iw=CW-TPH*2,th=tH(nLines(getV("reason"),iw)*LH);
+    if(!measureOnly){
+      drawTile(PAD,sY,CW,th,C.cream);
+      drawTHdr(PAD+TPH,sY+TPV,"🌱","好きになったきっかけ",C.mintDark);
+      drawTText(getV("reason"),PAD+TPH,sY+TPV+THDR,iw);
+    }
+    sY+=th+GAP;
+  }
+  // Row3: episode (2col) + recommend (1col)
+  {
+    const eiw=COL2-TPH*2,riw=COL3-TPH*2;
+    const eH=tH(nLines(getV("episode"),eiw)*LH),rH=tH(nLines(getV("recommend"),riw)*LH);
+    const rowH=Math.max(eH,rH);
+    if(!measureOnly){
+      drawTile(PAD,sY,COL2,rowH,C.mintPale);
+      drawTHdr(PAD+TPH,sY+TPV,"✨","印象的なエピソード",C.mintDark);
+      drawTText(getV("episode"),PAD+TPH,sY+TPV+THDR,eiw);
+      drawTile(X3[2],sY,COL3,rowH,C.cream);
+      drawTHdr(X3[2]+TPH,sY+TPV,"📺","おすすめ",C.creamDark);
+      drawTText(getV("recommend"),X3[2]+TPH,sY+TPV+THDR,riw);
+    }
+    sY+=rowH+GAP;
+  }
+  // Row4: love (3col)
+  {
+    const iw=CW-TPH*2,th=tH(nLines(getV("love"),iw)*LH);
+    if(!measureOnly){
+      drawTile(PAD,sY,CW,th,C.pinkPale);
+      drawTHdr(PAD+TPH,sY+TPV,"💗","優羽さんへ愛を叫ぶ！",C.pinkDeep);
+      drawTText(getV("love"),PAD+TPH,sY+TPV+THDR,iw,C.pinkDeep);
+    }
+    sY+=th+GAP;
+  }
+  // Footer
+  if(!measureOnly){
+    ctx.font=f(13);ctx.fillStyle=C.muted;ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText("♡ さとうゆほーむ ・ satoyu.info ♡",w/2,sY+4);
+  }
+  return sY+13+20;
+}
+
+// ════════════════════════════════════════════════════════
+//  案6 ノート見開き 描画エンジン
+// ════════════════════════════════════════════════════════
+function drawNotebook(ctx, w, getV, ico, measureOnly) {
+  const BIND_W=30;
+  const PW=(w-BIND_W)/2;  // 425
+  const C={
+    mintDark:"#1f7a52",mintPale:"#e6f4ec",pinkDeep:"#d8567f",
+    ink:"#283a30",muted:"#6b7c72",white:"#ffffff",cream:"#fffdf7",
+    line:"#e2ede6",bind:"#c9b78a",
+  };
+  function f(sz,bold,fam){return`${bold?"600 ":""}${sz}px '${fam||"Klee One"}','Noto Sans JP',sans-serif`;}
+  function drawRuled(x,y,pw,ph){
+    ctx.fillStyle=C.cream;ctx.fillRect(x,y,pw,ph);
+    ctx.strokeStyle=C.line;ctx.lineWidth=1;
+    for(let ly=y+31;ly<y+ph;ly+=31){ctx.beginPath();ctx.moveTo(x,ly);ctx.lineTo(x+pw,ly);ctx.stroke();}
+  }
+  const PLH=20,PLMB=5,MINIMB=13,FSM=15,LHM=Math.ceil(FSM*1.65);
+  function measureMiniH(text,iw,isTop3){
+    if(isTop3){
+      let h=0;
+      for(let i=1;i<=3;i++){ctx.font=f(FSM);const ls=wrapText(ctx,getV(`top${i}`)||"",iw-35);h+=Math.max(1,ls.filter(l=>l).length)*LHM+3;}
+      return PLH+PLMB+h+MINIMB;
+    }
+    ctx.font=f(FSM);const ls=wrapText(ctx,text||"",iw);
+    return PLH+PLMB+Math.max(1,ls.filter(l=>l).length)*LHM+MINIMB;
+  }
+  function drawMini(x,y,iw,label,text,accent,isTop3){
+    ctx.font=f(12,true);
+    const pw=ctx.measureText(label).width+22;
+    ctx.beginPath();ctx.roundRect(x,y,pw,PLH,99);
+    ctx.fillStyle=accent?"#fde7ee":C.mintPale;ctx.fill();
+    ctx.fillStyle=accent?C.pinkDeep:C.mintDark;
+    ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(label,x+11,y+PLH/2);
+    y+=PLH+PLMB;
+    if(isTop3){
+      for(let i=1;i<=3;i++){
+        ctx.font=f(18,true,"Caveat");ctx.fillStyle=C.pinkDeep;ctx.textAlign="left";ctx.textBaseline="top";
+        const pre=`0${i}.`;const pw2=ctx.measureText(pre).width+7;ctx.fillText(pre,x,y);
+        ctx.font=f(FSM);ctx.fillStyle=C.ink;
+        const ls=wrapText(ctx,getV(`top${i}`)||"",iw-pw2);
+        if(!ls.filter(l=>l).length){ctx.fillStyle="#ccc";ctx.fillText("—",x+pw2,y);y+=LHM;}
+        else{for(const l of ls){ctx.fillText(l,x+pw2,y);y+=LHM;}}y+=3;
+      }
+    } else {
+      ctx.font=f(FSM);ctx.fillStyle=accent?C.pinkDeep:C.ink;ctx.textAlign="left";ctx.textBaseline="top";
+      const ls=wrapText(ctx,text||"",iw);
+      if(!ls.filter(l=>l).length){ctx.fillStyle="#ccc";ctx.fillText("—",x,y);}
+      else{for(const l of ls){ctx.fillText(l,x,y);y+=LHM;}}
+    }
+  }
+  // Layout constants
+  const LPL=30,LPR=26,LPT=26,LPB=26;
+  const LIW=PW-LPL-LPR;  // 369
+  const ICO_D=72,ICO_R=ICO_D/2;
+  const POL_P=6,POL_PB=18;
+  const POL_W=POL_P*2+ICO_D;  // 84
+  const POL_H=POL_P+ICO_D+2+21+POL_PB;  // ~119
+  const PHOTO_GAP=14;
+  const INFO_W=LIW-POL_W-PHOTO_GAP;
+  const INFO_H=38+6+27+3+19;  // Caveat30 + name19 + handle13
+  const PHOTO_ROW_H=Math.max(POL_H,INFO_H);
+  const PHOTO_MB=16;
+  const L_REASON_H=measureMiniH(getV("reason"),LIW,false);
+  const L_TOP3_H=measureMiniH(null,LIW,true);
+  const LEFT_H=LPT+PHOTO_ROW_H+PHOTO_MB+L_REASON_H+L_TOP3_H+LPB;
+  const RPL=26,RPR=30,RPT=26,RPB=26;
+  const RIW=PW-RPL-RPR;  // 369
+  const MSG_H=38+12;
+  const R_EP_H=measureMiniH(getV("episode"),RIW,false);
+  const R_RC_H=measureMiniH(getV("recommend"),RIW,false);
+  const R_LV_H=measureMiniH(getV("love"),RIW,false);
+  const RIGHT_H=RPT+MSG_H+R_EP_H+R_RC_H+R_LV_H+28+RPB;
+  const totalH=Math.max(LEFT_H,RIGHT_H);
+  if(measureOnly)return totalH;
+  // Draw pages
+  drawRuled(0,0,PW,totalH);
+  drawRuled(PW+BIND_W,0,PW,totalH);
+  // Binding
+  ctx.fillStyle="rgba(0,0,0,0.04)";ctx.fillRect(PW,0,BIND_W,totalH);
+  const ringX=PW+BIND_W/2,numR=11,rSp=(totalH-32)/(numR-1);
+  for(let i=0;i<numR;i++){
+    const ry=16+i*rSp;
+    ctx.beginPath();ctx.arc(ringX,ry,6,0,Math.PI*2);
+    ctx.fillStyle=C.cream;ctx.fill();ctx.strokeStyle=C.bind;ctx.lineWidth=1.5;ctx.stroke();
+  }
+  // Left page - polaroid
+  let lY=LPT;
+  const polCX=LPL+POL_W/2,polCY=lY+PHOTO_ROW_H/2;
+  ctx.save();
+  ctx.translate(polCX,polCY);ctx.rotate(-3*Math.PI/180);ctx.translate(-POL_W/2,-POL_H/2);
+  ctx.shadowColor="rgba(0,0,0,0.25)";ctx.shadowBlur=13;ctx.shadowOffsetY=5;
+  ctx.fillStyle=C.white;ctx.fillRect(0,0,POL_W,POL_H);
+  ctx.shadowColor="transparent";ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  drawIconCircle(ctx,ico,POL_W/2,POL_P+ICO_R,ICO_R,"#f2f2f2",0);
+  ctx.font=f(17,false,"Caveat");ctx.fillStyle=C.muted;ctx.textAlign="center";ctx.textBaseline="top";
+  ctx.fillText("my oshi ♡",POL_W/2,POL_P+ICO_D+2);
+  ctx.restore();
+  // Left page - fan info
+  const infoX=LPL+POL_W+PHOTO_GAP;
+  let iY=lY+(PHOTO_ROW_H-INFO_H)/2;
+  ctx.font=f(30,true,"Caveat");ctx.fillStyle=C.mintDark;ctx.textAlign="left";ctx.textBaseline="top";
+  ctx.fillText("satoyu fan ♡",infoX,iY);iY+=38+6;
+  ctx.font=f(19,true);ctx.fillStyle=C.ink;ctx.fillText(getV("fan-name")||"ファン名",infoX,iY);iY+=27+3;
+  const hi=[getV("handle"),getV("oshi-years")].filter(Boolean).join(" ・ ");
+  ctx.font=f(13);ctx.fillStyle=C.muted;ctx.fillText(hi,infoX,iY);
+  lY+=PHOTO_ROW_H+PHOTO_MB;
+  drawMini(LPL,lY,LIW,"🌱 好きになったきっかけ",getV("reason"),false,false);lY+=L_REASON_H;
+  drawMini(LPL,lY,LIW,"💚 好きなところ TOP3",null,false,true);
+  // Right page
+  const RPX=PW+BIND_W+RPL;
+  let rY=RPT;
+  ctx.font=f(26,true,"Caveat");ctx.fillStyle=C.pinkDeep;ctx.textAlign="left";ctx.textBaseline="top";
+  ctx.fillText("message ♡",RPX,rY);rY+=38+12;
+  drawMini(RPX,rY,RIW,"✨ 印象的なエピソード",getV("episode"),false,false);rY+=R_EP_H;
+  drawMini(RPX,rY,RIW,"📺 おすすめコンテンツ",getV("recommend"),false,false);rY+=R_RC_H;
+  drawMini(RPX,rY,RIW,"💗 優羽さんへ愛を叫ぶ！",getV("love"),true,false);
+  ctx.font=f(12);ctx.fillStyle=C.muted;ctx.textAlign="right";ctx.textBaseline="bottom";
+  ctx.fillText("♡ satoyu.info ♡",PW+BIND_W+PW-RPR,totalH-8);
+  return totalH;
+}
+
 // ── 描画 ────────────────────────────────────────────────
+const DRAW_FNS = {
+  "profile-card": drawProfileCard,
+  "booklet":      drawBooklet,
+  "sticker":      drawStickerSheet,
+  "notebook":     drawNotebook,
+};
+
 function render() {
   const tpl = TEMPLATES[tplIdx];
   canvas.width = tpl.w;
 
   if (tpl.customRender) {
-    // 高さ計測パス（measureOnly=true）
+    const draw = DRAW_FNS[tpl.id] || drawProfileCard;
     canvas.height = 9999;
-    const totalH = drawProfileCard(ctx, tpl.w, id => getVal(tpl, id), iconImg, true);
-    // 本描画パス
+    const totalH = draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, true);
     canvas.height = totalH;
-    drawProfileCard(ctx, tpl.w, id => getVal(tpl, id), iconImg, false);
+    draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, false);
     document.getElementById("canvas-size-note").textContent =
       `出力サイズ: ${tpl.w} × ${totalH} px`;
   }
