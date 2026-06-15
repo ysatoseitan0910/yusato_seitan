@@ -637,13 +637,32 @@ async function buildBlog(tpl) {
   return buildPage(tpl, "ブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body, "blog.html");
 }
 
+function getMemberNames(page) {
+  const p = page.properties["Member"];
+  if (!p) return [];
+  if (p.multi_select?.length) return p.multi_select.map(s => s.name);
+  if (p.select?.name)         return [p.select.name];
+  if (p.rich_text?.length) {
+    const text = p.rich_text.map(t => t.plain_text).join("").trim();
+    return text ? text.split(/[,、・／/]/).map(s => s.trim()).filter(Boolean) : [];
+  }
+  return [];
+}
+
 async function buildMemberBlog(tpl) {
   const pages = await queryDB(DB.memberBlog);
 
+  // Memberプロパティの型をログ出力（デバッグ用）
+  if (pages.length > 0) {
+    const mp = pages[0].properties["Member"];
+    console.log(`  [MemberBlog] Memberプロパティ型: ${mp?.type || "なし"}, 値: ${JSON.stringify(mp).slice(0, 120)}`);
+  }
+
   // メンバー名を五十音順に収集
   const memberSet = new Set();
-  pages.forEach(p => getTags(p, "Member").forEach(m => memberSet.add(m)));
+  pages.forEach(p => getMemberNames(p).forEach(m => memberSet.add(m)));
   const allMembers = [...memberSet].sort((a, b) => a.localeCompare(b, "ja"));
+  console.log(`  [MemberBlog] 検出されたメンバー: ${[...allMembers].join(", ") || "なし"}`);
 
   const cards = pages.map(p => {
     const url     = getUrl(p);
@@ -651,7 +670,7 @@ async function buildMemberBlog(tpl) {
     const date    = fmtDate(getDate(p));
     const desc    = getText(p, "Description");
     const img     = getMedia(p);
-    const members = getTags(p, "Member");
+    const members = getMemberNames(p);
     const memberBadges = members.map(m => `<span class="badge badge-member">${m}</span>`).join(" ");
     const blogBadge = `<span class="badge badge-blog">ブログ</span>`;
     const badges = [memberBadges, blogBadge].filter(Boolean).join(" ");
@@ -678,7 +697,7 @@ async function buildMemberBlog(tpl) {
   const filterBtns = [
     `<button class="mbf-btn mbf-btn--active" data-member="">すべて (${pages.length})</button>`,
     ...allMembers.map(m => {
-      const count = pages.filter(p => getTags(p, "Member").includes(m)).length;
+      const count = pages.filter(p => getMemberNames(p).includes(m)).length;
       return `<button class="mbf-btn" data-member="${escAttr(m)}">${m} <span class="mbf-count">(${count})</span></button>`;
     }),
   ].join("\n    ");
