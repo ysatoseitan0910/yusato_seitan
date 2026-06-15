@@ -430,39 +430,65 @@ function drawProfileCard(ctx, w, getValFn, icoImg, measureOnly) {
     ctx.fillText("♥", PAD, 165); ctx.fillText("♥", w-PAD-14, 165);
   }
 
-  // ── PROFILE ───────────────────────────────────────────
-  const PRF_H = 310;
+  // ── PROFILE（左アイコン ／ 右テキスト）──────────────────
+  const ICON_R  = 80;
+  const ICON_CX = PAD + ICON_R;           // 134
+  const RIGHT_X = ICON_CX + ICON_R + 24;  // 238
+  const RIGHT_W = w - RIGHT_X - PAD;      // 608
+
+  // 右側コンテンツ高さを計測して PRF_H を動的決定
+  const _nameText  = getValFn("fan-name");
+  const _handle    = getValFn("handle");
+  const _oy        = getValFn("oshi-years");
+  ctx.font = font(36, true);
+  const _nameLines = wrapText(ctx, _nameText || "ファン名", RIGHT_W);
+  const _nameH  = _nameLines.length * 46;
+  const _hndH   = _handle   ? 32 : 0;
+  const _oyH    = _oy       ? 36 : 0;
+  const _contentH = _nameH + (_hndH ? _hndH + 8 : 0) + (_oyH ? _oyH + 8 : 0);
+  const PRF_H = Math.max(ICON_R * 2 + 40, _contentH + 60); // 最小 200px
+
+  const ICON_CY = HDR_H + PRF_H / 2;
+
   if (!measureOnly) {
     ctx.fillStyle = C.white; ctx.fillRect(0, HDR_H, w, PRF_H);
-    // アイコン
-    drawIconCircle(ctx, icoImg, w/2, HDR_H+106, 84, C.pink, 6);
+
+    // ── アイコン（左）
+    drawIconCircle(ctx, icoImg, ICON_CX, ICON_CY, ICON_R, C.pink, 6);
+
+    // ── 右側コンテンツ（縦中央揃え）
+    let ry = ICON_CY - _contentH / 2;
+
     // ファン名
-    const nameText = getValFn("fan-name");
-    ctx.font = font(42, true); ctx.fillStyle = C.inkDark;
-    ctx.textAlign="center"; ctx.textBaseline="middle";
-    const nameLines = lines(nameText||"ファン名", CW, 42, true);
-    let ny = HDR_H + 218;
-    for (const l of nameLines) { ctx.fillText(l, w/2, ny); ny += 50; }
+    ctx.font = font(36, true); ctx.fillStyle = C.inkDark;
+    ctx.textAlign = "left"; ctx.textBaseline = "top";
+    for (const l of _nameLines) { ctx.fillText(l, RIGHT_X, ry); ry += 46; }
+
     // X ID
-    const handle = getValFn("handle");
-    if (handle) {
-      ctx.font=font(20); ctx.fillStyle=C.muted;
-      ctx.fillText(handle.startsWith("@")?handle:`@${handle}`, w/2, HDR_H+272);
+    if (_handle) {
+      ry += 6;
+      ctx.font = font(20); ctx.fillStyle = C.muted;
+      ctx.fillText(_handle.startsWith("@") ? _handle : `@${_handle}`, RIGHT_X, ry);
+      ry += 28;
     }
+
     // 推し歴 pill
-    const oy = getValFn("oshi-years");
-    if (oy) {
-      ctx.font=font(17); const pt=`📅 推し歴：${oy}`;
-      const pw=ctx.measureText(pt).width+34, ph=30, px=w/2-pw/2, py=HDR_H+295;
-      ctx.beginPath(); ctx.roundRect(px,py,pw,ph,99);
-      ctx.fillStyle=C.emeraldPale; ctx.fill();
-      ctx.strokeStyle=C.emerald; ctx.lineWidth=1.5; ctx.stroke();
-      ctx.fillStyle=C.emeraldDark; ctx.textAlign="center"; ctx.textBaseline="middle";
-      ctx.fillText(pt, w/2, py+ph/2);
+    if (_oy) {
+      ry += 8;
+      ctx.font = font(16);
+      const pt = `📅 推し歴：${_oy}`;
+      const pw = ctx.measureText(pt).width + 28, ph = 28;
+      ctx.beginPath(); ctx.roundRect(RIGHT_X, ry, pw, ph, 99);
+      ctx.fillStyle = C.emeraldPale; ctx.fill();
+      ctx.strokeStyle = C.emerald; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = C.emeraldDark;
+      ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      ctx.fillText(pt, RIGHT_X + 14, ry + ph / 2);
     }
+
     // 下境界線
-    ctx.strokeStyle=C.border; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(0,HDR_H+PRF_H); ctx.lineTo(w,HDR_H+PRF_H); ctx.stroke();
+    ctx.strokeStyle = C.border; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, HDR_H+PRF_H); ctx.lineTo(w, HDR_H+PRF_H); ctx.stroke();
   }
 
   // ── SECTIONS ──────────────────────────────────────────
@@ -518,12 +544,12 @@ function drawProfileCard(ctx, w, getValFn, icoImg, measureOnly) {
   }
 
   // きっかけ
-  section("好きになったきっかけ", C.emerald, (y) =>
+  section("佐藤優羽さんを好きになったきっかけ", C.emerald, (y) =>
     textBlock(y, getValFn("reason"), 22)
   );
 
   // TOP3
-  section("好きなところ・魅力 TOP3", C.emerald, (y) => {
+  section("佐藤優羽さんの好きなところ・魅力 TOP3", C.emerald, (y) => {
     ctx.font = font(22);
     const tops = [getValFn("top1"), getValFn("top2"), getValFn("top3")];
     for (let i = 0; i < 3; i++) {
@@ -550,12 +576,12 @@ function drawProfileCard(ctx, w, getValFn, icoImg, measureOnly) {
   });
 
   // エピソード
-  section("印象に残っているエピソード", C.emerald, (y) =>
+  section("佐藤優羽さんの印象に残っているエピソード", C.emerald, (y) =>
     textBlock(y, getValFn("episode"), 22)
   );
 
   // おすすめコンテンツ
-  section("おすすめコンテンツ", C.emerald, (y) =>
+  section("佐藤優羽さんのおすすめコンテンツ", C.emerald, (y) =>
     textBlock(y, getValFn("recommend"), 22)
   );
 
