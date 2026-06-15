@@ -272,7 +272,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <hr class="field-divider">
       <div class="download-section">
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
-        <p class="download-note">フルサイズで保存されます</p>
+        <p class="download-note">フルサイズ・JPEG形式で保存されます</p>
       </div>
     </div>
 
@@ -728,8 +728,8 @@ function download() {
   const tpl  = TEMPLATES[tplIdx];
   const name = (getVal(tpl, "fan-name") || "card").replace(/[\s　]/g, "_");
   const a    = document.createElement("a");
-  a.download = `satoyu_profile_${name}.png`;
-  a.href     = canvas.toDataURL("image/png");
+  a.download = `satoyu_profile_${name}.jpg`;
+  a.href     = canvas.toDataURL("image/jpeg", 0.92);
   a.click();
 }
 
