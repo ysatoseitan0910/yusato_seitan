@@ -159,8 +159,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 }
 .icon-clear-btn:hover { border-color: #e88; color: #c44; }
 
-/* Download */
-.download-section { padding-top: 4px; }
+/* Download / Share */
+.download-section { padding-top: 4px; display: flex; flex-direction: column; gap: 10px; }
 .download-btn {
   width: 100%; padding: 13px;
   background: var(--emerald); color: #fff;
@@ -171,7 +171,17 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 }
 .download-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
 .download-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
-.download-note { font-size: 11px; color: var(--text-light); text-align: center; margin-top: 8px; }
+.share-x-btn {
+  width: 100%; padding: 13px;
+  background: #000; color: #fff;
+  border: 2px solid var(--ink); border-radius: 12px;
+  font-family: 'Klee One', serif; font-size: 16px; font-weight: 600;
+  cursor: pointer; box-shadow: 3px 3px 0 #333;
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
+.share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
+.download-note { font-size: 11px; color: var(--text-light); text-align: center; }
 
 /* Placeholder badge */
 .placeholder-badge {
@@ -273,7 +283,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <hr class="field-divider">
       <div class="download-section">
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
-        <p class="download-note">2倍解像度・PNG形式で保存されます</p>
+        <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
+        <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
       </div>
     </div>
 
@@ -1116,12 +1127,12 @@ function initIconUpload() {
   });
 }
 
-// ── ダウンロード（2倍解像度 PNG）────────────────────────
-function download() {
-  const tpl  = TEMPLATES[tplIdx];
+// ── 高解像度 Canvas 生成（ダウンロード・シェア共通）────
+function buildHighResCanvas() {
+  const tpl   = TEMPLATES[tplIdx];
   const SCALE = 2;
-  const draw = DRAW_FNS[tpl.id] || drawProfileCard;
-  const getV = id => getVal(tpl, id);
+  const draw  = DRAW_FNS[tpl.id] || drawProfileCard;
+  const getV  = id => getVal(tpl, id);
 
   const tmp = document.createElement("canvas");
   const tc  = tmp.getContext("2d");
@@ -1137,10 +1148,56 @@ function download() {
   draw(tc, tpl.w, getV, iconImg, false);
 
   const name = (getVal(tpl, "fan-name") || "card").replace(/[\s　]/g, "_");
+  return { canvas: tmp, filename: `satoyu_profile_${name}.png` };
+}
+
+// ── ダウンロード（2倍解像度 PNG）────────────────────────
+function download() {
+  const { canvas, filename } = buildHighResCanvas();
   const a = document.createElement("a");
-  a.download = `satoyu_profile_${name}.png`;
-  a.href = tmp.toDataURL("image/png");
+  a.download = filename;
+  a.href = canvas.toDataURL("image/png");
   a.click();
+}
+
+// ── X に投稿（モバイル: Web Share API ／ PC: DL + intent）
+const TWEET_TEXT = "#さとうゆおしプロフィール\nhttps://satoyu.info";
+
+async function shareToX() {
+  const btn = document.getElementById("share-x-btn");
+  btn.disabled = true;
+  btn.textContent = "⏳ 準備中...";
+
+  try {
+    const { canvas, filename } = buildHighResCanvas();
+
+    // モバイル: Web Share API でファイル共有を試みる
+    if (navigator.canShare) {
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      const file = new File([blob], filename, { type: "image/png" });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ text: TWEET_TEXT, files: [file] });
+          return;
+        } catch (e) {
+          if (e.name === "AbortError") return; // ユーザーがキャンセル
+          // その他のエラーはフォールバックへ
+        }
+      }
+    }
+
+    // PC フォールバック: 画像ダウンロード + X 投稿画面を開く
+    const a = document.createElement("a");
+    a.download = filename;
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+
+    const xUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(TWEET_TEXT);
+    setTimeout(() => window.open(xUrl, "_blank", "width=600,height=500,noopener"), 600);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "𝕏 Xに投稿する";
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -1150,6 +1207,7 @@ document.fonts.ready.then(() => {
   buildTabs();
   switchTemplate(0);
   document.getElementById("download-btn").addEventListener("click", download);
+  document.getElementById("share-x-btn").addEventListener("click", shareToX);
   initIconUpload();
 });
 
