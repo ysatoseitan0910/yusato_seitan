@@ -40,6 +40,7 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `activities.html`：活動報告
 - `yunews.html`：佐藤優羽さんNewsまとめ（DB_YU_NEWS全件・grid-3）
 - `blog.html`：ブログまとめ
+- `member-blog.html`：他メンバーブログまとめ（DB_MEMBER_BLOG）。メンバー名バッジ＋フィルター付き
 - `interview.html`：インタビュー・雑誌掲載集
 - `x.html`：Xまとめ
 - `tiktok.html`：TikTokギャラリー
@@ -52,15 +53,18 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `terms.html`：生誕委員規約
 - `join.html`：ご参加希望の方へ
 - `quiz.html`：さとうゆクイズ（`quiz_questions.json` から10問中5問をランダム出題。4択・解説・参考URLつき）
+- `card.html`：プロフィールカードジェネレーター（Canvas描画・PNG保存）。テンプレート4種
+- `admin.html`：管理ページ（パスワード認証。Notionへのレコード追加・一覧・削除）
 
 **注意**: 静的ページは `_template.html` を使用せず独立したCSSを持つ。ナビリンクや共通スタイルは手動で同期が必要。
-- 全ナビに共通リンク：トップ / ブログ / YouTube / TikTok / Lemino / **クイズ** / Xまとめ / 佐藤優羽さんについて / 委員会について
+- 全ナビに共通リンク：トップ / ブログ / 他メンバーブログ / YouTube / TikTok / Lemino / **クイズ** / Xまとめ / 佐藤優羽さんについて / 委員会について
 
 ## Notion DB一覧
 - DB_COMMITTEE_NEWS：生誕委員会News
 - DB_YU_NEWS：佐藤優羽さんNews（他DBから自動集約）
 - DB_ACTIVITIES：活動報告
 - DB_BLOG：佐藤優羽さんBlog
+- DB_MEMBER_BLOG：他メンバーブログ（佐藤優羽さんが登場するブログ）。ID: `33e28fd03f5380f6a868d3d1aa3f7755`。Memberプロパティ（multi_select）にブログ執筆メンバー名
 - DB_INTERVIEW：インタビュー・雑誌掲載集
 - DB_TIKTOK：TikTokまとめ
 - DB_X：Xまとめ
@@ -81,10 +85,12 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `getText(page, key)`：Notionのrich_text/titleを**全セグメント結合**して返す
 - `getSelect(page, key)`：Select or Multi-select の最初の値を返す
 - `getTags(page, key)`：Multi-select / Select の全値を配列で返す（X投稿のタグ取得に使用）
+- `getMemberNames(page)`：Memberプロパティからメンバー名配列を返す。multi_select → select → rich_textの順で対応
 - `getMedia(page)`：Mediaプロパティの外部URL or ファイルURLを返す
 - `escAttr(s)`：HTML属性用エスケープ（&, ", <, >）
 - `actModalAttrs(p)`：活動報告・委員会Newsカードのモーダル用data属性を生成
 - `queryAllUrls(dbId)`：DBの全URL一覧をページネーション付きで取得（syncToYuNews専用）
+- `queryDB(dbId, sorts)`：ページネーション対応（100件上限なし）でPublished=trueのみ返す
 
 ### トップページレイアウト（buildIndex）
 2カラム構成：`grid-template-columns: minmax(0,1fr) 300px`
@@ -131,12 +137,40 @@ x.html とトップページサイドバーで適用。
 ### TikTokサムネイル
 oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列取得。期限切れ問題を避けるためNotionには保存しない。
 
+### 他メンバーブログ（buildMemberBlog）
+- DB_MEMBER_BLOGを日付降順で全件取得
+- `getMemberNames(page)` でメンバー名を取得し、カードに緑バッヂ表示
+- `data-members` 属性にカンマ区切りでメンバー名を格納し、クライアントサイドJSでフィルタリング
+- メンバーフィルターボタンは表示件数1件以上のメンバーのみ自動生成
+
 ### モーダル（_template.html）
 活動報告・委員会NewsのクリックでDescriptionを全文表示。
 - XSS対策：textContent / createTextNode で描画
 - ESCキー・オーバーレイクリックで閉じる
 - `[data-act-modal]` 属性を持つカードにイベントデリゲーションで対応
 - **委員会Newsリスト行はDescriptionが空でもモーダル属性を付与**（actModalAttrsを使わず直接生成）
+
+## card.html（プロフィールカードジェネレーター）
+
+Canvas（2D）でブラウザ内描画し、PNG形式でダウンロードできるファンカードジェネレーター。
+
+### テンプレート一覧
+| ID | テンプレート名 | サイズ |
+|---|---|---|
+| `profile-card` | 案1〜3（縦型カード） | 600×900px |
+| `booklet` | 案4 プロフィール帳 | 600×自動 |
+| `sticker` | 案5 ステッカー帳 | 600×自動 |
+| `notebook` | 案6 ノート見開き | 900×自動 |
+
+### 描画の仕組み
+- **2パスレンダリング**：`measureOnly=true` で高さ計測 → `canvas.height` 確定 → 本描画
+- **高解像度ダウンロード**：2×スケールの一時canvasを使用、PNG形式で保存（`satoyu_profile_名前.png`）
+- **白背景プリフィル**：`ctx.fillStyle="#ffffff"; ctx.fillRect(...)` で透明→黒化を防止
+- **日本語テキスト折り返し**：`wrapText(ctx, text, maxW)` で1文字ずつ `measureText()` して折り返し
+- **ディスパッチ**：`DRAW_FNS = { id: drawFn }` マップで `tpl.id` をキーに関数を選択
+
+### 入力フィールド
+- アイコン画像（ファイル選択）、ファンネーム、担当カラー、推しポイント など（テンプレートごとに異なる）
 
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
@@ -146,6 +180,11 @@ oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列�
 - YouTube動画ID抽出：`youtube.com/watch?v=ID` or `youtu.be/ID` → `img.youtube.com/vi/{ID}/maxresdefault.jpg`
 - Platformの照合は**大文字小文字を区別しない**
 
+## update_blog_thumbnails.js の対象DB
+- **DB_BLOG**：佐藤優羽さんBlog
+- **DB_MEMBER_BLOG**：他メンバーブログ（`DB_MEMBER_BLOG` 環境変数で追加）
+- 両DBを `processDB(dbId, label)` 関数で共通処理
+
 ## add_blog_posts.js の仕組み
 - スクレイピング対象：`https://www.hinatazaka46.com/s/official/diary/member/list?ima=0000&ct=42`
 - 抽出クラス：`c-blog-article__title`、`c-blog-article__date`
@@ -153,6 +192,32 @@ oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列�
 - Numberプロパティ：既存DBの最大値+1から連番で付与
 - サムネイル正規表現：`cdn.hinatazaka46.com/files/.../diary|moblog/....(jpg|jpeg|png|webp)`
 - Descriptionに告知文を自動生成（`buildDescription()`）
+
+## 管理ページ（admin.html + admin-api/）
+
+### 構成
+- `admin.html`：フロントエンド（パスワードログイン、DB別フォーム、一覧・削除）
+- `admin-api/server.js`：Express APIサーバー（ポート3001）。Docker経由でVPS上で動作
+- アクセス：`https://satoyu.info/admin-api/...`（nginxがプロキシ）
+
+### 対応DB・登録できるプロパティ
+| DB | プロパティ |
+|---|---|
+| quiz | 問題文、選択肢A〜D、正解、解説、参考URL・タイトル |
+| committee | タイトル、日付、URL、ステータス、締め切り日、説明、画像URL |
+| activities | タイトル、日付、URL、ステータス、説明、画像URL |
+| x | タイトル、日付、URL、タグ（カンマ区切り） |
+| tiktok | URL（必須）、日付、タイトル（任意・oEmbedで自動補完） |
+| youtube | タイトル、日付、URL、チャンネル（select） |
+| lemino | タイトル、日付、URL、説明 |
+
+### 認証
+- `ADMIN_PASSWORD` 環境変数と Bearer トークン照合
+- セッションストレージにトークンを保持、リロードで再ログイン不要（タブを閉じるとクリア）
+
+### GitHub Actionsデプロイ連携
+- admin.html から GitHub Personal Access Token を登録してワークフローをトリガー可能
+- ポーリングで実行状況をリアルタイム表示（6秒間隔、最大40回）
 
 ## ユーティリティスクリプト
 - `restore_tiktok.js`：DB_TIKTOKのレコードを誤削除した際にgh-pagesのHTML内容から復元するスクリプト
@@ -179,6 +244,7 @@ rsync -avz --delete [除外ファイル一覧] ./ root@133.88.117.39:/var/www/sa
 | `VPS_HOST` | `133.88.117.39` |
 | `VPS_USER` | `root` |
 | `VPS_SSH_KEY` | `/root/.ssh/github_actions_satoyu` の秘密鍵 |
+| `DB_MEMBER_BLOG` | `33e28fd03f5380f6a868d3d1aa3f7755`（他メンバーブログDB） |
 
 ### nginx設定（~/newsmind/nginx/nginx.conf）
 - `server_name satoyu.info www.satoyu.info` → `/var/www/satoyu` を静的配信（HTTPS）
@@ -251,5 +317,9 @@ https://satoyu.info/images/activities/2026-04-09_handshake.jpg
 - ~~HTTPS設定（Let's Encrypt / certbot）~~（完了）
 - ~~yu.html にOGP・descriptionメタタグ追加~~（完了）
 - ~~全ページナビにクイズリンク追加~~（完了）
+- ~~他メンバーブログページ（member-blog.html）追加~~（完了）
+- ~~プロフィールカードジェネレーター（card.html）テンプレート拡充（案4〜6追加）~~（完了）
+- ~~管理ページの委員会News・活動報告フォームにステータス・画像・締め切りフィールド追加~~（完了）
 - OGP画像（ogp.png）の作成・アップロード
 - ベストコンテンツの厳選セクション
+- GitHub Secretsに `DB_MEMBER_BLOG` を追加（手動作業が必要）
