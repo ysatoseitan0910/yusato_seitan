@@ -6,7 +6,7 @@ const path = require("path");
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-const SITE_URL = "https://ysatoseitan0910.github.io/yusato_seitan";
+const SITE_URL = "https://satoyu.info";
 
 const TARGETS = [
   {
