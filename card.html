@@ -265,7 +265,23 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ════════════════════════════════════════════════════════
 //  フィールド定義
 // ════════════════════════════════════════════════════════
-const FIELD_DEFAULTS = { mbti: "ENFP", gender: "無回答" };
+const FIELD_DEFAULTS = {
+  "fan-name":        "さとうゆ推し",
+  "handle":          "@satoyu_donguri_funfun",
+  "birth-year":      "2006年",
+  "birth-md":        "9月10日",
+  "gender":          "無回答",
+  "mbti":            "ENFP",
+  "ohisama-history": "4回目のひな誕祭",
+  "nickname":        "ふんふん",
+  "self-intro":      "リトルトゥースでもあるよ！",
+  "oshi-name":       "ゆうちゃん",
+  "oshi-reason":     "ティザー映像",
+  "oshi-like":       "もちもち",
+  "oshi-episode":    "リアミで見る",
+  "oshi-feeling":    "可愛い",
+  "oshi-love":       "さとうゆが一推し！",
+};
 
 const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
                       "ISTJ","ISFJ","ESTJ","ESFJ","ISTP","ISFP","ESTP","ESFP","わからない"];
@@ -274,8 +290,8 @@ const SHARED_FIELDS = [
   // 自己紹介
   { id: "fan-name",        label: "ファン名",           placeholder: "さとうゆ推し",              required: true },
   { id: "handle",          label: "X ID",               placeholder: "@satoyu_donguri_funfun",     required: true },
-  { id: "birth-year",      label: "誕生年（任意）",      placeholder: "2006年" },
-  { id: "birth-md",        label: "誕生月日（任意）",    placeholder: "9月10日" },
+  { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "2006年" },
+  { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "9月10日" },
   { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
   { id: "mbti",            label: "MBTI",               type: "select", options: MBTI_OPTIONS },
   { id: "ohisama-history", label: "おひさま歴",          placeholder: "4回目のひな誕祭" },
