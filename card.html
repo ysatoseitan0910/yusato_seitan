@@ -620,7 +620,7 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const TEXT_OFF = BOX_TOFF + PILL_H + PILL_GAP;  // = 32
   const BOX_OH   = TEXT_OFF + BOX_BPAD;            // = 44
   const BOX_GAP  = 14;
-  const YUZAI_SZ = 60;
+  const YUZAI_SZ = 90;
 
   const fanName      = getV("fan-name") || "ファン名";
   const handle       = (getV("handle") || "").trim();
@@ -711,7 +711,7 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   if (handle) fieldZoneMap["handle"] = { x1: 0, x2: PW, y1: Math.floor(icoCY), y2: PAD + profileRowH };
 
   // 自己紹介ボックス（左ページ）
-  drawSectionBox(0, lY, selfH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ー自己紹介ー");
+  drawSectionBox(0, lY, selfH, "rgba(245,210,80,0.10)", "#ddc840", "#a09020", "ー自己紹介ー");
   Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, lY + TEXT_OFF, TW, FS));
   drawSegmentedText(ctx, selfSegs, MARGIN_X, lY + TEXT_OFF, TW, FS, C.ink);
 
@@ -720,7 +720,7 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   drawRuled(RX, PW);
 
   // さとうゆボックス（右ページ）
-  drawSectionBox(RX, TEXT_TOP, oshiMainH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ーさとうゆの好きなところー");
+  drawSectionBox(RX, TEXT_TOP, oshiMainH, "rgba(100,160,230,0.09)", "#90b8e8", "#4878c0", "ーさとうゆの好きなところー");
   Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + TEXT_OFF, TW, FS));
   drawSegmentedText(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + TEXT_OFF, TW, FS, C.ink);
 
@@ -952,7 +952,7 @@ function drawNotebookVertical(ctx, w, getV, ico, measureOnly) {
   const BOX_OH = TEXT_OFF + BOX_BPAD;             // ボックスオーバーヘッド = 44
   const BOX_GAP = 14;                 // ボックス間の隙間
 
-  const YUZAI_SZ = 68;
+  const YUZAI_SZ = 90;
   const fanName      = getV("fan-name") || "ファン名";
   const handle       = (getV("handle") || "").trim();
   const selfSegs     = buildSelfIntroSegments(getV);
@@ -1041,13 +1041,13 @@ function drawNotebookVertical(ctx, w, getV, ico, measureOnly) {
   let curY = lY;
 
   // ブロック1：自己紹介
-  drawSectionBox(curY, selfH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ー自己紹介ー");
+  drawSectionBox(curY, selfH, "rgba(245,210,80,0.10)", "#ddc840", "#a09020", "ー自己紹介ー");
   Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, curY + TEXT_OFF, TW, FS));
   drawSegmentedText(ctx, selfSegs, MARGIN_X, curY + TEXT_OFF, TW, FS, C.ink);
   curY += block1H + BOX_GAP;
 
   // ブロック2：さとうゆの好きなところ
-  drawSectionBox(curY, oshiMainH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ーさとうゆの好きなところー");
+  drawSectionBox(curY, oshiMainH, "rgba(100,160,230,0.09)", "#90b8e8", "#4878c0", "ーさとうゆの好きなところー");
   Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, MARGIN_X, curY + TEXT_OFF, TW, FS));
   drawSegmentedText(ctx, oshiMainSegs, MARGIN_X, curY + TEXT_OFF, TW, FS, C.ink);
   curY += block2H + (oshiLoveSegs.length ? BOX_GAP : 0);
