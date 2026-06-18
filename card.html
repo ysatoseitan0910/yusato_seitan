@@ -372,7 +372,8 @@ function drawIconCircle(ctx, img, cx, cy, r, borderColor, borderW) {
 // ════════════════════════════════════════════════════════
 //  テキスト生成
 // ════════════════════════════════════════════════════════
-function buildSelfIntroText(getV) {
+// {text, isInput} セグメント配列を返す。drawSegmentedText で入力部分だけハイライト描画する。
+function buildSelfIntroSegments(getV) {
   const birthYear = (getV("birth-year") || "").trim();
   const birthMd   = (getV("birth-md")   || "").trim();
   const gender    =  getV("gender")  || "";
@@ -385,29 +386,30 @@ function buildSelfIntroText(getV) {
   const mbtiVal   = (mbti   && mbti   !== "わからない") ? mbti   : "";
   const birthStr  = [birthYear, birthMd].filter(Boolean).join("");
 
-  const sentences = [];
+  const s = (t) => ({ text: t, isInput: false });
+  const i = (t) => ({ text: t, isInput: true  });
+  const segs = [];
 
   if (birthStr || genderVal || mbtiVal) {
-    let s = "";
     if (birthStr || genderVal) {
-      s = "私は";
-      if (birthStr) s += `${birthStr}生まれ`;
-      if (genderVal) s += (birthStr ? "の" : "") + genderVal;
-      if (mbtiVal) s += `で、MBTIは${mbtiVal}`;
+      segs.push(s("私は"));
+      if (birthStr) { segs.push(i(birthStr)); segs.push(s("生まれ")); }
+      if (genderVal) { if (birthStr) segs.push(s("の")); segs.push(i(genderVal)); }
+      if (mbtiVal)  { segs.push(s("で、MBTIは")); segs.push(i(mbtiVal)); }
     } else {
-      s = `MBTIは${mbtiVal}`;
+      segs.push(s("MBTIは")); segs.push(i(mbtiVal));
     }
-    sentences.push(s + "。");
+    segs.push(s("。"));
   }
 
-  if (history)  sentences.push(`おひさまになったのは${history}からだよ。`);
-  if (nickname) sentences.push(`みんなには${nickname}って呼ばれてるよ。`);
-  if (free)     sentences.push(free);
+  if (history)  { segs.push(s("おひさまになったのは")); segs.push(i(history));  segs.push(s("からだよ。")); }
+  if (nickname) { segs.push(s("みんなには"));           segs.push(i(nickname)); segs.push(s("って呼ばれてるよ。")); }
+  if (free)     { segs.push(i(free)); }
 
-  return sentences.join("");
+  return segs;
 }
 
-function buildOshiIntroText(getV) {
+function buildOshiIntroSegments(getV) {
   const name    = (getV("oshi-name")    || "").trim();
   const reason  = (getV("oshi-reason")  || "").trim();
   const like    = (getV("oshi-like")    || "").trim();
@@ -415,33 +417,38 @@ function buildOshiIntroText(getV) {
   const feeling = (getV("oshi-feeling") || "").trim();
   const love    = (getV("oshi-love")    || "").trim();
 
-  const n = name || "彼女";
-  const lines = [];
+  const n    = name || "彼女";
+  const nInp = !!name;
+  const s = (t) => ({ text: t, isInput: false  });
+  const i = (t) => ({ text: t, isInput: true   });
+  const ni = ()  => ({ text: n, isInput: nInp  });
+  const segs = [];
 
-  lines.push(`日向坂の一押しはもちろん${n}だよ。`);
+  segs.push(s("日向坂の一押しはもちろん")); segs.push(ni()); segs.push(s("だよ。"));
 
   if (reason || like) {
-    let s = "";
+    segs.push(s("\n"));
     if (reason && like) {
-      s = `${n}を好きになったのは${reason}で、${like}な${n}が大好き！`;
+      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason));
+      segs.push(s("で、")); segs.push(i(like)); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     } else if (reason) {
-      s = `${n}を好きになったのは${reason}からで、${n}が大好き！`;
+      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason));
+      segs.push(s("からで、")); segs.push(ni()); segs.push(s("が大好き！"));
     } else {
-      s = `${like}な${n}が大好き！`;
+      segs.push(i(like)); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     }
-    lines.push(s);
   }
 
   if (episode || feeling) {
-    let s = "特に";
-    s += episode ? `${episode}の${n}が` : `${n}が`;
-    s += feeling ? `${feeling}！` : "最高！";
-    lines.push(s);
+    segs.push(s("\n特に"));
+    if (episode) { segs.push(i(episode)); segs.push(s("の")); }
+    segs.push(ni()); segs.push(s("が"));
+    if (feeling) { segs.push(i(feeling)); segs.push(s("！")); } else { segs.push(s("最高！")); }
   }
 
-  if (love) lines.push(love);
+  if (love) { segs.push(s("\n")); segs.push(i(love)); }
 
-  return lines.join("\n");
+  return segs;
 }
 
 // ════════════════════════════════════════════════════════
@@ -468,6 +475,46 @@ function drawBlock(ctx, text, x, y, maxW, fs, color, lhM) {
   return y;
 }
 
+// セグメント配列({text, isInput})を折り返し考慮して描画。入力部分だけ黄色ハイライト。
+const SEG_HL = "rgba(255,244,100,0.55)";
+
+function measureSegmentedText(ctx, segs, maxW, fs, lhM) {
+  const lh = Math.ceil((fs || 15) * (lhM || 1.65));
+  ctx.font = f(fs || 15);
+  let cx = 0, lines = 1;
+  for (const seg of segs) {
+    for (const ch of seg.text) {
+      if (ch === "\n") { cx = 0; lines++; continue; }
+      const cw = ctx.measureText(ch).width;
+      if (cx + cw > maxW && cx > 0) { cx = 0; lines++; }
+      cx += cw;
+    }
+  }
+  return lines * lh;
+}
+
+function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
+  const lh = Math.ceil((fs || 15) * (lhM || 1.65));
+  ctx.font = f(fs || 15);
+  ctx.textBaseline = "top";
+  let cx = x, cy = y;
+  for (const seg of segs) {
+    for (const ch of seg.text) {
+      if (ch === "\n") { cx = x; cy += lh; continue; }
+      const cw = ctx.measureText(ch).width;
+      if (cx + cw > x + maxW && cx > x) { cx = x; cy += lh; }
+      if (seg.isInput) {
+        ctx.fillStyle = SEG_HL;
+        ctx.fillRect(cx, cy + 1, cw + 0.5, lh - 1);
+      }
+      ctx.fillStyle = inkColor || "#283a30";
+      ctx.fillText(ch, cx, cy);
+      cx += cw;
+    }
+  }
+  return cy + lh;
+}
+
 // ════════════════════════════════════════════════════════
 //  ノート見開き
 // ════════════════════════════════════════════════════════
@@ -483,16 +530,16 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
 
   const fanName  = getV("fan-name") || "ファン名";
   const handle   = (getV("handle") || "").trim();
-  const selfText = buildSelfIntroText(getV);
-  const oshiText = buildOshiIntroText(getV);
+  const selfSegs = buildSelfIntroSegments(getV);
+  const oshiSegs = buildOshiIntroSegments(getV);
 
   const ICO_R = 34;
   const MARGIN_X = 52;  // ピンク余白線(44px)の右から文字開始
   const TW = PW - MARGIN_X - PAD;  // テキスト幅（マージン後）
   const nameH = measureBlock(ctx, fanName, IW - ICO_R*2 - 14, 17, 1.5);
   const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0)) + 8;
-  const selfH  = measureBlock(ctx, selfText, TW, FS);
-  const oshiH  = measureBlock(ctx, oshiText, TW, FS);
+  const selfH  = measureSegmentedText(ctx, selfSegs, TW, FS);
+  const oshiH  = measureSegmentedText(ctx, oshiSegs, TW, FS);
 
   const leftH  = PAD + profileRowH + 22 + selfH  + PAD + 18;
   const rightH = PAD + 22           + 10 + oshiH  + PAD + 18;
@@ -535,10 +582,7 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText("── 自己紹介 ──", MARGIN_X, lY); lY += 20 + 6;
-  // 入力テキスト背景ハイライト（薄ミント）
-  ctx.fillStyle = "rgba(225,245,233,0.75)";
-  ctx.fillRect(MARGIN_X - 4, lY - 4, TW + 8, selfH + 8);
-  drawBlock(ctx, selfText, MARGIN_X, lY, TW, FS, C.ink);
+  drawSegmentedText(ctx, selfSegs, MARGIN_X, lY, TW, FS, C.ink);
 
   // Right page
   const RX = PW + BIND;
@@ -547,10 +591,7 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   ctx.font = f(12, true); ctx.fillStyle = C.pinkDeep;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText("── 推し紹介 ──", RX + MARGIN_X, rY); rY += 20 + 6;
-  // 入力テキスト背景ハイライト（薄ピンク）
-  ctx.fillStyle = "rgba(252,230,240,0.75)";
-  ctx.fillRect(RX + MARGIN_X - 4, rY - 4, TW + 8, oshiH + 8);
-  drawBlock(ctx, oshiText, RX + MARGIN_X, rY, TW, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, RX + MARGIN_X, rY, TW, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
@@ -584,18 +625,18 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
 
   const fanName  = getV("fan-name") || "ファン名";
   const handle   = (getV("handle") || "").trim();
-  const selfText = buildSelfIntroText(getV);
-  const oshiText = buildOshiIntroText(getV);
+  const selfSegs = buildSelfIntroSegments(getV);
+  const oshiSegs = buildOshiIntroSegments(getV);
 
   // Header
   const HDR_H = 110;
 
   // Self section
   const SPAD = 16;
-  const selfH = measureBlock(ctx, selfText, IW - SPAD*2, FS) + SPAD*2 + 28 + 10;
+  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2, FS) + SPAD*2 + 28 + 10;
 
   // Oshi section
-  const oshiH = measureBlock(ctx, oshiText, IW - SPAD*2, FS) + SPAD*2 + 28 + 10;
+  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2, FS) + SPAD*2 + 28 + 10;
 
   const FTR_H = 32;
   const totalH = HDR_H + selfH + 10 + oshiH + FTR_H;
@@ -646,11 +687,7 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
   ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
   ctx.fillText("自己紹介", PAD + SPAD + 12, sY + SPAD + 11);
 
-  // テキストエリアハイライト
-  const selfTY = sY + SPAD + 28 + 4, selfTH = selfH - SPAD*2 - 28 - 10;
-  ctx.fillStyle = "rgba(255,255,255,0.6)";
-  ctx.fillRect(PAD + SPAD - 4, selfTY - 4, IW - SPAD*2 + 8, selfTH + 8);
-  drawBlock(ctx, selfText, PAD + SPAD, selfTY, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, selfSegs, PAD + SPAD, sY + SPAD + 28 + 4, IW - SPAD*2, FS, C.ink);
 
   // Oshi section
   let oY = sY + selfH + 10;
@@ -666,11 +703,7 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
   ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
   ctx.fillText("推し紹介", PAD + SPAD + 12, oY + SPAD + 11);
 
-  // テキストエリアハイライト
-  const oshiTY = oY + SPAD + 28 + 4, oshiTH = oshiH - SPAD*2 - 28 - 10;
-  ctx.fillStyle = "rgba(255,255,255,0.6)";
-  ctx.fillRect(PAD + SPAD - 4, oshiTY - 4, IW - SPAD*2 + 8, oshiTH + 8);
-  drawBlock(ctx, oshiText, PAD + SPAD, oshiTY, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD + 28 + 4, IW - SPAD*2, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -695,13 +728,13 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
 
   const fanName  = getV("fan-name") || "ファン名";
   const handle   = (getV("handle") || "").trim();
-  const selfText = buildSelfIntroText(getV);
-  const oshiText = buildOshiIntroText(getV);
+  const selfSegs = buildSelfIntroSegments(getV);
+  const oshiSegs = buildOshiIntroSegments(getV);
 
   const SPAD = 14;
   const HDR_H = 72;
-  const selfH = measureBlock(ctx, selfText, IW - SPAD*2 - 4, FS) + SPAD*2 + 30;
-  const oshiH = measureBlock(ctx, oshiText, IW - SPAD*2 - 4, FS) + SPAD*2 + 30;
+  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 30;
+  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 30;
   const totalH = HDR_H + PAD + selfH + GAP + oshiH + PAD + 20;
 
   if (measureOnly) return totalH;
@@ -739,11 +772,7 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText("✦ 自己紹介", PAD + SPAD, bY + SPAD - 2);
-  // テキストエリアハイライト
-  const sTY = bY + SPAD + 22, sTH = selfH - SPAD*2 - 22;
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillRect(PAD + SPAD - 4, sTY - 4, IW - SPAD*2 + 8, sTH + 6);
-  drawBlock(ctx, selfText, PAD + SPAD, sTY, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, selfSegs, PAD + SPAD, bY + SPAD + 22, IW - SPAD*2, FS, C.ink);
 
   // Oshi block
   let oY = bY + selfH + GAP;
@@ -755,11 +784,7 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   ctx.font = f(12, true); ctx.fillStyle = C.pinkDeep;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText("♡ 推し紹介", PAD + SPAD, oY + SPAD - 2);
-  // テキストエリアハイライト
-  const oTY = oY + SPAD + 22, oTH = oshiH - SPAD*2 - 22;
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillRect(PAD + SPAD - 4, oTY - 4, IW - SPAD*2 + 8, oTH + 6);
-  drawBlock(ctx, oshiText, PAD + SPAD, oTY, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD + 22, IW - SPAD*2, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
