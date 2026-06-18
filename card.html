@@ -138,6 +138,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .canvas-flash-overlay { position: absolute; border-radius: 6px; background: rgba(61,170,120,0.18); pointer-events: none; transition: opacity 0.4s; }
 .canvas-wrap { position: relative; }
 
+/* Form section divider with text */
+.field-divider-label { text-align: center; font-size: 12px; color: var(--text-muted); padding: 6px 0 4px; border-top: 1px dashed var(--border); letter-spacing: 0.06em; }
+
 /* Field highlight animation */
 @keyframes fieldFlash {
   0%   { background: transparent; }
@@ -273,6 +276,7 @@ const FIELD_DEFAULTS = {
   "gender":          "無回答",
   "mbti":            "ENFP",
   "ohisama-history": "4回目のひな誕祭",
+  "song":            "ドレミソラシド",
   "nickname":        "ふんふん",
   "self-intro":      "リトルトゥースでもあるよ！",
   "oshi-name":       "ゆうちゃん",
@@ -294,8 +298,9 @@ const SHARED_FIELDS = [
   { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "9月10日" },
   { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
   { id: "mbti",            label: "MBTI",               type: "select", options: MBTI_OPTIONS },
-  { id: "ohisama-history", label: "おひさま歴",          placeholder: "4回目のひな誕祭" },
-  { id: "nickname",        label: "呼ばれ方",           placeholder: "ふんふん" },
+  { id: "ohisama-history", label: "おひさま歴",                    placeholder: "4回目のひな誕祭" },
+  { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド" },
+  { id: "nickname",        label: "呼ばれ方",                       placeholder: "ふんふん" },
   { id: "self-intro",      label: "自由に自己紹介",      placeholder: "リトルトゥースでもあるよ！", multiline: true },
   // 推し紹介
   { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
@@ -303,6 +308,7 @@ const SHARED_FIELDS = [
   { id: "oshi-like",    label: "好きなところ",         placeholder: "もちもち" },
   { id: "oshi-episode", label: "印象に残っていること", placeholder: "リアミで見る" },
   { id: "oshi-feeling", label: "その感想",             placeholder: "可愛い" },
+  { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
   { id: "oshi-love",    label: "自由に愛を叫ぼう！",   placeholder: "さとうゆが一推し！",   multiline: true },
 ];
 
@@ -372,13 +378,14 @@ function drawIconCircle(ctx, img, cx, cy, r, borderColor, borderW) {
 // ════════════════════════════════════════════════════════
 //  テキスト生成
 // ════════════════════════════════════════════════════════
-// {text, isInput} セグメント配列を返す。drawSegmentedText で入力部分だけハイライト描画する。
+// {text, isInput, fieldId?} セグメント配列を返す。drawSegmentedText で入力部分だけハイライト描画する。
 function buildSelfIntroSegments(getV) {
   const birthYear = (getV("birth-year") || "").trim();
   const birthMd   = (getV("birth-md")   || "").trim();
   const gender    =  getV("gender")  || "";
   const mbti      =  getV("mbti")    || "";
   const history   = (getV("ohisama-history") || "").trim();
+  const song      = (getV("song")            || "").trim();
   const nickname  = (getV("nickname")        || "").trim();
   const free      = (getV("self-intro")      || "").trim();
 
@@ -386,25 +393,33 @@ function buildSelfIntroSegments(getV) {
   const mbtiVal   = (mbti   && mbti   !== "わからない") ? mbti   : "";
   const birthStr  = [birthYear, birthMd].filter(Boolean).join("");
 
-  const s = (t) => ({ text: t, isInput: false });
-  const i = (t) => ({ text: t, isInput: true  });
+  const s = (t)       => ({ text: t, isInput: false });
+  const i = (t, fid)  => ({ text: t, isInput: true, fieldId: fid || null });
   const segs = [];
 
   if (birthStr || genderVal || mbtiVal) {
     if (birthStr || genderVal) {
       segs.push(s("私は"));
-      if (birthStr) { segs.push(i(birthStr)); segs.push(s("生まれ")); }
-      if (genderVal) { if (birthStr) segs.push(s("の")); segs.push(i(genderVal)); }
-      if (mbtiVal)  { segs.push(s("で、MBTIは")); segs.push(i(mbtiVal)); }
+      if (birthStr) { segs.push(i(birthStr, "birth-year")); segs.push(s("生まれ")); }
+      if (genderVal) { if (birthStr) segs.push(s("の")); segs.push(i(genderVal, "gender")); }
+      if (mbtiVal)  { segs.push(s("で、MBTIは")); segs.push(i(mbtiVal, "mbti")); }
     } else {
-      segs.push(s("MBTIは")); segs.push(i(mbtiVal));
+      segs.push(s("MBTIは")); segs.push(i(mbtiVal, "mbti"));
     }
     segs.push(s("。"));
   }
 
-  if (history)  { segs.push(s("おひさまになったのは")); segs.push(i(history));  segs.push(s("からだよ。")); }
-  if (nickname) { segs.push(s("みんなには"));           segs.push(i(nickname)); segs.push(s("って呼ばれてるよ。")); }
-  if (free)     { segs.push(i(free)); }
+  if (history && song) {
+    segs.push(s("おひさまになったのは")); segs.push(i(history, "ohisama-history"));
+    segs.push(s("からで、好きな日向坂46の楽曲は")); segs.push(i(song, "song")); segs.push(s("だよ。"));
+  } else if (history) {
+    segs.push(s("おひさまになったのは")); segs.push(i(history, "ohisama-history")); segs.push(s("からだよ。"));
+  } else if (song) {
+    segs.push(s("好きな日向坂46の楽曲は")); segs.push(i(song, "song")); segs.push(s("だよ。"));
+  }
+
+  if (nickname) { segs.push(s("みんなには")); segs.push(i(nickname, "nickname")); segs.push(s("って呼ばれてるよ。")); }
+  if (free)     { segs.push(i(free, "self-intro")); }
 
   return segs;
 }
@@ -419,9 +434,9 @@ function buildOshiIntroSegments(getV) {
 
   const n    = name || "彼女";
   const nInp = !!name;
-  const s = (t) => ({ text: t, isInput: false  });
-  const i = (t) => ({ text: t, isInput: true   });
-  const ni = ()  => ({ text: n, isInput: nInp  });
+  const s  = (t)      => ({ text: t, isInput: false });
+  const i  = (t, fid) => ({ text: t, isInput: true, fieldId: fid || null });
+  const ni = ()       => ({ text: n, isInput: nInp, fieldId: nInp ? "oshi-name" : null });
   const segs = [];
 
   segs.push(s("日向坂の一押しはもちろん")); segs.push(ni()); segs.push(s("だよ。"));
@@ -429,24 +444,24 @@ function buildOshiIntroSegments(getV) {
   if (reason || like) {
     segs.push(s("\n"));
     if (reason && like) {
-      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason));
-      segs.push(s("で、")); segs.push(i(like)); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
+      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason, "oshi-reason"));
+      segs.push(s("で、")); segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     } else if (reason) {
-      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason));
+      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason, "oshi-reason"));
       segs.push(s("からで、")); segs.push(ni()); segs.push(s("が大好き！"));
     } else {
-      segs.push(i(like)); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
+      segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     }
   }
 
   if (episode || feeling) {
     segs.push(s("\n特に"));
-    if (episode) { segs.push(i(episode)); segs.push(s("の")); }
+    if (episode) { segs.push(i(episode, "oshi-episode")); segs.push(s("の")); }
     segs.push(ni()); segs.push(s("が"));
-    if (feeling) { segs.push(i(feeling)); segs.push(s("！")); } else { segs.push(s("最高！")); }
+    if (feeling) { segs.push(i(feeling, "oshi-feeling")); segs.push(s("！")); } else { segs.push(s("最高！")); }
   }
 
-  if (love) { segs.push(s("\n")); segs.push(i(love)); }
+  if (love) { segs.push(s("\n")); segs.push(i(love, "oshi-love")); }
 
   return segs;
 }
@@ -473,6 +488,29 @@ function drawBlock(ctx, text, x, y, maxW, fs, color, lhM) {
   const ls = wrapText(ctx, text || "", maxW);
   for (const l of ls) { ctx.fillText(l, x, y); y += lh; }
   return y;
+}
+
+// フィールドごとのcanvas座標ゾーンを記録（クリック→フォームジャンプ用）
+let fieldZoneMap = {};
+
+// セグメントを仮走査してfieldIdごとのy1/y2/x1/x2を返す
+function computeTextFieldZones(ctx, segs, x, y, maxW, fs) {
+  const lh = Math.ceil((fs || 15) * 1.65);
+  ctx.font = f(fs || 15);
+  let cx = x, cy = y;
+  const zones = {};
+  for (const seg of segs) {
+    const fid = seg.fieldId;
+    const sy = cy;
+    for (const ch of seg.text) {
+      if (ch === "\n") { cx = x; cy += lh; continue; }
+      const cw = ctx.measureText(ch).width;
+      if (cx + cw > x + maxW && cx > x) { cx = x; cy += lh; }
+      cx += cw;
+    }
+    if (fid && !zones[fid]) zones[fid] = { x1: x, x2: x + maxW, y1: sy, y2: cy + lh };
+  }
+  return zones;
 }
 
 // セグメント配列({text, isInput})を折り返し考慮して描画。入力部分だけ黄色ハイライト。
@@ -541,8 +579,8 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const selfH  = measureSegmentedText(ctx, selfSegs, TW, FS);
   const oshiH  = measureSegmentedText(ctx, oshiSegs, TW, FS);
 
-  const leftH  = PAD + profileRowH + 22 + selfH  + PAD + 18;
-  const rightH = PAD + 22           + 10 + oshiH  + PAD + 18;
+  const leftH  = PAD + profileRowH + 10 + selfH + PAD + 18;
+  const rightH = PAD + oshiH + PAD + 18;
   const totalH = Math.max(leftH, rightH);
 
   if (measureOnly) return totalH;
@@ -578,20 +616,19 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
     ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
   }
 
-  let lY = PAD + profileRowH + 10;
-  ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("── 自己紹介 ──", MARGIN_X, lY); lY += 20 + 6;
+  const lY = PAD + profileRowH + 10;
+  // フィールドゾーン登録
+  fieldZoneMap["fan-name"] = { x1: 0, x2: PW, y1: 0, y2: Math.floor(icoCY) };
+  if (handle) fieldZoneMap["handle"] = { x1: 0, x2: PW, y1: Math.floor(icoCY), y2: PAD + profileRowH };
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, lY, TW, FS));
+  const RX = PW + BIND;
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, RX + MARGIN_X, PAD, TW, FS));
+
   drawSegmentedText(ctx, selfSegs, MARGIN_X, lY, TW, FS, C.ink);
 
   // Right page
-  const RX = PW + BIND;
   drawRuled(RX, PW);
-  let rY = PAD;
-  ctx.font = f(12, true); ctx.fillStyle = C.pinkDeep;
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("── 推し紹介 ──", RX + MARGIN_X, rY); rY += 20 + 6;
-  drawSegmentedText(ctx, oshiSegs, RX + MARGIN_X, rY, TW, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, RX + MARGIN_X, PAD, TW, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
@@ -633,10 +670,10 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
 
   // Self section
   const SPAD = 16;
-  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2, FS) + SPAD*2 + 28 + 10;
+  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2, FS) + SPAD*2 + 10;
 
   // Oshi section
-  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2, FS) + SPAD*2 + 28 + 10;
+  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2, FS) + SPAD*2 + 10;
 
   const FTR_H = 32;
   const totalH = HDR_H + selfH + 10 + oshiH + FTR_H;
@@ -675,19 +712,17 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
 
   // Self section
   let sY = HDR_H + 10;
+  // フィールドゾーン登録
+  fieldZoneMap["fan-name"] = { x1: PAD, x2: w - PAD, y1: 0, y2: Math.floor(ICO_CY) };
+  if (handle) fieldZoneMap["handle"] = { x1: PAD, x2: w - PAD, y1: Math.floor(ICO_CY), y2: HDR_H };
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, PAD + SPAD, sY + SPAD, IW - SPAD*2, FS));
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, PAD + SPAD, sY + selfH + 10 + SPAD, IW - SPAD*2, FS));
+
   ctx.fillStyle = C.mintPale; ctx.fillRect(PAD, sY, IW, selfH);
   ctx.strokeStyle = C.mint; ctx.lineWidth = 1.5;
   ctx.strokeRect(PAD, sY, IW, selfH);
 
-  // Self label pill
-  ctx.font = f(12, true);
-  const slW = ctx.measureText("自己紹介").width + 24;
-  ctx.beginPath(); ctx.roundRect(PAD + SPAD, sY + SPAD, slW, 22, 99);
-  ctx.fillStyle = C.mint; ctx.fill();
-  ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
-  ctx.fillText("自己紹介", PAD + SPAD + 12, sY + SPAD + 11);
-
-  drawSegmentedText(ctx, selfSegs, PAD + SPAD, sY + SPAD + 28 + 4, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, selfSegs, PAD + SPAD, sY + SPAD, IW - SPAD*2, FS, C.ink);
 
   // Oshi section
   let oY = sY + selfH + 10;
@@ -695,15 +730,7 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
   ctx.strokeStyle = "#e895b3"; ctx.lineWidth = 1.5;
   ctx.strokeRect(PAD, oY, IW, oshiH);
 
-  // Oshi label pill
-  ctx.font = f(12, true);
-  const olW = ctx.measureText("推し紹介").width + 24;
-  ctx.beginPath(); ctx.roundRect(PAD + SPAD, oY + SPAD, olW, 22, 99);
-  ctx.fillStyle = C.pinkDeep; ctx.fill();
-  ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
-  ctx.fillText("推し紹介", PAD + SPAD + 12, oY + SPAD + 11);
-
-  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD + 28 + 4, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD, IW - SPAD*2, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -733,8 +760,8 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
 
   const SPAD = 14;
   const HDR_H = 72;
-  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 30;
-  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 30;
+  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 10;
+  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 10;
   const totalH = HDR_H + PAD + selfH + GAP + oshiH + PAD + 20;
 
   if (measureOnly) return totalH;
@@ -771,8 +798,14 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   ctx.fillStyle = C.mint; ctx.beginPath(); ctx.roundRect(PAD, bY, 5, selfH, [12,0,0,12]); ctx.fill();
   ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("✦ 自己紹介", PAD + SPAD, bY + SPAD - 2);
-  drawSegmentedText(ctx, selfSegs, PAD + SPAD, bY + SPAD + 22, IW - SPAD*2, FS, C.ink);
+  // フィールドゾーン登録
+  const ICO_RS = 26;
+  fieldZoneMap["fan-name"] = { x1: PAD, x2: w - PAD, y1: 0, y2: Math.floor(HDR_H / 2) };
+  if (handle) fieldZoneMap["handle"] = { x1: PAD, x2: w - PAD, y1: Math.floor(HDR_H / 2), y2: HDR_H };
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, PAD + SPAD, bY + SPAD, IW - SPAD*2 - 4, FS));
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, PAD + SPAD, bY + selfH + GAP + SPAD, IW - SPAD*2 - 4, FS));
+
+  drawSegmentedText(ctx, selfSegs, PAD + SPAD, bY + SPAD, IW - SPAD*2, FS, C.ink);
 
   // Oshi block
   let oY = bY + selfH + GAP;
@@ -781,10 +814,7 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   ctx.beginPath(); ctx.roundRect(PAD, oY, IW, oshiH, 12); ctx.stroke();
   // Left accent bar
   ctx.fillStyle = C.pinkDeep; ctx.beginPath(); ctx.roundRect(PAD, oY, 5, oshiH, [12,0,0,12]); ctx.fill();
-  ctx.font = f(12, true); ctx.fillStyle = C.pinkDeep;
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("♡ 推し紹介", PAD + SPAD, oY + SPAD - 2);
-  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD + 22, IW - SPAD*2, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD, IW - SPAD*2, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
@@ -803,6 +833,7 @@ const DRAW_FNS = {
 };
 
 function render() {
+  fieldZoneMap = {};
   const tpl  = TEMPLATES[tplIdx];
   const draw = DRAW_FNS[tpl.id];
   canvas.width = tpl.w;
@@ -836,7 +867,16 @@ function buildFields() {
   container.innerHTML = "";
 
   tpl.fields.forEach(f => {
-    // Section divider
+    // Inline divider label (type:"divider")
+    if (f.type === "divider") {
+      const el = document.createElement("div");
+      el.className = "field-divider-label";
+      el.textContent = "── " + f.label + " ──";
+      container.appendChild(el);
+      return;
+    }
+
+    // Section divider (sectionStart)
     if (f.sectionStart) {
       const div = document.createElement("hr");
       div.className = "field-divider";
@@ -1028,7 +1068,7 @@ document.fonts.ready.then(() => {
 // ════════════════════════════════════════════════════════
 //  Canvas クリック → フォームフィールドへスクロール
 // ════════════════════════════════════════════════════════
-const SELF_FIELD_IDS = ["fan-name","handle","birth-year","birth-md","gender","mbti","ohisama-history","nickname","self-intro"];
+const SELF_FIELD_IDS = ["fan-name","handle","birth-year","birth-md","gender","mbti","ohisama-history","song","nickname","self-intro"];
 const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-episode","oshi-feeling","oshi-love"];
 
 function getClickedSection(cx, cy) {
@@ -1096,15 +1136,43 @@ function scrollToSection(section) {
   }
 }
 
+function scrollToField(fieldId) {
+  const container = document.getElementById("fields-list");
+  const block = container.querySelector(`[data-field-id="${fieldId}"]`);
+  if (!block) {
+    scrollToSection(OSHI_FIELD_IDS.includes(fieldId) ? "oshi" : "self");
+    return;
+  }
+  block.classList.remove("highlight-flash");
+  void block.offsetWidth;
+  block.classList.add("highlight-flash");
+  block.scrollIntoView({ behavior: "smooth", block: "center" });
+  const inp = block.querySelector("input[type=text],textarea,select");
+  if (inp) setTimeout(() => inp.focus(), 300);
+}
+
 canvas.addEventListener("click", function (e) {
-  const rect  = canvas.getBoundingClientRect();
+  const rect   = canvas.getBoundingClientRect();
   const scaleX = canvas.width  / rect.width;
   const scaleY = canvas.height / rect.height;
-  const cx = (e.clientX - rect.left) * scaleX;
-  const cy = (e.clientY - rect.top)  * scaleY;
-  const section = getClickedSection(cx, cy);
-  flashCanvasZone(cx, cy);
-  scrollToSection(section);
+  const ckX = (e.clientX - rect.left) * scaleX;
+  const ckY = (e.clientY - rect.top)  * scaleY;
+
+  // fieldZoneMap の中でクリック座標を含む最も近いフィールドを探す
+  let bestField = null, bestDist = Infinity;
+  for (const [fid, z] of Object.entries(fieldZoneMap)) {
+    if (ckX >= z.x1 && ckX <= z.x2 && ckY >= z.y1 - 8 && ckY <= z.y2 + 8) {
+      const dist = Math.abs(ckY - (z.y1 + z.y2) / 2);
+      if (dist < bestDist) { bestDist = dist; bestField = fid; }
+    }
+  }
+
+  flashCanvasZone(ckX, ckY);
+  if (bestField) {
+    scrollToField(bestField);
+  } else {
+    scrollToSection(getClickedSection(ckX, ckY));
+  }
 });
 
 // ── ハンバーガーメニュー ──────────────────────────────
