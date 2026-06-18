@@ -579,7 +579,14 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const selfH  = measureSegmentedText(ctx, selfSegs, TW, FS);
   const oshiH  = measureSegmentedText(ctx, oshiSegs, TW, FS);
 
-  const leftH  = PAD + profileRowH + 10 + selfH + PAD + 18;
+  // 罫線グリッドの基点: 右ページ1行目底辺 = PAD + FS（テキストが完全に乗る）
+  const baseY = PAD + FS;  // = 37
+  // 左ページのテキスト開始Yをグリッドにスナップ
+  const minTextStart = PAD + profileRowH + 10;
+  const snapN = Math.ceil((minTextStart + FS - baseY) / LH);
+  const lY = baseY + snapN * LH - FS;  // スナップ後のテキスト開始Y
+
+  const leftH  = lY + selfH + PAD + 18;
   const rightH = PAD + oshiH + PAD + 18;
   const totalH = Math.max(leftH, rightH);
 
@@ -588,7 +595,8 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   function drawRuled(ox, w2) {
     ctx.fillStyle = C.cream; ctx.fillRect(ox, 0, w2, totalH);
     ctx.strokeStyle = C.line; ctx.lineWidth = 1;
-    for (let y = 30; y < totalH; y += 30) {
+    // 罫線間隔 = LH（行高さ）、起点 = baseY でテキストと完全に合致
+    for (let y = baseY; y < totalH; y += LH) {
       ctx.beginPath(); ctx.moveTo(ox, y); ctx.lineTo(ox + w2, y); ctx.stroke();
     }
     ctx.strokeStyle = C.mline; ctx.lineWidth = 1.5;
@@ -616,7 +624,6 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
     ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
   }
 
-  const lY = PAD + profileRowH + 10;
   // フィールドゾーン登録
   fieldZoneMap["fan-name"] = { x1: 0, x2: PW, y1: 0, y2: Math.floor(icoCY) };
   if (handle) fieldZoneMap["handle"] = { x1: 0, x2: PW, y1: Math.floor(icoCY), y2: PAD + profileRowH };
