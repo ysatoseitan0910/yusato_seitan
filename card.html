@@ -313,9 +313,10 @@ const SHARED_FIELDS = [
 ];
 
 const TEMPLATES = [
-  { id: "notebook", name: "ノート見開き",   w: 880, customRender: true, fields: SHARED_FIELDS },
-  { id: "booklet",  name: "プロフィール帳", w: 660, customRender: true, fields: SHARED_FIELDS },
-  { id: "sticker",  name: "ステッカー帳",   w: 660, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook",   name: "ノート見開き",   w: 880, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook-v", name: "ノート縦型",     w: 600, customRender: true, fields: SHARED_FIELDS },
+  { id: "booklet",    name: "プロフィール帳", w: 660, customRender: true, fields: SHARED_FIELDS },
+  { id: "sticker",    name: "ステッカー帳",   w: 660, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -896,10 +897,114 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
 // ════════════════════════════════════════════════════════
 //  描画ディスパッチ
 // ════════════════════════════════════════════════════════
+function drawNotebookVertical(ctx, w, getV, ico, measureOnly) {
+  const PAD = 20, IW = w - PAD * 2;
+  const TEXT_TOP = 14;
+  const FS = 15, LH = Math.ceil(FS * 1.95);
+  const MARGIN_X = 52;
+  const TW = w - MARGIN_X - PAD;
+  const C = {
+    cream:"#fffdf7", line:"#e8ece6", mline:"#f5ccd8",
+    mintDark:"#1f7a52",
+    ink:"#283a30", muted:"#6b7c72",
+  };
+
+  const fanName      = getV("fan-name") || "ファン名";
+  const handle       = (getV("handle") || "").trim();
+  const selfSegs     = buildSelfIntroSegments(getV);
+  const oshiMainSegs = buildOshiMainSegments(getV);
+  const oshiLoveVal  = (getV("oshi-love") || "").trim();
+  const oshiLoveSegs = oshiLoveVal ? [{ text: oshiLoveVal, isInput: true, fieldId: "oshi-love" }] : [];
+
+  const ICO_R = 34;
+  const nameH = measureBlock(ctx, fanName, IW - ICO_R*2 - 14, 17, 1.5);
+  const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0)) + 8;
+
+  const selfH     = measureSegmentedText(ctx, selfSegs, TW, FS);
+  const oshiMainH = measureSegmentedText(ctx, oshiMainSegs, TW, FS);
+  const oshiLoveH = oshiLoveSegs.length ? measureSegmentedText(ctx, oshiLoveSegs, TW, FS) : 0;
+
+  const baseY = TEXT_TOP + FS;
+  const minTextStart = PAD + profileRowH + 6;
+  const snapN = Math.ceil((minTextStart + FS - baseY) / LH);
+  const lY = baseY + snapN * LH - FS;
+
+  const totalSelfH = LH + selfH;
+  const totalOshiH = LH + oshiMainH + (oshiLoveSegs.length ? LH + oshiLoveH : 0);
+  const totalH = lY + totalSelfH + totalOshiH + PAD + 18;
+
+  if (measureOnly) return totalH;
+
+  ctx.fillStyle = C.cream; ctx.fillRect(0, 0, w, totalH);
+  ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+  for (let y = baseY; y < totalH; y += LH) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  ctx.strokeStyle = C.mline; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(44, 0); ctx.lineTo(44, totalH); ctx.stroke();
+
+  const infoX = PAD + ICO_R*2 + 14;
+  const infoW = IW - ICO_R*2 - 14;
+  const icoCY = PAD + profileRowH/2;
+  drawIconCircle(ctx, ico, PAD + ICO_R, icoCY, ICO_R, "#f7b6c8", 4);
+
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  const nls = wrapText(ctx, fanName, infoW);
+  ctx.font = f(17, true);
+  const nLH = Math.ceil(17*1.5);
+  const totalNameH = nls.length * nLH + (handle ? Math.ceil(13*1.5) + 4 : 0);
+  let ny = icoCY - totalNameH/2;
+  ctx.fillStyle = C.ink;
+  for (const l of nls) { ctx.fillText(l, infoX, ny); ny += nLH; }
+  if (handle) {
+    ctx.font = f(13); ctx.fillStyle = C.muted;
+    ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
+  }
+
+  function drawSecLabel(y, text) {
+    ctx.save();
+    ctx.font = f(FS - 1);
+    ctx.fillStyle = C.mintDark;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(text, MARGIN_X + TW / 2, y + 2);
+    ctx.restore();
+  }
+
+  fieldZoneMap["fan-name"] = { x1: 0, x2: w, y1: 0, y2: Math.floor(icoCY) };
+  if (handle) fieldZoneMap["handle"] = { x1: 0, x2: w, y1: Math.floor(icoCY), y2: PAD + profileRowH };
+
+  let curY = lY;
+
+  drawSecLabel(curY, "ー自己紹介ー");
+  curY += LH;
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, curY, TW, FS));
+  curY = drawSegmentedText(ctx, selfSegs, MARGIN_X, curY, TW, FS, C.ink);
+
+  drawSecLabel(curY, "ーさとうゆの好きなところー");
+  curY += LH;
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, MARGIN_X, curY, TW, FS));
+  curY = drawSegmentedText(ctx, oshiMainSegs, MARGIN_X, curY, TW, FS, C.ink);
+
+  if (oshiLoveSegs.length) {
+    drawSecLabel(curY, "ーさとうゆへの愛を叫ぼうー");
+    curY += LH;
+    Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiLoveSegs, MARGIN_X, curY, TW, FS));
+    drawSegmentedText(ctx, oshiLoveSegs, MARGIN_X, curY, TW, FS, C.ink);
+  }
+
+  ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+  ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", w/2, totalH - 5);
+
+  return totalH;
+}
+
+// ════════════════════════════════════════════════════════
 const DRAW_FNS = {
-  notebook: drawNotebook,
-  booklet:  drawBooklet,
-  sticker:  drawStickerSheet,
+  notebook:   drawNotebook,
+  "notebook-v": drawNotebookVertical,
+  booklet:    drawBooklet,
+  sticker:    drawStickerSheet,
 };
 
 function render() {
