@@ -132,6 +132,21 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
 .download-note { font-size: 11px; color: var(--text-light); text-align: center; }
 
+/* Canvas click feedback */
+#preview-canvas { cursor: pointer; }
+.canvas-click-hint { font-size: 12px; color: var(--emerald-dark); text-align: center; margin-top: 8px; opacity: 0.7; }
+.canvas-flash-overlay { position: absolute; border-radius: 6px; background: rgba(61,170,120,0.18); pointer-events: none; transition: opacity 0.4s; }
+.canvas-wrap { position: relative; }
+
+/* Field highlight animation */
+@keyframes fieldFlash {
+  0%   { background: transparent; }
+  15%  { background: var(--emerald-pale); box-shadow: 0 0 0 3px var(--emerald-light); }
+  75%  { background: var(--emerald-pale); box-shadow: 0 0 0 3px var(--emerald-light); }
+  100% { background: transparent; box-shadow: none; }
+}
+.field-block.highlight-flash { animation: fieldFlash 1.4s ease forwards; border-radius: 8px; }
+
 /* Footer */
 .foot { text-align: center; padding: 32px 16px; }
 .foot p { font-size: 11px; color: var(--text-light); }
@@ -194,6 +209,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <div class="canvas-label">プレビュー</div>
       <canvas id="preview-canvas"></canvas>
       <div class="canvas-size-note" id="canvas-size-note"></div>
+      <div class="canvas-click-hint">💡 カードをクリックすると対応する入力欄にジャンプします</div>
     </div>
 
     <div class="controls">
@@ -286,6 +302,7 @@ const TEMPLATES = [
 let tplIdx = 0;
 const values = {};
 let iconImg = null;
+let currentCanvasH = 0;
 
 const canvas = document.getElementById("preview-canvas");
 const ctx    = canvas.getContext("2d");
@@ -727,6 +744,7 @@ function render() {
   canvas.height = 9999;
   const totalH = draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, true);
   canvas.height = totalH;
+  currentCanvasH = totalH;
   ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, tpl.w, totalH);
   draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, false);
   document.getElementById("canvas-size-note").textContent = `出力サイズ: ${tpl.w} × ${totalH} px`;
@@ -766,6 +784,7 @@ function buildFields() {
 
     const block = document.createElement("div");
     block.className = "field-block";
+    block.dataset.fieldId = f.id;
 
     const labelEl = document.createElement("label");
     labelEl.className = "field-label";
@@ -939,6 +958,88 @@ document.fonts.ready.then(() => {
   document.getElementById("download-btn").addEventListener("click", download);
   document.getElementById("share-x-btn").addEventListener("click", shareToX);
   initIconUpload();
+});
+
+// ════════════════════════════════════════════════════════
+//  Canvas クリック → フォームフィールドへスクロール
+// ════════════════════════════════════════════════════════
+const SELF_FIELD_IDS = ["fan-name","handle","birth-year","birth-md","gender","mbti","ohisama-history","nickname","self-intro"];
+const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-episode","oshi-feeling","oshi-love"];
+
+function getClickedSection(cx, cy) {
+  const tpl = TEMPLATES[tplIdx];
+  if (tpl.id === "notebook") {
+    // 左ページ = 自己紹介、右ページ = 推し紹介
+    return cx < tpl.w * 0.46 ? "self" : "oshi";
+  } else {
+    // booklet / sticker: 上半分 = 自己紹介、下半分 = 推し紹介
+    return cy < currentCanvasH * 0.52 ? "self" : "oshi";
+  }
+}
+
+function flashCanvasZone(cx, cy) {
+  const rect  = canvas.getBoundingClientRect();
+  const scaleX = rect.width  / canvas.width;
+  const scaleY = rect.height / canvas.height;
+  const tpl   = TEMPLATES[tplIdx];
+  const canvasLeft = canvas.offsetLeft + 1; // +1 for border
+
+  let fx, fy, fw, fh;
+  if (tpl.id === "notebook") {
+    if (cx < tpl.w * 0.46) {
+      fx = canvasLeft; fw = rect.width * 0.46;
+    } else {
+      fx = canvasLeft + rect.width * 0.52; fw = rect.width * 0.47;
+    }
+    fy = canvas.offsetTop; fh = rect.height;
+  } else {
+    fx = canvasLeft; fw = rect.width;
+    if (cy < currentCanvasH * 0.52) {
+      fy = canvas.offsetTop; fh = rect.height * 0.52;
+    } else {
+      fy = canvas.offsetTop + rect.height * 0.52; fh = rect.height * 0.48;
+    }
+  }
+
+  const overlay = document.createElement("div");
+  overlay.className = "canvas-flash-overlay";
+  overlay.style.cssText = `left:${fx}px;top:${fy}px;width:${fw}px;height:${fh}px;opacity:1;`;
+  canvas.parentElement.appendChild(overlay);
+  requestAnimationFrame(() => { overlay.style.opacity = "0"; });
+  setTimeout(() => overlay.remove(), 450);
+}
+
+function scrollToSection(section) {
+  const container = document.getElementById("fields-list");
+  const ids = section === "self" ? SELF_FIELD_IDS : OSHI_FIELD_IDS;
+  let scrollTarget = null;
+
+  for (const id of ids) {
+    const block = container.querySelector(`[data-field-id="${id}"]`);
+    if (!block) continue;
+    block.classList.remove("highlight-flash");
+    void block.offsetWidth; // force reflow to restart animation
+    block.classList.add("highlight-flash");
+    if (!scrollTarget) scrollTarget = block;
+  }
+
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    // Focus the first input/textarea in the section
+    const firstInput = scrollTarget.querySelector("input[type=text],textarea,select");
+    if (firstInput) setTimeout(() => firstInput.focus(), 300);
+  }
+}
+
+canvas.addEventListener("click", function (e) {
+  const rect  = canvas.getBoundingClientRect();
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const cx = (e.clientX - rect.left) * scaleX;
+  const cy = (e.clientY - rect.top)  * scaleY;
+  const section = getClickedSection(cx, cy);
+  flashCanvasZone(cx, cy);
+  scrollToSection(section);
 });
 
 // ── ハンバーガーメニュー ──────────────────────────────
