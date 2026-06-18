@@ -559,7 +559,8 @@ function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
 function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const BIND = 30, PW = Math.floor((w - BIND) / 2);
   const PAD = 20, IW = PW - PAD * 2;
-  const FS = 17, LH = Math.ceil(FS * 1.95);
+  const TEXT_TOP = 14;  // 右ページ・テキスト開始Y（PADより上寄り）
+  const FS = 15, LH = Math.ceil(FS * 1.95);
   const C = {
     cream:"#fffdf7", line:"#e8ece6", mline:"#f5ccd8",
     mintDark:"#1f7a52", pinkDeep:"#c84a72",
@@ -579,15 +580,15 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const selfH  = measureSegmentedText(ctx, selfSegs, TW, FS);
   const oshiH  = measureSegmentedText(ctx, oshiSegs, TW, FS);
 
-  // 罫線グリッドの基点: 右ページ1行目底辺 = PAD + FS（テキストが完全に乗る）
-  const baseY = PAD + FS;  // = 37
+  // 罫線グリッドの基点: 右ページ1行目底辺 = TEXT_TOP + FS
+  const baseY = TEXT_TOP + FS;
   // 左ページのテキスト開始Yをグリッドにスナップ
-  const minTextStart = PAD + profileRowH + 10;
+  const minTextStart = PAD + profileRowH + 6;
   const snapN = Math.ceil((minTextStart + FS - baseY) / LH);
   const lY = baseY + snapN * LH - FS;  // スナップ後のテキスト開始Y
 
   const leftH  = lY + selfH + PAD + 18;
-  const rightH = PAD + oshiH + PAD + 18;
+  const rightH = TEXT_TOP + oshiH + PAD + 18;
   const totalH = Math.max(leftH, rightH);
 
   if (measureOnly) return totalH;
@@ -629,13 +630,13 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   if (handle) fieldZoneMap["handle"] = { x1: 0, x2: PW, y1: Math.floor(icoCY), y2: PAD + profileRowH };
   Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, lY, TW, FS));
   const RX = PW + BIND;
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, RX + MARGIN_X, PAD, TW, FS));
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, RX + MARGIN_X, TEXT_TOP, TW, FS));
 
   drawSegmentedText(ctx, selfSegs, MARGIN_X, lY, TW, FS, C.ink);
 
   // Right page
   drawRuled(RX, PW);
-  drawSegmentedText(ctx, oshiSegs, RX + MARGIN_X, PAD, TW, FS, C.ink);
+  drawSegmentedText(ctx, oshiSegs, RX + MARGIN_X, TEXT_TOP, TW, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
@@ -660,7 +661,7 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
 // ════════════════════════════════════════════════════════
 function drawBooklet(ctx, w, getV, ico, measureOnly) {
   const PAD = 22, IW = w - PAD*2;
-  const FS = 17, LH = Math.ceil(FS * 1.95);
+  const FS = 15, LH = Math.ceil(FS * 1.95);
   const C = {
     mintDark:"#1f7a52", mint:"#3DAA78", mintPale:"#eaf6ee",
     pinkDeep:"#c84a72", pinkPale:"#fdeef3",
@@ -752,7 +753,7 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
 function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   const PAD = 16, GAP = 12;
   const IW = w - PAD*2;
-  const FS = 17, LH = Math.ceil(FS * 1.95);
+  const FS = 15, LH = Math.ceil(FS * 1.95);
   const C = {
     cream:"#fffcf0", lineDark:"#e0d8c8",
     mintDark:"#1f7a52", mint:"#3DAA78", mintPale:"#e8f7ee",
