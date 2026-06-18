@@ -602,13 +602,25 @@ function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
 function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const BIND = 30, PW = Math.floor((w - BIND) / 2);
   const PAD = 20, IW = PW - PAD * 2;
-  const TEXT_TOP = 14;  // 右ページ・テキスト開始Y（PADより上寄り）
+  const TEXT_TOP = 14;
   const FS = 15, LH = Math.ceil(FS * 1.95);
   const C = {
     cream:"#fffdf7", line:"#e8ece6", mline:"#f5ccd8",
     mintDark:"#1f7a52", pinkDeep:"#c84a72",
     ink:"#283a30", muted:"#6b7c72", bind:"#d4c9a0",
   };
+
+  // ボックスレイアウト定数
+  const MARGIN_X = 52;
+  const TW = PW - MARGIN_X - PAD;
+  const BOX_X  = MARGIN_X - 6;   // ページ左端からの相対X (= 46)
+  const BOX_W  = TW + 12;
+  const BOX_R  = 10;
+  const PILL_H = 22, PILL_GAP = 6, BOX_TOFF = 4, BOX_BPAD = 12;
+  const TEXT_OFF = BOX_TOFF + PILL_H + PILL_GAP;  // = 32
+  const BOX_OH   = TEXT_OFF + BOX_BPAD;            // = 44
+  const BOX_GAP  = 14;
+  const YUZAI_SZ = 60;
 
   const fanName      = getV("fan-name") || "ファン名";
   const handle       = (getV("handle") || "").trim();
@@ -617,27 +629,25 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const oshiLoveVal  = (getV("oshi-love") || "").trim();
   const oshiLoveSegs = oshiLoveVal ? [{ text: oshiLoveVal, isInput: true, fieldId: "oshi-love" }] : [];
 
-  const ICO_R = 34;
-  const MARGIN_X = 52;  // ピンク余白線(44px)の右から文字開始
-  const TW = PW - MARGIN_X - PAD;  // テキスト幅（マージン後）
-  const nameH = measureBlock(ctx, fanName, IW - ICO_R*2 - 14, 17, 1.5);
-  const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0)) + 8;
+  const ICO_R  = 34;
+  const infoW  = IW - ICO_R*2 - 14 - YUZAI_SZ - 6;  // yuzai分除く
+  const nameH  = measureBlock(ctx, fanName, infoW, 17, 1.5);
+  const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0), YUZAI_SZ) + 8;
+
   const selfH     = measureSegmentedText(ctx, selfSegs, TW, FS);
   const oshiMainH = measureSegmentedText(ctx, oshiMainSegs, TW, FS);
   const oshiLoveH = oshiLoveSegs.length ? measureSegmentedText(ctx, oshiLoveSegs, TW, FS) : 0;
-  // セクションラベル分（LH）を加算
-  const totalSelfH = LH + selfH;
-  const totalOshiH = LH + oshiMainH + (oshiLoveSegs.length ? LH + oshiLoveH : 0);
+  const block1H   = BOX_OH + selfH;
+  const block2H   = BOX_OH + oshiMainH;
+  const block3H   = oshiLoveSegs.length ? BOX_OH + oshiLoveH : 0;
 
-  // 罫線グリッドの基点: 右ページ1行目底辺 = TEXT_TOP + FS
   const baseY = TEXT_TOP + FS;
-  // 左ページのテキスト開始Yをグリッドにスナップ（ラベル込みのブロック起点）
   const minTextStart = PAD + profileRowH + 6;
   const snapN = Math.ceil((minTextStart + FS - baseY) / LH);
-  const lY = baseY + snapN * LH - FS;  // スナップ後のテキスト開始Y
+  const lY = baseY + snapN * LH - FS;
 
-  const leftH  = lY + totalSelfH + PAD + 18;
-  const rightH = TEXT_TOP + totalOshiH + PAD + 18;
+  const leftH  = lY + block1H + PAD + 18;
+  const rightH = TEXT_TOP + block2H + (oshiLoveSegs.length ? BOX_GAP + block3H : 0) + PAD + 18;
   const totalH = Math.max(leftH, rightH);
 
   if (measureOnly) return totalH;
@@ -645,7 +655,6 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   function drawRuled(ox, w2) {
     ctx.fillStyle = C.cream; ctx.fillRect(ox, 0, w2, totalH);
     ctx.strokeStyle = C.line; ctx.lineWidth = 1;
-    // 罫線間隔 = LH（行高さ）、起点 = baseY でテキストと完全に合致
     for (let y = baseY; y < totalH; y += LH) {
       ctx.beginPath(); ctx.moveTo(ox, y); ctx.lineTo(ox + w2, y); ctx.stroke();
     }
@@ -654,10 +663,28 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
     ctx.beginPath(); ctx.moveTo(mx, 0); ctx.lineTo(mx, totalH); ctx.stroke();
   }
 
-  // Left page
+  // セクションボックス描画ヘルパー
+  function drawSectionBox(pageX, bY, contentH, bgFill, borderColor, pillColor, label) {
+    const bH = BOX_OH + contentH;
+    const absX = pageX + BOX_X;
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(absX, bY, BOX_W, bH, BOX_R);
+    ctx.fillStyle = bgFill; ctx.fill();
+    ctx.strokeStyle = borderColor; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.font = f(FS - 1);
+    const pW = Math.min(ctx.measureText(label).width + 28, BOX_W - 20);
+    const pX = absX + (BOX_W - pW) / 2;
+    ctx.beginPath(); ctx.roundRect(pX, bY + BOX_TOFF, pW, PILL_H, PILL_H / 2);
+    ctx.fillStyle = pillColor; ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(label, absX + BOX_W / 2, bY + BOX_TOFF + PILL_H / 2);
+    ctx.restore();
+  }
+
+  // 左ページ
   drawRuled(0, PW);
   const infoX = PAD + ICO_R*2 + 14;
-  const infoW = IW - ICO_R*2 - 14;
   const icoCY = PAD + profileRowH/2;
   drawIconCircle(ctx, ico, PAD + ICO_R, icoCY, ICO_R, "#f7b6c8", 4);
 
@@ -674,47 +701,43 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
     ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
   }
 
-  // セクションラベル描画ヘルパー（罫線の上に中央揃え）
-  function drawSecLabel(x, y, tw, text) {
-    ctx.save();
-    ctx.font = f(FS - 1);
-    ctx.fillStyle = C.mintDark;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.fillText(text, x + tw / 2, y + 2);
-    ctx.restore();
+  // yuzai（左ページ右上）
+  if (yuzaiImg) {
+    ctx.drawImage(yuzaiImg, PW - PAD - YUZAI_SZ, PAD, YUZAI_SZ, YUZAI_SZ);
   }
 
   // フィールドゾーン登録
   fieldZoneMap["fan-name"] = { x1: 0, x2: PW, y1: 0, y2: Math.floor(icoCY) };
   if (handle) fieldZoneMap["handle"] = { x1: 0, x2: PW, y1: Math.floor(icoCY), y2: PAD + profileRowH };
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, lY + LH, TW, FS));
+
+  // 自己紹介ボックス（左ページ）
+  drawSectionBox(0, lY, selfH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ー自己紹介ー");
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, lY + TEXT_OFF, TW, FS));
+  drawSegmentedText(ctx, selfSegs, MARGIN_X, lY + TEXT_OFF, TW, FS, C.ink);
+
+  // 右ページ
   const RX = PW + BIND;
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + LH, TW, FS));
-  if (oshiLoveSegs.length) {
-    const loveY = TEXT_TOP + LH + oshiMainH + LH;
-    Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiLoveSegs, RX + MARGIN_X, loveY, TW, FS));
-  }
-
-  // 左ページ本文
-  drawSecLabel(MARGIN_X, lY, TW, "ー自己紹介ー");
-  drawSegmentedText(ctx, selfSegs, MARGIN_X, lY + LH, TW, FS, C.ink);
-
-  // Right page
   drawRuled(RX, PW);
-  drawSecLabel(RX + MARGIN_X, TEXT_TOP, TW, "ーさとうゆの好きなところー");
-  const oshiEndY = drawSegmentedText(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + LH, TW, FS, C.ink);
+
+  // さとうゆボックス（右ページ）
+  drawSectionBox(RX, TEXT_TOP, oshiMainH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ーさとうゆの好きなところー");
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + TEXT_OFF, TW, FS));
+  drawSegmentedText(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + TEXT_OFF, TW, FS, C.ink);
+
+  // 愛ボックス（右ページ、ピンク）
   if (oshiLoveSegs.length) {
-    drawSecLabel(RX + MARGIN_X, oshiEndY, TW, "ーさとうゆへの愛を叫ぼうー");
-    drawSegmentedText(ctx, oshiLoveSegs, RX + MARGIN_X, oshiEndY + LH, TW, FS, C.ink);
+    const loveBoxY = TEXT_TOP + block2H + BOX_GAP;
+    drawSectionBox(RX, loveBoxY, oshiLoveH, "rgba(200,74,114,0.06)", "#f5ccd8", C.pinkDeep, "ーさとうゆへの愛を叫ぼうー");
+    Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiLoveSegs, RX + MARGIN_X, loveBoxY + TEXT_OFF, TW, FS));
+    drawSegmentedText(ctx, oshiLoveSegs, RX + MARGIN_X, loveBoxY + TEXT_OFF, TW, FS, C.ink);
   }
 
-  // Footer
+  // フッター
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
   ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", PW/2, totalH - 5);
   ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", RX + PW/2, totalH - 5);
 
-  // Binding
+  // バインディング
   ctx.fillStyle = "rgba(0,0,0,0.04)"; ctx.fillRect(PW, 0, BIND, totalH);
   const ringX = PW + BIND/2, numR = Math.max(3, Math.floor(totalH/60));
   for (let i = 0; i < numR; i++) {
