@@ -391,17 +391,17 @@ function buildSelfIntroText(getV) {
     let s = "";
     if (birthStr || genderVal) {
       s = "私は";
-      if (birthStr) s += `「${birthStr}」生まれ`;
-      if (genderVal) s += (birthStr ? "の" : "") + `「${genderVal}」`;
-      if (mbtiVal) s += `で、MBTIは「${mbtiVal}」`;
+      if (birthStr) s += `${birthStr}生まれ`;
+      if (genderVal) s += (birthStr ? "の" : "") + genderVal;
+      if (mbtiVal) s += `で、MBTIは${mbtiVal}`;
     } else {
-      s = `MBTIは「${mbtiVal}」`;
+      s = `MBTIは${mbtiVal}`;
     }
     sentences.push(s + "。");
   }
 
-  if (history)  sentences.push(`おひさまになったのは「${history}」からだよ。`);
-  if (nickname) sentences.push(`みんなには「${nickname}」って呼ばれてるよ。`);
+  if (history)  sentences.push(`おひさまになったのは${history}からだよ。`);
+  if (nickname) sentences.push(`みんなには${nickname}って呼ばれてるよ。`);
   if (free)     sentences.push(free);
 
   return sentences.join("");
@@ -418,24 +418,24 @@ function buildOshiIntroText(getV) {
   const n = name || "彼女";
   const lines = [];
 
-  lines.push(`日向坂の一押しはもちろん「${n}」だよ。`);
+  lines.push(`日向坂の一押しはもちろん${n}だよ。`);
 
   if (reason || like) {
     let s = "";
     if (reason && like) {
-      s = `「${n}」を好きになったのは「${reason}」で、「${like}」な「${n}」が大好き！`;
+      s = `${n}を好きになったのは${reason}で、${like}な${n}が大好き！`;
     } else if (reason) {
-      s = `「${n}」を好きになったのは「${reason}」からで、「${n}」が大好き！`;
+      s = `${n}を好きになったのは${reason}からで、${n}が大好き！`;
     } else {
-      s = `「${like}」な「${n}」が大好き！`;
+      s = `${like}な${n}が大好き！`;
     }
     lines.push(s);
   }
 
   if (episode || feeling) {
     let s = "特に";
-    s += episode ? `「${episode}」の「${n}」が` : `「${n}」が`;
-    s += feeling ? `「${feeling}」！` : "最高！";
+    s += episode ? `${episode}の${n}が` : `${n}が`;
+    s += feeling ? `${feeling}！` : "最高！";
     lines.push(s);
   }
 
@@ -487,10 +487,12 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   const oshiText = buildOshiIntroText(getV);
 
   const ICO_R = 34;
+  const MARGIN_X = 52;  // ピンク余白線(44px)の右から文字開始
+  const TW = PW - MARGIN_X - PAD;  // テキスト幅（マージン後）
   const nameH = measureBlock(ctx, fanName, IW - ICO_R*2 - 14, 17, 1.5);
   const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0)) + 8;
-  const selfH  = measureBlock(ctx, selfText, IW, FS);
-  const oshiH  = measureBlock(ctx, oshiText, IW, FS);
+  const selfH  = measureBlock(ctx, selfText, TW, FS);
+  const oshiH  = measureBlock(ctx, oshiText, TW, FS);
 
   const leftH  = PAD + profileRowH + 22 + selfH  + PAD + 18;
   const rightH = PAD + 22           + 10 + oshiH  + PAD + 18;
@@ -532,8 +534,11 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   let lY = PAD + profileRowH + 10;
   ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("── 自己紹介 ──", PAD, lY); lY += 20 + 6;
-  drawBlock(ctx, selfText, PAD, lY, IW, FS, C.ink);
+  ctx.fillText("── 自己紹介 ──", MARGIN_X, lY); lY += 20 + 6;
+  // 入力テキスト背景ハイライト（薄ミント）
+  ctx.fillStyle = "rgba(225,245,233,0.75)";
+  ctx.fillRect(MARGIN_X - 4, lY - 4, TW + 8, selfH + 8);
+  drawBlock(ctx, selfText, MARGIN_X, lY, TW, FS, C.ink);
 
   // Right page
   const RX = PW + BIND;
@@ -541,8 +546,11 @@ function drawNotebook(ctx, w, getV, ico, measureOnly) {
   let rY = PAD;
   ctx.font = f(12, true); ctx.fillStyle = C.pinkDeep;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("── 推し紹介 ──", RX + PAD, rY); rY += 20 + 6;
-  drawBlock(ctx, oshiText, RX + PAD, rY, IW, FS, C.ink);
+  ctx.fillText("── 推し紹介 ──", RX + MARGIN_X, rY); rY += 20 + 6;
+  // 入力テキスト背景ハイライト（薄ピンク）
+  ctx.fillStyle = "rgba(252,230,240,0.75)";
+  ctx.fillRect(RX + MARGIN_X - 4, rY - 4, TW + 8, oshiH + 8);
+  drawBlock(ctx, oshiText, RX + MARGIN_X, rY, TW, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
@@ -638,7 +646,11 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
   ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
   ctx.fillText("自己紹介", PAD + SPAD + 12, sY + SPAD + 11);
 
-  drawBlock(ctx, selfText, PAD + SPAD, sY + SPAD + 28 + 4, IW - SPAD*2, FS, C.ink);
+  // テキストエリアハイライト
+  const selfTY = sY + SPAD + 28 + 4, selfTH = selfH - SPAD*2 - 28 - 10;
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillRect(PAD + SPAD - 4, selfTY - 4, IW - SPAD*2 + 8, selfTH + 8);
+  drawBlock(ctx, selfText, PAD + SPAD, selfTY, IW - SPAD*2, FS, C.ink);
 
   // Oshi section
   let oY = sY + selfH + 10;
@@ -654,7 +666,11 @@ function drawBooklet(ctx, w, getV, ico, measureOnly) {
   ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
   ctx.fillText("推し紹介", PAD + SPAD + 12, oY + SPAD + 11);
 
-  drawBlock(ctx, oshiText, PAD + SPAD, oY + SPAD + 28 + 4, IW - SPAD*2, FS, C.ink);
+  // テキストエリアハイライト
+  const oshiTY = oY + SPAD + 28 + 4, oshiTH = oshiH - SPAD*2 - 28 - 10;
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillRect(PAD + SPAD - 4, oshiTY - 4, IW - SPAD*2 + 8, oshiTH + 8);
+  drawBlock(ctx, oshiText, PAD + SPAD, oshiTY, IW - SPAD*2, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -723,7 +739,11 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText("✦ 自己紹介", PAD + SPAD, bY + SPAD - 2);
-  drawBlock(ctx, selfText, PAD + SPAD, bY + SPAD + 22, IW - SPAD*2, FS, C.ink);
+  // テキストエリアハイライト
+  const sTY = bY + SPAD + 22, sTH = selfH - SPAD*2 - 22;
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillRect(PAD + SPAD - 4, sTY - 4, IW - SPAD*2 + 8, sTH + 6);
+  drawBlock(ctx, selfText, PAD + SPAD, sTY, IW - SPAD*2, FS, C.ink);
 
   // Oshi block
   let oY = bY + selfH + GAP;
@@ -735,7 +755,11 @@ function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
   ctx.font = f(12, true); ctx.fillStyle = C.pinkDeep;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText("♡ 推し紹介", PAD + SPAD, oY + SPAD - 2);
-  drawBlock(ctx, oshiText, PAD + SPAD, oY + SPAD + 22, IW - SPAD*2, FS, C.ink);
+  // テキストエリアハイライト
+  const oTY = oY + SPAD + 22, oTH = oshiH - SPAD*2 - 22;
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillRect(PAD + SPAD - 4, oTY - 4, IW - SPAD*2 + 8, oTH + 6);
+  drawBlock(ctx, oshiText, PAD + SPAD, oTY, IW - SPAD*2, FS, C.ink);
 
   // Footer
   ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
