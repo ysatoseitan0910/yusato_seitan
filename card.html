@@ -543,7 +543,7 @@ function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
       if (cx + cw > x + maxW && cx > x) { cx = x; cy += lh; }
       if (seg.isInput) {
         ctx.fillStyle = SEG_HL;
-        ctx.fillRect(cx, cy + 1, cw + 0.5, lh - 1);
+        ctx.fillRect(cx, cy + 1, cw + 0.5, (fs || 15) + 1);
       }
       ctx.fillStyle = inkColor || "#283a30";
       ctx.fillText(ch, cx, cy);
