@@ -51,7 +51,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .hamburger:hover { background: var(--pink-pale); }
 
 /* ── Editor layout ── */
-.editor-page { max-width: 1100px; margin: 0 auto; padding: 28px 20px 64px; }
+.editor-page { max-width: 1440px; margin: 0 auto; padding: 28px 20px 64px; }
 .editor-heading { margin-bottom: 24px; }
 .editor-heading h1 { font-size: 22px; font-weight: 600; color: var(--emerald-dark); }
 .editor-heading p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
@@ -63,7 +63,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .tpl-tab.active { border-color: var(--emerald); background: var(--emerald); color: #fff; box-shadow: 2px 2px 0 var(--emerald-dark); }
 
 /* Two-column layout */
-.editor-body { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+.editor-body { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
 
 /* Canvas area */
 .canvas-wrap { position: sticky; top: calc(var(--nav-h) + 12px); background: var(--white); border: 2px solid var(--ink); border-radius: 16px; padding: 16px; box-shadow: 4px 4px 0 var(--emerald-dark); }
@@ -291,7 +291,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ════════════════════════════════════════════════════════
 const FIELD_DEFAULTS = {
   "fan-name":        "さとうゆ推し",
-  "handle":          "@satoyu_donguri_funfun",
+  "handle":          "@さとうゆ",
   "birth-year":      "2006年",
   "birth-md":        "9月10日",
   "gender":          "無回答",
@@ -303,7 +303,7 @@ const FIELD_DEFAULTS = {
   "oshi-name":       "ゆうちゃん",
   "oshi-reason":     "ティザー映像",
   "oshi-like":       "もちもち",
-  "oshi-episode":    "リアミで見る",
+  "oshi-episode":    "ライブ",
   "oshi-feeling":    "可愛い",
   "oshi-love":       "さとうゆが一推し！",
 };
@@ -318,16 +318,16 @@ const SHARED_FIELDS = [
   { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "2006年" },
   { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "9月10日" },
   { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
-  { id: "mbti",            label: "MBTI",               type: "select", options: MBTI_OPTIONS },
+  { id: "mbti",            label: "MBTI（省略可）",       type: "select", options: MBTI_OPTIONS },
   { id: "ohisama-history", label: "おひさま歴",                    placeholder: "4回目のひな誕祭" },
   { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド" },
   { id: "nickname",        label: "呼ばれ方",                       placeholder: "ふんふん" },
   { id: "self-intro",      label: "自由に自己紹介",      placeholder: "リトルトゥースでもあるよ！", multiline: true },
   // 推し紹介
   { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
-  { id: "oshi-reason",  label: "推しになったきっかけ", placeholder: "ティザー映像" },
+  { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "ティザー映像" },
   { id: "oshi-like",    label: "好きなところ",         placeholder: "もちもち" },
-  { id: "oshi-episode", label: "印象に残っていること", placeholder: "リアミで見る" },
+  { id: "oshi-episode", label: "印象に残っていること", placeholder: "ライブ" },
   { id: "oshi-feeling", label: "その感想",             placeholder: "可愛い" },
   { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
   { id: "oshi-love",    label: "自由に愛を叫ぼう！",   placeholder: "さとうゆが一推し！",   multiline: true },
@@ -619,7 +619,7 @@ function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM, hlColor) {
       if (cx + cw > x + maxW && cx > x) { cx = x; cy += lh; }
       if (seg.isInput) {
         ctx.fillStyle = hlColor || SEG_HL;
-        ctx.fillRect(cx, cy + 1, cw + 0.5, (fs || 15) + 1);
+        ctx.fillRect(cx, cy + Math.round((fs || 15) * 0.7), cw + 0.5, 4);
       }
       ctx.fillStyle = inkColor || "#283a30";
       ctx.fillText(ch, cx, cy);
@@ -749,7 +749,7 @@ function drawLoveMemo(ctx, x, y, memoW, memoH, MP, loveLines) {
 
 function mmFooter(ctx, w, totalH) {
   ctx.font = f(11); ctx.fillStyle = "#a0957f"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
-  ctx.fillText("satoyu.info　#さとうゆおしプロフィール", w / 2, totalH - 10);
+  ctx.fillText("satoyu.info　#さとうゆ一押しプロフィール", w / 2, totalH - 10);
 }
 
 // ════════════════════════════════════════════════════════
@@ -803,11 +803,11 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   mmFooter(ctx, w, totalH);
 
   const slots = [
-    { cx: lX + memoW - MP - 18, cy: lY + MP + icoR, size: 44, rot: -11 },
-    { cx: lX + memoW - 12,      cy: lY + selfMemoH + 2, size: 46, rot: 13 },
-    { cx: rX + 34,              cy: oshiY - 12, size: 44, rot: -13 },
-    { cx: rX + memoW - 12,      cy: loveY + loveMemoH + 2, size: 48, rot: 10 },
-    { cx: rX + 10,              cy: loveY + loveMemoH + 2, size: 40, rot: -8 },
+    { cx: lX + memoW - MP - 18, cy: lY + MP + icoR, size: 56, rot: -11 },
+    { cx: lX + memoW - 12,      cy: lY + selfMemoH + 2, size: 58, rot: 13 },
+    { cx: rX + 34,              cy: oshiY - 12, size: 56, rot: -13 },
+    { cx: rX + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
+    { cx: rX + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
   ];
   drawIllustSlots(ctx, slots);
   drawDoodle(ctx, lX + 6, lY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
@@ -854,11 +854,11 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   mmFooter(ctx, w, totalH);
 
   const slots = [
-    { cx: X + memoW - MP - 18, cy: selfY + MP + icoR, size: 44, rot: -11 },
-    { cx: X + memoW - 12,      cy: selfY + selfMemoH + 2, size: 46, rot: 13 },
-    { cx: X + 34,              cy: oshiY - 12, size: 44, rot: -13 },
-    { cx: X + memoW - 12,      cy: loveY + loveMemoH + 2, size: 48, rot: 10 },
-    { cx: X + 10,              cy: loveY + loveMemoH + 2, size: 40, rot: -8 },
+    { cx: X + memoW - MP - 18, cy: selfY + MP + icoR, size: 56, rot: -11 },
+    { cx: X + memoW - 12,      cy: selfY + selfMemoH + 2, size: 58, rot: 13 },
+    { cx: X + 34,              cy: oshiY - 12, size: 56, rot: -13 },
+    { cx: X + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
+    { cx: X + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
   ];
   drawIllustSlots(ctx, slots);
   drawDoodle(ctx, X + 6, selfY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
@@ -1119,7 +1119,7 @@ function download() {
   a.click();
 }
 
-const TWEET_TEXT = "#さとうゆおしプロフィール\nhttps://satoyu.info";
+const TWEET_TEXT = "#さとうゆ一押しプロフィール\nhttps://satoyu.info";
 
 async function shareToX() {
   const btn = document.getElementById("share-x-btn");
