@@ -17,7 +17,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=Yomogi&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --emerald: #3DAA78;
@@ -150,6 +150,20 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 }
 .field-block.highlight-flash { animation: fieldFlash 1.4s ease forwards; border-radius: 8px; }
 
+/* Illustration picker */
+.illust-section { display: flex; flex-direction: column; gap: 8px; }
+.illust-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.illust-count { font-size: 11px; font-weight: 600; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 99px; padding: 2px 9px; }
+.illust-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.illust-cell { position: relative; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; overflow: visible; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 4px; }
+.illust-cell:hover { border-color: var(--emerald); }
+.illust-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.illust-cell.selected { border-color: var(--emerald); box-shadow: 0 0 0 2px var(--emerald-light); }
+.illust-cell.disabled { opacity: 0.38; cursor: not-allowed; }
+.illust-badge { position: absolute; top: -7px; right: -7px; width: 18px; height: 18px; border-radius: 50%; background: var(--emerald); color: #fff; font-size: 11px; line-height: 1; display: none; align-items: center; justify-content: center; }
+.illust-cell.selected .illust-badge { display: flex; }
+.illust-hint { font-size: 11px; color: var(--text-light); }
+
 /* Footer */
 .foot { text-align: center; padding: 32px 16px; }
 .foot p { font-size: 11px; color: var(--text-light); }
@@ -234,6 +248,13 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       </div>
       <hr class="field-divider">
 
+      <div class="illust-section" id="illust-section">
+        <div class="illust-section-label">イラストを選ぶ <span class="illust-count" id="illust-count">0 / 5</span></div>
+        <div class="illust-grid" id="illust-grid"></div>
+        <div class="illust-hint">タップで選択（最大5点）。選んだ順にカードへ散りばめられます。</div>
+      </div>
+      <hr class="field-divider" id="illust-divider">
+
       <div id="fields-list"></div>
       <hr class="field-divider">
 
@@ -313,10 +334,8 @@ const SHARED_FIELDS = [
 ];
 
 const TEMPLATES = [
-  { id: "notebook",   name: "ノート見開き",   w: 880, customRender: true, fields: SHARED_FIELDS },
-  { id: "notebook-v", name: "ノート縦型",     w: 600, customRender: true, fields: SHARED_FIELDS },
-  { id: "booklet",    name: "プロフィール帳", w: 660, customRender: true, fields: SHARED_FIELDS },
-  { id: "sticker",    name: "ステッカー帳",   w: 660, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook",   name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook-v", name: "ノート縦型",   w: 600, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -325,15 +344,29 @@ const TEMPLATES = [
 let tplIdx = 0;
 const values = {};
 let iconImg = null;
-let yuzaiImg = null;
 let currentCanvasH = 0;
 
-// yuzai イラストをプリロード
-(function() {
+// ── イラスト素材 ─────────────────────────────────────────
+const ILLUSTS = [
+  { id:"yuzai",    label:"ゆう罪",   src:"/images/image/card/yuzai.png" },
+  { id:"cho_yuzai",label:"超ゆう罪", src:"/images/image/card/cho_yuzai.png" },
+  { id:"muzai",    label:"鍵盤",     src:"/images/image/card/muzai.png" },
+  { id:"dance",    label:"ピース",   src:"/images/image/card/dance.png" },
+  { id:"dance2",   label:"ダンス",   src:"/images/image/card/dance2.png" },
+  { id:"base",     label:"ベース",   src:"/images/image/card/base.png" },
+  { id:"pingpong", label:"応援",     src:"/images/image/card/pingpong.png" },
+  { id:"udetate",  label:"指さし",   src:"/images/image/card/udetate.png" },
+  { id:"kuruma",   label:"ごろ寝",   src:"/images/image/card/kuruma.png" },
+  { id:"mahjong",  label:"髪いじり", src:"/images/image/card/Mahjong_in_Yu_Mind.png" },
+];
+const MAX_ILLUSTS = 5;
+const illustImgs = {};
+let selectedIllusts = ["dance", "pingpong", "muzai", "yuzai"];
+ILLUSTS.forEach(it => {
   const img = new Image();
-  img.onload = () => { yuzaiImg = img; render(); };
-  img.src = "/images/image/yuzai.webp";
-})();
+  img.onload = () => { illustImgs[it.id] = img; render(); };
+  img.src = it.src;
+});
 
 const canvas = document.getElementById("preview-canvas");
 const ctx    = canvas.getContext("2d");
@@ -574,7 +607,7 @@ function measureSegmentedText(ctx, segs, maxW, fs, lhM) {
   return lines * lh;
 }
 
-function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
+function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM, hlColor) {
   const lh = Math.ceil((fs || 15) * (lhM || 1.95));
   ctx.font = f(fs || 15);
   ctx.textBaseline = "top";
@@ -585,7 +618,7 @@ function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
       const cw = ctx.measureText(ch).width;
       if (cx + cw > x + maxW && cx > x) { cx = x; cy += lh; }
       if (seg.isInput) {
-        ctx.fillStyle = SEG_HL;
+        ctx.fillStyle = hlColor || SEG_HL;
         ctx.fillRect(cx, cy + 1, cw + 0.5, (fs || 15) + 1);
       }
       ctx.fillStyle = inkColor || "#283a30";
@@ -597,481 +630,247 @@ function drawSegmentedText(ctx, segs, x, y, maxW, fs, inkColor, lhM) {
 }
 
 // ════════════════════════════════════════════════════════
-//  ノート見開き
+//  マステ＆メモ 共通ヘルパー
 // ════════════════════════════════════════════════════════
-function drawNotebook(ctx, w, getV, ico, measureOnly) {
+const MM = {
+  paper:"#fbf8ee", grid:"#efe9d6",
+  memo:"#fffefb", memoLove:"#fff7f9",
+  ink:"#3a4a40",
+  self:"#1f7a52", oshi:"#3b6bb0", love:"#c84a72",
+  hlSelf:"rgba(255,231,155,0.65)", hlOshi:"rgba(191,224,255,0.7)",
+  tapeG:["#bfe6cf","#a6dcbd"], tapeB:["#bcd6f5","#a3c6ef"], tapeP:["#f6c3d4","#f0acc2"],
+};
+
+function drawTape(ctx, cx, cy, tw, th, rot, colors) {
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot * Math.PI / 180);
+  ctx.beginPath(); ctx.rect(-tw/2, -th/2, tw, th); ctx.clip();
+  ctx.globalAlpha = 0.9;
+  for (let xx = -tw/2; xx < tw/2; xx += 14) {
+    ctx.fillStyle = colors[0]; ctx.fillRect(xx, -th/2, 7, th);
+    ctx.fillStyle = colors[1]; ctx.fillRect(xx + 7, -th/2, 7, th);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function drawMemoCard(ctx, x, y, wd, h, bg) {
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,0.10)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 4;
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.roundRect(x, y, wd, h, 5); ctx.fill();
+  ctx.restore();
+}
+
+function drawIllustSticker(ctx, img, cx, cy, size, rot) {
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot * Math.PI / 180);
+  ctx.shadowColor = "rgba(0,0,0,0.16)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.roundRect(-size/2, -size/2, size, size, size * 0.18); ctx.fill();
+  ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+  if (img) {
+    const pad = size * 0.1, box = size - pad * 2;
+    const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    const sc = Math.min(box / iw, box / ih);
+    const dw = iw * sc, dh = ih * sc;
+    ctx.drawImage(img, -dw/2, -dh/2, dw, dh);
+  }
+  ctx.restore();
+}
+
+function drawDoodle(ctx, x, y, ch, sz, color, rot) {
+  ctx.save();
+  ctx.translate(x, y); ctx.rotate((rot || 0) * Math.PI / 180);
+  ctx.font = f(sz); ctx.fillStyle = color;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(ch, 0, 0);
+  ctx.restore();
+}
+
+function drawIllustSlots(ctx, slots) {
+  for (let i = 0; i < slots.length && i < selectedIllusts.length; i++) {
+    const img = illustImgs[selectedIllusts[i]];
+    const s = slots[i];
+    drawIllustSticker(ctx, img, s.cx, s.cy, s.size, s.rot);
+  }
+}
+
+function drawPaperGrid(ctx, w, h) {
+  ctx.fillStyle = MM.paper; ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = MM.grid; ctx.lineWidth = 1;
+  for (let gx = 22; gx < w; gx += 22) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke(); }
+  for (let gy = 22; gy < h; gy += 22) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke(); }
+}
+
+function drawSelfMemo(ctx, x, y, memoW, memoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, pageX1, pageX2) {
+  const fanName = getV("fan-name") || "ファン名";
+  const handle  = (getV("handle") || "").trim();
+  drawMemoCard(ctx, x, y, memoW, memoH, MM.memo);
+  drawTape(ctx, x + 46, y - 2, 80, 20, -4, MM.tapeG);
+  const icoCX = x + MP + icoR, icoCY = y + MP + icoR;
+  drawIconCircle(ctx, ico, icoCX, icoCY, icoR, "#f7b6c8", 3);
+  const hInfoX = icoCX + icoR + 12;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = MM.self;
+  ctx.fillText(fanName, hInfoX, y + MP + 4);
+  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = "#8a9d6a"; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, hInfoX, y + MP + 24); }
+  const divY = y + MP + headerH + 2;
+  ctx.strokeStyle = "#e6dfc9"; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+  ctx.beginPath(); ctx.moveTo(x + MP, divY); ctx.lineTo(x + memoW - MP, divY); ctx.stroke(); ctx.setLineDash([]);
+  const labelY = divY + 10;
+  ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = MM.self; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText("＊ じこしょうかい ＊", x + MP, labelY);
+  const textY = labelY + labelH + 2;
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, x + MP, textY, memoW - MP * 2, FS));
+  drawSegmentedText(ctx, selfSegs, x + MP, textY, memoW - MP * 2, FS, MM.ink, 1.95, MM.hlSelf);
+  fieldZoneMap["fan-name"] = { x1: pageX1, x2: pageX2, y1: y, y2: Math.floor(icoCY) };
+  if (handle) fieldZoneMap["handle"] = { x1: pageX1, x2: pageX2, y1: Math.floor(icoCY), y2: divY };
+  return divY;
+}
+
+function drawLabeledMemo(ctx, x, y, memoW, memoH, MP, FS, labelH, label, labelColor, tape, tapeCX, tapeRot, segs, hlColor) {
+  drawMemoCard(ctx, x, y, memoW, memoH, MM.memo);
+  drawTape(ctx, tapeCX, y - 2, 80, 20, tapeRot, tape);
+  ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = labelColor; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText(label, x + MP, y + MP);
+  const textY = y + MP + labelH + 2;
+  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, segs, x + MP, textY, memoW - MP * 2, FS));
+  drawSegmentedText(ctx, segs, x + MP, textY, memoW - MP * 2, FS, MM.ink, 1.95, hlColor);
+}
+
+function drawLoveMemo(ctx, x, y, memoW, memoH, MP, loveLines) {
+  drawMemoCard(ctx, x, y, memoW, memoH, MM.memoLove);
+  drawTape(ctx, x + memoW / 2, y - 2, 80, 20, -2, MM.tapeP);
+  ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = MM.love; ctx.textAlign = "center"; ctx.textBaseline = "top";
+  let lyy = y + MP + 8;
+  for (const ln of loveLines) { ctx.fillText("♡ " + ln + " ♡", x + memoW / 2, lyy); lyy += Math.ceil(16 * 1.7); }
+}
+
+function mmFooter(ctx, w, totalH) {
+  ctx.font = f(11); ctx.fillStyle = "#a0957f"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+  ctx.fillText("satoyu.info　#さとうゆおしプロフィール", w / 2, totalH - 10);
+}
+
+// ════════════════════════════════════════════════════════
+//  ノート見開き（マステ＆メモ）
+// ════════════════════════════════════════════════════════
+function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   const BIND = 30, PW = Math.floor((w - BIND) / 2);
-  const PAD = 20, IW = PW - PAD * 2;
-  const TEXT_TOP = 14;
-  const FS = 15, LH = Math.ceil(FS * 1.95);
-  const C = {
-    cream:"#fffdf7", line:"#e8ece6", mline:"#f5ccd8",
-    mintDark:"#1f7a52", pinkDeep:"#c84a72",
-    ink:"#283a30", muted:"#6b7c72", bind:"#d4c9a0",
-  };
+  const PAD = 22, MP = 16, FS = 14;
+  const memoW = PW - PAD * 2, TW = memoW - MP * 2;
+  const labelH = 22, headerH = 50, icoR = 22, TM = 24;
 
-  // ボックスレイアウト定数
-  const MARGIN_X = 52;
-  const TW = PW - MARGIN_X - PAD;
-  const BOX_X  = MARGIN_X - 6;   // ページ左端からの相対X (= 46)
-  const BOX_W  = TW + 12;
-  const BOX_R  = 10;
-  const PILL_H = 22, PILL_GAP = 6, BOX_TOFF = 4, BOX_BPAD = 12;
-  const TEXT_OFF = BOX_TOFF + PILL_H + PILL_GAP;  // = 32
-  const BOX_OH   = TEXT_OFF + BOX_BPAD;            // = 44
-  const BOX_GAP  = 14;
-  const YUZAI_SZ = 60;
+  const selfSegs = buildSelfIntroSegments(getV);
+  const oshiSegs = buildOshiMainSegments(getV);
+  const loveVal  = (getV("oshi-love") || "").trim();
 
-  const fanName      = getV("fan-name") || "ファン名";
-  const handle       = (getV("handle") || "").trim();
-  const selfSegs     = buildSelfIntroSegments(getV);
-  const oshiMainSegs = buildOshiMainSegments(getV);
-  const oshiLoveVal  = (getV("oshi-love") || "").trim();
-  const oshiLoveSegs = oshiLoveVal ? [{ text: oshiLoveVal, isInput: true, fieldId: "oshi-love" }] : [];
+  const selfTextH = measureSegmentedText(ctx, selfSegs, TW, FS);
+  const oshiTextH = measureSegmentedText(ctx, oshiSegs, TW, FS);
+  ctx.font = f(16, false, "Yomogi");
+  const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
+  const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
-  const ICO_R  = 34;
-  const infoW  = IW - ICO_R*2 - 14 - YUZAI_SZ - 6;  // yuzai分除く
-  const nameH  = measureBlock(ctx, fanName, infoW, 17, 1.5);
-  const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0), YUZAI_SZ) + 8;
+  const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
+  const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
+  const loveMemoH = MP + 8 + loveTextH + MP;
 
-  const selfH     = measureSegmentedText(ctx, selfSegs, TW, FS);
-  const oshiMainH = measureSegmentedText(ctx, oshiMainSegs, TW, FS);
-  const oshiLoveH = oshiLoveSegs.length ? measureSegmentedText(ctx, oshiLoveSegs, TW, FS) : 0;
-  const block1H   = BOX_OH + selfH;
-  const block2H   = BOX_OH + oshiMainH;
-  const block3H   = oshiLoveSegs.length ? BOX_OH + oshiLoveH : 0;
-
-  const baseY = TEXT_TOP + FS;
-  const minTextStart = PAD + profileRowH + 6;
-  const snapN = Math.ceil((minTextStart + FS - baseY) / LH);
-  const lY = baseY + snapN * LH - FS;
-
-  const leftH  = lY + block1H + PAD + 18;
-  const rightH = TEXT_TOP + block2H + (oshiLoveSegs.length ? BOX_GAP + block3H : 0) + PAD + 18;
-  const totalH = Math.max(leftH, rightH);
+  const lY = TM;
+  const oshiY = TM + 14;
+  const loveY = oshiY + oshiMemoH + 22;
+  const totalH = Math.max(lY + selfMemoH, loveY + loveMemoH) + 46;
 
   if (measureOnly) return totalH;
 
-  function drawRuled(ox, w2) {
-    ctx.fillStyle = C.cream; ctx.fillRect(ox, 0, w2, totalH);
-    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
-    for (let y = baseY; y < totalH; y += LH) {
-      ctx.beginPath(); ctx.moveTo(ox, y); ctx.lineTo(ox + w2, y); ctx.stroke();
-    }
-    ctx.strokeStyle = C.mline; ctx.lineWidth = 1.5;
-    const mx = ox + 44;
-    ctx.beginPath(); ctx.moveTo(mx, 0); ctx.lineTo(mx, totalH); ctx.stroke();
-  }
-
-  // セクションボックス描画ヘルパー
-  function drawSectionBox(pageX, bY, contentH, bgFill, borderColor, pillColor, label) {
-    const bH = BOX_OH + contentH;
-    const absX = pageX + BOX_X;
-    ctx.save();
-    ctx.beginPath(); ctx.roundRect(absX, bY, BOX_W, bH, BOX_R);
-    ctx.fillStyle = bgFill; ctx.fill();
-    ctx.strokeStyle = borderColor; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.font = f(FS - 1);
-    const pW = Math.min(ctx.measureText(label).width + 28, BOX_W - 20);
-    const pX = absX + (BOX_W - pW) / 2;
-    ctx.beginPath(); ctx.roundRect(pX, bY + BOX_TOFF, pW, PILL_H, PILL_H / 2);
-    ctx.fillStyle = pillColor; ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(label, absX + BOX_W / 2, bY + BOX_TOFF + PILL_H / 2);
-    ctx.restore();
-  }
-
-  // 左ページ
-  drawRuled(0, PW);
-  const infoX = PAD + ICO_R*2 + 14;
-  const icoCY = PAD + profileRowH/2;
-  drawIconCircle(ctx, ico, PAD + ICO_R, icoCY, ICO_R, "#f7b6c8", 4);
-
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  const nls = wrapText(ctx, fanName, infoW);
-  ctx.font = f(17, true);
-  const nLH = Math.ceil(17*1.5);
-  const totalNameH = nls.length * nLH + (handle ? Math.ceil(13*1.5) + 4 : 0);
-  let ny = icoCY - totalNameH/2;
-  ctx.fillStyle = C.ink;
-  for (const l of nls) { ctx.fillText(l, infoX, ny); ny += nLH; }
-  if (handle) {
-    ctx.font = f(13); ctx.fillStyle = C.muted;
-    ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
-  }
-
-  // yuzai（左ページ右上）
-  if (yuzaiImg) {
-    ctx.drawImage(yuzaiImg, PW - PAD - YUZAI_SZ, PAD, YUZAI_SZ, YUZAI_SZ);
-  }
-
-  // フィールドゾーン登録
-  fieldZoneMap["fan-name"] = { x1: 0, x2: PW, y1: 0, y2: Math.floor(icoCY) };
-  if (handle) fieldZoneMap["handle"] = { x1: 0, x2: PW, y1: Math.floor(icoCY), y2: PAD + profileRowH };
-
-  // 自己紹介ボックス（左ページ）
-  drawSectionBox(0, lY, selfH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ー自己紹介ー");
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, lY + TEXT_OFF, TW, FS));
-  drawSegmentedText(ctx, selfSegs, MARGIN_X, lY + TEXT_OFF, TW, FS, C.ink);
-
-  // 右ページ
-  const RX = PW + BIND;
-  drawRuled(RX, PW);
-
-  // さとうゆボックス（右ページ）
-  drawSectionBox(RX, TEXT_TOP, oshiMainH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ーさとうゆの好きなところー");
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + TEXT_OFF, TW, FS));
-  drawSegmentedText(ctx, oshiMainSegs, RX + MARGIN_X, TEXT_TOP + TEXT_OFF, TW, FS, C.ink);
-
-  // 愛ボックス（右ページ、ピンク）
-  if (oshiLoveSegs.length) {
-    const loveBoxY = TEXT_TOP + block2H + BOX_GAP;
-    drawSectionBox(RX, loveBoxY, oshiLoveH, "rgba(200,74,114,0.06)", "#f5ccd8", C.pinkDeep, "ーさとうゆへの愛を叫ぼうー");
-    Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiLoveSegs, RX + MARGIN_X, loveBoxY + TEXT_OFF, TW, FS));
-    drawSegmentedText(ctx, oshiLoveSegs, RX + MARGIN_X, loveBoxY + TEXT_OFF, TW, FS, C.ink);
-  }
-
-  // フッター
-  ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
-  ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", PW/2, totalH - 5);
-  ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", RX + PW/2, totalH - 5);
-
-  // バインディング
-  ctx.fillStyle = "rgba(0,0,0,0.04)"; ctx.fillRect(PW, 0, BIND, totalH);
-  const ringX = PW + BIND/2, numR = Math.max(3, Math.floor(totalH/60));
+  drawPaperGrid(ctx, w, totalH);
+  ctx.fillStyle = "rgba(0,0,0,0.03)"; ctx.fillRect(PW, 0, BIND, totalH);
+  const ringX = PW + BIND / 2, numR = Math.max(3, Math.floor(totalH / 70));
   for (let i = 0; i < numR; i++) {
-    const ry = 30 + i * Math.floor((totalH - 40) / Math.max(numR-1, 1));
-    ctx.beginPath(); ctx.arc(ringX, ry, 7, 0, Math.PI*2);
-    ctx.fillStyle = C.cream; ctx.fill();
-    ctx.strokeStyle = C.bind; ctx.lineWidth = 1.5; ctx.stroke();
+    const ry = 28 + i * Math.floor((totalH - 50) / Math.max(numR - 1, 1));
+    ctx.beginPath(); ctx.arc(ringX, ry, 6, 0, Math.PI * 2);
+    ctx.fillStyle = MM.paper; ctx.fill();
+    ctx.strokeStyle = "#cdbd8e"; ctx.lineWidth = 1.5; ctx.stroke();
   }
 
+  const lX = PAD;
+  drawSelfMemo(ctx, lX, lY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, PW);
+
+  const rX = PW + BIND + PAD;
+  drawLabeledMemo(ctx, rX, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, rX + memoW - 46, 4, oshiSegs, MM.hlOshi);
+  drawLoveMemo(ctx, rX, loveY, memoW, loveMemoH, MP, loveLines);
+  if (loveVal) fieldZoneMap["oshi-love"] = { x1: rX, x2: rX + memoW, y1: loveY, y2: loveY + loveMemoH };
+
+  mmFooter(ctx, w, totalH);
+
+  const slots = [
+    { cx: lX + memoW - MP - 18, cy: lY + MP + icoR, size: 44, rot: -11 },
+    { cx: lX + memoW - 12,      cy: lY + selfMemoH + 2, size: 46, rot: 13 },
+    { cx: rX + 34,              cy: oshiY - 12, size: 44, rot: -13 },
+    { cx: rX + memoW - 12,      cy: loveY + loveMemoH + 2, size: 48, rot: 10 },
+    { cx: rX + 10,              cy: loveY + loveMemoH + 2, size: 40, rot: -8 },
+  ];
+  drawIllustSlots(ctx, slots);
+  drawDoodle(ctx, lX + 6, lY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
+  drawDoodle(ctx, rX + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
+  drawDoodle(ctx, rX + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
   return totalH;
 }
 
 // ════════════════════════════════════════════════════════
-//  プロフィール帳
+//  ノート縦型（マステ＆メモ）
 // ════════════════════════════════════════════════════════
-function drawBooklet(ctx, w, getV, ico, measureOnly) {
-  const PAD = 22, IW = w - PAD*2;
-  const FS = 15, LH = Math.ceil(FS * 1.95);
-  const C = {
-    mintDark:"#1f7a52", mint:"#3DAA78", mintPale:"#eaf6ee",
-    pinkDeep:"#c84a72", pinkPale:"#fdeef3",
-    ink:"#283a30", muted:"#6b7c72", white:"#fff", bg:"#fffdf8",
-  };
+function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
+  const PAD = 22, MP = 16, FS = 14;
+  const memoW = w - PAD * 2, TW = memoW - MP * 2;
+  const labelH = 22, headerH = 50, icoR = 22, TM = 24, GAP = 26;
 
-  const fanName  = getV("fan-name") || "ファン名";
-  const handle   = (getV("handle") || "").trim();
   const selfSegs = buildSelfIntroSegments(getV);
-  const oshiSegs = buildOshiIntroSegments(getV);
+  const oshiSegs = buildOshiMainSegments(getV);
+  const loveVal  = (getV("oshi-love") || "").trim();
 
-  // Header
-  const HDR_H = 110;
+  const selfTextH = measureSegmentedText(ctx, selfSegs, TW, FS);
+  const oshiTextH = measureSegmentedText(ctx, oshiSegs, TW, FS);
+  ctx.font = f(16, false, "Yomogi");
+  const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
+  const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
-  // Self section
-  const SPAD = 16;
-  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2, FS) + SPAD*2 + 10;
+  const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
+  const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
+  const loveMemoH = MP + 8 + loveTextH + MP;
 
-  // Oshi section
-  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2, FS) + SPAD*2 + 10;
-
-  const FTR_H = 32;
-  const totalH = HDR_H + selfH + 10 + oshiH + FTR_H;
-
-  if (measureOnly) return totalH;
-
-  // Background
-  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, totalH);
-
-  // Header gradient
-  const g = ctx.createLinearGradient(0, 0, w, HDR_H);
-  g.addColorStop(0, C.mintDark); g.addColorStop(1, C.mint);
-  ctx.fillStyle = g; ctx.fillRect(0, 0, w, HDR_H);
-
-  // Decorative circles
-  ctx.beginPath(); ctx.arc(w - 30, -10, 110, 0, Math.PI*2);
-  ctx.fillStyle = "rgba(255,255,255,0.06)"; ctx.fill();
-
-  // Icon
-  const ICO_R = 36, ICO_CX = PAD + ICO_R, ICO_CY = HDR_H/2;
-  drawIconCircle(ctx, ico, ICO_CX, ICO_CY, ICO_R, "#fff", 4);
-
-  // Fan name + handle
-  const infoX = ICO_CX + ICO_R + 16;
-  const infoW = w - infoX - PAD;
-  const nls = wrapText(ctx, fanName, infoW);
-  ctx.font = f(20, true); ctx.fillStyle = "#fff";
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  const nLH = Math.ceil(20*1.5);
-  let ny = ICO_CY - (nls.length * nLH + (handle ? 20 : 0)) / 2;
-  for (const l of nls) { ctx.fillText(l, infoX, ny); ny += nLH; }
-  if (handle) {
-    ctx.font = f(13); ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
-  }
-
-  // Self section
-  let sY = HDR_H + 10;
-  // フィールドゾーン登録
-  fieldZoneMap["fan-name"] = { x1: PAD, x2: w - PAD, y1: 0, y2: Math.floor(ICO_CY) };
-  if (handle) fieldZoneMap["handle"] = { x1: PAD, x2: w - PAD, y1: Math.floor(ICO_CY), y2: HDR_H };
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, PAD + SPAD, sY + SPAD, IW - SPAD*2, FS));
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, PAD + SPAD, sY + selfH + 10 + SPAD, IW - SPAD*2, FS));
-
-  ctx.fillStyle = C.mintPale; ctx.fillRect(PAD, sY, IW, selfH);
-  ctx.strokeStyle = C.mint; ctx.lineWidth = 1.5;
-  ctx.strokeRect(PAD, sY, IW, selfH);
-
-  drawSegmentedText(ctx, selfSegs, PAD + SPAD, sY + SPAD, IW - SPAD*2, FS, C.ink);
-
-  // Oshi section
-  let oY = sY + selfH + 10;
-  ctx.fillStyle = C.pinkPale; ctx.fillRect(PAD, oY, IW, oshiH);
-  ctx.strokeStyle = "#e895b3"; ctx.lineWidth = 1.5;
-  ctx.strokeRect(PAD, oY, IW, oshiH);
-
-  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD, IW - SPAD*2, FS, C.ink);
-
-  // Footer
-  ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", w/2, oY + oshiH + FTR_H/2);
-
-  return totalH;
-}
-
-// ════════════════════════════════════════════════════════
-//  ステッカー帳
-// ════════════════════════════════════════════════════════
-function drawStickerSheet(ctx, w, getV, ico, measureOnly) {
-  const PAD = 16, GAP = 12;
-  const IW = w - PAD*2;
-  const FS = 15, LH = Math.ceil(FS * 1.95);
-  const C = {
-    cream:"#fffcf0", lineDark:"#e0d8c8",
-    mintDark:"#1f7a52", mint:"#3DAA78", mintPale:"#e8f7ee",
-    pinkDeep:"#c84a72", pinkPale:"#fce8f0",
-    ink:"#283a30", muted:"#6b7c72", white:"#fff",
-  };
-
-  const fanName  = getV("fan-name") || "ファン名";
-  const handle   = (getV("handle") || "").trim();
-  const selfSegs = buildSelfIntroSegments(getV);
-  const oshiSegs = buildOshiIntroSegments(getV);
-
-  const SPAD = 14;
-  const HDR_H = 72;
-  const selfH = measureSegmentedText(ctx, selfSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 10;
-  const oshiH = measureSegmentedText(ctx, oshiSegs, IW - SPAD*2 - 4, FS) + SPAD*2 + 10;
-  const totalH = HDR_H + PAD + selfH + GAP + oshiH + PAD + 20;
+  const X = PAD, selfY = TM;
+  const oshiY = selfY + selfMemoH + GAP;
+  const loveY = oshiY + oshiMemoH + GAP;
+  const totalH = loveY + loveMemoH + 46;
 
   if (measureOnly) return totalH;
 
-  // Background
-  ctx.fillStyle = C.cream; ctx.fillRect(0, 0, w, totalH);
-  // Horizontal rules
-  ctx.strokeStyle = C.lineDark; ctx.lineWidth = 0.8;
-  for (let y = 28; y < totalH; y += 28) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-  }
-  // Left border strip
-  ctx.fillStyle = C.mint; ctx.fillRect(0, 0, 5, totalH);
+  drawPaperGrid(ctx, w, totalH);
+  drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
+  drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
+  drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
+  if (loveVal) fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
 
-  // Header
-  const ICO_R = 26;
-  drawIconCircle(ctx, ico, PAD + ICO_R, HDR_H/2, ICO_R, "#fff", 3);
-  const hTX = PAD + ICO_R*2 + 12;
-  ctx.font = f(30, true, "Caveat"); ctx.fillStyle = C.mintDark;
-  ctx.textAlign = "left"; ctx.textBaseline = "middle";
-  ctx.fillText("さとうゆ fan profile ♡", hTX, HDR_H/2 - 10);
-  if (fanName) {
-    ctx.font = f(14); ctx.fillStyle = C.muted;
-    const hn = handle ? `${fanName}（${handle.startsWith("@") ? handle : "@"+handle}）` : fanName;
-    ctx.fillText(hn, hTX, HDR_H/2 + 16);
-  }
+  mmFooter(ctx, w, totalH);
 
-  // Self block
-  let bY = HDR_H + PAD;
-  ctx.fillStyle = C.mintPale; ctx.beginPath(); ctx.roundRect(PAD, bY, IW, selfH, 12); ctx.fill();
-  ctx.strokeStyle = C.mint; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.roundRect(PAD, bY, IW, selfH, 12); ctx.stroke();
-  // Left accent bar
-  ctx.fillStyle = C.mint; ctx.beginPath(); ctx.roundRect(PAD, bY, 5, selfH, [12,0,0,12]); ctx.fill();
-  ctx.font = f(12, true); ctx.fillStyle = C.mintDark;
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  // フィールドゾーン登録
-  const ICO_RS = 26;
-  fieldZoneMap["fan-name"] = { x1: PAD, x2: w - PAD, y1: 0, y2: Math.floor(HDR_H / 2) };
-  if (handle) fieldZoneMap["handle"] = { x1: PAD, x2: w - PAD, y1: Math.floor(HDR_H / 2), y2: HDR_H };
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, PAD + SPAD, bY + SPAD, IW - SPAD*2 - 4, FS));
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiSegs, PAD + SPAD, bY + selfH + GAP + SPAD, IW - SPAD*2 - 4, FS));
-
-  drawSegmentedText(ctx, selfSegs, PAD + SPAD, bY + SPAD, IW - SPAD*2, FS, C.ink);
-
-  // Oshi block
-  let oY = bY + selfH + GAP;
-  ctx.fillStyle = C.pinkPale; ctx.beginPath(); ctx.roundRect(PAD, oY, IW, oshiH, 12); ctx.fill();
-  ctx.strokeStyle = "#e895b3"; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.roundRect(PAD, oY, IW, oshiH, 12); ctx.stroke();
-  // Left accent bar
-  ctx.fillStyle = C.pinkDeep; ctx.beginPath(); ctx.roundRect(PAD, oY, 5, oshiH, [12,0,0,12]); ctx.fill();
-  drawSegmentedText(ctx, oshiSegs, PAD + SPAD, oY + SPAD, IW - SPAD*2, FS, C.ink);
-
-  // Footer
-  ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
-  ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", w/2, totalH - 4);
-
-  return totalH;
-}
-
-// ════════════════════════════════════════════════════════
-//  描画ディスパッチ
-// ════════════════════════════════════════════════════════
-function drawNotebookVertical(ctx, w, getV, ico, measureOnly) {
-  const PAD = 20, IW = w - PAD * 2;
-  const TEXT_TOP = 14;
-  const FS = 15, LH = Math.ceil(FS * 1.95);
-  const MARGIN_X = 52;
-  const TW = w - MARGIN_X - PAD;
-  const C = {
-    cream:"#fffdf7", line:"#e8ece6", mline:"#f5ccd8",
-    mintDark:"#1f7a52", pinkDeep:"#c84a72",
-    ink:"#283a30", muted:"#6b7c72",
-  };
-
-  // ボックスレイアウト定数
-  const BOX_X = MARGIN_X - 6;         // = 46（ピンク線の少し右から）
-  const BOX_W = TW + 12;              // = 540
-  const BOX_R = 10;                   // 角丸
-  const PILL_H = 22;                  // ラベルピル高さ
-  const PILL_GAP = 6;                 // ピル下〜テキスト上の隙間
-  const BOX_TOFF = 4;                 // ボックス上端〜ピル上端
-  const BOX_BPAD = 12;                // ボックス底部パディング
-  const TEXT_OFF = BOX_TOFF + PILL_H + PILL_GAP;  // ボックス起点からテキスト起点まで = 32
-  const BOX_OH = TEXT_OFF + BOX_BPAD;             // ボックスオーバーヘッド = 44
-  const BOX_GAP = 14;                 // ボックス間の隙間
-
-  const YUZAI_SZ = 68;
-  const fanName      = getV("fan-name") || "ファン名";
-  const handle       = (getV("handle") || "").trim();
-  const selfSegs     = buildSelfIntroSegments(getV);
-  const oshiMainSegs = buildOshiMainSegments(getV);
-  const oshiLoveVal  = (getV("oshi-love") || "").trim();
-  const oshiLoveSegs = oshiLoveVal ? [{ text: oshiLoveVal, isInput: true, fieldId: "oshi-love" }] : [];
-
-  const ICO_R = 34;
-  const infoW = IW - ICO_R*2 - 14 - YUZAI_SZ - 8;  // yuzai分を除いた幅
-  const nameH = measureBlock(ctx, fanName, infoW, 17, 1.5);
-  const profileRowH = Math.max(ICO_R*2, nameH + (handle ? Math.ceil(13*1.5) + 4 : 0), YUZAI_SZ) + 8;
-
-  const selfH     = measureSegmentedText(ctx, selfSegs, TW, FS);
-  const oshiMainH = measureSegmentedText(ctx, oshiMainSegs, TW, FS);
-  const oshiLoveH = oshiLoveSegs.length ? measureSegmentedText(ctx, oshiLoveSegs, TW, FS) : 0;
-  const block1H   = BOX_OH + selfH;
-  const block2H   = BOX_OH + oshiMainH;
-  const block3H   = oshiLoveSegs.length ? BOX_OH + oshiLoveH : 0;
-
-  const baseY = TEXT_TOP + FS;
-  const minTextStart = PAD + profileRowH + 8;
-  const snapN = Math.ceil((minTextStart + FS - baseY) / LH);
-  const lY = baseY + snapN * LH - FS;
-
-  const totalH = lY + block1H + BOX_GAP + block2H
-               + (oshiLoveSegs.length ? BOX_GAP + block3H : 0)
-               + PAD + 18;
-
-  if (measureOnly) return totalH;
-
-  // 背景 + 罫線
-  ctx.fillStyle = C.cream; ctx.fillRect(0, 0, w, totalH);
-  ctx.strokeStyle = C.line; ctx.lineWidth = 1;
-  for (let y = baseY; y < totalH; y += LH) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-  }
-  ctx.strokeStyle = C.mline; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(44, 0); ctx.lineTo(44, totalH); ctx.stroke();
-
-  // ヘッダー：アイコン + 名前
-  const infoX = PAD + ICO_R*2 + 14;
-  const icoCY = PAD + profileRowH / 2;
-  drawIconCircle(ctx, ico, PAD + ICO_R, icoCY, ICO_R, "#f7b6c8", 4);
-
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  const nls = wrapText(ctx, fanName, infoW);
-  ctx.font = f(17, true);
-  const nLH = Math.ceil(17*1.5);
-  const totalNameH = nls.length * nLH + (handle ? Math.ceil(13*1.5) + 4 : 0);
-  let ny = icoCY - totalNameH/2;
-  ctx.fillStyle = C.ink;
-  for (const l of nls) { ctx.fillText(l, infoX, ny); ny += nLH; }
-  if (handle) {
-    ctx.font = f(13); ctx.fillStyle = C.muted;
-    ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, infoX, ny + 2);
-  }
-
-  // yuzai イラスト（右上）
-  if (yuzaiImg) {
-    ctx.drawImage(yuzaiImg, w - PAD - YUZAI_SZ, PAD, YUZAI_SZ, YUZAI_SZ);
-  }
-
-  // セクションボックス描画ヘルパー
-  function drawSectionBox(bY, contentH, bgFill, borderColor, pillColor, label) {
-    const bH = BOX_OH + contentH;
-    ctx.save();
-    ctx.beginPath(); ctx.roundRect(BOX_X, bY, BOX_W, bH, BOX_R);
-    ctx.fillStyle = bgFill; ctx.fill();
-    ctx.strokeStyle = borderColor; ctx.lineWidth = 1.5; ctx.stroke();
-    // ピルラベル
-    ctx.font = f(FS - 1);
-    const pW = Math.min(ctx.measureText(label).width + 28, BOX_W - 20);
-    const pX = BOX_X + (BOX_W - pW) / 2;
-    ctx.beginPath(); ctx.roundRect(pX, bY + BOX_TOFF, pW, PILL_H, PILL_H / 2);
-    ctx.fillStyle = pillColor; ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(label, BOX_X + BOX_W / 2, bY + BOX_TOFF + PILL_H / 2);
-    ctx.restore();
-  }
-
-  // フィールドゾーン登録
-  fieldZoneMap["fan-name"] = { x1: 0, x2: w, y1: 0, y2: Math.floor(icoCY) };
-  if (handle) fieldZoneMap["handle"] = { x1: 0, x2: w, y1: Math.floor(icoCY), y2: PAD + profileRowH };
-
-  let curY = lY;
-
-  // ブロック1：自己紹介
-  drawSectionBox(curY, selfH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ー自己紹介ー");
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, selfSegs, MARGIN_X, curY + TEXT_OFF, TW, FS));
-  drawSegmentedText(ctx, selfSegs, MARGIN_X, curY + TEXT_OFF, TW, FS, C.ink);
-  curY += block1H + BOX_GAP;
-
-  // ブロック2：さとうゆの好きなところ
-  drawSectionBox(curY, oshiMainH, "rgba(61,170,120,0.06)", "#b8ddc8", C.mintDark, "ーさとうゆの好きなところー");
-  Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiMainSegs, MARGIN_X, curY + TEXT_OFF, TW, FS));
-  drawSegmentedText(ctx, oshiMainSegs, MARGIN_X, curY + TEXT_OFF, TW, FS, C.ink);
-  curY += block2H + (oshiLoveSegs.length ? BOX_GAP : 0);
-
-  // ブロック3：愛を叫ぼう（ピンク）
-  if (oshiLoveSegs.length) {
-    drawSectionBox(curY, oshiLoveH, "rgba(200,74,114,0.06)", "#f5ccd8", C.pinkDeep, "ーさとうゆへの愛を叫ぼうー");
-    Object.assign(fieldZoneMap, computeTextFieldZones(ctx, oshiLoveSegs, MARGIN_X, curY + TEXT_OFF, TW, FS));
-    drawSegmentedText(ctx, oshiLoveSegs, MARGIN_X, curY + TEXT_OFF, TW, FS, C.ink);
-  }
-
-  // フッター
-  ctx.font = f(11); ctx.fillStyle = C.muted; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
-  ctx.fillText("♡ satoyu.info  #さとうゆおしプロフィール ♡", w/2, totalH - 5);
-
+  const slots = [
+    { cx: X + memoW - MP - 18, cy: selfY + MP + icoR, size: 44, rot: -11 },
+    { cx: X + memoW - 12,      cy: selfY + selfMemoH + 2, size: 46, rot: 13 },
+    { cx: X + 34,              cy: oshiY - 12, size: 44, rot: -13 },
+    { cx: X + memoW - 12,      cy: loveY + loveMemoH + 2, size: 48, rot: 10 },
+    { cx: X + 10,              cy: loveY + loveMemoH + 2, size: 40, rot: -8 },
+  ];
+  drawIllustSlots(ctx, slots);
+  drawDoodle(ctx, X + 6, selfY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
+  drawDoodle(ctx, X + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
+  drawDoodle(ctx, X + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
   return totalH;
 }
 
 // ════════════════════════════════════════════════════════
 const DRAW_FNS = {
-  notebook:   drawNotebook,
-  "notebook-v": drawNotebookVertical,
-  booklet:    drawBooklet,
-  sticker:    drawStickerSheet,
+  notebook:     drawNotebookCute,
+  "notebook-v": drawNotebookVerticalCute,
 };
 
 function render() {
@@ -1190,9 +989,65 @@ function buildFields() {
   });
 }
 
+function buildIllustPicker() {
+  const grid = document.getElementById("illust-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  ILLUSTS.forEach(it => {
+    const cell = document.createElement("div");
+    cell.className = "illust-cell";
+    cell.dataset.illustId = it.id;
+    cell.title = it.label;
+    const img = document.createElement("img");
+    img.src = it.src; img.alt = it.label;
+    cell.appendChild(img);
+    const badge = document.createElement("span");
+    badge.className = "illust-badge"; badge.textContent = "♡";
+    cell.appendChild(badge);
+    cell.addEventListener("click", () => toggleIllust(it.id));
+    grid.appendChild(cell);
+  });
+  updateIllustUI();
+}
+
+function toggleIllust(id) {
+  const i = selectedIllusts.indexOf(id);
+  if (i >= 0) {
+    selectedIllusts.splice(i, 1);
+  } else {
+    if (selectedIllusts.length >= MAX_ILLUSTS) return;
+    selectedIllusts.push(id);
+  }
+  updateIllustUI();
+  render();
+}
+
+function updateIllustUI() {
+  const grid = document.getElementById("illust-grid");
+  if (!grid) return;
+  const full = selectedIllusts.length >= MAX_ILLUSTS;
+  grid.querySelectorAll(".illust-cell").forEach(cell => {
+    const id = cell.dataset.illustId;
+    const sel = selectedIllusts.includes(id);
+    cell.classList.toggle("selected", sel);
+    cell.classList.toggle("disabled", !sel && full);
+  });
+  const cnt = document.getElementById("illust-count");
+  if (cnt) cnt.textContent = selectedIllusts.length + " / " + MAX_ILLUSTS;
+}
+
+function updateIllustVisibility() {
+  const sec = document.getElementById("illust-section");
+  const div = document.getElementById("illust-divider");
+  const show = ["notebook", "notebook-v"].includes(TEMPLATES[tplIdx].id);
+  if (sec) sec.style.display = show ? "flex" : "none";
+  if (div) div.style.display = show ? "" : "none";
+}
+
 function switchTemplate(idx) {
   tplIdx = idx;
   document.querySelectorAll(".tpl-tab").forEach((b, i) => b.classList.toggle("active", i === idx));
+  updateIllustVisibility();
   buildFields();
   render();
 }
@@ -1301,6 +1156,7 @@ async function shareToX() {
 // ── 初期化 ─────────────────────────────────────────────
 document.fonts.ready.then(() => {
   buildTabs();
+  buildIllustPicker();
   switchTemplate(0);
   document.getElementById("download-btn").addEventListener("click", download);
   document.getElementById("share-x-btn").addEventListener("click", shareToX);
