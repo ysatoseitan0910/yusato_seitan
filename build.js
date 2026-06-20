@@ -123,7 +123,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   return template
     .replace("{{PAGE_TITLE}}", title)
-    .replace("{{OGP_TITLE}}", ogpTitle)
+    .replaceAll("{{OGP_TITLE}}", ogpTitle)
     .replaceAll("{{OGP_DESC}}", desc)
     .replace("{{OGP_URL}}", ogpUrl)
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
