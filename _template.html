@@ -19,6 +19,7 @@
 <meta name="twitter:title" content="{{OGP_TITLE}}">
 <meta name="twitter:description" content="{{OGP_DESC}}">
 <meta name="twitter:image" content="{{OGP_IMAGE}}">
+<link rel="canonical" href="{{OGP_URL}}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
@@ -595,7 +596,7 @@ footer .heart { color: var(--pink); }
 
 <nav>
   <a href="index.html" class="nav-logo">
-    <img src="/images/favicon.png" class="nav-logo-mark" alt="">
+    <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
     <span class="nav-logo-text">
       <span class="nav-logo-main">さとうゆほーむ</span>
     </span>
@@ -626,7 +627,7 @@ footer .heart { color: var(--pink); }
 {{BODY}}
 
 <!-- Activity Modal -->
-<div id="act-modal" class="act-modal-overlay">
+<div id="act-modal" class="act-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="act-modal-title">
   <div class="act-modal-box">
     <button class="act-modal-close" aria-label="閉じる">×</button>
     <div id="act-modal-inner"></div>
@@ -668,18 +669,35 @@ footer .heart { color: var(--pink); }
       descEl.appendChild(document.createTextNode(line));
       if (i < arr.length - 1) descEl.appendChild(document.createElement('br'));
     });
-    document.getElementById('act-modal').classList.add('open');
+    var modal = document.getElementById('act-modal');
+    modal.classList.add('open');
+    modal.querySelector('.act-modal-close').focus();
+  }
+  function closeModal() {
+    document.getElementById('act-modal').classList.remove('open');
   }
   document.addEventListener('click', function(e) {
     var card = e.target.closest('[data-act-modal]');
     var modal = document.getElementById('act-modal');
     if (card) { openModal(card.dataset); return; }
     if (modal && (e.target === modal || e.target.closest('.act-modal-close'))) {
-      modal.classList.remove('open');
+      closeModal();
     }
   });
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { var m = document.getElementById('act-modal'); if(m) m.classList.remove('open'); }
+    var modal = document.getElementById('act-modal');
+    if (!modal || !modal.classList.contains('open')) return;
+    if (e.key === 'Escape') { closeModal(); return; }
+    if (e.key === 'Tab') {
+      var focusable = modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
   });
 })();
 </script>
