@@ -124,7 +124,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
   return template
     .replace("{{PAGE_TITLE}}", title)
     .replace("{{OGP_TITLE}}", ogpTitle)
-    .replace("{{OGP_DESC}}", desc)
+    .replaceAll("{{OGP_DESC}}", desc)
     .replace("{{OGP_URL}}", ogpUrl)
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
