@@ -295,7 +295,7 @@ app.post("/messages", async (req, res) => {
       properties: {
         Name:      { title: t(name.trim()) },
         Message:   { rich_text: t(message.trim()) },
-        Font:      { multi_select: [{ name: font || "Klee One" }] },
+        Font:      { multi_select: [{ name: (font || "'Klee One', serif").replace(/'/g, "").split(",")[0].trim() }] },
         Size:      { multi_select: [{ name: size || "medium" }] },
         Color:     { rich_text: t(color || "#1a1a1a") },
         Date:      { date: { start: new Date().toISOString().slice(0, 10) } },
