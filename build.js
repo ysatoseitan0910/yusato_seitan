@@ -421,6 +421,14 @@ async function buildIndex(tpl) {
     tiktokTargetsIdx.map(u => u ? fetchOembedThumbnail(u) : Promise.resolve(""))
   );
 
+  // LeminoはMediaが未設定の場合のみog:imageをビルド時に取得
+  const leminoTargetsIdx = yuNewsSlice.map(p =>
+    (!getMedia(p) && getUrl(p).includes("lemino")) ? getUrl(p) : null
+  );
+  const leminoThumbs = await Promise.all(
+    leminoTargetsIdx.map(u => u ? fetchLeminoThumbnail(u) : Promise.resolve(""))
+  );
+
   const yuNewsCards = yuNewsSlice.map((p, i) => {
     const url      = getUrl(p);
     const title    = getText(p, "Name") || "詳細を見る";
@@ -428,9 +436,9 @@ async function buildIndex(tpl) {
     const platform = getSelect(p, "Platform");
     const badge    = platform ? `<span class="${badgeClass(platform)}" style="font-size:9px;padding:2px 7px;">${platform}</span>` : "";
 
-    // サムネイル: TikTokは常にoEmbed → Notion保存済み → YouTube自動生成 → なし
+    // サムネイル: TikTokは常にoEmbed → Notion保存済み → Leminoはog:image → YouTube自動生成 → なし
     let img = tiktokThumbs[i] || "";
-    if (!img) img = getMedia(p);
+    if (!img) img = getMedia(p) || leminoThumbs[i] || "";
     if (!img) {
       const ytMatch = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
       if (ytMatch) img = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
@@ -880,9 +888,19 @@ async function buildYuNews(tpl) {
     tiktokTargets.map(u => u ? fetchOembedThumbnail(u) : Promise.resolve(""))
   );
 
+  // LeminoはMediaが未設定の場合のみog:imageをビルド時に取得
+  const leminoTargets = pages.map(p =>
+    (!getMedia(p) && getUrl(p).includes("lemino")) ? getUrl(p) : null
+  );
+  const hasLemino = leminoTargets.some(Boolean);
+  if (hasLemino) console.log(`  Yu News Leminoサムネイル取得中 (${leminoTargets.filter(Boolean).length}件)...`);
+  const leminoThumbs = await Promise.all(
+    leminoTargets.map(u => u ? fetchLeminoThumbnail(u) : Promise.resolve(""))
+  );
+
   const cards = pages.map((p, i) => {
     let img = tiktokThumbs[i] || "";
-    if (!img) img = getMedia(p);
+    if (!img) img = getMedia(p) || leminoThumbs[i] || "";
     if (!img) {
       const url = getUrl(p);
       const ytMatch = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
