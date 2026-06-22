@@ -2,7 +2,30 @@ const express = require("express");
 const { Client } = require("@notionhq/client");
 
 const app = express();
+app.set('trust proxy', 1); // nginx の背後で実際のクライアントIPを取得
 app.use(express.json());
+
+// ── IPレート制限（メッセージ送信：1時間に3回まで） ──
+const msgRateMap = new Map();
+const MSG_RATE_LIMIT  = 3;
+const MSG_RATE_WINDOW = 60 * 60 * 1000;
+
+function checkMsgRateLimit(ip) {
+  const now = Date.now();
+  const rec = msgRateMap.get(ip);
+  if (!rec || now > rec.resetAt) {
+    msgRateMap.set(ip, { count: 1, resetAt: now + MSG_RATE_WINDOW });
+    return true;
+  }
+  if (rec.count >= MSG_RATE_LIMIT) return false;
+  rec.count++;
+  return true;
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of msgRateMap) if (now > v.resetAt) msgRateMap.delete(k);
+}, MSG_RATE_WINDOW);
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
@@ -282,7 +305,16 @@ app.get("/list/:db", auth, async (req, res) => {
 
 // ── メッセージカード（公開エンドポイント・認証不要） ──
 app.post("/messages", async (req, res) => {
-  const { message, name, font, size, color } = req.body;
+  const { message, name, font, size, color, _hp } = req.body;
+
+  // ハニーポットチェック（ボットは隠しフィールドを埋める）
+  if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
+
+  // IPレート制限
+  if (!checkMsgRateLimit(req.ip)) {
+    return res.status(429).json({ error: "送信が多すぎます。しばらく時間をおいてから再度お試しください。" });
+  }
+
   if (!message || !message.trim()) return res.status(400).json({ error: "メッセージは必須です" });
   if (!name    || !name.trim())    return res.status(400).json({ error: "お名前は必須です" });
   if (message.trim().length > 200) return res.status(400).json({ error: "メッセージは200文字以内です" });

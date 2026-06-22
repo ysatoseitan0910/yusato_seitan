@@ -171,6 +171,12 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     <p class="preview-label">← プレビュー（リアルタイム更新）</p>
   </div>
 
+  <!-- ハニーポット（ボット対策：人間には見えない） -->
+  <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+    <label for="hp-url">URLを入力しないでください</label>
+    <input type="text" id="hp-url" name="url" tabindex="-1" autocomplete="off" value="">
+  </div>
+
   <!-- コントロール -->
   <div class="controls">
 
@@ -447,7 +453,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       var res = await fetch('/admin-api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message, name: name, font: state.font, size: state.size, color: state.color }),
+        body: JSON.stringify({ message: message, name: name, font: state.font, size: state.size, color: state.color, _hp: document.getElementById('hp-url').value }),
       });
       var data = await res.json();
       if (!res.ok) throw new Error(data.error || '送信に失敗しました');
