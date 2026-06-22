@@ -15,6 +15,7 @@ const DB = {
   tiktok:     process.env.DB_TIKTOK,
   youtube:    process.env.DB_YOUTUBE,
   lemino:     process.env.DB_LEMINO,
+  messages:   process.env.DB_MESSAGES, // メッセージカードDB（別途Notionで作成・共有が必要）
 };
 
 // CORS
@@ -273,6 +274,68 @@ app.get("/list/:db", auth, async (req, res) => {
       published: p.properties.Published?.checkbox ?? null,
     }));
     res.json({ items, total: items.length });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── メッセージカード（公開エンドポイント・認証不要） ──
+app.post("/messages", async (req, res) => {
+  const { message, name, font, size, color } = req.body;
+  if (!message || !message.trim()) return res.status(400).json({ error: "メッセージは必須です" });
+  if (!name    || !name.trim())    return res.status(400).json({ error: "お名前は必須です" });
+  if (message.trim().length > 200) return res.status(400).json({ error: "メッセージは200文字以内です" });
+  if (name.trim().length > 30)     return res.status(400).json({ error: "お名前は30文字以内です" });
+  if (!DB.messages) return res.status(503).json({ error: "メッセージDBが未設定です（DB_MESSAGES環境変数を設定してください）" });
+
+  try {
+    await notion.pages.create({
+      parent: { database_id: DB.messages },
+      properties: {
+        Name:      { title: t(name.trim()) },
+        Message:   { rich_text: t(message.trim()) },
+        Font:      { select: { name: font || "Klee One" } },
+        Size:      { select: { name: size || "medium" } },
+        Color:     { rich_text: t(color || "#1a1a1a") },
+        Date:      { date: { start: new Date().toISOString().slice(0, 10) } },
+        Published: { checkbox: false },
+      },
+    });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── メッセージ一覧取得（管理者のみ） ──
+app.get("/messages", auth, async (req, res) => {
+  if (!DB.messages) return res.status(503).json({ error: "DB_MESSAGESが未設定です" });
+  try {
+    const results = [];
+    let cursor;
+    do {
+      const resp = await notion.databases.query({
+        database_id: DB.messages,
+        sorts: [{ timestamp: "created_time", direction: "descending" }],
+        ...(cursor ? { start_cursor: cursor } : {}),
+      });
+      for (const page of resp.results) {
+        results.push({
+          id:        page.id,
+          name:      page.properties.Name?.title?.[0]?.plain_text || "",
+          message:   page.properties.Message?.rich_text?.[0]?.plain_text || "",
+          font:      page.properties.Font?.select?.name || "",
+          size:      page.properties.Size?.select?.name || "",
+          color:     page.properties.Color?.rich_text?.[0]?.plain_text || "",
+          date:      page.properties.Date?.date?.start || "",
+          published: page.properties.Published?.checkbox || false,
+        });
+      }
+      cursor = resp.has_more ? resp.next_cursor : null;
+    } while (cursor);
+    res.json(results);
   } catch (e) {
     console.error(e.message);
     res.status(500).json({ error: e.message });
