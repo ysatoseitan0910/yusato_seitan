@@ -1,0 +1,46 @@
+name: Quick Update - News Pages
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install @notionhq/client@2.2.15
+
+      - name: Build news pages only (index + yunews)
+        run: node build.js index yunews
+        env:
+          NOTION_TOKEN:        ${{ secrets.NOTION_TOKEN }}
+          DB_COMMITTEE_NEWS:   ${{ secrets.DB_COMMITTEE_NEWS }}
+          DB_YU_NEWS:          ${{ secrets.DB_YU_NEWS }}
+          DB_ACTIVITIES:       ${{ secrets.DB_ACTIVITIES }}
+          DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
+          DB_TIKTOK:           ${{ secrets.DB_TIKTOK }}
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy news pages to VPS
+        run: |
+          rsync -avz \
+            index.html top.html yunews.html \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/satoyu/

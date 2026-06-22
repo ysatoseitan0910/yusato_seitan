@@ -1406,12 +1406,37 @@ async function buildQuizJson() {
 }
 
 // ── メイン ──
-async function main() {
-  console.log("🔄 Yu Newsへ自動集約中...");
-  await syncToYuNews();
+// ページ別エイリアス（node build.js index yunews のように指定可能）
+const PAGE_ALIASES = {
+  index:      ["index.html", "top.html"],
+  yunews:     ["yunews.html"],
+  committee:  ["committee.html"],
+  activities: ["activities.html"],
+  blog:       ["blog.html"],
+  memberblog: ["member-blog.html"],
+  interview:  ["interview.html"],
+  x:          ["x.html"],
+  tiktok:     ["tiktok.html"],
+  youtube:    ["youtube.html"],
+  lemino:     ["lemino.html"],
+  quiz:       ["quiz.html"],
+};
 
-  console.log("📝 クイズデータ生成中...");
-  await buildQuizJson();
+async function main() {
+  const argPages = process.argv.slice(2);
+  const isPartial = argPages.length > 0;
+  const targetFiles = isPartial
+    ? new Set(argPages.flatMap(a => PAGE_ALIASES[a] ?? []))
+    : null;
+
+  if (isPartial) {
+    console.log(`📄 部分ビルド: ${[...targetFiles].join(", ")}`);
+  } else {
+    console.log("🔄 Yu Newsへ自動集約中...");
+    await syncToYuNews();
+    console.log("📝 クイズデータ生成中...");
+    await buildQuizJson();
+  }
 
   console.log("🏗️  HTMLビルド開始...");
   const pages = {
@@ -1431,13 +1456,14 @@ async function main() {
   };
 
   for (const [filename, { fn, active }] of Object.entries(pages)) {
+    if (targetFiles && !targetFiles.has(filename)) continue;
     const tpl = loadTemplate(active);
     const html = await fn(tpl);
     fs.writeFileSync(filename, html, "utf-8");
     console.log(`  ✅ ${filename} 生成完了`);
   }
 
-  console.log("🎉 全ページ生成完了！");
+  console.log(isPartial ? "✅ 部分ビルド完了！" : "🎉 全ページ生成完了！");
 }
 
 main().catch(console.error);
