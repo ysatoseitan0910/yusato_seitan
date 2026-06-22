@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/images/favicon.png">
+<link rel="apple-touch-icon" href="/images/favicon.png">
+<title>お誕生日メッセージ | さとうゆほーむ</title>
+<meta name="description" content="佐藤優羽さんへお誕生日メッセージを書こう！">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-F1LS5L1Y7B');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=Yomogi&display=swap" rel="stylesheet">
+<style>
+:root{
+  --emerald:#3DAA78; --emerald-light:#d4ecde; --emerald-pale:#ecf7f0; --emerald-dark:#1f7a52;
+  --pink:#f7b6c8; --pink-pale:#fde7ed; --butter:#fff3c4;
+  --text:#1a2a22; --text-muted:#516259; --text-light:#9aaca3;
+  --bg:#fdfcf7; --border:#e3eee6; --ink:#1a2a22; --nav-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Klee One','Noto Sans JP',sans-serif; line-height:1.75; min-height:100vh;
+  background-image:
+    radial-gradient(circle at 8% 4%,var(--pink-pale) 0,transparent 2.5%),
+    radial-gradient(circle at 95% 16%,var(--butter) 0,transparent 3%),
+    radial-gradient(circle at 14% 92%,var(--emerald-light) 0,transparent 3%);
+  background-attachment:fixed;
+}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,252,247,0.95);backdrop-filter:blur(10px);border-bottom:2px dotted var(--emerald-light);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 28px;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-mark{width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 3px 0 var(--emerald-dark);transform:rotate(-4deg);flex-shrink:0;}
+.nav-logo-text{display:flex;flex-direction:column;line-height:1.1;}
+.nav-logo-main{font-weight:600;color:var(--emerald-dark);font-size:15px;letter-spacing:0.04em;white-space:nowrap;}
+.nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.nav-links a{text-decoration:none;font-size:12px;color:var(--text-muted);padding:5px 10px;border-radius:20px;transition:all 0.18s;white-space:nowrap;font-family:'Klee One',serif;}
+.nav-links a:hover,.nav-links a.active{background:var(--emerald-pale);color:var(--emerald-dark);font-weight:600;}
+.nav-sep{width:1px;height:20px;background:var(--border);margin:0 6px;flex-shrink:0;}
+.nav-committee-label{display:none;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--emerald-dark);padding:4px 8px;line-height:1;border-radius:6px;}
+.hamburger:hover{background:var(--pink-pale);}
+
+/* ── Hero ── */
+.hero{padding:calc(var(--nav-h) + 40px) 24px 28px;text-align:center;}
+.hero-tag{display:inline-block;background:var(--emerald);color:#fff;font-size:10px;font-weight:600;letter-spacing:0.14em;padding:3px 12px;border-radius:20px;margin-bottom:12px;}
+.hero h1{font-family:'Klee One',serif;font-size:32px;font-weight:600;line-height:1.25;color:var(--ink);}
+.hero h1 em{color:var(--emerald-dark);font-style:normal;}
+.hero-lead{font-size:14px;color:var(--text-muted);margin-top:10px;}
+
+/* ── Editor layout ── */
+.editor-wrap{max-width:960px;margin:0 auto;padding:0 20px 80px;display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start;}
+
+/* ── Canvas preview ── */
+.preview-box{background:#fff;border-radius:16px;border:2px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,0.06);padding:12px;position:sticky;top:calc(var(--nav-h) + 16px);}
+.preview-box canvas{width:100%;height:auto;display:block;border-radius:8px;}
+.preview-label{font-size:11px;color:var(--text-light);letter-spacing:0.08em;text-align:center;margin-top:8px;}
+
+/* ── Controls ── */
+.controls{display:flex;flex-direction:column;gap:20px;}
+.ctrl-group{}
+.ctrl-label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:8px;text-transform:uppercase;}
+textarea,input[type="text"]{width:100%;border:2px solid var(--border);border-radius:10px;padding:10px 13px;font-family:'Klee One',serif;font-size:14px;color:var(--ink);background:#fff;transition:border-color 0.2s;outline:none;}
+textarea{resize:none;height:110px;line-height:1.7;}
+input[type="text"]{height:44px;}
+textarea:focus,input[type="text"]:focus{border-color:var(--emerald);}
+.char-count{font-size:11px;color:var(--text-light);text-align:right;margin-top:4px;}
+
+/* ── Option buttons ── */
+.opt-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.opt-btn{padding:7px 16px;border:2px solid var(--border);border-radius:20px;background:#fff;cursor:pointer;font-size:13px;color:var(--text-muted);transition:all 0.15s;font-family:'Klee One',serif;line-height:1;}
+.opt-btn:hover{border-color:var(--emerald-light);color:var(--emerald-dark);}
+.opt-btn.active{border-color:var(--emerald);background:var(--emerald-pale);color:var(--emerald-dark);font-weight:600;}
+
+/* ── Color swatches ── */
+.swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.swatch{width:30px;height:30px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform 0.15s;outline:2px solid transparent;outline-offset:2px;}
+.swatch:hover{transform:scale(1.2);}
+.swatch.active{outline-color:var(--emerald-dark);transform:scale(1.15);}
+
+/* ── Action buttons ── */
+.action-row{display:flex;gap:10px;flex-direction:column;}
+.btn-primary,.btn-outline{padding:13px 18px;border-radius:24px;font-family:'Klee One',serif;font-size:14px;font-weight:600;cursor:pointer;border:2px solid;transition:all 0.2s;width:100%;text-align:center;}
+.btn-primary{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+.btn-primary:hover:not(:disabled){background:var(--emerald-dark);border-color:var(--emerald-dark);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+.btn-outline{background:#fff;border-color:var(--border);color:var(--text-muted);}
+.btn-outline:hover{border-color:var(--emerald);color:var(--emerald-dark);}
+
+/* ── Submit result ── */
+.result-msg{display:none;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.6;}
+.result-msg.ok{background:var(--emerald-pale);color:var(--emerald-dark);border:1px solid var(--emerald-light);}
+.result-msg.err{background:#fef0f0;color:#b00;border:1px solid #fcc;}
+
+/* ── Notice ── */
+.notice{background:var(--butter);border:1px solid #e8d98a;border-radius:10px;padding:12px 16px;font-size:12px;color:#6b5a00;line-height:1.7;}
+
+/* ── Footer ── */
+footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light);}
+.foot-mark{font-family:'Caveat',cursive;font-size:18px;color:var(--emerald-light);margin-bottom:4px;}
+.heart{color:#f7b6c8;}
+
+/* ── Mobile ── */
+@media(max-width:720px){
+  nav{padding:0 16px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;flex-direction:column;align-items:stretch;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(253,252,247,0.98);border-bottom:2px dotted var(--emerald-light);padding:8px 16px 16px;gap:2px;z-index:199;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:10px 14px;font-size:13px;border-radius:8px;}
+  .nav-sep{display:none;}
+  .nav-committee-label{display:block;font-family:'Klee One',serif;font-size:10px;letter-spacing:0.06em;color:var(--text-light);padding:10px 14px 2px;border-top:1px dashed var(--border);margin-top:4px;}
+  .hero{padding:calc(var(--nav-h) + 24px) 16px 20px;}
+  .hero h1{font-size:26px;}
+  .editor-wrap{grid-template-columns:1fr;padding:0 14px 60px;}
+  .preview-box{position:static;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
+    <span class="nav-logo-text">
+      <span class="nav-logo-main">さとうゆほーむ</span>
+    </span>
+  </a>
+  <div class="nav-links">
+    <a href="top.html">トップ</a>
+    <a href="yu.html">佐藤優羽さんについて</a>
+    <a href="yunews.html">News</a>
+    <a href="blog.html">ブログ</a>
+    <a href="member-blog.html">他メンバーブログ</a>
+    <a href="interview.html">インタビュー</a>
+    <a href="x.html">X</a>
+    <a href="tiktok.html">TikTok</a>
+    <a href="youtube.html">YouTube</a>
+    <a href="lemino.html">Lemino</a>
+    <a href="quiz.html">クイズ</a>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <span class="nav-committee-label">生誕委員会</span>
+    <a href="committee.html">委員会News</a>
+    <a href="activities.html">生誕委員会活動報告</a>
+    <a href="about.html">委員会について</a>
+    <a href="terms.html">規約</a>
+    <a href="join.html">入会</a>
+  </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">BIRTHDAY MESSAGE</div>
+  <h1>お誕生日 <em>メッセージ</em></h1>
+  <p class="hero-lead">佐藤優羽さんへのメッセージをカードに書いて送ろう♡</p>
+</div>
+
+<div class="editor-wrap">
+
+  <!-- カードプレビュー -->
+  <div class="preview-box">
+    <canvas id="card-canvas" aria-label="メッセージカードプレビュー"></canvas>
+    <p class="preview-label">← プレビュー（リアルタイム更新）</p>
+  </div>
+
+  <!-- コントロール -->
+  <div class="controls">
+
+    <div class="ctrl-group">
+      <label class="ctrl-label" for="msg-text">メッセージ</label>
+      <textarea id="msg-text" placeholder="佐藤優羽さんへのメッセージを入力してください…" maxlength="200"></textarea>
+      <div class="char-count"><span id="msg-count">0</span> / 200</div>
+    </div>
+
+    <div class="ctrl-group">
+      <label class="ctrl-label" for="msg-name">お名前・ファンネーム</label>
+      <input type="text" id="msg-name" placeholder="例：さとゆのおし" maxlength="30">
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">フォント</span>
+      <div class="opt-btns" id="font-btns">
+        <button class="opt-btn active" data-font="'Klee One', serif" style="font-family:'Klee One',serif">手書き</button>
+        <button class="opt-btn" data-font="'Noto Sans JP', sans-serif" style="font-family:'Noto Sans JP',sans-serif">ゴシック</button>
+        <button class="opt-btn" data-font="'Caveat', cursive" style="font-family:'Caveat',cursive">Casual</button>
+        <button class="opt-btn" data-font="'Yomogi', cursive" style="font-family:'Yomogi',cursive">丸文字</button>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">文字サイズ</span>
+      <div class="opt-btns" id="size-btns">
+        <button class="opt-btn" data-size="small">小</button>
+        <button class="opt-btn active" data-size="medium">中</button>
+        <button class="opt-btn" data-size="large">大</button>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">文字色</span>
+      <div class="swatches" id="color-swatches"></div>
+    </div>
+
+    <div class="notice">
+      ℹ️ 送信後の内容は委員会が確認します。不適切な内容はご掲載できない場合があります。
+    </div>
+
+    <div id="result-msg" class="result-msg" role="alert"></div>
+
+    <div class="action-row">
+      <button id="btn-download" class="btn-outline">💾 PNG保存</button>
+      <button id="btn-submit" class="btn-primary">✉️ 佐藤優羽さんに送る</button>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="foot-mark">Thank you for being here.</div>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会</p>
+</footer>
+
+<script>
+(function () {
+  // ── 設定 ──
+  const COLORS = [
+    { hex: '#1a1a1a', label: '黒' },
+    { hex: '#1f7a52', label: 'エメラルド' },
+    { hex: '#c84a72', label: 'ピンク' },
+    { hex: '#3060b0', label: 'ブルー' },
+    { hex: '#7040a0', label: 'パープル' },
+    { hex: '#d03040', label: 'レッド' },
+    { hex: '#8b5e3c', label: 'ブラウン' },
+    { hex: '#cc8800', label: 'ゴールド' },
+    { hex: '#1a3a6a', label: 'ネイビー' },
+    { hex: '#ffffff', label: '白' },
+  ];
+
+  // フォントサイズ（画像幅に対する比率）
+  const SIZE_RATIO = { small: 0.030, medium: 0.038, large: 0.050 };
+  const LINE_H_RATIO = 1.65;
+
+  // カード上のテキストゾーン（画像サイズに対する割合）
+  const ZONES = {
+    msg:  { x: 0.050, y: 0.300, maxW: 0.650 },  // メッセージ本文エリア
+    name: { x: 0.210, y: 0.895 },                 // Fromの後のお名前
+  };
+
+  // ── State ──
+  var state = { message: '', name: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
+  var imgLoaded = false;
+
+  // ── Canvas ──
+  var canvas = document.getElementById('card-canvas');
+  var ctx = canvas.getContext('2d');
+  var cardImg = new Image();
+
+  // ── カラースウォッチ生成 ──
+  var swatchWrap = document.getElementById('color-swatches');
+  COLORS.forEach(function (c) {
+    var btn = document.createElement('button');
+    btn.className = 'swatch' + (c.hex === state.color ? ' active' : '');
+    btn.title = c.label;
+    btn.setAttribute('aria-label', c.label);
+    btn.style.background = c.hex;
+    if (c.hex === '#ffffff') btn.style.boxShadow = 'inset 0 0 0 1px #ccc';
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.swatch').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.color = c.hex;
+      draw();
+    });
+    swatchWrap.appendChild(btn);
+  });
+
+  // ── オプションボタン ──
+  document.getElementById('font-btns').addEventListener('click', function (e) {
+    var btn = e.target.closest('.opt-btn');
+    if (!btn) return;
+    document.querySelectorAll('#font-btns .opt-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    state.font = btn.dataset.font;
+    draw();
+  });
+
+  document.getElementById('size-btns').addEventListener('click', function (e) {
+    var btn = e.target.closest('.opt-btn');
+    if (!btn) return;
+    document.querySelectorAll('#size-btns .opt-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    state.size = btn.dataset.size;
+    draw();
+  });
+
+  // ── テキスト入力 ──
+  var msgText = document.getElementById('msg-text');
+  var msgName = document.getElementById('msg-name');
+  var msgCount = document.getElementById('msg-count');
+
+  msgText.addEventListener('input', function () {
+    state.message = msgText.value;
+    msgCount.textContent = state.message.length;
+    draw();
+  });
+  msgName.addEventListener('input', function () {
+    state.name = msgName.value;
+    draw();
+  });
+
+  // ── テキスト折り返し描画 ──
+  function wrapText(ctx, text, x, y, maxW, lineH) {
+    if (!text) return y;
+    var lines = text.split('\n');
+    for (var li = 0; li < lines.length; li++) {
+      var line = lines[li];
+      if (!line) { y += lineH; continue; }
+      var cur = '';
+      for (var ci = 0; ci < line.length; ci++) {
+        var ch = line[ci];
+        var test = cur + ch;
+        if (ctx.measureText(test).width > maxW && cur) {
+          ctx.fillText(cur, x, y);
+          cur = ch;
+          y += lineH;
+        } else {
+          cur = test;
+        }
+      }
+      if (cur) { ctx.fillText(cur, x, y); y += lineH; }
+    }
+    return y;
+  }
+
+  // ── 描画 ──
+  function draw() {
+    if (!imgLoaded) return;
+    var W = canvas.width, H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(cardImg, 0, 0, W, H);
+
+    var fs = Math.round(W * (SIZE_RATIO[state.size] || SIZE_RATIO.medium));
+    var lineH = Math.round(fs * LINE_H_RATIO);
+
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = state.color;
+
+    // 白文字は影で視認性確保
+    if (state.color === '#ffffff') {
+      ctx.shadowColor = 'rgba(0,0,0,0.45)';
+      ctx.shadowBlur = 4;
+    } else {
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+    }
+
+    // メッセージ本文
+    ctx.font = fs + 'px ' + state.font;
+    wrapText(ctx, state.message,
+      Math.round(W * ZONES.msg.x),
+      Math.round(H * ZONES.msg.y),
+      Math.round(W * ZONES.msg.maxW),
+      lineH
+    );
+
+    // お名前
+    var nameFs = Math.round(fs * 0.92);
+    ctx.font = nameFs + 'px ' + state.font;
+    if (state.name) {
+      ctx.fillText(state.name,
+        Math.round(W * ZONES.name.x),
+        Math.round(H * ZONES.name.y)
+      );
+    }
+
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+  }
+
+  // ── 高解像度描画（ダウンロード用） ──
+  function drawHiRes(offCtx, W, H) {
+    offCtx.drawImage(cardImg, 0, 0, W, H);
+    var fs = Math.round(W * (SIZE_RATIO[state.size] || SIZE_RATIO.medium));
+    var lineH = Math.round(fs * LINE_H_RATIO);
+    offCtx.textBaseline = 'top';
+    offCtx.fillStyle = state.color;
+    if (state.color === '#ffffff') { offCtx.shadowColor = 'rgba(0,0,0,0.45)'; offCtx.shadowBlur = 4; }
+    offCtx.font = fs + 'px ' + state.font;
+    wrapText(offCtx, state.message,
+      Math.round(W * ZONES.msg.x), Math.round(H * ZONES.msg.y),
+      Math.round(W * ZONES.msg.maxW), lineH
+    );
+    var nameFs = Math.round(fs * 0.92);
+    offCtx.font = nameFs + 'px ' + state.font;
+    if (state.name) {
+      offCtx.fillText(state.name, Math.round(W * ZONES.name.x), Math.round(H * ZONES.name.y));
+    }
+    offCtx.shadowColor = 'transparent';
+    offCtx.shadowBlur = 0;
+  }
+
+  // ── PNG保存 ──
+  document.getElementById('btn-download').addEventListener('click', function () {
+    if (!imgLoaded) return;
+    var scale = 2;
+    var off = document.createElement('canvas');
+    off.width  = canvas.width  * scale;
+    off.height = canvas.height * scale;
+    var offCtx = off.getContext('2d');
+    offCtx.scale(scale, scale);
+    drawHiRes(offCtx, canvas.width, canvas.height);
+    off.toBlob(function (blob) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'satoyu_birthday_message.png';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }, 'image/png');
+  });
+
+  // ── 送信 ──
+  document.getElementById('btn-submit').addEventListener('click', async function () {
+    var message = state.message.trim();
+    var name = state.name.trim();
+    if (!message) { showResult('err', 'メッセージを入力してください'); return; }
+    if (!name) { showResult('err', 'お名前・ファンネームを入力してください'); return; }
+
+    var btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = '送信中…';
+
+    try {
+      var res = await fetch('/admin-api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message, name: name, font: state.font, size: state.size, color: state.color }),
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || '送信に失敗しました');
+      showResult('ok', '🎉 メッセージを送信しました！佐藤優羽さんへ届けます♡');
+      // 送信後クリア
+      msgText.value = ''; msgName.value = '';
+      state.message = ''; state.name = '';
+      msgCount.textContent = '0';
+      draw();
+    } catch (e) {
+      showResult('err', e.message || '送信に失敗しました。もう一度お試しください。');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '✉️ 佐藤優羽さんに送る';
+    }
+  });
+
+  function showResult(type, text) {
+    var el = document.getElementById('result-msg');
+    el.className = 'result-msg ' + type;
+    el.textContent = text;
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (type === 'ok') setTimeout(function () { el.style.display = 'none'; }, 6000);
+  }
+
+  // ── 画像読み込み ──
+  cardImg.onload = function () {
+    canvas.width  = cardImg.naturalWidth;
+    canvas.height = cardImg.naturalHeight;
+    imgLoaded = true;
+    document.fonts.ready.then(function () { draw(); });
+  };
+  cardImg.onerror = function () {
+    canvas.width = 560; canvas.height = 338;
+    ctx.fillStyle = '#ecf7f0';
+    ctx.fillRect(0, 0, 560, 338);
+    ctx.fillStyle = '#999';
+    ctx.font = '14px sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('画像を読み込めませんでした', 140, 169);
+  };
+  cardImg.src = '/images/image/message_card_2026.png';
+
+  // ── ハンバーガーメニュー ──
+  (function () {
+    var btn = document.getElementById('nav-hamburger');
+    var links = document.querySelector('.nav-links');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function () {
+      var open = links.classList.toggle('open');
+      btn.textContent = open ? '✕' : '☰';
+      btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    });
+    links.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        links.classList.remove('open');
+        btn.textContent = '☰';
+        btn.setAttribute('aria-label', 'メニューを開く');
+      });
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>
