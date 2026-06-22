@@ -171,6 +171,12 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     <p class="preview-label">← プレビュー（リアルタイム更新）</p>
   </div>
 
+  <!-- ハニーポット（ボット対策：人間には見えない） -->
+  <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+    <label for="hp-url">URLを入力しないでください</label>
+    <input type="text" id="hp-url" name="url" tabindex="-1" autocomplete="off" value="">
+  </div>
+
   <!-- コントロール -->
   <div class="controls">
 
@@ -251,8 +257,12 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   // カード上のテキストゾーン（画像サイズに対する割合）
   const ZONES = {
     msg:  { x: 0.050, y: 0.300, maxW: 0.650 },  // メッセージ本文エリア
-    name: { x: 0.210, y: 0.800 },                 // Fromの後のお名前
+    name: { x: 0.210 },                           // x のみ。y は緑線から動的計算
   };
+
+  // Fromの横の緑線 y座標（画像高さ比）・文字下端との余白(px)
+  const FROM_LINE_Y = 0.890;
+  const NAME_ABOVE_LINE = 4;
 
   // ── State ──
   var state = { message: '', name: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
@@ -371,13 +381,14 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       lineH
     );
 
-    // お名前
+    // お名前（文字の下端が緑線より少し上に来るよう動的計算）
     var nameFs = Math.round(fs * 0.92);
     ctx.font = nameFs + 'px ' + state.font;
     if (state.name) {
+      var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
       ctx.fillText(state.name,
         Math.round(W * ZONES.name.x),
-        Math.round(H * ZONES.name.y)
+        nameY
       );
     }
 
@@ -401,7 +412,8 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     var nameFs = Math.round(fs * 0.92);
     offCtx.font = nameFs + 'px ' + state.font;
     if (state.name) {
-      offCtx.fillText(state.name, Math.round(W * ZONES.name.x), Math.round(H * ZONES.name.y));
+      var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
+      offCtx.fillText(state.name, Math.round(W * ZONES.name.x), nameY);
     }
     offCtx.shadowColor = 'transparent';
     offCtx.shadowBlur = 0;
@@ -441,7 +453,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       var res = await fetch('/admin-api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message, name: name, font: state.font, size: state.size, color: state.color }),
+        body: JSON.stringify({ message: message, name: name, font: state.font, size: state.size, color: state.color, _hp: document.getElementById('hp-url').value }),
       });
       var data = await res.json();
       if (!res.ok) throw new Error(data.error || '送信に失敗しました');
