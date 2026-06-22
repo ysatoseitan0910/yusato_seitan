@@ -251,8 +251,12 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   // カード上のテキストゾーン（画像サイズに対する割合）
   const ZONES = {
     msg:  { x: 0.050, y: 0.300, maxW: 0.650 },  // メッセージ本文エリア
-    name: { x: 0.210, y: 0.825 },                 // Fromの後のお名前
+    name: { x: 0.210 },                           // x のみ。y は緑線から動的計算
   };
+
+  // Fromの横の緑線 y座標（画像高さ比）・文字下端との余白(px)
+  const FROM_LINE_Y = 0.880;
+  const NAME_ABOVE_LINE = 4;
 
   // ── State ──
   var state = { message: '', name: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
@@ -371,13 +375,14 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       lineH
     );
 
-    // お名前
+    // お名前（文字の下端が緑線より少し上に来るよう動的計算）
     var nameFs = Math.round(fs * 0.92);
     ctx.font = nameFs + 'px ' + state.font;
     if (state.name) {
+      var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
       ctx.fillText(state.name,
         Math.round(W * ZONES.name.x),
-        Math.round(H * ZONES.name.y)
+        nameY
       );
     }
 
@@ -401,7 +406,8 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     var nameFs = Math.round(fs * 0.92);
     offCtx.font = nameFs + 'px ' + state.font;
     if (state.name) {
-      offCtx.fillText(state.name, Math.round(W * ZONES.name.x), Math.round(H * ZONES.name.y));
+      var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
+      offCtx.fillText(state.name, Math.round(W * ZONES.name.x), nameY);
     }
     offCtx.shadowColor = 'transparent';
     offCtx.shadowBlur = 0;
