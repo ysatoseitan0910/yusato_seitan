@@ -22,5 +22,5 @@ jobs:
 
       - name: Deploy message.html to VPS
         run: |
-          rsync -avz message.html \
+          rsync -avz --checksum message.html \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/satoyu/
