@@ -390,6 +390,7 @@ app.post("/messages", async (req, res) => {
 app.post("/cards", async (req, res) => {
   const { _hp, template, fanName, handle, birthYear, birthMD, gender, mbti,
           ohishamaHistory, song, nickname, selfIntro, otherOshi,
+          bestLive1, bestLive2, bestLive3, bestVar1, bestVar2, bestVar3,
           oshiName, oshiReason, oshiLike, oshiEpisode, oshiFeeling, oshiLove } = req.body;
 
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
@@ -415,6 +416,12 @@ app.post("/cards", async (req, res) => {
     if (nickname)        props.Nickname        = { rich_text: t(nickname) };
     if (selfIntro)       props.SelfIntro       = { rich_text: t(selfIntro) };
     if (otherOshi)       props.OtherOshi       = { rich_text: t(otherOshi) };
+    if (bestLive1)       props.BestLive1       = { rich_text: t(bestLive1) };
+    if (bestLive2)       props.BestLive2       = { rich_text: t(bestLive2) };
+    if (bestLive3)       props.BestLive3       = { rich_text: t(bestLive3) };
+    if (bestVar1)        props.BestVar1        = { rich_text: t(bestVar1) };
+    if (bestVar2)        props.BestVar2        = { rich_text: t(bestVar2) };
+    if (bestVar3)        props.BestVar3        = { rich_text: t(bestVar3) };
     if (oshiName)        props.OshiName        = { rich_text: t(oshiName) };
     if (oshiReason)      props.OshiReason      = { rich_text: t(oshiReason) };
     if (oshiLike)        props.OshiLike        = { rich_text: t(oshiLike) };

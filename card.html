@@ -330,6 +330,12 @@ const FIELD_DEFAULTS = {
   "nickname":        "ふんふん",
   "self-intro":      "リトルトゥースでもあるよ！",
   "other-oshi":      "",
+  "best-live-1":     "",
+  "best-live-2":     "",
+  "best-live-3":     "",
+  "best-var-1":      "",
+  "best-var-2":      "",
+  "best-var-3":      "",
   "oshi-name":       "ゆうちゃん",
   "oshi-reason":     "ティザー映像",
   "oshi-like":       "もちもち",
@@ -362,6 +368,14 @@ const SHARED_FIELDS = [
   { id: "oshi-feeling", label: "その感想",             placeholder: "可愛い" },
   { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
   { id: "oshi-love",    label: "自由に愛を叫ぼう！",   placeholder: "さとうゆが一推し！",   multiline: true },
+  // My Best ライブ
+  { id: "best-live-1", label: "1.", placeholder: "例：ドレミソラシド", sectionStart: "My Best さとうゆ（ライブ）" },
+  { id: "best-live-2", label: "2.", placeholder: "" },
+  { id: "best-live-3", label: "3.", placeholder: "" },
+  // My Best バラエティ
+  { id: "best-var-1",  label: "1.", placeholder: "例：ひなあい", sectionStart: "My Best さとうゆ（バラエティ）" },
+  { id: "best-var-2",  label: "2.", placeholder: "" },
+  { id: "best-var-3",  label: "3.", placeholder: "" },
 ];
 
 const TEMPLATES = [
@@ -786,6 +800,33 @@ function drawLoveMemo(ctx, x, y, memoW, memoH, MP, loveLines) {
   for (const ln of loveLines) { ctx.fillText("♡ " + ln + " ♡", x + memoW / 2, lyy); lyy += Math.ceil(16 * 1.7); }
 }
 
+function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape, tapeCX, measureOnly) {
+  const lh = Math.ceil(FS * 1.75);
+  const textMaxW = blockW - MP * 2;
+  ctx.font = f(FS, false, "Yomogi");
+  let contentH = 0;
+  const lineGroups = [];
+  for (let i = 0; i < 3; i++) {
+    const raw = (items && items[i]) ? items[i] : "";
+    const lines = wrapText(ctx, `${i + 1}. ${raw}`, textMaxW);
+    lineGroups.push(lines);
+    contentH += Math.max(lines.length, 1) * lh;
+  }
+  const memoH = MP + 22 + 6 + contentH + MP;
+  if (measureOnly) return memoH;
+  drawMemoCard(ctx, x, y, blockW, memoH, MM.memo);
+  drawTape(ctx, tapeCX, y - 2, 60, 18, 3, tape);
+  ctx.font = f(12, false, "Yomogi"); ctx.fillStyle = labelColor;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText(label, x + MP, y + MP);
+  let iy = y + MP + 22 + 6;
+  ctx.font = f(FS, false, "Yomogi"); ctx.fillStyle = MM.ink;
+  for (const lines of lineGroups) {
+    for (const ln of lines) { ctx.fillText(ln, x + MP, iy); iy += lh; }
+  }
+  return memoH;
+}
+
 function mmFooter(ctx, w, totalH) {
   ctx.font = f(11); ctx.fillStyle = "#a0957f"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
   ctx.fillText("satoyu.info　#さとうゆ一押しプロフィール", w / 2, totalH - 10);
@@ -810,13 +851,22 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
+  const liveItems = [1,2,3].map(n => (getV("best-live-" + n) || "").trim());
+  const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
+  const BEST_GAP  = 10;
+  const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
+  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
+  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", varItems,  MM.love, MM.tapeP, 0, true);
+  const bestBlockH = Math.max(liveBestH, varBestH);
+
   const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
   const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
   const loveMemoH = MP + 8 + loveTextH + MP;
 
   const lY = TM;
   const oshiY = TM + 14;
-  const loveY = oshiY + oshiMemoH + 22;
+  const bestY = oshiY + oshiMemoH + 14;
+  const loveY = bestY + bestBlockH + 14;
   const totalH = Math.max(lY + selfMemoH, loveY + loveMemoH) + 46;
 
   if (measureOnly) return totalH;
@@ -836,6 +886,8 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
 
   const rX = PW + BIND + PAD;
   drawLabeledMemo(ctx, rX, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, rX + memoW - 46, 4, oshiSegs, MM.hlOshi);
+  drawBestMemo(ctx, rX,                       bestY, halfBestW, MP, FS, "🎤 My Best（ライブ）",     liveItems, MM.oshi, MM.tapeB, rX + 34,                                      false);
+  drawBestMemo(ctx, rX + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best（バラエティ）", varItems,  MM.love, MM.tapeP, rX + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, rX, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: rX, x2: rX + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -873,13 +925,22 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
+  const liveItems = [1,2,3].map(n => (getV("best-live-" + n) || "").trim());
+  const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
+  const BEST_GAP  = 10;
+  const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
+  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
+  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", varItems,  MM.love, MM.tapeP, 0, true);
+  const bestBlockH = Math.max(liveBestH, varBestH);
+
   const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
   const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
   const loveMemoH = MP + 8 + loveTextH + MP;
 
   const X = PAD, selfY = TM;
   const oshiY = selfY + selfMemoH + GAP;
-  const loveY = oshiY + oshiMemoH + GAP;
+  const bestY  = oshiY + oshiMemoH + GAP;
+  const loveY  = bestY + bestBlockH + GAP;
   const totalH = loveY + loveMemoH + 46;
 
   if (measureOnly) return totalH;
@@ -887,6 +948,8 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   drawPaperGrid(ctx, w, totalH);
   drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
   drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
+  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, FS, "🎤 My Best（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
+  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best（バラエティ）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -1212,6 +1275,12 @@ async function submitCard() {
     nickname:        getVal(tpl, "nickname"),
     selfIntro:       getVal(tpl, "self-intro"),
     otherOshi:       getVal(tpl, "other-oshi"),
+    bestLive1:       getVal(tpl, "best-live-1"),
+    bestLive2:       getVal(tpl, "best-live-2"),
+    bestLive3:       getVal(tpl, "best-live-3"),
+    bestVar1:        getVal(tpl, "best-var-1"),
+    bestVar2:        getVal(tpl, "best-var-2"),
+    bestVar3:        getVal(tpl, "best-var-3"),
     oshiName:        getVal(tpl, "oshi-name"),
     oshiReason:      getVal(tpl, "oshi-reason"),
     oshiLike:        getVal(tpl, "oshi-like"),
