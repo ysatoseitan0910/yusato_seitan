@@ -1268,6 +1268,10 @@ async function submitCard() {
   const fanName = getVal(tpl, "fan-name").trim();
   if (!fanName) { showCardResult("err", "ファン名を入力してください"); return; }
 
+  // 高解像度カード画像をbase64で取得
+  const { canvas: hiResCanvas } = buildHighResCanvas();
+  const imageBase64 = hiResCanvas.toDataURL("image/png").split(",")[1];
+
   const payload = {
     _hp:             document.getElementById("hp-card").value,
     template:        tpl.name,
@@ -1293,6 +1297,7 @@ async function submitCard() {
     oshiLike:        getVal(tpl, "oshi-like"),
     oshiLikeFree:    getVal(tpl, "oshi-like-free"),
     oshiLove:        getVal(tpl, "oshi-love"),
+    imageBase64,
   };
 
   const btn = document.getElementById("submit-card-btn");

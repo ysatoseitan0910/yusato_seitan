@@ -1,9 +1,13 @@
 const express = require("express");
 const { Client } = require("@notionhq/client");
+const fs   = require("fs");
+const path = require("path");
 
 const app = express();
 app.set('trust proxy', 1); // nginx の背後で実際のクライアントIPを取得
-app.use(express.json());
+app.use(express.json({ limit: "5mb" }));
+
+const UPLOADS_DIR = "/var/www/satoyu/uploads/cards";
 
 // ── IPレート制限（メッセージ送信：1時間に3回まで） ──
 const msgRateMap = new Map();
@@ -391,7 +395,8 @@ app.post("/cards", async (req, res) => {
   const { _hp, template, fanName, handle, birthYear, birthMD, gender, mbti,
           ohishamaHistory, song, nickname, selfIntro, otherOshi,
           bestLive1, bestLive2, bestLive3, bestVar1, bestVar2, bestVar3,
-          oshiName, oshiReason, oshiLike, oshiLikeFree, oshiLove } = req.body;
+          oshiName, oshiReason, oshiLike, oshiLikeFree, oshiLove,
+          imageBase64 } = req.body;
 
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
   if (!checkCardRateLimit(req.ip)) {
@@ -401,6 +406,23 @@ app.post("/cards", async (req, res) => {
   if (!DB.cards) return res.status(503).json({ error: "カードDBが未設定です（DB_CARDS環境変数を設定してください）" });
 
   try {
+    // カード画像をVPSに保存
+    let cardImageUrl = null;
+    if (imageBase64) {
+      try {
+        fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+        const slug = (handle && handle.trim())
+          ? handle.trim().replace(/[^a-zA-Z0-9_\-]/g, "_")
+          : `card_${Date.now()}`;
+        const filename = `${slug}.png`;
+        const filepath = path.join(UPLOADS_DIR, filename);
+        fs.writeFileSync(filepath, Buffer.from(imageBase64, "base64"));
+        cardImageUrl = `https://satoyu.info/uploads/cards/${filename}`;
+      } catch (imgErr) {
+        console.error("画像保存エラー:", imgErr.message);
+      }
+    }
+
     const props = {
       Name:     { title: t(fanName.trim()) },
       Date:     { date: { start: new Date().toISOString().slice(0, 10) } },
@@ -428,6 +450,7 @@ app.post("/cards", async (req, res) => {
     if (oshiLikeFree)    props.OshiLikeFree    = { rich_text: t(oshiLikeFree) };
     if (oshiLove)        props.OshiLove        = { rich_text: t(oshiLove) };
     if (template)        props.Template        = { select: { name: template } };
+    if (cardImageUrl)    props.CardImage       = { url: cardImageUrl };
 
     // 同一X IDの既存レコードをアーカイブ（最新のみ保持）
     if (handle && handle.trim()) {
@@ -441,7 +464,7 @@ app.post("/cards", async (req, res) => {
     }
 
     await notion.pages.create({ parent: { database_id: DB.cards }, properties: props });
-    res.json({ ok: true });
+    res.json({ ok: true, cardImageUrl });
   } catch (e) {
     console.error(e.message);
     res.status(500).json({ error: e.message });
