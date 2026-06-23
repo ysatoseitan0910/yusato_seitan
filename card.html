@@ -146,6 +146,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .card-result { display:none; padding:10px 14px; border-radius:10px; font-size:13px; line-height:1.6; font-family:'Klee One',serif; text-align:center; }
 .card-result.ok { background:var(--emerald-pale); color:var(--emerald-dark); border:1px solid var(--emerald-light); }
 .card-result.err { background:#fef0f0; color:#b00; border:1px solid #fcc; }
+.share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Klee One',serif; font-size:13px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
+.share-cb-label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--emerald); cursor:pointer; flex-shrink:0; }
 
 /* Canvas click feedback */
 #preview-canvas { cursor: pointer; }
@@ -282,9 +284,13 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
         <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
         <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
-        <button class="submit-card-btn" id="submit-card-btn">✉ 委員会に送る</button>
+        <label class="share-cb-label">
+          <input type="checkbox" id="share-card-cb" checked>
+          入力した情報を委員会に共有する
+        </label>
         <div class="card-result" id="card-result" role="alert"></div>
-        <p class="download-note" style="margin-top:8px;line-height:1.7;">入力した情報は生誕企画の運営にのみ使用します。詳しくは<a href="privacy.html" style="color:inherit;text-decoration:underline;">プライバシーポリシー</a>をご確認ください。</p>
+        <p class="download-note" style="margin-top:10px;line-height:1.8;">共有いただいたプロフィールカードはメッセージカードと合わせて本人にお届けする予定です。また、入力された情報をもとに「さとうゆの好きなところ１００」を作成し、こちらもメッセージカードと合わせてお届けする予定です。</p>
+        <p class="download-note" style="margin-top:6px;line-height:1.7;">入力した情報は生誕企画の運営にのみ使用します。詳しくは<a href="privacy.html" style="color:inherit;text-decoration:underline;">プライバシーポリシー</a>をご確認ください。</p>
       </div>
     </div>
   </div>
@@ -735,9 +741,9 @@ function drawSelfMemo(ctx, x, y, memoW, memoH, MP, FS, labelH, headerH, icoR, ge
   drawIconCircle(ctx, ico, icoCX, icoCY, icoR, "#f7b6c8", 3);
   const hInfoX = icoCX + icoR + 12;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = MM.self;
-  ctx.fillText(fanName, hInfoX, y + MP + 4);
-  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = "#8a9d6a"; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, hInfoX, y + MP + 24); }
+  const handleStr = handle ? `（${handle.startsWith("@") ? handle : "@" + handle}）` : "";
+  ctx.font = f(15, false, "Yomogi"); ctx.fillStyle = MM.self;
+  ctx.fillText(fanName + handleStr, hInfoX, y + MP + 4);
   const divY = y + MP + headerH + 2;
   ctx.strokeStyle = "#e6dfc9"; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
   ctx.beginPath(); ctx.moveTo(x + MP, divY); ctx.lineTo(x + memoW - MP, divY); ctx.stroke(); ctx.setLineDash([]);
@@ -1237,9 +1243,14 @@ document.fonts.ready.then(() => {
   buildTabs();
   buildIllustPicker();
   switchTemplate(0);
-  document.getElementById("download-btn").addEventListener("click", download);
-  document.getElementById("share-x-btn").addEventListener("click", shareToX);
-  document.getElementById("submit-card-btn").addEventListener("click", submitCard);
+  document.getElementById("download-btn").addEventListener("click", function () {
+    if (document.getElementById("share-card-cb").checked) submitCard();
+    download();
+  });
+  document.getElementById("share-x-btn").addEventListener("click", function () {
+    if (document.getElementById("share-card-cb").checked) submitCard();
+    shareToX();
+  });
   initIconUpload();
 });
 

@@ -29,7 +29,7 @@ setInterval(() => {
 
 // ── IPレート制限（カード送信：1時間に5回まで） ──
 const cardRateMap = new Map();
-const CARD_RATE_LIMIT = 5;
+const CARD_RATE_LIMIT = 10;
 
 function checkCardRateLimit(ip) {
   const now = Date.now();
@@ -399,6 +399,17 @@ app.post("/cards", async (req, res) => {
     if (oshiFeeling)     props.OshiFeeling     = { rich_text: t(oshiFeeling) };
     if (oshiLove)        props.OshiLove        = { rich_text: t(oshiLove) };
     if (template)        props.Template        = { select: { name: template } };
+
+    // 同一X IDの既存レコードをアーカイブ（最新のみ保持）
+    if (handle && handle.trim()) {
+      const existing = await notion.databases.query({
+        database_id: DB.cards,
+        filter: { property: "Handle", rich_text: { equals: handle.trim() } },
+      });
+      for (const page of existing.results) {
+        await notion.pages.update({ page_id: page.id, archived: true });
+      }
+    }
 
     await notion.pages.create({ parent: { database_id: DB.cards }, properties: props });
     res.json({ ok: true });
