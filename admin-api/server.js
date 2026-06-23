@@ -391,7 +391,7 @@ app.post("/cards", async (req, res) => {
   const { _hp, template, fanName, handle, birthYear, birthMD, gender, mbti,
           ohishamaHistory, song, nickname, selfIntro, otherOshi,
           bestLive1, bestLive2, bestLive3, bestVar1, bestVar2, bestVar3,
-          oshiName, oshiReason, oshiLike, oshiLove } = req.body;
+          oshiName, oshiReason, oshiLike, oshiLikeFree, oshiLove } = req.body;
 
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
   if (!checkCardRateLimit(req.ip)) {
@@ -425,6 +425,7 @@ app.post("/cards", async (req, res) => {
     if (oshiName)        props.OshiName        = { rich_text: t(oshiName) };
     if (oshiReason)      props.OshiReason      = { rich_text: t(oshiReason) };
     if (oshiLike)        props.OshiLike        = { rich_text: t(oshiLike) };
+    if (oshiLikeFree)    props.OshiLikeFree    = { rich_text: t(oshiLikeFree) };
     if (oshiLove)        props.OshiLove        = { rich_text: t(oshiLove) };
     if (template)        props.Template        = { select: { name: template } };
 

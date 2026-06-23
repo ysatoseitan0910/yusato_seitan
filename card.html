@@ -329,17 +329,21 @@ const FIELD_DEFAULTS = {
   "song":            "ドレミソラシド",
   "nickname":        "ふんふん",
   "self-intro":      "リトルトゥースでもあるよ！",
-  "other-oshi":      "",
-  "best-live-1":     "",
-  "best-live-2":     "",
-  "best-live-3":     "",
-  "best-var-1":      "",
-  "best-var-2":      "",
-  "best-var-3":      "",
-  "oshi-name":       "ゆうちゃん",
-  "oshi-reason":     "ティザー映像",
-  "oshi-like":       "もちもち",
-  "oshi-love":       "さとうゆが一推し！",
+  "other-oshi":        "",
+  "best-live-1-live":  "",
+  "best-live-1-song":  "",
+  "best-live-2-live":  "",
+  "best-live-2-song":  "",
+  "best-live-3-live":  "",
+  "best-live-3-song":  "",
+  "best-var-1":        "",
+  "best-var-2":        "",
+  "best-var-3":        "",
+  "oshi-name":         "ゆうちゃん",
+  "oshi-reason":       "ティザー映像",
+  "oshi-like":         "もちもち",
+  "oshi-like-free":    "",
+  "oshi-love":         "さとうゆが一推し！",
 };
 
 const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
@@ -361,17 +365,21 @@ const SHARED_FIELDS = [
   // 推し紹介
   { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
   { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "ティザー映像" },
-  { id: "oshi-like",    label: "好きなところ",         placeholder: "もちもち" },
+  { id: "oshi-like",      label: "○○なさとうゆが大好き！",        placeholder: "もちもち" },
+  { id: "oshi-like-free", label: "好きなところ（自由記述）",    placeholder: "もちもちのゆうちゃんが大好き！", multiline: true },
   { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
-  { id: "oshi-love",    label: "自由に愛を叫ぼう！",   placeholder: "さとうゆが一推し！",   multiline: true },
+  { id: "oshi-love",      label: "自由に愛を叫ぼう！",           placeholder: "さとうゆが一推し！",   multiline: true },
   // My Best ライブ
-  { id: "best-live-1", label: "1.", placeholder: "例：ドレミソラシド", sectionStart: "My Best さとうゆ（ライブ）" },
-  { id: "best-live-2", label: "2.", placeholder: "" },
-  { id: "best-live-3", label: "3.", placeholder: "" },
-  // My Best バラエティ
-  { id: "best-var-1",  label: "1.", placeholder: "例：ひなあい", sectionStart: "My Best さとうゆ（バラエティ）" },
-  { id: "best-var-2",  label: "2.", placeholder: "" },
-  { id: "best-var-3",  label: "3.", placeholder: "" },
+  { id: "best-live-1-live", label: "1. ライブ名", placeholder: "例：新参者",                       sectionStart: "My Best さとうゆ（ライブ）" },
+  { id: "best-live-1-song", label: "　　楽曲名",  placeholder: "例：ガラス窓が汚れてる" },
+  { id: "best-live-2-live", label: "2. ライブ名", placeholder: "例：MONSTER GROOVE" },
+  { id: "best-live-2-song", label: "　　楽曲名",  placeholder: "例：どうする？どうする？どうする？" },
+  { id: "best-live-3-live", label: "3. ライブ名", placeholder: "例：17th ひなた坂LIVE" },
+  { id: "best-live-3-song", label: "　　楽曲名",  placeholder: "例：恋する魚は空を飛ぶ" },
+  // My Best バラエティ等
+  { id: "best-var-1",  label: "1.", placeholder: "例：ひななりのボイトレ回",                    sectionStart: "My Best さとうゆ（バラエティ等）" },
+  { id: "best-var-2",  label: "2.", placeholder: "例：エンジェルさとうゆのみ～んなむざい" },
+  { id: "best-var-3",  label: "3.", placeholder: "例：ひなこいリアルイベントの読み聞かせ" },
 ];
 
 const TEMPLATES = [
@@ -514,10 +522,11 @@ function buildSelfIntroSegments(getV) {
 }
 
 function buildOshiIntroSegments(getV) {
-  const name   = (getV("oshi-name")   || "").trim();
-  const reason = (getV("oshi-reason") || "").trim();
-  const like   = (getV("oshi-like")   || "").trim();
-  const love   = (getV("oshi-love")   || "").trim();
+  const name     = (getV("oshi-name")      || "").trim();
+  const reason   = (getV("oshi-reason")    || "").trim();
+  const like     = (getV("oshi-like")      || "").trim();
+  const likeFree = (getV("oshi-like-free") || "").trim();
+  const love     = (getV("oshi-love")      || "").trim();
 
   const n    = name || "彼女";
   const nInp = !!name;
@@ -541,15 +550,17 @@ function buildOshiIntroSegments(getV) {
     }
   }
 
+  if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
   if (love) { segs.push(s("\n")); segs.push(i(love, "oshi-love")); }
 
   return segs;
 }
 
 function buildOshiMainSegments(getV) {
-  const name   = (getV("oshi-name")   || "").trim();
-  const reason = (getV("oshi-reason") || "").trim();
-  const like   = (getV("oshi-like")   || "").trim();
+  const name     = (getV("oshi-name")      || "").trim();
+  const reason   = (getV("oshi-reason")    || "").trim();
+  const like     = (getV("oshi-like")      || "").trim();
+  const likeFree = (getV("oshi-like-free") || "").trim();
   const n    = name || "彼女";
   const nInp = !!name;
   const s  = (t)      => ({ text: t, isInput: false });
@@ -569,6 +580,7 @@ function buildOshiMainSegments(getV) {
       segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     }
   }
+  if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
   return segs;
 }
 
@@ -836,7 +848,12 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
-  const liveItems = [1,2,3].map(n => (getV("best-live-" + n) || "").trim());
+  const liveItems = [1,2,3].map(n => {
+    const live = (getV("best-live-" + n + "-live") || "").trim();
+    const song = (getV("best-live-" + n + "-song") || "").trim();
+    if (live && song) return live + "\n　の " + song;
+    return live || song || "";
+  });
   const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
   const BEST_GAP  = 10;
   const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
@@ -872,7 +889,7 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   const rX = PW + BIND + PAD;
   drawLabeledMemo(ctx, rX, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, rX + memoW - 46, 4, oshiSegs, MM.hlOshi);
   drawBestMemo(ctx, rX,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, rX + 34,                                      false);
-  drawBestMemo(ctx, rX + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ）", varItems,  MM.love, MM.tapeP, rX + halfBestW + BEST_GAP + halfBestW - 34, false);
+  drawBestMemo(ctx, rX + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, rX + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, rX, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: rX, x2: rX + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -910,7 +927,12 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
-  const liveItems = [1,2,3].map(n => (getV("best-live-" + n) || "").trim());
+  const liveItems = [1,2,3].map(n => {
+    const live = (getV("best-live-" + n + "-live") || "").trim();
+    const song = (getV("best-live-" + n + "-song") || "").trim();
+    if (live && song) return live + "\n　の " + song;
+    return live || song || "";
+  });
   const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
   const BEST_GAP  = 10;
   const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
@@ -934,7 +956,7 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
   drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
   drawBestMemo(ctx, X,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
-  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
+  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -1260,15 +1282,16 @@ async function submitCard() {
     nickname:        getVal(tpl, "nickname"),
     selfIntro:       getVal(tpl, "self-intro"),
     otherOshi:       getVal(tpl, "other-oshi"),
-    bestLive1:       getVal(tpl, "best-live-1"),
-    bestLive2:       getVal(tpl, "best-live-2"),
-    bestLive3:       getVal(tpl, "best-live-3"),
+    bestLive1:       (() => { const l = getVal(tpl, "best-live-1-live").trim(); const s = getVal(tpl, "best-live-1-song").trim(); return l && s ? l + " の " + s : l || s; })(),
+    bestLive2:       (() => { const l = getVal(tpl, "best-live-2-live").trim(); const s = getVal(tpl, "best-live-2-song").trim(); return l && s ? l + " の " + s : l || s; })(),
+    bestLive3:       (() => { const l = getVal(tpl, "best-live-3-live").trim(); const s = getVal(tpl, "best-live-3-song").trim(); return l && s ? l + " の " + s : l || s; })(),
     bestVar1:        getVal(tpl, "best-var-1"),
     bestVar2:        getVal(tpl, "best-var-2"),
     bestVar3:        getVal(tpl, "best-var-3"),
     oshiName:        getVal(tpl, "oshi-name"),
     oshiReason:      getVal(tpl, "oshi-reason"),
     oshiLike:        getVal(tpl, "oshi-like"),
+    oshiLikeFree:    getVal(tpl, "oshi-like-free"),
     oshiLove:        getVal(tpl, "oshi-love"),
   };
 
@@ -1321,7 +1344,7 @@ document.fonts.ready.then(() => {
 //  Canvas クリック → フォームフィールドへスクロール
 // ════════════════════════════════════════════════════════
 const SELF_FIELD_IDS = ["fan-name","handle","birth-year","birth-md","gender","mbti","ohisama-history","song","nickname","self-intro"];
-const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-love"];
+const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-like-free","oshi-love"];
 
 function getClickedSection(cx, cy) {
   const tpl = TEMPLATES[tplIdx];
