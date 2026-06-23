@@ -392,7 +392,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     );
 
     // お名前（文字の下端が緑線より少し上に来るよう動的計算）
-    var nameFs = Math.round(fs * 0.92);
+    var nameFs = Math.round(W * SIZE_RATIO.small);
     ctx.font = nameFs + 'px ' + state.font;
     if (state.name) {
       var xidStr = state.xid ? state.xid.trim() : '';
@@ -419,7 +419,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       Math.round(W * ZONES.msg.x), Math.round(H * ZONES.msg.y),
       Math.round(W * ZONES.msg.maxW), lineH
     );
-    var nameFs = Math.round(fs * 0.92);
+    var nameFs = Math.round(W * SIZE_RATIO.small);
     offCtx.font = nameFs + 'px ' + state.font;
     if (state.name) {
       var xidStr = state.xid ? state.xid.trim() : '';
