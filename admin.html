@@ -343,6 +343,9 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" onclick="switchDB('tiktok')">🎵 TikTok</button>
     <button class="db-btn" onclick="switchDB('youtube')">▶ YouTube</button>
     <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
+    <button class="db-btn" onclick="switchDB('memberblog')">📔 他メンバーブログ</button>
+    <div style="height:1px;background:var(--border);margin:8px 4px;"></div>
+    <button class="db-btn" id="messages-sidebar-btn" onclick="showMessages()">✉ メッセージ</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
     <!-- デプロイ -->
@@ -364,10 +367,9 @@ header span { font-size: 13px; color: var(--text-muted); }
   <div class="form-area">
 
     <!-- タブ -->
-    <div class="panel-tabs">
+    <div class="panel-tabs" id="panel-tabs">
       <button class="panel-tab active" id="tab-add" onclick="switchTab('add')">＋ 追加</button>
       <button class="panel-tab" id="tab-list" onclick="switchTab('list')">☰ 一覧</button>
-      <button class="panel-tab" id="tab-messages" onclick="switchTab('messages')">✉ メッセージ</button>
     </div>
 
     <div id="panels-wrap">
@@ -609,6 +611,37 @@ header span { font-size: 13px; color: var(--text-muted); }
       </div>
     </div>
 
+    <!-- 他メンバーブログ -->
+    <div class="form-panel" id="panel-memberblog">
+      <h2>📔 他メンバーブログを追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="memberblog-name" placeholder="ブログタイトル">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="memberblog-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="memberblog-url" placeholder="https://www.hinatazaka46.com/...">
+        </div>
+        <div class="field full">
+          <label>メンバー名（カンマ区切り）</label>
+          <input type="text" id="memberblog-members" placeholder="例：加藤史帆, 丹生明里">
+        </div>
+        <div class="field full">
+          <label>説明</label>
+          <textarea id="memberblog-description" placeholder="説明文..."></textarea>
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('memberblog')">追加する</button>
+        <span class="status" id="status-memberblog"></span>
+      </div>
+    </div>
+
     </div><!-- /panels-wrap -->
 
     <!-- メッセージエリア -->
@@ -699,19 +732,31 @@ function switchDB(name) {
   document.querySelectorAll(".form-panel").forEach(p => p.classList.remove("active"));
   event.currentTarget.classList.add("active");
   document.getElementById("panel-" + name).classList.add("active");
+  // メッセージビューから戻る
+  document.getElementById('messages-area').style.display = 'none';
+  document.getElementById('panel-tabs').style.display = '';
+  document.getElementById('panels-wrap').style.display = _currentTab === 'add'  ? '' : 'none';
+  document.getElementById('list-area').style.display   = _currentTab === 'list' ? '' : 'none';
   if (_currentTab === 'list') loadList(name);
+}
+
+function showMessages() {
+  document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById('messages-sidebar-btn').classList.add("active");
+  document.getElementById('panel-tabs').style.display    = 'none';
+  document.getElementById('panels-wrap').style.display   = 'none';
+  document.getElementById('list-area').style.display     = 'none';
+  document.getElementById('messages-area').style.display = '';
+  loadMessages();
 }
 
 function switchTab(tab) {
   _currentTab = tab;
   document.getElementById('tab-add').classList.toggle('active', tab === 'add');
   document.getElementById('tab-list').classList.toggle('active', tab === 'list');
-  document.getElementById('tab-messages').classList.toggle('active', tab === 'messages');
-  document.getElementById('panels-wrap').style.display    = tab === 'add'      ? '' : 'none';
-  document.getElementById('list-area').style.display      = tab === 'list'     ? '' : 'none';
-  document.getElementById('messages-area').style.display  = tab === 'messages' ? '' : 'none';
+  document.getElementById('panels-wrap').style.display = tab === 'add'  ? '' : 'none';
+  document.getElementById('list-area').style.display   = tab === 'list' ? '' : 'none';
   if (tab === 'list') loadList(_currentDB);
-  if (tab === 'messages') loadMessages();
 }
 
 var _messagesCache = [];
@@ -897,6 +942,7 @@ function getPayload(db) {
   if (db === "tiktok") return { name: val("tiktok-name"), date: val("tiktok-date"), url: val("tiktok-url") };
   if (db === "youtube") return { name: val("youtube-name"), date: val("youtube-date"), url: val("youtube-url"), channel: val("youtube-channel") };
   if (db === "lemino") return { name: val("lemino-name"), date: val("lemino-date"), url: val("lemino-url"), description: val("lemino-description") };
+  if (db === "memberblog") return { name: val("memberblog-name"), date: val("memberblog-date"), url: val("memberblog-url"), members: val("memberblog-members"), description: val("memberblog-description") };
 }
 
 function clearForm(db) {

@@ -171,7 +171,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .illust-section { display: flex; flex-direction: column; gap: 8px; }
 .illust-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .illust-count { font-size: 11px; font-weight: 600; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 99px; padding: 2px 9px; }
-.illust-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.illust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .illust-cell { position: relative; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; overflow: visible; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 4px; }
 .illust-cell:hover { border-color: var(--emerald); }
 .illust-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -273,7 +273,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <div class="illust-section" id="illust-section">
         <div class="illust-section-label">イラストを選ぶ <span class="illust-count" id="illust-count">0 / 5</span></div>
         <div class="illust-grid" id="illust-grid"></div>
-        <div class="illust-hint">タップで選択（最大5点）。選んだ順にカードへ散りばめられます。</div>
+        <div class="illust-hint">タップで選択（最大4点）。1枠目は「他推し」の入力有無で自動セットされます。選んだ順にカードへ散りばめられます。</div>
       </div>
       <hr class="field-divider" id="illust-divider">
 
@@ -281,13 +281,13 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <hr class="field-divider">
 
       <div class="download-section">
-        <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
-        <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
-        <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
         <label class="share-cb-label">
           <input type="checkbox" id="share-card-cb" checked>
           入力した情報を委員会に共有する
         </label>
+        <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
+        <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
+        <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
         <div class="card-result" id="card-result" role="alert"></div>
         <p class="download-note" style="margin-top:10px;line-height:1.8;">共有いただいたプロフィールカードはメッセージカードと合わせて本人にお届けする予定です。また、入力された情報をもとに「さとうゆの好きなところ１００」を作成し、こちらもメッセージカードと合わせてお届けする予定です。</p>
         <p class="download-note" style="margin-top:6px;line-height:1.7;">入力した情報は生誕企画の運営にのみ使用します。詳しくは<a href="privacy.html" style="color:inherit;text-decoration:underline;">プライバシーポリシー</a>をご確認ください。</p>
@@ -329,12 +329,21 @@ const FIELD_DEFAULTS = {
   "song":            "ドレミソラシド",
   "nickname":        "ふんふん",
   "self-intro":      "リトルトゥースでもあるよ！",
-  "oshi-name":       "ゆうちゃん",
-  "oshi-reason":     "ティザー映像",
-  "oshi-like":       "もちもち",
-  "oshi-episode":    "ライブ",
-  "oshi-feeling":    "可愛い",
-  "oshi-love":       "さとうゆが一推し！",
+  "other-oshi":        "",
+  "best-live-1-live":  "",
+  "best-live-1-song":  "",
+  "best-live-2-live":  "",
+  "best-live-2-song":  "",
+  "best-live-3-live":  "",
+  "best-live-3-song":  "",
+  "best-var-1":        "",
+  "best-var-2":        "",
+  "best-var-3":        "",
+  "oshi-name":         "ゆうちゃん",
+  "oshi-reason":       "ティザー映像",
+  "oshi-like":         "もちもち",
+  "oshi-like-free":    "",
+  "oshi-love":         "さとうゆが一推し！",
 };
 
 const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
@@ -352,19 +361,30 @@ const SHARED_FIELDS = [
   { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド" },
   { id: "nickname",        label: "呼ばれ方",                       placeholder: "ふんふん" },
   { id: "self-intro",      label: "自由に自己紹介",      placeholder: "リトルトゥースでもあるよ！", multiline: true },
+  { id: "other-oshi",     label: "他推しは？（さとうゆ一推しの場合は空欄）", placeholder: "例：松田好花" },
   // 推し紹介
   { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
   { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "ティザー映像" },
-  { id: "oshi-like",    label: "好きなところ",         placeholder: "もちもち" },
-  { id: "oshi-episode", label: "印象に残っていること", placeholder: "ライブ" },
-  { id: "oshi-feeling", label: "その感想",             placeholder: "可愛い" },
+  { id: "oshi-like",      label: "○○なさとうゆが大好き！",        placeholder: "もちもち" },
+  { id: "oshi-like-free", label: "好きなところ（自由記述）",    placeholder: "もちもちのゆうちゃんが大好き！", multiline: true },
   { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
-  { id: "oshi-love",    label: "自由に愛を叫ぼう！",   placeholder: "さとうゆが一推し！",   multiline: true },
+  { id: "oshi-love",      label: "自由に愛を叫ぼう！",           placeholder: "さとうゆが一推し！",   multiline: true },
+  // My Best ライブ
+  { id: "best-live-1-live", label: "1. ライブ名", placeholder: "例：新参者",                       sectionStart: "My Best さとうゆ（ライブ）" },
+  { id: "best-live-1-song", label: "　　楽曲名",  placeholder: "例：ガラス窓が汚れてる" },
+  { id: "best-live-2-live", label: "2. ライブ名", placeholder: "例：MONSTER GROOVE" },
+  { id: "best-live-2-song", label: "　　楽曲名",  placeholder: "例：どうする？どうする？どうする？" },
+  { id: "best-live-3-live", label: "3. ライブ名", placeholder: "例：17th ひなた坂LIVE" },
+  { id: "best-live-3-song", label: "　　楽曲名",  placeholder: "例：恋する魚は空を飛ぶ" },
+  // My Best バラエティ等
+  { id: "best-var-1",  label: "1.", placeholder: "例：ひななりのボイトレ回",                    sectionStart: "My Best さとうゆ（バラエティ等）" },
+  { id: "best-var-2",  label: "2.", placeholder: "例：エンジェルさとうゆのみ～んなむざい" },
+  { id: "best-var-3",  label: "3.", placeholder: "例：ひなこいリアルイベントの読み聞かせ" },
 ];
 
 const TEMPLATES = [
-  { id: "notebook",   name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
   { id: "notebook-v", name: "ノート縦型",   w: 600, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook",   name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -388,9 +408,10 @@ const ILLUSTS = [
   { id:"kuruma",   label:"ごろ寝",   src:"/images/image/card/kuruma.png" },
   { id:"mahjong",  label:"髪いじり", src:"/images/image/card/Mahjong_in_Yu_Mind.png" },
 ];
-const MAX_ILLUSTS = 5;
+const PICKER_ILLUSTS = ILLUSTS.filter(it => it.id !== "yuzai" && it.id !== "muzai");
+const MAX_ILLUSTS = 4;
 const illustImgs = {};
-let selectedIllusts = ["dance", "pingpong", "muzai", "yuzai"];
+let selectedIllusts = ["dance", "pingpong", "cho_yuzai", "base"];
 ILLUSTS.forEach(it => {
   const img = new Image();
   img.onload = () => { illustImgs[it.id] = img; render(); };
@@ -492,16 +513,20 @@ function buildSelfIntroSegments(getV) {
   if (nickname) { segs.push(s("みんなには")); segs.push(i(nickname, "nickname")); segs.push(s("って呼ばれてるよ。")); }
   if (free)     { segs.push(i(free, "self-intro")); }
 
+  const otherOshi = (getV("other-oshi") || "").trim();
+  if (otherOshi) {
+    segs.push(s("実は・・・、")); segs.push(i(otherOshi, "other-oshi")); segs.push(s("も推してるよ。"));
+  }
+
   return segs;
 }
 
 function buildOshiIntroSegments(getV) {
-  const name    = (getV("oshi-name")    || "").trim();
-  const reason  = (getV("oshi-reason")  || "").trim();
-  const like    = (getV("oshi-like")    || "").trim();
-  const episode = (getV("oshi-episode") || "").trim();
-  const feeling = (getV("oshi-feeling") || "").trim();
-  const love    = (getV("oshi-love")    || "").trim();
+  const name     = (getV("oshi-name")      || "").trim();
+  const reason   = (getV("oshi-reason")    || "").trim();
+  const like     = (getV("oshi-like")      || "").trim();
+  const likeFree = (getV("oshi-like-free") || "").trim();
+  const love     = (getV("oshi-love")      || "").trim();
 
   const n    = name || "彼女";
   const nInp = !!name;
@@ -525,24 +550,17 @@ function buildOshiIntroSegments(getV) {
     }
   }
 
-  if (episode || feeling) {
-    segs.push(s("\n特に"));
-    if (episode) { segs.push(i(episode, "oshi-episode")); segs.push(s("の")); }
-    segs.push(ni()); segs.push(s("が"));
-    if (feeling) { segs.push(i(feeling, "oshi-feeling")); segs.push(s("！")); } else { segs.push(s("最高！")); }
-  }
-
+  if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
   if (love) { segs.push(s("\n")); segs.push(i(love, "oshi-love")); }
 
   return segs;
 }
 
 function buildOshiMainSegments(getV) {
-  const name    = (getV("oshi-name")    || "").trim();
-  const reason  = (getV("oshi-reason")  || "").trim();
-  const like    = (getV("oshi-like")    || "").trim();
-  const episode = (getV("oshi-episode") || "").trim();
-  const feeling = (getV("oshi-feeling") || "").trim();
+  const name     = (getV("oshi-name")      || "").trim();
+  const reason   = (getV("oshi-reason")    || "").trim();
+  const like     = (getV("oshi-like")      || "").trim();
+  const likeFree = (getV("oshi-like-free") || "").trim();
   const n    = name || "彼女";
   const nInp = !!name;
   const s  = (t)      => ({ text: t, isInput: false });
@@ -562,12 +580,7 @@ function buildOshiMainSegments(getV) {
       segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     }
   }
-  if (episode || feeling) {
-    segs.push(s("\n特に"));
-    if (episode) { segs.push(i(episode, "oshi-episode")); segs.push(s("の")); }
-    segs.push(ni()); segs.push(s("が"));
-    if (feeling) { segs.push(i(feeling, "oshi-feeling")); segs.push(s("！")); } else { segs.push(s("最高！")); }
-  }
+  if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
   return segs;
 }
 
@@ -717,9 +730,11 @@ function drawDoodle(ctx, x, y, ch, sz, color, rot) {
   ctx.restore();
 }
 
-function drawIllustSlots(ctx, slots) {
-  for (let i = 0; i < slots.length && i < selectedIllusts.length; i++) {
-    const img = illustImgs[selectedIllusts[i]];
+function drawIllustSlots(ctx, slots, getV) {
+  const autoId = ((getV && getV("other-oshi")) || "").trim() ? "yuzai" : "muzai";
+  const effectiveIllusts = [autoId, ...selectedIllusts];
+  for (let i = 0; i < slots.length && i < effectiveIllusts.length; i++) {
+    const img = illustImgs[effectiveIllusts[i]];
     const s = slots[i];
     drawIllustSticker(ctx, img, s.cx, s.cy, s.size, s.rot);
   }
@@ -741,9 +756,9 @@ function drawSelfMemo(ctx, x, y, memoW, memoH, MP, FS, labelH, headerH, icoR, ge
   drawIconCircle(ctx, ico, icoCX, icoCY, icoR, "#f7b6c8", 3);
   const hInfoX = icoCX + icoR + 12;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
-  const handleStr = handle ? `（${handle.startsWith("@") ? handle : "@" + handle}）` : "";
-  ctx.font = f(15, false, "Yomogi"); ctx.fillStyle = MM.self;
-  ctx.fillText(fanName + handleStr, hInfoX, y + MP + 4);
+  ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = MM.self;
+  ctx.fillText(fanName, hInfoX, y + MP + 4);
+  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = "#8a9d6a"; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, hInfoX, y + MP + 24); }
   const divY = y + MP + headerH + 2;
   ctx.strokeStyle = "#e6dfc9"; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
   ctx.beginPath(); ctx.moveTo(x + MP, divY); ctx.lineTo(x + memoW - MP, divY); ctx.stroke(); ctx.setLineDash([]);
@@ -776,6 +791,39 @@ function drawLoveMemo(ctx, x, y, memoW, memoH, MP, loveLines) {
   for (const ln of loveLines) { ctx.fillText("♡ " + ln + " ♡", x + memoW / 2, lyy); lyy += Math.ceil(16 * 1.7); }
 }
 
+function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape, tapeCX, measureOnly) {
+  const lh = Math.ceil(FS * 1.75);
+  const textMaxW = blockW - MP * 2;
+  ctx.font = f(FS, false, "Yomogi");
+  let contentH = 0;
+  const lineGroups = [];
+  for (let i = 0; i < 3; i++) {
+    const raw = (items && items[i]) ? items[i] : "";
+    const lines = wrapText(ctx, `${i + 1}. ${raw}`, textMaxW);
+    lineGroups.push(lines);
+    contentH += Math.max(lines.length, 1) * lh;
+  }
+  const memoH = MP + 22 + 6 + contentH + MP;
+  if (measureOnly) return memoH;
+  drawMemoCard(ctx, x, y, blockW, memoH, MM.memo);
+  drawTape(ctx, tapeCX, y - 2, 60, 18, 3, tape);
+  let labelFs = 12;
+  ctx.font = f(labelFs, false, "Yomogi");
+  while (ctx.measureText(label).width > textMaxW && labelFs > 8) {
+    labelFs--;
+    ctx.font = f(labelFs, false, "Yomogi");
+  }
+  ctx.fillStyle = labelColor;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText(label, x + MP, y + MP);
+  let iy = y + MP + 22 + 6;
+  ctx.font = f(FS, false, "Yomogi"); ctx.fillStyle = MM.ink;
+  for (const lines of lineGroups) {
+    for (const ln of lines) { ctx.fillText(ln, x + MP, iy); iy += lh; }
+  }
+  return memoH;
+}
+
 function mmFooter(ctx, w, totalH) {
   ctx.font = f(11); ctx.fillStyle = "#a0957f"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
   ctx.fillText("satoyu.info　#さとうゆ一押しプロフィール", w / 2, totalH - 10);
@@ -800,13 +848,27 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
+  const liveItems = [1,2,3].map(n => {
+    const live = (getV("best-live-" + n + "-live") || "").trim();
+    const song = (getV("best-live-" + n + "-song") || "").trim();
+    if (live && song) return live + "の" + song;
+    return live || song || "";
+  });
+  const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
+  const BEST_GAP  = 10;
+  const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
+  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
+  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", varItems,  MM.love, MM.tapeP, 0, true);
+  const bestBlockH = Math.max(liveBestH, varBestH);
+
   const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
   const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
   const loveMemoH = MP + 8 + loveTextH + MP;
 
   const lY = TM;
   const oshiY = TM + 14;
-  const loveY = oshiY + oshiMemoH + 22;
+  const bestY = oshiY + oshiMemoH + 14;
+  const loveY = bestY + bestBlockH + 14;
   const totalH = Math.max(lY + selfMemoH, loveY + loveMemoH) + 46;
 
   if (measureOnly) return totalH;
@@ -826,6 +888,8 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
 
   const rX = PW + BIND + PAD;
   drawLabeledMemo(ctx, rX, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, rX + memoW - 46, 4, oshiSegs, MM.hlOshi);
+  drawBestMemo(ctx, rX,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, rX + 34,                                      false);
+  drawBestMemo(ctx, rX + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, rX + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, rX, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: rX, x2: rX + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -838,7 +902,7 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
     { cx: rX + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
     { cx: rX + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
   ];
-  drawIllustSlots(ctx, slots);
+  drawIllustSlots(ctx, slots, getV);
   drawDoodle(ctx, lX + 6, lY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
   drawDoodle(ctx, rX + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
   drawDoodle(ctx, rX + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
@@ -863,13 +927,27 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
+  const liveItems = [1,2,3].map(n => {
+    const live = (getV("best-live-" + n + "-live") || "").trim();
+    const song = (getV("best-live-" + n + "-song") || "").trim();
+    if (live && song) return live + "の" + song;
+    return live || song || "";
+  });
+  const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
+  const BEST_GAP  = 10;
+  const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
+  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
+  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", varItems,  MM.love, MM.tapeP, 0, true);
+  const bestBlockH = Math.max(liveBestH, varBestH);
+
   const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
   const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
   const loveMemoH = MP + 8 + loveTextH + MP;
 
   const X = PAD, selfY = TM;
   const oshiY = selfY + selfMemoH + GAP;
-  const loveY = oshiY + oshiMemoH + GAP;
+  const bestY  = oshiY + oshiMemoH + GAP;
+  const loveY  = bestY + bestBlockH + GAP;
   const totalH = loveY + loveMemoH + 46;
 
   if (measureOnly) return totalH;
@@ -877,6 +955,8 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   drawPaperGrid(ctx, w, totalH);
   drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
   drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
+  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
+  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -889,7 +969,7 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
     { cx: X + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
     { cx: X + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
   ];
-  drawIllustSlots(ctx, slots);
+  drawIllustSlots(ctx, slots, getV);
   drawDoodle(ctx, X + 6, selfY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
   drawDoodle(ctx, X + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
   drawDoodle(ctx, X + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
@@ -1022,7 +1102,7 @@ function buildIllustPicker() {
   const grid = document.getElementById("illust-grid");
   if (!grid) return;
   grid.innerHTML = "";
-  ILLUSTS.forEach(it => {
+  PICKER_ILLUSTS.forEach(it => {
     const cell = document.createElement("div");
     cell.className = "illust-cell";
     cell.dataset.illustId = it.id;
@@ -1201,11 +1281,17 @@ async function submitCard() {
     song:            getVal(tpl, "song"),
     nickname:        getVal(tpl, "nickname"),
     selfIntro:       getVal(tpl, "self-intro"),
+    otherOshi:       getVal(tpl, "other-oshi"),
+    bestLive1:       (() => { const l = getVal(tpl, "best-live-1-live").trim(); const s = getVal(tpl, "best-live-1-song").trim(); return l && s ? l + " の " + s : l || s; })(),
+    bestLive2:       (() => { const l = getVal(tpl, "best-live-2-live").trim(); const s = getVal(tpl, "best-live-2-song").trim(); return l && s ? l + " の " + s : l || s; })(),
+    bestLive3:       (() => { const l = getVal(tpl, "best-live-3-live").trim(); const s = getVal(tpl, "best-live-3-song").trim(); return l && s ? l + " の " + s : l || s; })(),
+    bestVar1:        getVal(tpl, "best-var-1"),
+    bestVar2:        getVal(tpl, "best-var-2"),
+    bestVar3:        getVal(tpl, "best-var-3"),
     oshiName:        getVal(tpl, "oshi-name"),
     oshiReason:      getVal(tpl, "oshi-reason"),
     oshiLike:        getVal(tpl, "oshi-like"),
-    oshiEpisode:     getVal(tpl, "oshi-episode"),
-    oshiFeeling:     getVal(tpl, "oshi-feeling"),
+    oshiLikeFree:    getVal(tpl, "oshi-like-free"),
     oshiLove:        getVal(tpl, "oshi-love"),
   };
 
@@ -1258,7 +1344,7 @@ document.fonts.ready.then(() => {
 //  Canvas クリック → フォームフィールドへスクロール
 // ════════════════════════════════════════════════════════
 const SELF_FIELD_IDS = ["fan-name","handle","birth-year","birth-md","gender","mbti","ohisama-history","song","nickname","self-intro"];
-const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-episode","oshi-feeling","oshi-love"];
+const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-like-free","oshi-love"];
 
 function getClickedSection(cx, cy) {
   const tpl = TEMPLATES[tplIdx];

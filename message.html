@@ -271,7 +271,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   const NAME_ABOVE_LINE = 4;
 
   // ── State ──
-  var state = { message: '', name: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
+  var state = { message: '', name: '', xid: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
   var imgLoaded = false;
 
   // ── Canvas ──
@@ -328,6 +328,10 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   });
   msgName.addEventListener('input', function () {
     state.name = msgName.value;
+    draw();
+  });
+  document.getElementById('msg-xid').addEventListener('input', function () {
+    state.xid = document.getElementById('msg-xid').value;
     draw();
   });
 
@@ -388,14 +392,14 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     );
 
     // お名前（文字の下端が緑線より少し上に来るよう動的計算）
-    var nameFs = Math.round(fs * 0.92);
+    var nameFs = Math.round(W * SIZE_RATIO.small);
     ctx.font = nameFs + 'px ' + state.font;
     if (state.name) {
+      var xidStr = state.xid ? state.xid.trim() : '';
+      if (xidStr && !xidStr.startsWith('@')) xidStr = '@' + xidStr;
+      var nameText = xidStr ? state.name + '（' + xidStr + '）' : state.name;
       var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
-      ctx.fillText(state.name,
-        Math.round(W * ZONES.name.x),
-        nameY
-      );
+      ctx.fillText(nameText, Math.round(W * ZONES.name.x), nameY);
     }
 
     ctx.shadowColor = 'transparent';
@@ -415,11 +419,14 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       Math.round(W * ZONES.msg.x), Math.round(H * ZONES.msg.y),
       Math.round(W * ZONES.msg.maxW), lineH
     );
-    var nameFs = Math.round(fs * 0.92);
+    var nameFs = Math.round(W * SIZE_RATIO.small);
     offCtx.font = nameFs + 'px ' + state.font;
     if (state.name) {
+      var xidStr = state.xid ? state.xid.trim() : '';
+      if (xidStr && !xidStr.startsWith('@')) xidStr = '@' + xidStr;
+      var nameText = xidStr ? state.name + '（' + xidStr + '）' : state.name;
       var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
-      offCtx.fillText(state.name, Math.round(W * ZONES.name.x), nameY);
+      offCtx.fillText(nameText, Math.round(W * ZONES.name.x), nameY);
     }
     offCtx.shadowColor = 'transparent';
     offCtx.shadowBlur = 0;
