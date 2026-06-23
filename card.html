@@ -391,7 +391,12 @@ const TEMPLATES = [
 //  状態管理
 // ════════════════════════════════════════════════════════
 let tplIdx = 0;
+const CARD_DRAFT_KEY = "satoyu_card_draft_v1";
 const values = {};
+try {
+  const _saved = localStorage.getItem(CARD_DRAFT_KEY);
+  if (_saved) Object.assign(values, JSON.parse(_saved));
+} catch(e) {}
 let iconImg = null;
 let currentCanvasH = 0;
 
@@ -427,7 +432,14 @@ function getVal(tpl, id) {
   if (key in values) return values[key];
   return FIELD_DEFAULTS[id] || "";
 }
-function setVal(tpl, id, v) { values[tplKey(tpl, id)] = v; }
+let _cardSaveTimer;
+function setVal(tpl, id, v) {
+  values[tplKey(tpl, id)] = v;
+  clearTimeout(_cardSaveTimer);
+  _cardSaveTimer = setTimeout(() => {
+    try { localStorage.setItem(CARD_DRAFT_KEY, JSON.stringify(values)); } catch(e) {}
+  }, 500);
+}
 
 // ── テキスト折り返し ─────────────────────────────────────
 function wrapText(ctx, text, maxW) {
@@ -1300,10 +1312,6 @@ async function submitCard() {
     imageBase64,
   };
 
-  const btn = document.getElementById("submit-card-btn");
-  btn.disabled = true;
-  btn.textContent = "送信中…";
-
   try {
     const res = await fetch("/admin-api/cards", {
       method: "POST",
@@ -1315,9 +1323,6 @@ async function submitCard() {
     showCardResult("ok", "✅ 委員会に送信しました！");
   } catch (e) {
     showCardResult("err", e.message || "送信に失敗しました。もう一度お試しください。");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "✉ 委員会に送る";
   }
 }
 
