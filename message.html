@@ -271,7 +271,20 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   const NAME_ABOVE_LINE = 4;
 
   // ── State ──
-  var state = { message: '', name: '', xid: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
+  var MSG_DRAFT_KEY = 'satoyu_msg_draft_v1';
+  var _msgDefaults = { message: '', name: '', xid: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
+  var _msgSaved = null;
+  try { _msgSaved = JSON.parse(localStorage.getItem(MSG_DRAFT_KEY) || 'null'); } catch(e) {}
+  var state = Object.assign({}, _msgDefaults, _msgSaved || {});
+
+  var _msgSaveTimer;
+  function saveMsgDraft() {
+    clearTimeout(_msgSaveTimer);
+    _msgSaveTimer = setTimeout(function() {
+      try { localStorage.setItem(MSG_DRAFT_KEY, JSON.stringify(state)); } catch(e) {}
+    }, 500);
+  }
+
   var imgLoaded = false;
 
   // ── Canvas ──
@@ -293,6 +306,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       btn.classList.add('active');
       state.color = c.hex;
       draw();
+      saveMsgDraft();
     });
     swatchWrap.appendChild(btn);
   });
@@ -305,6 +319,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     btn.classList.add('active');
     state.font = btn.dataset.font;
     draw();
+    saveMsgDraft();
   });
 
   document.getElementById('size-btns').addEventListener('click', function (e) {
@@ -314,6 +329,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     btn.classList.add('active');
     state.size = btn.dataset.size;
     draw();
+    saveMsgDraft();
   });
 
   // ── テキスト入力 ──
@@ -325,15 +341,32 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     state.message = msgText.value;
     msgCount.textContent = state.message.length;
     draw();
+    saveMsgDraft();
   });
   msgName.addEventListener('input', function () {
     state.name = msgName.value;
     draw();
+    saveMsgDraft();
   });
   document.getElementById('msg-xid').addEventListener('input', function () {
     state.xid = document.getElementById('msg-xid').value;
     draw();
+    saveMsgDraft();
   });
+
+  // ── 下書き復元 ──
+  if (_msgSaved) {
+    msgText.value = state.message;
+    msgName.value = state.name;
+    document.getElementById('msg-xid').value = state.xid || '';
+    msgCount.textContent = state.message.length;
+    document.querySelectorAll('#font-btns .opt-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.font === state.font);
+    });
+    document.querySelectorAll('#size-btns .opt-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.size === state.size);
+    });
+  }
 
   // ── テキスト折り返し描画 ──
   function wrapText(ctx, text, x, y, maxW, lineH) {
@@ -475,6 +508,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       msgText.value = ''; msgName.value = ''; document.getElementById('msg-xid').value = '';
       state.message = ''; state.name = '';
       msgCount.textContent = '0';
+      try { localStorage.removeItem(MSG_DRAFT_KEY); } catch(e) {}
       draw();
     } catch (e) {
       showResult('err', e.message || '送信に失敗しました。もう一度お試しください。');
