@@ -343,6 +343,7 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" onclick="switchDB('tiktok')">🎵 TikTok</button>
     <button class="db-btn" onclick="switchDB('youtube')">▶ YouTube</button>
     <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
+    <button class="db-btn" onclick="switchDB('memberblog')">📔 他メンバーブログ</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
     <!-- デプロイ -->
@@ -606,6 +607,37 @@ header span { font-size: 13px; color: var(--text-muted); }
       <div class="submit-row">
         <button class="btn submit-btn" onclick="submit('lemino')">追加する</button>
         <span class="status" id="status-lemino"></span>
+      </div>
+    </div>
+
+    <!-- 他メンバーブログ -->
+    <div class="form-panel" id="panel-memberblog">
+      <h2>📔 他メンバーブログを追加</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>タイトル <span style="color:#c00">*</span></label>
+          <input type="text" id="memberblog-name" placeholder="ブログタイトル">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="memberblog-date">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input type="url" id="memberblog-url" placeholder="https://www.hinatazaka46.com/...">
+        </div>
+        <div class="field full">
+          <label>メンバー名（カンマ区切り）</label>
+          <input type="text" id="memberblog-members" placeholder="例：加藤史帆, 丹生明里">
+        </div>
+        <div class="field full">
+          <label>説明</label>
+          <textarea id="memberblog-description" placeholder="説明文..."></textarea>
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('memberblog')">追加する</button>
+        <span class="status" id="status-memberblog"></span>
       </div>
     </div>
 
@@ -897,6 +929,7 @@ function getPayload(db) {
   if (db === "tiktok") return { name: val("tiktok-name"), date: val("tiktok-date"), url: val("tiktok-url") };
   if (db === "youtube") return { name: val("youtube-name"), date: val("youtube-date"), url: val("youtube-url"), channel: val("youtube-channel") };
   if (db === "lemino") return { name: val("lemino-name"), date: val("lemino-date"), url: val("lemino-url"), description: val("lemino-description") };
+  if (db === "memberblog") return { name: val("memberblog-name"), date: val("memberblog-date"), url: val("memberblog-url"), members: val("memberblog-members"), description: val("memberblog-description") };
 }
 
 function clearForm(db) {

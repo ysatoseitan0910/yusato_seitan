@@ -60,7 +60,8 @@ const DB = {
   youtube:    process.env.DB_YOUTUBE,
   lemino:     process.env.DB_LEMINO,
   messages:   process.env.DB_MESSAGES,
-  cards:      process.env.DB_CARDS,    // プロフィールカードDB（別途Notionで作成・共有が必要）
+  cards:      process.env.DB_CARDS,
+  memberblog: process.env.DB_MEMBER_BLOG,
 };
 
 // CORS
@@ -200,6 +201,27 @@ app.post("/add/youtube", auth, async (req, res) => {
     if (url)     props.URL     = { url };
     if (channel) props.Channel = { select: { name: channel } };
     await notion.pages.create({ parent: { database_id: DB.youtube }, properties: props });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 他メンバーブログ
+app.post("/add/memberblog", auth, async (req, res) => {
+  const { name, date, url, members, description } = req.body;
+  if (!name) return res.status(400).json({ error: "タイトルは必須です" });
+  try {
+    const props = { Name: { title: t(name) }, Published: { checkbox: true } };
+    if (date) props.Date = { date: { start: date } };
+    if (url)  props.URL  = { url };
+    if (members) {
+      const memberList = members.split(",").map(s => s.trim()).filter(Boolean);
+      if (memberList.length) props.Member = { multi_select: memberList.map(n => ({ name: n })) };
+    }
+    if (description) props.Description = { rich_text: t(description) };
+    await notion.pages.create({ parent: { database_id: DB.memberblog }, properties: props });
     res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
