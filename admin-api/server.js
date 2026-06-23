@@ -305,7 +305,7 @@ app.get("/list/:db", auth, async (req, res) => {
 
 // ── メッセージカード（公開エンドポイント・認証不要） ──
 app.post("/messages", async (req, res) => {
-  const { message, name, font, size, color, _hp } = req.body;
+  const { message, name, xid, font, size, color, _hp } = req.body;
 
   // ハニーポットチェック（ボットは隠しフィールドを埋める）
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
@@ -330,6 +330,7 @@ app.post("/messages", async (req, res) => {
         Font:      { multi_select: [{ name: (font || "'Klee One', serif").replace(/'/g, "").split(",")[0].trim() }] },
         Size:      { multi_select: [{ name: size || "medium" }] },
         Color:     { rich_text: t(color || "#1a1a1a") },
+        X:         { rich_text: t(xid || "") },
         Date:      { date: { start: new Date().toISOString().slice(0, 10) } },
         Published: { checkbox: false },
       },
