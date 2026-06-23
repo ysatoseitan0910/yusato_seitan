@@ -1,7 +1,8 @@
 const express = require("express");
 const { Client } = require("@notionhq/client");
-const fs   = require("fs");
-const path = require("path");
+const fs     = require("fs");
+const path   = require("path");
+const crypto = require("crypto");
 
 const app = express();
 app.set('trust proxy', 1); // nginx の背後で実際のクライアントIPを取得
@@ -411,10 +412,7 @@ app.post("/cards", async (req, res) => {
     if (imageBase64) {
       try {
         fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-        const slug = (handle && handle.trim())
-          ? handle.trim().replace(/[^a-zA-Z0-9_\-]/g, "_")
-          : `card_${Date.now()}`;
-        const filename = `${slug}.png`;
+        const filename = `${crypto.randomUUID()}.png`;
         const filepath = path.join(UPLOADS_DIR, filename);
         fs.writeFileSync(filepath, Buffer.from(imageBase64, "base64"));
         cardImageUrl = `https://satoyu.info/uploads/cards/${filename}`;
@@ -433,7 +431,7 @@ app.post("/cards", async (req, res) => {
     if (birthMD)         props.BirthMD         = { rich_text: t(birthMD) };
     if (gender)          props.Gender          = { rich_text: t(gender) };
     if (mbti)            props.MBTI            = { rich_text: t(mbti) };
-    if (ohishamaHistory) props.OhishamaHistory = { rich_text: t(ohishamaHistory) };
+    if (ohishamaHistory) props.OhisamaHistory = { rich_text: t(ohishamaHistory) };
     if (song)            props.Song            = { rich_text: t(song) };
     if (nickname)        props.Nickname        = { rich_text: t(nickname) };
     if (selfIntro)       props.SelfIntro       = { rich_text: t(selfIntro) };
@@ -449,7 +447,7 @@ app.post("/cards", async (req, res) => {
     if (oshiLike)        props.OshiLike        = { rich_text: t(oshiLike) };
     if (oshiLikeFree)    props.OshiLikeFree    = { rich_text: t(oshiLikeFree) };
     if (oshiLove)        props.OshiLove        = { rich_text: t(oshiLove) };
-    if (template)        props.Template        = { select: { name: template } };
+    if (template)        props.Template        = { rich_text: t(template) };
     if (cardImageUrl)    props.CardImage       = { url: cardImageUrl };
 
     // 同一X IDの既存レコードをアーカイブ（最新のみ保持）
