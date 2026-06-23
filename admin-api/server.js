@@ -27,6 +27,27 @@ setInterval(() => {
   for (const [k, v] of msgRateMap) if (now > v.resetAt) msgRateMap.delete(k);
 }, MSG_RATE_WINDOW);
 
+// ── IPレート制限（カード送信：1時間に5回まで） ──
+const cardRateMap = new Map();
+const CARD_RATE_LIMIT = 5;
+
+function checkCardRateLimit(ip) {
+  const now = Date.now();
+  const rec = cardRateMap.get(ip);
+  if (!rec || now > rec.resetAt) {
+    cardRateMap.set(ip, { count: 1, resetAt: now + MSG_RATE_WINDOW });
+    return true;
+  }
+  if (rec.count >= CARD_RATE_LIMIT) return false;
+  rec.count++;
+  return true;
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of cardRateMap) if (now > v.resetAt) cardRateMap.delete(k);
+}, MSG_RATE_WINDOW);
+
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
@@ -38,7 +59,8 @@ const DB = {
   tiktok:     process.env.DB_TIKTOK,
   youtube:    process.env.DB_YOUTUBE,
   lemino:     process.env.DB_LEMINO,
-  messages:   process.env.DB_MESSAGES, // メッセージカードDB（別途Notionで作成・共有が必要）
+  messages:   process.env.DB_MESSAGES,
+  cards:      process.env.DB_CARDS,    // プロフィールカードDB（別途Notionで作成・共有が必要）
 };
 
 // CORS
@@ -335,6 +357,50 @@ app.post("/messages", async (req, res) => {
         Published: { checkbox: false },
       },
     });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── プロフィールカード（公開エンドポイント・認証不要） ──
+app.post("/cards", async (req, res) => {
+  const { _hp, template, fanName, handle, birthYear, birthMD, gender, mbti,
+          ohishamaHistory, song, nickname, selfIntro,
+          oshiName, oshiReason, oshiLike, oshiEpisode, oshiFeeling, oshiLove } = req.body;
+
+  if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
+  if (!checkCardRateLimit(req.ip)) {
+    return res.status(429).json({ error: "送信が多すぎます。しばらく時間をおいてから再度お試しください。" });
+  }
+  if (!fanName || !fanName.trim()) return res.status(400).json({ error: "ファン名は必須です" });
+  if (!DB.cards) return res.status(503).json({ error: "カードDBが未設定です（DB_CARDS環境変数を設定してください）" });
+
+  try {
+    const props = {
+      Name:     { title: t(fanName.trim()) },
+      Date:     { date: { start: new Date().toISOString().slice(0, 10) } },
+      Published:{ checkbox: false },
+    };
+    if (handle)          props.Handle          = { rich_text: t(handle) };
+    if (birthYear)       props.BirthYear       = { rich_text: t(birthYear) };
+    if (birthMD)         props.BirthMD         = { rich_text: t(birthMD) };
+    if (gender)          props.Gender          = { rich_text: t(gender) };
+    if (mbti)            props.MBTI            = { rich_text: t(mbti) };
+    if (ohishamaHistory) props.OhishamaHistory = { rich_text: t(ohishamaHistory) };
+    if (song)            props.Song            = { rich_text: t(song) };
+    if (nickname)        props.Nickname        = { rich_text: t(nickname) };
+    if (selfIntro)       props.SelfIntro       = { rich_text: t(selfIntro) };
+    if (oshiName)        props.OshiName        = { rich_text: t(oshiName) };
+    if (oshiReason)      props.OshiReason      = { rich_text: t(oshiReason) };
+    if (oshiLike)        props.OshiLike        = { rich_text: t(oshiLike) };
+    if (oshiEpisode)     props.OshiEpisode     = { rich_text: t(oshiEpisode) };
+    if (oshiFeeling)     props.OshiFeeling     = { rich_text: t(oshiFeeling) };
+    if (oshiLove)        props.OshiLove        = { rich_text: t(oshiLove) };
+    if (template)        props.Template        = { select: { name: template } };
+
+    await notion.pages.create({ parent: { database_id: DB.cards }, properties: props });
     res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
