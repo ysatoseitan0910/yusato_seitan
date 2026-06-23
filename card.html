@@ -383,8 +383,8 @@ const SHARED_FIELDS = [
 ];
 
 const TEMPLATES = [
-  { id: "notebook",   name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
   { id: "notebook-v", name: "ノート縦型",   w: 600, customRender: true, fields: SHARED_FIELDS },
+  { id: "notebook",   name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -851,7 +851,7 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
   const liveItems = [1,2,3].map(n => {
     const live = (getV("best-live-" + n + "-live") || "").trim();
     const song = (getV("best-live-" + n + "-song") || "").trim();
-    if (live && song) return live + "\n　の " + song;
+    if (live && song) return live + "の" + song;
     return live || song || "";
   });
   const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
@@ -930,7 +930,7 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   const liveItems = [1,2,3].map(n => {
     const live = (getV("best-live-" + n + "-live") || "").trim();
     const song = (getV("best-live-" + n + "-song") || "").trim();
-    if (live && song) return live + "\n　の " + song;
+    if (live && song) return live + "の" + song;
     return live || song || "";
   });
   const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
