@@ -795,7 +795,13 @@ function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape,
   if (measureOnly) return memoH;
   drawMemoCard(ctx, x, y, blockW, memoH, MM.memo);
   drawTape(ctx, tapeCX, y - 2, 60, 18, 3, tape);
-  ctx.font = f(12, false, "Yomogi"); ctx.fillStyle = labelColor;
+  let labelFs = 12;
+  ctx.font = f(labelFs, false, "Yomogi");
+  while (ctx.measureText(label).width > textMaxW && labelFs > 8) {
+    labelFs--;
+    ctx.font = f(labelFs, false, "Yomogi");
+  }
+  ctx.fillStyle = labelColor;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.fillText(label, x + MP, y + MP);
   let iy = y + MP + 22 + 6;
