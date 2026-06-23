@@ -741,9 +741,9 @@ function drawSelfMemo(ctx, x, y, memoW, memoH, MP, FS, labelH, headerH, icoR, ge
   drawIconCircle(ctx, ico, icoCX, icoCY, icoR, "#f7b6c8", 3);
   const hInfoX = icoCX + icoR + 12;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
-  const handleStr = handle ? `（${handle.startsWith("@") ? handle : "@" + handle}）` : "";
-  ctx.font = f(15, false, "Yomogi"); ctx.fillStyle = MM.self;
-  ctx.fillText(fanName + handleStr, hInfoX, y + MP + 4);
+  ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = MM.self;
+  ctx.fillText(fanName, hInfoX, y + MP + 4);
+  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = "#8a9d6a"; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, hInfoX, y + MP + 24); }
   const divY = y + MP + headerH + 2;
   ctx.strokeStyle = "#e6dfc9"; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
   ctx.beginPath(); ctx.moveTo(x + MP, divY); ctx.lineTo(x + memoW - MP, divY); ctx.stroke(); ctx.setLineDash([]);
