@@ -139,6 +139,13 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
 .download-note { font-size: 11px; color: var(--text-light); text-align: center; }
+.submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Klee One',serif; font-size:16px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.submit-card-btn:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 #8b2050; }
+.submit-card-btn:active { transform:translate(2px,2px); box-shadow:1px 1px 0 #8b2050; }
+.submit-card-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:3px 3px 0 #8b2050; }
+.card-result { display:none; padding:10px 14px; border-radius:10px; font-size:13px; line-height:1.6; font-family:'Klee One',serif; text-align:center; }
+.card-result.ok { background:var(--emerald-pale); color:var(--emerald-dark); border:1px solid var(--emerald-light); }
+.card-result.err { background:#fef0f0; color:#b00; border:1px solid #fcc; }
 
 /* Canvas click feedback */
 #preview-canvas { cursor: pointer; }
@@ -237,6 +244,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <div class="canvas-click-hint">💡 カードをクリックすると対応する入力欄にジャンプします</div>
     </div>
 
+    <!-- ハニーポット（ボット対策） -->
+    <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+      <input type="text" id="hp-card" name="url" tabindex="-1" autocomplete="off" value="">
+    </div>
+
     <div class="controls">
       <div class="controls-title">入力フォーム</div>
 
@@ -270,6 +282,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
         <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
         <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
+        <button class="submit-card-btn" id="submit-card-btn">✉ 委員会に送る</button>
+        <div class="card-result" id="card-result" role="alert"></div>
+        <p class="download-note" style="margin-top:8px;line-height:1.7;">入力した情報は生誕企画の運営にのみ使用します。詳しくは<a href="privacy.html" style="color:inherit;text-decoration:underline;">プライバシーポリシー</a>をご確認ください。</p>
       </div>
     </div>
   </div>
@@ -1161,6 +1176,62 @@ async function shareToX() {
   }
 }
 
+// ── 委員会に送る ─────────────────────────────────────────
+async function submitCard() {
+  const tpl = TEMPLATES[tplIdx];
+  const fanName = getVal(tpl, "fan-name").trim();
+  if (!fanName) { showCardResult("err", "ファン名を入力してください"); return; }
+
+  const payload = {
+    _hp:             document.getElementById("hp-card").value,
+    template:        tpl.name,
+    fanName,
+    handle:          getVal(tpl, "handle"),
+    birthYear:       getVal(tpl, "birth-year"),
+    birthMD:         getVal(tpl, "birth-md"),
+    gender:          getVal(tpl, "gender"),
+    mbti:            getVal(tpl, "mbti"),
+    ohishamaHistory: getVal(tpl, "ohisama-history"),
+    song:            getVal(tpl, "song"),
+    nickname:        getVal(tpl, "nickname"),
+    selfIntro:       getVal(tpl, "self-intro"),
+    oshiName:        getVal(tpl, "oshi-name"),
+    oshiReason:      getVal(tpl, "oshi-reason"),
+    oshiLike:        getVal(tpl, "oshi-like"),
+    oshiEpisode:     getVal(tpl, "oshi-episode"),
+    oshiFeeling:     getVal(tpl, "oshi-feeling"),
+    oshiLove:        getVal(tpl, "oshi-love"),
+  };
+
+  const btn = document.getElementById("submit-card-btn");
+  btn.disabled = true;
+  btn.textContent = "送信中…";
+
+  try {
+    const res = await fetch("/admin-api/cards", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "送信に失敗しました");
+    showCardResult("ok", "✅ 委員会に送信しました！");
+  } catch (e) {
+    showCardResult("err", e.message || "送信に失敗しました。もう一度お試しください。");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "✉ 委員会に送る";
+  }
+}
+
+function showCardResult(type, text) {
+  const el = document.getElementById("card-result");
+  el.className = "card-result " + type;
+  el.textContent = text;
+  el.style.display = "block";
+  if (type === "ok") setTimeout(() => { el.style.display = "none"; }, 6000);
+}
+
 // ── 初期化 ─────────────────────────────────────────────
 document.fonts.ready.then(() => {
   buildTabs();
@@ -1168,6 +1239,7 @@ document.fonts.ready.then(() => {
   switchTemplate(0);
   document.getElementById("download-btn").addEventListener("click", download);
   document.getElementById("share-x-btn").addEventListener("click", shareToX);
+  document.getElementById("submit-card-btn").addEventListener("click", submitCard);
   initIconUpload();
 });
 
