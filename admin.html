@@ -344,6 +344,8 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" onclick="switchDB('youtube')">▶ YouTube</button>
     <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
     <button class="db-btn" onclick="switchDB('memberblog')">📔 他メンバーブログ</button>
+    <div style="height:1px;background:var(--border);margin:8px 4px;"></div>
+    <button class="db-btn" id="messages-sidebar-btn" onclick="showMessages()">✉ メッセージ</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
     <!-- デプロイ -->
@@ -365,10 +367,9 @@ header span { font-size: 13px; color: var(--text-muted); }
   <div class="form-area">
 
     <!-- タブ -->
-    <div class="panel-tabs">
+    <div class="panel-tabs" id="panel-tabs">
       <button class="panel-tab active" id="tab-add" onclick="switchTab('add')">＋ 追加</button>
       <button class="panel-tab" id="tab-list" onclick="switchTab('list')">☰ 一覧</button>
-      <button class="panel-tab" id="tab-messages" onclick="switchTab('messages')">✉ メッセージ</button>
     </div>
 
     <div id="panels-wrap">
@@ -731,19 +732,31 @@ function switchDB(name) {
   document.querySelectorAll(".form-panel").forEach(p => p.classList.remove("active"));
   event.currentTarget.classList.add("active");
   document.getElementById("panel-" + name).classList.add("active");
+  // メッセージビューから戻る
+  document.getElementById('messages-area').style.display = 'none';
+  document.getElementById('panel-tabs').style.display = '';
+  document.getElementById('panels-wrap').style.display = _currentTab === 'add'  ? '' : 'none';
+  document.getElementById('list-area').style.display   = _currentTab === 'list' ? '' : 'none';
   if (_currentTab === 'list') loadList(name);
+}
+
+function showMessages() {
+  document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById('messages-sidebar-btn').classList.add("active");
+  document.getElementById('panel-tabs').style.display    = 'none';
+  document.getElementById('panels-wrap').style.display   = 'none';
+  document.getElementById('list-area').style.display     = 'none';
+  document.getElementById('messages-area').style.display = '';
+  loadMessages();
 }
 
 function switchTab(tab) {
   _currentTab = tab;
   document.getElementById('tab-add').classList.toggle('active', tab === 'add');
   document.getElementById('tab-list').classList.toggle('active', tab === 'list');
-  document.getElementById('tab-messages').classList.toggle('active', tab === 'messages');
-  document.getElementById('panels-wrap').style.display    = tab === 'add'      ? '' : 'none';
-  document.getElementById('list-area').style.display      = tab === 'list'     ? '' : 'none';
-  document.getElementById('messages-area').style.display  = tab === 'messages' ? '' : 'none';
+  document.getElementById('panels-wrap').style.display = tab === 'add'  ? '' : 'none';
+  document.getElementById('list-area').style.display   = tab === 'list' ? '' : 'none';
   if (tab === 'list') loadList(_currentDB);
-  if (tab === 'messages') loadMessages();
 }
 
 var _messagesCache = [];
