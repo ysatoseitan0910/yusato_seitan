@@ -339,8 +339,6 @@ const FIELD_DEFAULTS = {
   "oshi-name":       "ゆうちゃん",
   "oshi-reason":     "ティザー映像",
   "oshi-like":       "もちもち",
-  "oshi-episode":    "ライブ",
-  "oshi-feeling":    "可愛い",
   "oshi-love":       "さとうゆが一推し！",
 };
 
@@ -364,8 +362,6 @@ const SHARED_FIELDS = [
   { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
   { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "ティザー映像" },
   { id: "oshi-like",    label: "好きなところ",         placeholder: "もちもち" },
-  { id: "oshi-episode", label: "印象に残っていること", placeholder: "ライブ" },
-  { id: "oshi-feeling", label: "その感想",             placeholder: "可愛い" },
   { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
   { id: "oshi-love",    label: "自由に愛を叫ぼう！",   placeholder: "さとうゆが一推し！",   multiline: true },
   // My Best ライブ
@@ -518,12 +514,10 @@ function buildSelfIntroSegments(getV) {
 }
 
 function buildOshiIntroSegments(getV) {
-  const name    = (getV("oshi-name")    || "").trim();
-  const reason  = (getV("oshi-reason")  || "").trim();
-  const like    = (getV("oshi-like")    || "").trim();
-  const episode = (getV("oshi-episode") || "").trim();
-  const feeling = (getV("oshi-feeling") || "").trim();
-  const love    = (getV("oshi-love")    || "").trim();
+  const name   = (getV("oshi-name")   || "").trim();
+  const reason = (getV("oshi-reason") || "").trim();
+  const like   = (getV("oshi-like")   || "").trim();
+  const love   = (getV("oshi-love")   || "").trim();
 
   const n    = name || "彼女";
   const nInp = !!name;
@@ -545,13 +539,6 @@ function buildOshiIntroSegments(getV) {
     } else {
       segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     }
-  }
-
-  if (episode || feeling) {
-    segs.push(s("\n特に"));
-    if (episode) { segs.push(i(episode, "oshi-episode")); segs.push(s("の")); }
-    segs.push(ni()); segs.push(s("が"));
-    if (feeling) { segs.push(i(feeling, "oshi-feeling")); segs.push(s("！")); } else { segs.push(s("最高！")); }
   }
 
   if (love) { segs.push(s("\n")); segs.push(i(love, "oshi-love")); }
@@ -560,11 +547,9 @@ function buildOshiIntroSegments(getV) {
 }
 
 function buildOshiMainSegments(getV) {
-  const name    = (getV("oshi-name")    || "").trim();
-  const reason  = (getV("oshi-reason")  || "").trim();
-  const like    = (getV("oshi-like")    || "").trim();
-  const episode = (getV("oshi-episode") || "").trim();
-  const feeling = (getV("oshi-feeling") || "").trim();
+  const name   = (getV("oshi-name")   || "").trim();
+  const reason = (getV("oshi-reason") || "").trim();
+  const like   = (getV("oshi-like")   || "").trim();
   const n    = name || "彼女";
   const nInp = !!name;
   const s  = (t)      => ({ text: t, isInput: false });
@@ -583,12 +568,6 @@ function buildOshiMainSegments(getV) {
     } else {
       segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
     }
-  }
-  if (episode || feeling) {
-    segs.push(s("\n特に"));
-    if (episode) { segs.push(i(episode, "oshi-episode")); segs.push(s("の")); }
-    segs.push(ni()); segs.push(s("が"));
-    if (feeling) { segs.push(i(feeling, "oshi-feeling")); segs.push(s("！")); } else { segs.push(s("最高！")); }
   }
   return segs;
 }
@@ -886,8 +865,8 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
 
   const rX = PW + BIND + PAD;
   drawLabeledMemo(ctx, rX, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, rX + memoW - 46, 4, oshiSegs, MM.hlOshi);
-  drawBestMemo(ctx, rX,                       bestY, halfBestW, MP, FS, "🎤 My Best（ライブ）",     liveItems, MM.oshi, MM.tapeB, rX + 34,                                      false);
-  drawBestMemo(ctx, rX + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best（バラエティ）", varItems,  MM.love, MM.tapeP, rX + halfBestW + BEST_GAP + halfBestW - 34, false);
+  drawBestMemo(ctx, rX,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, rX + 34,                                      false);
+  drawBestMemo(ctx, rX + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ）", varItems,  MM.love, MM.tapeP, rX + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, rX, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: rX, x2: rX + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -948,8 +927,8 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   drawPaperGrid(ctx, w, totalH);
   drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
   drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
-  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, FS, "🎤 My Best（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
-  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best（バラエティ）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
+  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
+  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
   if (loveVal) fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
 
@@ -1284,8 +1263,6 @@ async function submitCard() {
     oshiName:        getVal(tpl, "oshi-name"),
     oshiReason:      getVal(tpl, "oshi-reason"),
     oshiLike:        getVal(tpl, "oshi-like"),
-    oshiEpisode:     getVal(tpl, "oshi-episode"),
-    oshiFeeling:     getVal(tpl, "oshi-feeling"),
     oshiLove:        getVal(tpl, "oshi-love"),
   };
 
@@ -1338,7 +1315,7 @@ document.fonts.ready.then(() => {
 //  Canvas クリック → フォームフィールドへスクロール
 // ════════════════════════════════════════════════════════
 const SELF_FIELD_IDS = ["fan-name","handle","birth-year","birth-md","gender","mbti","ohisama-history","song","nickname","self-intro"];
-const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-episode","oshi-feeling","oshi-love"];
+const OSHI_FIELD_IDS = ["oshi-name","oshi-reason","oshi-like","oshi-love"];
 
 function getClickedSection(cx, cy) {
   const tpl = TEMPLATES[tplIdx];
