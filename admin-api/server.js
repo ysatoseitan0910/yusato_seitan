@@ -389,7 +389,7 @@ app.post("/messages", async (req, res) => {
 // ── プロフィールカード（公開エンドポイント・認証不要） ──
 app.post("/cards", async (req, res) => {
   const { _hp, template, fanName, handle, birthYear, birthMD, gender, mbti,
-          ohishamaHistory, song, nickname, selfIntro,
+          ohishamaHistory, song, nickname, selfIntro, otherOshi,
           oshiName, oshiReason, oshiLike, oshiEpisode, oshiFeeling, oshiLove } = req.body;
 
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
@@ -414,6 +414,7 @@ app.post("/cards", async (req, res) => {
     if (song)            props.Song            = { rich_text: t(song) };
     if (nickname)        props.Nickname        = { rich_text: t(nickname) };
     if (selfIntro)       props.SelfIntro       = { rich_text: t(selfIntro) };
+    if (otherOshi)       props.OtherOshi       = { rich_text: t(otherOshi) };
     if (oshiName)        props.OshiName        = { rich_text: t(oshiName) };
     if (oshiReason)      props.OshiReason      = { rich_text: t(oshiReason) };
     if (oshiLike)        props.OshiLike        = { rich_text: t(oshiLike) };

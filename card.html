@@ -171,7 +171,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .illust-section { display: flex; flex-direction: column; gap: 8px; }
 .illust-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .illust-count { font-size: 11px; font-weight: 600; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 99px; padding: 2px 9px; }
-.illust-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.illust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .illust-cell { position: relative; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; overflow: visible; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 4px; }
 .illust-cell:hover { border-color: var(--emerald); }
 .illust-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -273,7 +273,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <div class="illust-section" id="illust-section">
         <div class="illust-section-label">イラストを選ぶ <span class="illust-count" id="illust-count">0 / 5</span></div>
         <div class="illust-grid" id="illust-grid"></div>
-        <div class="illust-hint">タップで選択（最大5点）。選んだ順にカードへ散りばめられます。</div>
+        <div class="illust-hint">タップで選択（最大4点）。1枠目は「他推し」の入力有無で自動セットされます。選んだ順にカードへ散りばめられます。</div>
       </div>
       <hr class="field-divider" id="illust-divider">
 
@@ -329,6 +329,7 @@ const FIELD_DEFAULTS = {
   "song":            "ドレミソラシド",
   "nickname":        "ふんふん",
   "self-intro":      "リトルトゥースでもあるよ！",
+  "other-oshi":      "",
   "oshi-name":       "ゆうちゃん",
   "oshi-reason":     "ティザー映像",
   "oshi-like":       "もちもち",
@@ -352,6 +353,7 @@ const SHARED_FIELDS = [
   { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド" },
   { id: "nickname",        label: "呼ばれ方",                       placeholder: "ふんふん" },
   { id: "self-intro",      label: "自由に自己紹介",      placeholder: "リトルトゥースでもあるよ！", multiline: true },
+  { id: "other-oshi",     label: "他推しは？（さとうゆ一推しの場合は空欄）", placeholder: "例：松田好花" },
   // 推し紹介
   { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
   { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "ティザー映像" },
@@ -388,9 +390,10 @@ const ILLUSTS = [
   { id:"kuruma",   label:"ごろ寝",   src:"/images/image/card/kuruma.png" },
   { id:"mahjong",  label:"髪いじり", src:"/images/image/card/Mahjong_in_Yu_Mind.png" },
 ];
-const MAX_ILLUSTS = 5;
+const PICKER_ILLUSTS = ILLUSTS.filter(it => it.id !== "yuzai" && it.id !== "muzai");
+const MAX_ILLUSTS = 4;
 const illustImgs = {};
-let selectedIllusts = ["dance", "pingpong", "muzai", "yuzai"];
+let selectedIllusts = ["dance", "pingpong", "cho_yuzai", "base"];
 ILLUSTS.forEach(it => {
   const img = new Image();
   img.onload = () => { illustImgs[it.id] = img; render(); };
@@ -491,6 +494,11 @@ function buildSelfIntroSegments(getV) {
 
   if (nickname) { segs.push(s("みんなには")); segs.push(i(nickname, "nickname")); segs.push(s("って呼ばれてるよ。")); }
   if (free)     { segs.push(i(free, "self-intro")); }
+
+  const otherOshi = (getV("other-oshi") || "").trim();
+  if (otherOshi) {
+    segs.push(s("実は・・・、")); segs.push(i(otherOshi, "other-oshi")); segs.push(s("も推してるよ。"));
+  }
 
   return segs;
 }
@@ -717,9 +725,11 @@ function drawDoodle(ctx, x, y, ch, sz, color, rot) {
   ctx.restore();
 }
 
-function drawIllustSlots(ctx, slots) {
-  for (let i = 0; i < slots.length && i < selectedIllusts.length; i++) {
-    const img = illustImgs[selectedIllusts[i]];
+function drawIllustSlots(ctx, slots, getV) {
+  const autoId = ((getV && getV("other-oshi")) || "").trim() ? "yuzai" : "muzai";
+  const effectiveIllusts = [autoId, ...selectedIllusts];
+  for (let i = 0; i < slots.length && i < effectiveIllusts.length; i++) {
+    const img = illustImgs[effectiveIllusts[i]];
     const s = slots[i];
     drawIllustSticker(ctx, img, s.cx, s.cy, s.size, s.rot);
   }
@@ -838,7 +848,7 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
     { cx: rX + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
     { cx: rX + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
   ];
-  drawIllustSlots(ctx, slots);
+  drawIllustSlots(ctx, slots, getV);
   drawDoodle(ctx, lX + 6, lY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
   drawDoodle(ctx, rX + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
   drawDoodle(ctx, rX + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
@@ -889,7 +899,7 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
     { cx: X + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
     { cx: X + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
   ];
-  drawIllustSlots(ctx, slots);
+  drawIllustSlots(ctx, slots, getV);
   drawDoodle(ctx, X + 6, selfY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
   drawDoodle(ctx, X + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
   drawDoodle(ctx, X + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
@@ -1022,7 +1032,7 @@ function buildIllustPicker() {
   const grid = document.getElementById("illust-grid");
   if (!grid) return;
   grid.innerHTML = "";
-  ILLUSTS.forEach(it => {
+  PICKER_ILLUSTS.forEach(it => {
     const cell = document.createElement("div");
     cell.className = "illust-cell";
     cell.dataset.illustId = it.id;
@@ -1201,6 +1211,7 @@ async function submitCard() {
     song:            getVal(tpl, "song"),
     nickname:        getVal(tpl, "nickname"),
     selfIntro:       getVal(tpl, "self-intro"),
+    otherOshi:       getVal(tpl, "other-oshi"),
     oshiName:        getVal(tpl, "oshi-name"),
     oshiReason:      getVal(tpl, "oshi-reason"),
     oshiLike:        getVal(tpl, "oshi-like"),
