@@ -109,6 +109,35 @@ nav {
 }
 .nav-sep { display: inline-flex; width: 1px; height: 14px; background: var(--border); margin: 0 6px; align-self: center; flex-shrink: 0; }
 .nav-committee-label { display: none; }
+
+/* ── Dropdown nav groups ── */
+.nav-group { position: relative; }
+.nav-group-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Klee One',serif; font-size: 14px;
+  color: var(--text-muted);
+  padding: 6px 12px; border-radius: 99px;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 3px;
+}
+.nav-group-btn:hover,
+.nav-group:has(.active) .nav-group-btn {
+  background: var(--pink-pale); color: var(--emerald-dark);
+}
+.nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.nav-group:hover .nav-arrow { transform: rotate(180deg); }
+.nav-dropdown {
+  display: none; position: absolute;
+  top: calc(100% + 4px); left: 0;
+  background: #fff;
+  border: 2px solid var(--emerald-light);
+  border-radius: 14px; padding: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 300; min-width: 170px;
+  flex-direction: column; gap: 2px;
+}
+.nav-group:hover .nav-dropdown { display: flex; }
+.nav-dropdown a { border-radius: 10px; padding: 8px 14px; }
 .hamburger {
   display: none; background: none; border: none; cursor: pointer;
   font-size: 22px; color: var(--emerald-dark);
@@ -550,12 +579,21 @@ footer .heart { color: var(--pink); }
   .nav-links.open { display: flex; }
   .nav-links a { padding: 10px 14px; font-size: 13px; border-radius: 8px; }
   .nav-sep { display: none; }
-  .nav-committee-label {
-    display: block; font-family: 'Klee One',serif;
-    font-size: 14px; letter-spacing: 0.06em; color: var(--text-light);
-    padding: 10px 14px 2px;
-    border-top: 1px dashed var(--border); margin-top: 4px;
+  .nav-group { width: 100%; }
+  .nav-group-btn {
+    width: 100%; justify-content: space-between;
+    padding: 10px 14px; font-size: 13px; border-radius: 8px;
   }
+  .nav-dropdown {
+    position: static; border: none; box-shadow: none;
+    background: transparent; border-radius: 0;
+    padding: 0 0 4px 16px; min-width: unset;
+    display: none;
+  }
+  .nav-group.open .nav-dropdown { display: flex; }
+  .nav-group.open .nav-arrow { transform: rotate(180deg); }
+  .nav-group:hover .nav-dropdown { display: none; }
+  .nav-group.open .nav-dropdown { display: flex; }
   .page-hero { padding: calc(var(--nav-h) + 24px) 16px 20px; }
   .page-hero h1 { font-size: 28px; }
   .content { padding: 0 16px 48px; }
@@ -604,23 +642,47 @@ footer .heart { color: var(--pink); }
   </a>
   <div class="nav-links">
     <a href="top.html" >トップ</a>
-    <a href="yu.html" >佐藤優羽さんについて</a>
-    <a href="yunews.html" >News</a>
-    <a href="blog.html" >ブログ</a>
-    <a href="member-blog.html" >他メンバーブログ</a>
-    <a href="interview.html" class="active">インタビュー</a>
-    <a href="x.html" >X</a>
-    <a href="tiktok.html" >TikTok</a>
-    <a href="youtube.html" >YouTube</a>
-    <a href="lemino.html" >Lemino</a>
-    <a href="quiz.html" >クイズ</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">さとうゆ <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="yu.html" >佐藤優羽さんについて</a>
+        <a href="yunews.html" >News</a>
+        <a href="quiz.html" >クイズ</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">ブログ等 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="blog.html" >ブログ</a>
+        <a href="member-blog.html" >他メンバーブログ</a>
+        <a href="interview.html" class="active">インタビュー</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">SNS <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="x.html" >X</a>
+        <a href="tiktok.html" >TikTok</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">動画 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="youtube.html" >YouTube</a>
+        <a href="lemino.html" >Lemino</a>
+      </div>
+    </div>
     <span class="nav-sep" aria-hidden="true"></span>
-    <span class="nav-committee-label">生誕委員会</span>
-    <a href="committee.html" >委員会News</a>
-    <a href="activities.html" >生誕委員会活動報告</a>
-    <a href="about.html" >委員会について</a>
-    <a href="terms.html" >規約</a>
-    <a href="join.html" >入会</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">委員会 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="committee.html" >委員会News</a>
+        <a href="activities.html" >活動報告</a>
+        <a href="about.html" >委員会について</a>
+        <a href="terms.html" >規約</a>
+        <a href="join.html" >入会</a>
+      </div>
+    </div>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
@@ -630,12 +692,12 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">INTERVIEW</div>
         <h1>インタビュー、 <em>雑誌掲載集</em></h1>
         <p>佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています</p>
-        <p class="last-updated">最終更新：2026/6/24 13:07:28</p>
+        <p class="last-updated">最終更新：2026/6/24 13:53:12</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.2516424714930029s">
+  <div class="card media-card" style="animation-delay:0.1415102313540633s">
     <img class="media-img" src="https://bltweb.jp/wp/wp-content/uploads/2026/05/260417_BLT3817-1536x1024.jpg" alt="B.L.T 2026年7月号　中面グラビア&インタビュー" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -648,7 +710,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.002092696333145061s">
+  <div class="card media-card" style="animation-delay:0.1620962229932092s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/1RgI/wm/1RgIV5wg9KEQDVdN3BXa33ixULASorQC47WZ166JeYM.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜後編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -661,7 +723,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14444614603019137s">
+  <div class="card media-card" style="animation-delay:0.0289883576755509s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/zPaj/wm/zPajhkvm3JUAVSkeC9EqMXpBe1AmH_8nkmewso0H9a0.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜前編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -674,7 +736,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.07408233663088622s">
+  <div class="card media-card" style="animation-delay:0.22822338270701387s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/71d+7nWc6eL._SY522_.jpg" alt="BRODY賞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -687,7 +749,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.11248573449518084s">
+  <div class="card media-card" style="animation-delay:0.12154822616371908s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/815XQDOi-fL._SY522_.jpg" alt="BRODY (ブロディ) 2025年 12月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -701,7 +763,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.08544903362161434s">
+  <div class="card media-card" style="animation-delay:0.12904657582744414s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/81wWuPh-6bL._SL1500_.jpg" alt="Ray(レイ) 2025年 08 月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -714,7 +776,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.24836049447406858s">
+  <div class="card media-card" style="animation-delay:0.2970880849493592s">
     <img class="media-img" src="https://bltweb.jp/wp/wp-content/uploads/2025/04/BLT2506_H1.jpg" alt="B.L.T. 2025年6月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -823,12 +885,19 @@ footer .heart { color: var(--pink); }
       btn.setAttribute('aria-label','メニューを開く');
     });
   });
+  // モバイル：グループボタンタップで子メニュー開閉
+  links.querySelectorAll('.nav-group-btn').forEach(function(gb){
+    gb.addEventListener('click',function(){
+      if(window.innerWidth>768)return;
+      gb.closest('.nav-group').classList.toggle('open');
+    });
+  });
 })();
 </script>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/24 13:07:28</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/24 13:53:12</p>
 </footer>
 
 <script>

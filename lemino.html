@@ -109,6 +109,35 @@ nav {
 }
 .nav-sep { display: inline-flex; width: 1px; height: 14px; background: var(--border); margin: 0 6px; align-self: center; flex-shrink: 0; }
 .nav-committee-label { display: none; }
+
+/* ── Dropdown nav groups ── */
+.nav-group { position: relative; }
+.nav-group-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Klee One',serif; font-size: 14px;
+  color: var(--text-muted);
+  padding: 6px 12px; border-radius: 99px;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 3px;
+}
+.nav-group-btn:hover,
+.nav-group:has(.active) .nav-group-btn {
+  background: var(--pink-pale); color: var(--emerald-dark);
+}
+.nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.nav-group:hover .nav-arrow { transform: rotate(180deg); }
+.nav-dropdown {
+  display: none; position: absolute;
+  top: calc(100% + 4px); left: 0;
+  background: #fff;
+  border: 2px solid var(--emerald-light);
+  border-radius: 14px; padding: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 300; min-width: 170px;
+  flex-direction: column; gap: 2px;
+}
+.nav-group:hover .nav-dropdown { display: flex; }
+.nav-dropdown a { border-radius: 10px; padding: 8px 14px; }
 .hamburger {
   display: none; background: none; border: none; cursor: pointer;
   font-size: 22px; color: var(--emerald-dark);
@@ -550,12 +579,21 @@ footer .heart { color: var(--pink); }
   .nav-links.open { display: flex; }
   .nav-links a { padding: 10px 14px; font-size: 13px; border-radius: 8px; }
   .nav-sep { display: none; }
-  .nav-committee-label {
-    display: block; font-family: 'Klee One',serif;
-    font-size: 14px; letter-spacing: 0.06em; color: var(--text-light);
-    padding: 10px 14px 2px;
-    border-top: 1px dashed var(--border); margin-top: 4px;
+  .nav-group { width: 100%; }
+  .nav-group-btn {
+    width: 100%; justify-content: space-between;
+    padding: 10px 14px; font-size: 13px; border-radius: 8px;
   }
+  .nav-dropdown {
+    position: static; border: none; box-shadow: none;
+    background: transparent; border-radius: 0;
+    padding: 0 0 4px 16px; min-width: unset;
+    display: none;
+  }
+  .nav-group.open .nav-dropdown { display: flex; }
+  .nav-group.open .nav-arrow { transform: rotate(180deg); }
+  .nav-group:hover .nav-dropdown { display: none; }
+  .nav-group.open .nav-dropdown { display: flex; }
   .page-hero { padding: calc(var(--nav-h) + 24px) 16px 20px; }
   .page-hero h1 { font-size: 28px; }
   .content { padding: 0 16px 48px; }
@@ -604,23 +642,47 @@ footer .heart { color: var(--pink); }
   </a>
   <div class="nav-links">
     <a href="top.html" >トップ</a>
-    <a href="yu.html" >佐藤優羽さんについて</a>
-    <a href="yunews.html" >News</a>
-    <a href="blog.html" >ブログ</a>
-    <a href="member-blog.html" >他メンバーブログ</a>
-    <a href="interview.html" >インタビュー</a>
-    <a href="x.html" >X</a>
-    <a href="tiktok.html" >TikTok</a>
-    <a href="youtube.html" >YouTube</a>
-    <a href="lemino.html" class="active">Lemino</a>
-    <a href="quiz.html" >クイズ</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">さとうゆ <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="yu.html" >佐藤優羽さんについて</a>
+        <a href="yunews.html" >News</a>
+        <a href="quiz.html" >クイズ</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">ブログ等 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="blog.html" >ブログ</a>
+        <a href="member-blog.html" >他メンバーブログ</a>
+        <a href="interview.html" >インタビュー</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">SNS <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="x.html" >X</a>
+        <a href="tiktok.html" >TikTok</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">動画 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="youtube.html" >YouTube</a>
+        <a href="lemino.html" class="active">Lemino</a>
+      </div>
+    </div>
     <span class="nav-sep" aria-hidden="true"></span>
-    <span class="nav-committee-label">生誕委員会</span>
-    <a href="committee.html" >委員会News</a>
-    <a href="activities.html" >生誕委員会活動報告</a>
-    <a href="about.html" >委員会について</a>
-    <a href="terms.html" >規約</a>
-    <a href="join.html" >入会</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">委員会 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="committee.html" >委員会News</a>
+        <a href="activities.html" >活動報告</a>
+        <a href="about.html" >委員会について</a>
+        <a href="terms.html" >規約</a>
+        <a href="join.html" >入会</a>
+      </div>
+    </div>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
@@ -630,12 +692,12 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">LEMINO</div>
         <h1>Lemino <em>まとめ</em></h1>
         <p>佐藤優羽さんのLemino配信をまとめています</p>
-        <p class="last-updated">最終更新：2026/6/24 13:07:36</p>
+        <p class="last-updated">最終更新：2026/6/24 13:53:18</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.15594244148981873s">
+  <div class="card media-card" style="animation-delay:0.1781825218708353s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f5/a1490f5_w1.jpg" alt="日向坂になりましょう #25 番外編 もぐもぐたいむ" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -648,7 +710,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.21036270069525737s">
+  <div class="card media-card" style="animation-delay:0.01945482979118025s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f4/a1490f4_w1.jpg" alt="日向坂になりましょう #25 1年間の全てを出しつくしましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -661,7 +723,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2993771119842168s">
+  <div class="card media-card" style="animation-delay:0.13911856386899954s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f1/a1490f1_w1.jpg" alt="日向坂になりましょう #23 番外編 マッドサイエンティスト坂井の食べ合わせ実験!!" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -674,7 +736,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.03398781967702056s">
+  <div class="card media-card" style="animation-delay:0.1427082225550497s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f0/a1490f0_w1.jpg" alt="日向坂になりましょう #23 検証バラエティに挑戦しましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -687,7 +749,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0038915591052126382s">
+  <div class="card media-card" style="animation-delay:0.05329374550553778s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ef/a1490ef_w1.jpg" alt="日向坂になりましょう #22 番外編 ワンフレーズを極めよう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -700,7 +762,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2747985346485442s">
+  <div class="card media-card" style="animation-delay:0.19720226484048128s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ee/a1490ee_w1.jpg" alt="日向坂になりましょう #22 私たちもボイトレで歌唱力を強化しましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -713,7 +775,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0736006323087192s">
+  <div class="card media-card" style="animation-delay:0.013983984872808853s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490eb/a1490eb_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！番外編" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -732,7 +794,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.09258032827982658s">
+  <div class="card media-card" style="animation-delay:0.0006318081832100919s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ea/a1490ea_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -751,7 +813,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14986667831086273s">
+  <div class="card media-card" style="animation-delay:0.20443280857427615s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d4/a1467d4_w1.jpg" alt="日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！番外編" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -770,7 +832,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.15979320007273298s">
+  <div class="card media-card" style="animation-delay:0.1405909126168884s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d3/a1467d3_w1.jpg" alt="日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -789,7 +851,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.09460475393760641s">
+  <div class="card media-card" style="animation-delay:0.06087673601798529s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cc/a1467cc_w1.jpg" alt="日向坂になりましょう #14 特別番外編
   第1回東西対抗新春プチかくし芸大会後半" loading="lazy">
     <div class="media-body">
@@ -810,7 +872,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.27042815361185174s">
+  <div class="card media-card" style="animation-delay:0.1509686983446298s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cb/a1467cb_w1.jpg" alt="日向坂になりましょう #14 特別番外編
   第1回東西対抗新春プチかくし芸大会前半" loading="lazy">
     <div class="media-body">
@@ -831,7 +893,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.10501280798057289s">
+  <div class="card media-card" style="animation-delay:0.05286085431882159s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ca/a1467ca_w1.jpg" alt="日向坂になりましょう #14
   お正月なのでバラエティ対決で盛り上がろう！" loading="lazy">
     <div class="media-body">
@@ -852,7 +914,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.08489270087089537s">
+  <div class="card media-card" style="animation-delay:0.11072902507737663s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14333c/a14333c_w1.jpg" alt="日向坂になりましょう #13
   年末総決算！激動の1年をみんなで振り返りましょう！" loading="lazy">
     <div class="media-body">
@@ -873,7 +935,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.20293821349150176s">
+  <div class="card media-card" style="animation-delay:0.14613794309416342s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143339/a143339_w1.jpg" alt="日向坂になりましょう #11
   表現の幅を広げましょう！！番外編" loading="lazy">
     <div class="media-body">
@@ -894,7 +956,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.29418082660986217s">
+  <div class="card media-card" style="animation-delay:0.08179018744378853s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143338/a143338_w1.jpg" alt="日向坂になりましょう #11 表現の幅を広げましょう！！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -913,7 +975,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.031690703683806595s">
+  <div class="card media-card" style="animation-delay:0.027307647959831892s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143337/a143337_w1.jpg" alt="日向坂になりましょう #10
   人情あふれる街ブラロケに挑戦しよう!!番外編" loading="lazy">
     <div class="media-body">
@@ -934,7 +996,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.28795166319157034s">
+  <div class="card media-card" style="animation-delay:0.07096236097348842s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143336/a143336_w1.jpg" alt="日向坂になりましょう #10
   人情あふれる街ブラロケに挑戦しよう!!" loading="lazy">
     <div class="media-body">
@@ -955,7 +1017,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.18162887529174132s">
+  <div class="card media-card" style="animation-delay:0.1586249354219238s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143331/a143331_w1.jpg" alt="日向坂になりましょう #7 ザ・ハイテンション番外編" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -974,7 +1036,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.008023539038703608s">
+  <div class="card media-card" style="animation-delay:0.24467852419803204s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143330/a143330_w1.jpg" alt="日向坂になりましょう #7 ザ・ハイテンション" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -993,7 +1055,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16620258343813396s">
+  <div class="card media-card" style="animation-delay:0.11119741333550275s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14065b/a14065b_w1.jpg" alt="日向坂になりましょう #6
   アイドルの基本！ポージングを学ぼう！番外編" loading="lazy">
     <div class="media-body">
@@ -1014,7 +1076,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.011228317388960062s">
+  <div class="card media-card" style="animation-delay:0.2274138199376523s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14065a/a14065a_w1.jpg" alt="日向坂になりましょう #6
   アイドルの基本！ポージングを学ぼう！" loading="lazy">
     <div class="media-body">
@@ -1035,7 +1097,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.03351171960219301s">
+  <div class="card media-card" style="animation-delay:0.016701206193165574s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140657/a140657_w1.jpg" alt="日向坂になりましょう #4
   アザトカワイイ仕草を身につけよう！番外編" loading="lazy">
     <div class="media-body">
@@ -1056,7 +1118,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.07061545233788466s">
+  <div class="card media-card" style="animation-delay:0.16531613786279512s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140656/a140656_w1.jpg" alt="日向坂になりましょう #4
   アザトカワイイ仕草を身につけよう！" loading="lazy">
     <div class="media-body">
@@ -1077,7 +1139,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0046423007512002455s">
+  <div class="card media-card" style="animation-delay:0.20531623983731842s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140653/a140653_w1.jpg" alt="日向坂になりましょう #2 番外編
   私もうプロフェッショナルなんです！後半戦" loading="lazy">
     <div class="media-body">
@@ -1098,7 +1160,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.23766864391267317s">
+  <div class="card media-card" style="animation-delay:0.08719305064423648s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140652/a140652_w1.jpg" alt="日向坂になりましょう #2 初回だよ！全員集合
   五期生の魅力を届けましょう！！後半戦" loading="lazy">
     <div class="media-body">
@@ -1119,7 +1181,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.21679581801036366s">
+  <div class="card media-card" style="animation-delay:0.2883978036173774s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140651/a140651_w1.jpg" alt="日向坂になりましょう #1 番外編
   私もうプロフェッショナルなんです！" loading="lazy">
     <div class="media-body">
@@ -1140,7 +1202,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.05415392015478595s">
+  <div class="card media-card" style="animation-delay:0.20501028558625226s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140650/a140650_w1.jpg" alt="日向坂になりましょう #1 初回だよ！全員集合
   五期生の魅力を届けましょう！！" loading="lazy">
     <div class="media-body">
@@ -1161,7 +1223,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16502602465111166s">
+  <div class="card media-card" style="animation-delay:0.1394554205113053s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14064f/a14064f_w1.jpg" alt="日向坂になりましょう
   #0 特別編 五期生のみで記者会見に臨みましょう!!" loading="lazy">
     <div class="media-body">
@@ -1278,12 +1340,19 @@ footer .heart { color: var(--pink); }
       btn.setAttribute('aria-label','メニューを開く');
     });
   });
+  // モバイル：グループボタンタップで子メニュー開閉
+  links.querySelectorAll('.nav-group-btn').forEach(function(gb){
+    gb.addEventListener('click',function(){
+      if(window.innerWidth>768)return;
+      gb.closest('.nav-group').classList.toggle('open');
+    });
+  });
 })();
 </script>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/24 13:07:36</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/24 13:53:18</p>
 </footer>
 
 <script>

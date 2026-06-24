@@ -109,6 +109,35 @@ nav {
 }
 .nav-sep { display: inline-flex; width: 1px; height: 14px; background: var(--border); margin: 0 6px; align-self: center; flex-shrink: 0; }
 .nav-committee-label { display: none; }
+
+/* ── Dropdown nav groups ── */
+.nav-group { position: relative; }
+.nav-group-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Klee One',serif; font-size: 14px;
+  color: var(--text-muted);
+  padding: 6px 12px; border-radius: 99px;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 3px;
+}
+.nav-group-btn:hover,
+.nav-group:has(.active) .nav-group-btn {
+  background: var(--pink-pale); color: var(--emerald-dark);
+}
+.nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.nav-group:hover .nav-arrow { transform: rotate(180deg); }
+.nav-dropdown {
+  display: none; position: absolute;
+  top: calc(100% + 4px); left: 0;
+  background: #fff;
+  border: 2px solid var(--emerald-light);
+  border-radius: 14px; padding: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 300; min-width: 170px;
+  flex-direction: column; gap: 2px;
+}
+.nav-group:hover .nav-dropdown { display: flex; }
+.nav-dropdown a { border-radius: 10px; padding: 8px 14px; }
 .hamburger {
   display: none; background: none; border: none; cursor: pointer;
   font-size: 22px; color: var(--emerald-dark);
@@ -550,12 +579,21 @@ footer .heart { color: var(--pink); }
   .nav-links.open { display: flex; }
   .nav-links a { padding: 10px 14px; font-size: 13px; border-radius: 8px; }
   .nav-sep { display: none; }
-  .nav-committee-label {
-    display: block; font-family: 'Klee One',serif;
-    font-size: 14px; letter-spacing: 0.06em; color: var(--text-light);
-    padding: 10px 14px 2px;
-    border-top: 1px dashed var(--border); margin-top: 4px;
+  .nav-group { width: 100%; }
+  .nav-group-btn {
+    width: 100%; justify-content: space-between;
+    padding: 10px 14px; font-size: 13px; border-radius: 8px;
   }
+  .nav-dropdown {
+    position: static; border: none; box-shadow: none;
+    background: transparent; border-radius: 0;
+    padding: 0 0 4px 16px; min-width: unset;
+    display: none;
+  }
+  .nav-group.open .nav-dropdown { display: flex; }
+  .nav-group.open .nav-arrow { transform: rotate(180deg); }
+  .nav-group:hover .nav-dropdown { display: none; }
+  .nav-group.open .nav-dropdown { display: flex; }
   .page-hero { padding: calc(var(--nav-h) + 24px) 16px 20px; }
   .page-hero h1 { font-size: 28px; }
   .content { padding: 0 16px 48px; }
@@ -604,23 +642,47 @@ footer .heart { color: var(--pink); }
   </a>
   <div class="nav-links">
     <a href="top.html" class="active">トップ</a>
-    <a href="yu.html" >佐藤優羽さんについて</a>
-    <a href="yunews.html" >News</a>
-    <a href="blog.html" >ブログ</a>
-    <a href="member-blog.html" >他メンバーブログ</a>
-    <a href="interview.html" >インタビュー</a>
-    <a href="x.html" >X</a>
-    <a href="tiktok.html" >TikTok</a>
-    <a href="youtube.html" >YouTube</a>
-    <a href="lemino.html" >Lemino</a>
-    <a href="quiz.html" >クイズ</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">さとうゆ <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="yu.html" >佐藤優羽さんについて</a>
+        <a href="yunews.html" >News</a>
+        <a href="quiz.html" >クイズ</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">ブログ等 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="blog.html" >ブログ</a>
+        <a href="member-blog.html" >他メンバーブログ</a>
+        <a href="interview.html" >インタビュー</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">SNS <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="x.html" >X</a>
+        <a href="tiktok.html" >TikTok</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">動画 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="youtube.html" >YouTube</a>
+        <a href="lemino.html" >Lemino</a>
+      </div>
+    </div>
     <span class="nav-sep" aria-hidden="true"></span>
-    <span class="nav-committee-label">生誕委員会</span>
-    <a href="committee.html" >委員会News</a>
-    <a href="activities.html" >生誕委員会活動報告</a>
-    <a href="about.html" >委員会について</a>
-    <a href="terms.html" >規約</a>
-    <a href="join.html" >入会</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">委員会 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="committee.html" >委員会News</a>
+        <a href="activities.html" >活動報告</a>
+        <a href="about.html" >委員会について</a>
+        <a href="terms.html" >規約</a>
+        <a href="join.html" >入会</a>
+      </div>
+    </div>
   </div>
   <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
 </nav>
@@ -630,7 +692,7 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">SATOYU HOME</div>
         <h1>さとうゆ<em>ほーむ</em></h1>
         <p>佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会</p>
-        <p class="last-updated">最終更新：2026/6/24 13:07:23</p>
+        <p class="last-updated">最終更新：2026/6/24 13:53:06</p>
       </div>
       <div class="content">
   <div class="top-layout">
@@ -645,26 +707,26 @@ footer .heart { color: var(--pink); }
           <a href="yunews.html">すべて見る →</a>
         </div>
         <div class="yunews-grid">
-          <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajd0NnA=" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.019809911559581627s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f5/a1490f5_w1.jpg" alt="日向坂になりましょう #25 番外編 もぐもぐたいむ" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう #25 番外編 もぐもぐたいむ</p><div class="yunews-meta"><span class="yunews-date">2026.06.22</span></div></div></a>
-<a href="https://youtu.be/RBLbWATOLsU?si=W3157TLIaks4_0Bv" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.00744136933978754s"><img class="yunews-img" src="https://img.youtube.com/vi/RBLbWATOLsU/maxresdefault.jpg" alt="【1年間の全てを出しつくしましょう！完結編】日向坂になりましょう-五期生成長バラエティ-#26冒頭先行公開" loading="lazy"><div class="yunews-body"><span class="badge badge-youtube" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【1年間の全てを出しつくしましょう！完結編】日向坂になりましょう-五期生成長バラエティ-#26冒頭先行公開</p><div class="yunews-meta"><span class="yunews-date">2026.06.22</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69871?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.17639327648556674s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mob4lJYTR.jpg" alt="満たされますように。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">満たされますように。</p><div class="yunews-meta"><span class="yunews-date">2026.06.22</span></div></div></a>
-<a href="https://www.tiktok.com/@hinatazakanews/video/7653740124097809684" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.10997689250183955s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYAeAfjXDDBUFAqIfvEGxAIDbE4Qt8jAh4jCgA~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=y09nJtqZmXac%2BES3X%2B2pCCbssRo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="『17th Single ひなた坂46 LIVE』 "座長"平岡海月のDAY2vlog ※ リピート配信🎞️ 【DAY2】6月21日(日)  ▶ライブ開演19:30" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">『17th Single ひなた坂46 LIVE』 "座長"平岡海月のDAY2vlog ※ リピート配信🎞️ 【DAY2】6月21日(日)  ▶ライブ開演19:30</p><div class="yunews-meta"><span class="yunews-date">2026.06.21</span></div></div></a>
-<a href="https://www.tiktok.com/@hinatazakanews/video/7653384580644244757" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.06058412691625139s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oo4MAjABA1wE2AviGKAaiAgEwIsQYnTZSBIin~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=ZE7hRI0u7cpKPiVNVF7f94FmtSI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="『17th Single ひなた坂46 LIVE』 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">『17th Single ひなた坂46 LIVE』 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻</p><div class="yunews-meta"><span class="yunews-date">2026.06.21</span></div></div></a>
-<a href="https://www.tiktok.com/@lemino_sakamichi/video/7649241346166885639" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.17910493482862658s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/osskEAAB1AAiP6VnB5iiwgBmBEAK12AIEBfHK8~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=cmI2GYYONQtKGKEz1G5NNqTR3Pw%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="やること逆ゲーム🔁 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">やること逆ゲーム🔁 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.20</span></div></div></a>
-<a href="https://www.tiktok.com/@lemino_sakamichi/video/7650324032969051410" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.10963257424213077s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oAAEBAGmiiALPFAwIKtBKBAXbWaASx1r9A2fBQ~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=LfnwCU06nuE%2BqxnlWhqZWSuioh4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="個性あふれるアピール🩷 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">個性あふれるアピール🩷 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.17</span></div></div></a>
-<a href="https://www.tiktok.com/@lemino_sakamichi/video/7649258619225083154" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.051839980306685775s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4eo4fWAJ7GnenIIpnLe1EA9GBAqIAJ6nWAQRA~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=PAkG0HBSE%2BTAXic1l0AZ81jBVGY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="どのペアが一番アザトカワイイ？💕 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">どのペアが一番アザトカワイイ？💕 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.16</span></div></div></a>
-<a href="https://lemino.docomo.ne.jp/?crid=Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdzZ3c%3D" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.24091164117715969s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f4/a1490f4_w1.jpg" alt="日向坂になりましょう #25 1年間の全てを出しつくしましょう！" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう #25 1年間の全てを出しつくしましょう！</p><div class="yunews-meta"><span class="yunews-date">2026.06.15</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69787?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.07860280164536497s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobdAqy3N.jpg" alt="水槽の温度。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">水槽の温度。</p><div class="yunews-meta"><span class="yunews-date">2026.06.15</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69781?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1396917334346439s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobTYb4vG.jpg" alt="何色の花火を待っているのか。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">何色の花火を待っているのか。</p><div class="yunews-meta"><span class="yunews-date">2026.06.14</span></div></div></a>
-<a href="https://www.tiktok.com/@hinatazakanews/video/7650078630923504917" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.10159418768085501s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oECQIAe8ILAMwVAAgjNG49EnRPJAPnUqqDOeEf~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=y36LASWHtokqjIs3jk3yedIDdhw%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="『17th Single ひなた坂46 LIVE』 🎫配信チケット販売スタート🎫 📍TOYOTA ARENA TOKYO 【DAY1】6月16日(火) 【DAY2】6月17日(水)  ▶︎両日ライブ開演 18:30 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">『17th Single ひなた坂46 LIVE』 🎫配信チケット販売スタート🎫 📍TOYOTA ARENA TOKYO 【DAY1】6月16日(火) 【DAY2】6月17日(水)  ▶︎両日ライブ開演 18:30 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻</p><div class="yunews-meta"><span class="yunews-date">2026.06.11</span></div></div></a>
-<a href="https://www.youtube.com/watch?v=5tVN8gJubcM" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2718998117610392s"><img class="yunews-img" src="https://img.youtube.com/vi/5tVN8gJubcM/maxresdefault.jpg" alt="【1年間の全てを出しつくしましょう！】日向坂になりましょう-五期生成長バラエティ-#25 冒頭先行公開" loading="lazy"><div class="yunews-body"><span class="badge badge-youtube" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【1年間の全てを出しつくしましょう！】日向坂になりましょう-五期生成長バラエティ-#25 冒頭先行公開</p><div class="yunews-meta"><span class="yunews-date">2026.06.08</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69690?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.24903217845710557s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobRJSZd8.jpg" alt="冷房をつけた途端、夏を感じる。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">冷房をつけた途端、夏を感じる。</p><div class="yunews-meta"><span class="yunews-date">2026.06.08</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69663?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.11416205287943952s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobDY7cL6.jpg" alt="夜更かしの合図。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">夜更かしの合図。</p><div class="yunews-meta"><span class="yunews-date">2026.06.06</span></div></div></a>
-<a href="https://www.tiktok.com/@hinatazakanews/video/7647123113108491541" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1083224742006251s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ooinNAcDqCE1z3dFEAAAhAILEBxAfIkgDRQfB5~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=6j%2FkTG8DmZZHAu26YsybT7%2Bu018%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="#日向坂46_円周率 #佐藤優羽 ver.🪽 #日向坂46 #日向坂46_TikTok" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">#日向坂46_円周率 #佐藤優羽 ver.🪽 #日向坂46 #日向坂46_TikTok</p><div class="yunews-meta"><span class="yunews-date">2026.06.04</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69645?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.12748014877512476s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobKYvMEt.jpg" alt="夏至、90度。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">夏至、90度。</p><div class="yunews-meta"><span class="yunews-date">2026.06.04</span></div></div></a>
-<a href="https://www.hinatazaka46.com/s/official/diary/detail/69594?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2317455038522556s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobY2zD2o.jpg" alt="太陽と同じ速さで歩く。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">太陽と同じ速さで歩く。</p><div class="yunews-meta"><span class="yunews-date">2026.06.02</span></div></div></a>
-<a href="https://www.tiktok.com/@hinatazakanews/video/7643025091156118805" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.05645365470289103s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o44MOAeAQARAQbXAUPJAw9v8fWbjEzIIiID0Df~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=dA%2B1JhNTYCgrMzJBPhv7%2BdcprjA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="ぷりてぃ？？🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">ぷりてぃ？？🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.01</span></div></div></a>
-<a href="https://www.tiktok.com/@hinatazakanews/video/7646017052414643477" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1326485581034287s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oglETiYAEiazB2idc2B1AIAwHABAnjPmAAc0h~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=%2F6V0u4rw6rPukIvE32RZgID1ja8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="#日向坂46_Empty #平尾帆夏 #佐藤優羽 #鶴崎仁香 ver.🩵 #日向坂46 #日向坂46_TikTok" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">#日向坂46_Empty #平尾帆夏 #佐藤優羽 #鶴崎仁香 ver.🩵 #日向坂46 #日向坂46_TikTok</p><div class="yunews-meta"><span class="yunews-date">2026.05.31</span></div></div></a>
+          <a href="https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajd0NnA=" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.07476718013568458s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f5/a1490f5_w1.jpg" alt="日向坂になりましょう #25 番外編 もぐもぐたいむ" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう #25 番外編 もぐもぐたいむ</p><div class="yunews-meta"><span class="yunews-date">2026.06.22</span></div></div></a>
+<a href="https://youtu.be/RBLbWATOLsU?si=W3157TLIaks4_0Bv" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.08558651067640403s"><img class="yunews-img" src="https://img.youtube.com/vi/RBLbWATOLsU/maxresdefault.jpg" alt="【1年間の全てを出しつくしましょう！完結編】日向坂になりましょう-五期生成長バラエティ-#26冒頭先行公開" loading="lazy"><div class="yunews-body"><span class="badge badge-youtube" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【1年間の全てを出しつくしましょう！完結編】日向坂になりましょう-五期生成長バラエティ-#26冒頭先行公開</p><div class="yunews-meta"><span class="yunews-date">2026.06.22</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69871?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.2798200819652629s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mob4lJYTR.jpg" alt="満たされますように。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">満たされますように。</p><div class="yunews-meta"><span class="yunews-date">2026.06.22</span></div></div></a>
+<a href="https://www.tiktok.com/@hinatazakanews/video/7653740124097809684" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.009054623608252864s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYAeAfjXDDBUFAqIfvEGxAIDbE4Qt8jAh4jCgA~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=y09nJtqZmXac%2BES3X%2B2pCCbssRo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="『17th Single ひなた坂46 LIVE』 "座長"平岡海月のDAY2vlog ※ リピート配信🎞️ 【DAY2】6月21日(日)  ▶ライブ開演19:30" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">『17th Single ひなた坂46 LIVE』 "座長"平岡海月のDAY2vlog ※ リピート配信🎞️ 【DAY2】6月21日(日)  ▶ライブ開演19:30</p><div class="yunews-meta"><span class="yunews-date">2026.06.21</span></div></div></a>
+<a href="https://www.tiktok.com/@hinatazakanews/video/7653384580644244757" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.09800114857943296s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oo4MAjABA1wE2AviGKAaiAgEwIsQYnTZSBIin~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=4Fxb38oemD6Q4G8GMrTJDHUfbeg%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="『17th Single ひなた坂46 LIVE』 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">『17th Single ひなた坂46 LIVE』 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻</p><div class="yunews-meta"><span class="yunews-date">2026.06.21</span></div></div></a>
+<a href="https://www.tiktok.com/@lemino_sakamichi/video/7649241346166885639" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.08684678496873928s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/osskEAAB1AAiP6VnB5iiwgBmBEAK12AIEBfHK8~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=cmI2GYYONQtKGKEz1G5NNqTR3Pw%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="やること逆ゲーム🔁 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">やること逆ゲーム🔁 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.20</span></div></div></a>
+<a href="https://www.tiktok.com/@lemino_sakamichi/video/7650324032969051410" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.11030503319699043s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oAAEBAGmiiALPFAwIKtBKBAXbWaASx1r9A2fBQ~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=kqKJYTJVsB4R0X4yagfFg4cNXE0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="個性あふれるアピール🩷 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">個性あふれるアピール🩷 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.17</span></div></div></a>
+<a href="https://www.tiktok.com/@lemino_sakamichi/video/7649258619225083154" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.27701300275717944s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o4eo4fWAJ7GnenIIpnLe1EA9GBAqIAJ6nWAQRA~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=WQG8g7WL8uOBGQurVFrLy5dRMa0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="どのペアが一番アザトカワイイ？💕 🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">どのペアが一番アザトカワイイ？💕 🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.16</span></div></div></a>
+<a href="https://lemino.docomo.ne.jp/?crid=Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdzZ3c%3D" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.15823699980128517s"><img class="yunews-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f4/a1490f4_w1.jpg" alt="日向坂になりましょう #25 1年間の全てを出しつくしましょう！" loading="lazy"><div class="yunews-body"><span class="badge badge-lemino" style="font-size:9px;padding:2px 7px;">Lemino</span><p class="yunews-title" style="margin-top:4px">日向坂になりましょう #25 1年間の全てを出しつくしましょう！</p><div class="yunews-meta"><span class="yunews-date">2026.06.15</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69787?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.15781677707198827s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobdAqy3N.jpg" alt="水槽の温度。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">水槽の温度。</p><div class="yunews-meta"><span class="yunews-date">2026.06.15</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69781?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.011546660651906349s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobTYb4vG.jpg" alt="何色の花火を待っているのか。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">何色の花火を待っているのか。</p><div class="yunews-meta"><span class="yunews-date">2026.06.14</span></div></div></a>
+<a href="https://www.tiktok.com/@hinatazakanews/video/7650078630923504917" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.09288746419305327s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oECQIAe8ILAMwVAAgjNG49EnRPJAPnUqqDOeEf~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=4xsTRhhcbkDx4%2FFbff9%2BtERItQ4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="『17th Single ひなた坂46 LIVE』 🎫配信チケット販売スタート🎫 📍TOYOTA ARENA TOKYO 【DAY1】6月16日(火) 【DAY2】6月17日(水)  ▶︎両日ライブ開演 18:30 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">『17th Single ひなた坂46 LIVE』 🎫配信チケット販売スタート🎫 📍TOYOTA ARENA TOKYO 【DAY1】6月16日(火) 【DAY2】6月17日(水)  ▶︎両日ライブ開演 18:30 ※ リピート配信🎞️ 【DAY1】6月20日(土) 【DAY2】6月21日(日)  ▶︎両日ライブ開演19:30 是非お見逃しなく！🫶🏻</p><div class="yunews-meta"><span class="yunews-date">2026.06.11</span></div></div></a>
+<a href="https://www.youtube.com/watch?v=5tVN8gJubcM" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.22054216787289083s"><img class="yunews-img" src="https://img.youtube.com/vi/5tVN8gJubcM/maxresdefault.jpg" alt="【1年間の全てを出しつくしましょう！】日向坂になりましょう-五期生成長バラエティ-#25 冒頭先行公開" loading="lazy"><div class="yunews-body"><span class="badge badge-youtube" style="font-size:9px;padding:2px 7px;">Youtube</span><p class="yunews-title" style="margin-top:4px">【1年間の全てを出しつくしましょう！】日向坂になりましょう-五期生成長バラエティ-#25 冒頭先行公開</p><div class="yunews-meta"><span class="yunews-date">2026.06.08</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69690?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.15364570996189356s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobRJSZd8.jpg" alt="冷房をつけた途端、夏を感じる。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">冷房をつけた途端、夏を感じる。</p><div class="yunews-meta"><span class="yunews-date">2026.06.08</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69663?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.1699110634384808s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobDY7cL6.jpg" alt="夜更かしの合図。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">夜更かしの合図。</p><div class="yunews-meta"><span class="yunews-date">2026.06.06</span></div></div></a>
+<a href="https://www.tiktok.com/@hinatazakanews/video/7647123113108491541" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.028526546207178715s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ooinNAcDqCE1z3dFEAAAhAILEBxAfIkgDRQfB5~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=zy99WlapuWBklSyjdD%2FSW1SR0DE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="#日向坂46_円周率 #佐藤優羽 ver.🪽 #日向坂46 #日向坂46_TikTok" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">#日向坂46_円周率 #佐藤優羽 ver.🪽 #日向坂46 #日向坂46_TikTok</p><div class="yunews-meta"><span class="yunews-date">2026.06.04</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69645?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.06862412795605721s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobKYvMEt.jpg" alt="夏至、90度。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">夏至、90度。</p><div class="yunews-meta"><span class="yunews-date">2026.06.04</span></div></div></a>
+<a href="https://www.hinatazaka46.com/s/official/diary/detail/69594?ima=0000&cd=member" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.19379623637501545s"><img class="yunews-img" src="https://cdn.hinatazaka46.com/files/14/diary/official/member/moblog/202606/mobY2zD2o.jpg" alt="太陽と同じ速さで歩く。" loading="lazy"><div class="yunews-body"><span class="badge badge-blog" style="font-size:9px;padding:2px 7px;">Blog</span><p class="yunews-title" style="margin-top:4px">太陽と同じ速さで歩く。</p><div class="yunews-meta"><span class="yunews-date">2026.06.02</span></div></div></a>
+<a href="https://www.tiktok.com/@hinatazakanews/video/7643025091156118805" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.08490868243058713s"><img class="yunews-img" src="https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o44MOAeAQARAQbXAUPJAw9v8fWbjEzIIiID0Df~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=dA%2B1JhNTYCgrMzJBPhv7%2BdcprjA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="ぷりてぃ？？🩵" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">ぷりてぃ？？🩵</p><div class="yunews-meta"><span class="yunews-date">2026.06.01</span></div></div></a>
+<a href="https://www.tiktok.com/@hinatazakanews/video/7646017052414643477" target="_blank" rel="noopener" class="yunews-card" style="animation-delay:0.25591457662534994s"><img class="yunews-img" src="https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oglETiYAEiazB2idc2B1AIAwHABAnjPmAAc0h~tplv-tiktokx-origin.image?dr=9636&x-expires=1782446400&x-signature=%2F6V0u4rw6rPukIvE32RZgID1ja8%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=useast5" alt="#日向坂46_Empty #平尾帆夏 #佐藤優羽 #鶴崎仁香 ver.🩵 #日向坂46 #日向坂46_TikTok" loading="lazy"><div class="yunews-body"><span class="badge badge-tiktok" style="font-size:9px;padding:2px 7px;">TikTok</span><p class="yunews-title" style="margin-top:4px">#日向坂46_Empty #平尾帆夏 #佐藤優羽 #鶴崎仁香 ver.🩵 #日向坂46 #日向坂46_TikTok</p><div class="yunews-meta"><span class="yunews-date">2026.05.31</span></div></div></a>
         </div>
       </section>
 
@@ -1112,7 +1174,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 
 6月13日(土)に幕張メッセにて開催の #リアルミーグリ へ、#佐藤優羽 さん宛に祝花のお贈りすることができました。
 
-ご参加いただいた多くの皆様のおかげで、素敵な祝花をお贈りすることができました。改めて感謝申し上げます。今後とも何とぞよろしくお願い申し上げます。" data-url="https://www.sakaseru.jp/mina/event/news/a18702363a5ee70f77aac269d03f39b0#menu" data-img="https://satoyu.info/images/activities/2026-06-13_001.jpg" style="animation-delay:0.133916261327881s">
+ご参加いただいた多くの皆様のおかげで、素敵な祝花をお贈りすることができました。改めて感謝申し上げます。今後とも何とぞよろしくお願い申し上げます。" data-url="https://www.sakaseru.jp/mina/event/news/a18702363a5ee70f77aac269d03f39b0#menu" data-img="https://satoyu.info/images/activities/2026-06-13_001.jpg" style="animation-delay:0.2674173087508782s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2026-06-13_001.jpg" alt="日向坂46 17thシングル「Kind of love」発売記念リアルミート＆グリート@幕張メッセで佐藤優羽さんへ祝花を贈らせていただきました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">日向坂46 17thシングル「Kind of love」発売記念リアルミート＆グリート@幕張メッセで佐藤優羽さんへ祝花を贈らせていただきました！</p>
@@ -1125,7 +1187,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 4月4日、5日に横浜スタジアムにて開催の #七回目のひな誕祭 へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
 お花たっぷりの素敵な仕上がりとなりました！
-ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/d8145fba830e07f3bc49be183a0efe76#menu" data-img="https://satoyu.info/images/activities/2026-04-04_001.png" style="animation-delay:0.21787269346451868s">
+ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/d8145fba830e07f3bc49be183a0efe76#menu" data-img="https://satoyu.info/images/activities/2026-04-04_001.png" style="animation-delay:0.11661127073475516s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2026-04-04_001.png" alt="7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！</p>
@@ -1146,7 +1208,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 当委員会も各地で、この1年を振り返りながら
 たこ焼きをいただきました～～
 
-#ゆうちゃんたこ焼き食べたよ" data-url="" data-img="https://satoyu.info/images/activities/2026-03-14_001.png" style="animation-delay:0.1468724625617083s">
+#ゆうちゃんたこ焼き食べたよ" data-url="" data-img="https://satoyu.info/images/activities/2026-03-14_001.png" style="animation-delay:0.23947592842136714s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2026-03-14_001.png" alt="銀だこ創業日をお祝いしました！
 #ゆうちゃんたこ焼き食べたよ" loading="lazy">
       <div class="act-thumb-body">
@@ -1164,7 +1226,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 これからの2年目の活動も、
 優羽ちゃんらしく素敵な時間になりますように
 
-これからも応援しています！" data-url="" data-img="https://satoyu.info/images/activities/2026-03-14_002.png" style="animation-delay:0.1785454402993175s">
+これからも応援しています！" data-url="" data-img="https://satoyu.info/images/activities/2026-03-14_002.png" style="animation-delay:0.1732089126602869s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2026-03-14_002.png" alt="佐藤優羽お披露目1周年をお祝いしました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">佐藤優羽お披露目1周年をお祝いしました！</p>
@@ -1176,7 +1238,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 
 3月8日(日)に京都パルスプラザにて開催の #リアルミーグリ へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
-ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/news/637a55f86458f5a5ea9f2cedcfa9ff8c#menu" data-img="https://sakaseru.s3.ap-northeast-1.amazonaws.com/mina/event/original/17731009421272677491.jpg" style="animation-delay:0.2881433510591989s">
+ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/news/637a55f86458f5a5ea9f2cedcfa9ff8c#menu" data-img="https://sakaseru.s3.ap-northeast-1.amazonaws.com/mina/event/original/17731009421272677491.jpg" style="animation-delay:0.04676790728533562s">
       <img class="act-thumb-img" src="https://sakaseru.s3.ap-northeast-1.amazonaws.com/mina/event/original/17731009421272677491.jpg" alt="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@京都パルスプラザで佐藤優羽さんへ祝花を贈らせていただきました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@京都パルスプラザで佐藤優羽さんへ祝花を贈らせていただきました！</p>
@@ -1188,7 +1250,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 
 2月7日(土)にパシフィコ横浜にて開催の #リアルミーグリ へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
-ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/news/ae642997d6a44a22d6c43bf46fb65711#menu" data-img="https://sakaseru.s3.ap-northeast-1.amazonaws.com/mina/event/original/1770641625659977690.jpg" style="animation-delay:0.0541367148327516s">
+ミンサカへご参加くださった皆様、ありがとうございました" data-url="https://www.sakaseru.jp/mina/event/news/ae642997d6a44a22d6c43bf46fb65711#menu" data-img="https://sakaseru.s3.ap-northeast-1.amazonaws.com/mina/event/original/1770641625659977690.jpg" style="animation-delay:0.01426326223429699s">
       <img class="act-thumb-img" src="https://sakaseru.s3.ap-northeast-1.amazonaws.com/mina/event/original/1770641625659977690.jpg" alt="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@パシフィコ横浜で佐藤優羽さんへ祝花を贈らせていただきました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@パシフィコ横浜で佐藤優羽さんへ祝花を贈らせていただきました！</p>
@@ -1199,7 +1261,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
     <div class="act-thumb-card" data-act-modal="1" data-title="2026年の生誕委員募集を開始しました!!" data-date="2026.01.01" data-status="" data-desc="2026年1月1日(木)より、2026年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
-ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2026-01-01_001.png" style="animation-delay:0.20753783287355296s">
+ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2026-01-01_001.png" style="animation-delay:0.2768922607709283s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2026-01-01_001.png" alt="2026年の生誕委員募集を開始しました!!" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2026年の生誕委員募集を開始しました!!</p>
@@ -1209,7 +1271,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 
     <div class="act-thumb-card" data-act-modal="1" data-title="2025年度生誕祭レーン装飾を実施しました。" data-date="2025.10.19" data-status="" data-desc="2025年10月19日（日）開催
 15thシングル『お願いバッハ！』発売記念リアルミート＆グリート（個別トーク会）にて
-生誕祭レーン装飾を実施しまたした。" data-url="" data-img="https://satoyu.info/images/activities/2025-10-19_001.png" style="animation-delay:0.2960472961253497s">
+生誕祭レーン装飾を実施しまたした。" data-url="" data-img="https://satoyu.info/images/activities/2025-10-19_001.png" style="animation-delay:0.2203652987825072s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2025-10-19_001.png" alt="2025年度生誕祭レーン装飾を実施しました。" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2025年度生誕祭レーン装飾を実施しました。</p>
@@ -1219,7 +1281,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
 
     <div class="act-thumb-card" data-act-modal="1" data-title="2025年生誕祭に際し企画を実施しました！" data-date="2025.09.10" data-status="" data-desc="下記画像の場所にてメセカ設置4カ所、駅広告2か所の企画を実施しました。
 
-ご協力いただきました。皆様改めましてありがとうございます。" data-url="" data-img="https://satoyu.info/images/activities/2025-09-10_001.png" style="animation-delay:0.016403326430735853s">
+ご協力いただきました。皆様改めましてありがとうございます。" data-url="" data-img="https://satoyu.info/images/activities/2025-09-10_001.png" style="animation-delay:0.2126306853997184s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2025-09-10_001.png" alt="2025年生誕祭に際し企画を実施しました！" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2025年生誕祭に際し企画を実施しました！</p>
@@ -1230,7 +1292,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
     <div class="act-thumb-card" data-act-modal="1" data-title="2025年度の生誕委員募集を開始しました!!" data-date="2025.04.11" data-status="" data-desc="2025年4月11日(金)より、2025年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
-ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2025-04-11_001.png" style="animation-delay:0.15552229144340401s">
+ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2025-04-11_001.png" style="animation-delay:0.26286298910262257s">
       <img class="act-thumb-img" src="https://satoyu.info/images/activities/2025-04-11_001.png" alt="2025年度の生誕委員募集を開始しました!!" loading="lazy">
       <div class="act-thumb-body">
         <p class="act-thumb-title">2025年度の生誕委員募集を開始しました!!</p>
@@ -1241,7 +1303,7 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
     <div class="act-thumb-card" data-act-modal="1" data-title="佐藤優羽生誕祭実行委員会 HPを開設しました！" data-date="2025.03.13" data-status="" data-desc="佐藤優羽生誕祭実行委員会のホームページへアクセスいただき誠にありがとうございます。
 このたび、当委員会の活動開始とあわせ、ホームページを開設いたしました。
 当委員会の活動をわかりやすく掲載してまいりたいと存じます。
-今後とも、なにとぞよろしくお願い申し上げます。" data-url="" data-img="" style="animation-delay:0.24627862061087386s">
+今後とも、なにとぞよろしくお願い申し上げます。" data-url="" data-img="" style="animation-delay:0.07264095816180516s">
       <div class="act-thumb-no-img">No Image</div>
       <div class="act-thumb-body">
         <p class="act-thumb-title">佐藤優羽生誕祭実行委員会 HPを開設しました！</p>
@@ -1444,12 +1506,19 @@ Seed&amp;Flower合同会社様へのお問い合わせは御遠慮ください�
       btn.setAttribute('aria-label','メニューを開く');
     });
   });
+  // モバイル：グループボタンタップで子メニュー開閉
+  links.querySelectorAll('.nav-group-btn').forEach(function(gb){
+    gb.addEventListener('click',function(){
+      if(window.innerWidth>768)return;
+      gb.closest('.nav-group').classList.toggle('open');
+    });
+  });
 })();
 </script>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/24 13:07:23</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/24 13:53:06</p>
 </footer>
 
 <script>
