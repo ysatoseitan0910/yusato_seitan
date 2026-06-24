@@ -95,7 +95,10 @@ nav {
   font-size: 14px; color: var(--pink); letter-spacing: 0.04em; margin-top: -1px;
   white-space: nowrap;
 }
-.nav-links { display: flex; gap: 0; align-items: center; }
+.nav-links {
+  display: flex; gap: 0; align-items: center;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
 .nav-links a {
   text-decoration: none;
   font-family: 'Klee One',serif;
