@@ -837,7 +837,7 @@ async function buildTiktok(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>Gallery</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
+  return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>まとめ</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
 }
 
 async function buildYoutube(tpl) {
