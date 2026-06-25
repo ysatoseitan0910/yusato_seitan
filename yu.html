@@ -22,7 +22,7 @@
 <link rel="canonical" href="https://satoyu.info/yu.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&family=M+PLUS+1p:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&family=M+PLUS+1p:wght@400;700&family=M+PLUS+1:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
 <script>
@@ -751,10 +751,13 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
 <script>
 (function(){
   var FONTS = [
-    { key: 'default', label: 'デフォルト',    family: null },
-    { key: 'noto',    label: 'Noto Sans JP',  family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
-    { key: 'mplus',   label: 'M PLUS 1p',     family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
-    { key: 'zen',     label: 'Zen Maru',       family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
+    { key: 'default', label: 'デフォルト',         family: null },
+    { key: 'noto',    label: 'Noto Sans JP',       family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
+    { key: 'mplus1',  label: 'M PLUS 1',           family: "'M PLUS 1','Hiragino Sans',sans-serif" },
+    { key: 'zen-kaku',label: 'Zen Kaku Gothic New',family: "'Zen Kaku Gothic New','Hiragino Sans',sans-serif" },
+    { key: 'kosugi',  label: 'Kosugi Maru',        family: "'Kosugi Maru','Hiragino Sans',sans-serif" },
+    { key: 'mplus1p', label: 'M PLUS 1p',          family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
+    { key: 'zen',     label: 'Zen Maru Gothic',    family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
   ];
   var KEY = 'dbg_font';
   var btn = document.getElementById('debug-font-btn');
