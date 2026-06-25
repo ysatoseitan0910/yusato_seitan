@@ -22,7 +22,7 @@
 <link rel="canonical" href="{{OGP_URL}}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&family=M+PLUS+1p:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
   /* B 案 デザイントークン */
@@ -624,6 +624,18 @@ footer .heart { color: var(--pink); }
   .media-card .media-title { font-size: 14px; }
   .embed-card .embed-wrap { min-height: 200px; }
 }
+
+/* ── Debug: フォント切替スイッチ ── */
+body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
+#debug-font-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: #222; color: #fff; border: 2px solid #444;
+  border-radius: 10px; padding: 7px 13px;
+  font-size: 11px; font-family: monospace; cursor: pointer;
+  opacity: 0.5; transition: opacity 0.2s; white-space: nowrap;
+}
+#debug-font-btn:hover { opacity: 1; }
+#debug-font-btn.on { background: #1f7a52; border-color: #3DAA78; opacity: 0.8; }
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
@@ -702,13 +714,13 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">YOUTUBE</div>
         <h1>YouTube <em>まとめ</em></h1>
         <p>佐藤優羽さんのYouTube動画をまとめています</p>
-        <p class="last-updated">最終更新：2026/6/25 20:12:27</p>
+        <p class="last-updated">最終更新：2026/6/25 21:04:45</p>
       </div>
       <div class="content">
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">個人PV</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.22805284605524725s">
+  <div class="card embed-card" style="animation-delay:0.059437850492549744s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2026.04.26</span>
@@ -726,7 +738,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.08990829568585594s">
+  <div class="card embed-card" style="animation-delay:0.00984642344734068s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.07</span>
@@ -744,7 +756,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.00002634126993921182s">
+  <div class="card embed-card" style="animation-delay:0.034027510487031405s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.03.14</span>
@@ -766,7 +778,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">ドキュメンタリー</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.20403191633285078s">
+  <div class="card embed-card" style="animation-delay:0.17435233020092666s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.04.21</span>
@@ -784,7 +796,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.11008075307257477s">
+  <div class="card embed-card" style="animation-delay:0.1939487876797297s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.28</span>
@@ -804,7 +816,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.18730768283792626s">
+  <div class="card embed-card" style="animation-delay:0.06639905114613161s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.13</span>
@@ -824,7 +836,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.03821042365808101s">
+  <div class="card embed-card" style="animation-delay:0.08747941882743249s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.25</span>
@@ -842,7 +854,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2580173988897409s">
+  <div class="card embed-card" style="animation-delay:0.29983865811871274s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.04</span>
@@ -864,7 +876,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.0987702963403952s">
+  <div class="card embed-card" style="animation-delay:0.031973958508595655s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.06.16</span>
@@ -882,7 +894,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.08221724531135555s">
+  <div class="card embed-card" style="animation-delay:0.2962786708417004s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.04.12</span>
@@ -904,7 +916,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">企画</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.12278879210181179s">
+  <div class="card embed-card" style="animation-delay:0.22915599849966697s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.04.06</span>
@@ -922,7 +934,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.25250494390619155s">
+  <div class="card embed-card" style="animation-delay:0.14082088276452695s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.02.10</span>
@@ -940,7 +952,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.15305111070363586s">
+  <div class="card embed-card" style="animation-delay:0.08431491800493433s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.17</span>
@@ -958,7 +970,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.06160609891239572s">
+  <div class="card embed-card" style="animation-delay:0.07480312586537649s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.03</span>
@@ -976,7 +988,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.06587725480773796s">
+  <div class="card embed-card" style="animation-delay:0.261416875833035s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.10.20</span>
@@ -994,7 +1006,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19308445422005352s">
+  <div class="card embed-card" style="animation-delay:0.0022684650250330172s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.30</span>
@@ -1012,7 +1024,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.07926392099024815s">
+  <div class="card embed-card" style="animation-delay:0.1533820638598583s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.11</span>
@@ -1030,7 +1042,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.10798518889639912s">
+  <div class="card embed-card" style="animation-delay:0.15557785143298333s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.25</span>
@@ -1048,7 +1060,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.07947318651855459s">
+  <div class="card embed-card" style="animation-delay:0.26019254366241606s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.06.04</span>
@@ -1072,7 +1084,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">生配信</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.22016528754064538s">
+  <div class="card embed-card" style="animation-delay:0.25323552529302s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.05</span>
@@ -1090,7 +1102,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.053552228268476165s">
+  <div class="card embed-card" style="animation-delay:0.2980920900014065s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2025.06.13</span>
@@ -1112,7 +1124,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">MV</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.21544855111801892s">
+  <div class="card embed-card" style="animation-delay:0.114358602066038s">
     <div class="embed-header">
       <span class="badge badge-youtube"> 日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2026.05.18</span>
@@ -1130,7 +1142,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.09883889456773305s">
+  <div class="card embed-card" style="animation-delay:0.11823992661771592s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2026.05.15</span>
@@ -1148,7 +1160,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1972537882468143s">
+  <div class="card embed-card" style="animation-delay:0.08408735380769838s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.26</span>
@@ -1166,7 +1178,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.07321740158171598s">
+  <div class="card embed-card" style="animation-delay:0.08303061676286956s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2026.01.15</span>
@@ -1184,7 +1196,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.049814942013306496s">
+  <div class="card embed-card" style="animation-delay:0.26924013712293443s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.08</span>
@@ -1204,7 +1216,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.14987945860904686s">
+  <div class="card embed-card" style="animation-delay:0.08411900617490971s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂46 OFFICIAL YouTube CHANNEL</span>
       <span style="font-size:10px;color:var(--text-light)">2025.05.15</span>
@@ -1228,7 +1240,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">コール動画</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.11583760563442255s">
+  <div class="card embed-card" style="animation-delay:0.01704957511065348s">
     <div class="embed-header">
       <span class="badge badge-youtube">日向坂ちゃんねる</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.21</span>
@@ -1250,7 +1262,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">ひななり</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.15478586906052605s">
+  <div class="card embed-card" style="animation-delay:0.07958210855809708s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2026.06.22</span>
@@ -1268,7 +1280,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.08942126033487614s">
+  <div class="card embed-card" style="animation-delay:0.2990265618509778s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2026.06.08</span>
@@ -1286,7 +1298,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.014510313267193053s">
+  <div class="card embed-card" style="animation-delay:0.023594665277955618s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2026.05.11</span>
@@ -1304,7 +1316,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.11818306962458215s">
+  <div class="card embed-card" style="animation-delay:0.15391149786829184s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2026.04.27</span>
@@ -1322,7 +1334,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.10644522417740321s">
+  <div class="card embed-card" style="animation-delay:0.2365403426825934s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.30</span>
@@ -1342,7 +1354,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.19441246780310883s">
+  <div class="card embed-card" style="animation-delay:0.08884102123599098s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2026.03.02</span>
@@ -1362,7 +1374,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.24890410313462755s">
+  <div class="card embed-card" style="animation-delay:0.19649459650659062s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.29</span>
@@ -1382,7 +1394,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.20628292879823545s">
+  <div class="card embed-card" style="animation-delay:0.272916377219611s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.12.22</span>
@@ -1402,7 +1414,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.24807299559326443s">
+  <div class="card embed-card" style="animation-delay:0.12271342835916149s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.24</span>
@@ -1422,7 +1434,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.058186566372929516s">
+  <div class="card embed-card" style="animation-delay:0.0015863122032657717s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.11.10</span>
@@ -1442,7 +1454,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.07688400645967775s">
+  <div class="card embed-card" style="animation-delay:0.06583504626785645s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.29</span>
@@ -1460,7 +1472,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.04352554079573263s">
+  <div class="card embed-card" style="animation-delay:0.050248256082468544s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.15</span>
@@ -1480,7 +1492,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.12094377328803116s">
+  <div class="card embed-card" style="animation-delay:0.15372643124592453s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.08.18</span>
@@ -1498,7 +1510,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.09762879852769173s">
+  <div class="card embed-card" style="animation-delay:0.011493860185352034s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.21</span>
@@ -1518,7 +1530,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.2482950891749576s">
+  <div class="card embed-card" style="animation-delay:0.2787112857044118s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
@@ -1538,7 +1550,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card embed-card" style="animation-delay:0.1554536467465386s">
+  <div class="card embed-card" style="animation-delay:0.006300433187213205s">
     <div class="embed-header">
       <span class="badge badge-youtube">Leminoチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.07.07</span>
@@ -1562,7 +1574,7 @@ footer .heart { color: var(--pink); }
     <section style="margin-bottom:48px;">
       <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">ひなこい</h2>
       <div class="grid-3">
-  <div class="card embed-card" style="animation-delay:0.017595196179995876s">
+  <div class="card embed-card" style="animation-delay:0.26386056080618214s">
     <div class="embed-header">
       <span class="badge badge-youtube">【公式】 ひなこいYouTubeチャンネル</span>
       <span style="font-size:10px;color:var(--text-light)">2025.09.24</span>
@@ -1687,7 +1699,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/25 20:12:27</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/25 21:04:45</p>
 </footer>
 
 <script>
@@ -1713,6 +1725,44 @@ footer .heart { color: var(--pink); }
     iframe.src='https://www.tiktok.com/embed/v2/'+id;
     iframe.style.cssText='width:100%;aspect-ratio:9/16;border:none;display:block;';
     lite.replaceWith(iframe);
+  });
+})();
+</script>
+
+<!-- Debug: フォント切替スイッチ -->
+<button id="debug-font-btn" title="クリックでフォント切替（デバッグ用）">Ａ デフォルト</button>
+<script>
+(function(){
+  var FONTS = [
+    { key: 'default', label: 'デフォルト',    family: null },
+    { key: 'noto',    label: 'Noto Sans JP',  family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
+    { key: 'mplus',   label: 'M PLUS 1p',     family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
+    { key: 'zen',     label: 'Zen Maru',       family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
+  ];
+  var KEY = 'dbg_font';
+  var btn = document.getElementById('debug-font-btn');
+  function getIdx() {
+    var k = localStorage.getItem(KEY) || 'default';
+    for (var i = 0; i < FONTS.length; i++) { if (FONTS[i].key === k) return i; }
+    return 0;
+  }
+  function apply(idx) {
+    var f = FONTS[idx];
+    if (f.family) {
+      document.body.setAttribute('data-dbg-font', f.key);
+      document.body.style.setProperty('--dbg-font-family', f.family);
+      btn.classList.add('on');
+    } else {
+      document.body.removeAttribute('data-dbg-font');
+      document.body.style.removeProperty('--dbg-font-family');
+      btn.classList.remove('on');
+    }
+    btn.textContent = 'Ａ ' + f.label;
+    localStorage.setItem(KEY, f.key);
+  }
+  apply(getIdx());
+  btn.addEventListener('click', function() {
+    apply((getIdx() + 1) % FONTS.length);
   });
 })();
 </script>

@@ -22,7 +22,7 @@
 <link rel="canonical" href="{{OGP_URL}}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&family=M+PLUS+1p:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
   /* B 案 デザイントークン */
@@ -624,6 +624,18 @@ footer .heart { color: var(--pink); }
   .media-card .media-title { font-size: 14px; }
   .embed-card .embed-wrap { min-height: 200px; }
 }
+
+/* ── Debug: フォント切替スイッチ ── */
+body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
+#debug-font-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: #222; color: #fff; border: 2px solid #444;
+  border-radius: 10px; padding: 7px 13px;
+  font-size: 11px; font-family: monospace; cursor: pointer;
+  opacity: 0.5; transition: opacity 0.2s; white-space: nowrap;
+}
+#debug-font-btn:hover { opacity: 1; }
+#debug-font-btn.on { background: #1f7a52; border-color: #3DAA78; opacity: 0.8; }
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
@@ -702,13 +714,13 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">LEMINO</div>
         <h1>Lemino <em>まとめ</em></h1>
         <p>佐藤優羽さんのLemino配信をまとめています</p>
-        <p class="last-updated">最終更新：2026/6/25 20:12:32</p>
+        <p class="last-updated">最終更新：2026/6/25 21:04:56</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.01513157588915357s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f5/a1490f5_w1.jpg" alt="日向坂になりましょう #25 番外編 もぐもぐたいむ" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.2219027762867657s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #25 番外編 もぐもぐたいむ</p>
@@ -719,8 +731,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.25369988171277236s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f4/a1490f4_w1.jpg" alt="日向坂になりましょう #25 1年間の全てを出しつくしましょう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.18632915366158298s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #25 1年間の全てを出しつくしましょう！</p>
@@ -731,8 +743,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.17275873236347142s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f1/a1490f1_w1.jpg" alt="日向坂になりましょう #23 番外編 マッドサイエンティスト坂井の食べ合わせ実験!!" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.10175619561616601s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #23 番外編 マッドサイエンティスト坂井の食べ合わせ実験!!</p>
@@ -743,8 +755,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.20987756141320382s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f0/a1490f0_w1.jpg" alt="日向坂になりましょう #23 検証バラエティに挑戦しましょう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.11248800468116837s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #23 検証バラエティに挑戦しましょう！</p>
@@ -755,8 +767,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1191660501666175s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ef/a1490ef_w1.jpg" alt="日向坂になりましょう #22 番外編 ワンフレーズを極めよう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.07812224489365423s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #22 番外編 ワンフレーズを極めよう！</p>
@@ -767,8 +779,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2562455551707376s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ee/a1490ee_w1.jpg" alt="日向坂になりましょう #22 私たちもボイトレで歌唱力を強化しましょう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.050024207304820024s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #22 私たちもボイトレで歌唱力を強化しましょう！</p>
@@ -779,8 +791,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.24981581264263034s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490eb/a1490eb_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.03686068534526774s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #20 瞬発力を鍛えよう！番外編</p>
@@ -791,8 +803,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.17835329506203138s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ea/a1490ea_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.21112241176226135s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #20 瞬発力を鍛えよう！</p>
@@ -803,8 +815,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16579144304559068s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d4/a1467d4_w1.jpg" alt="日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.2069774547256465s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！番外編</p>
@@ -815,8 +827,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1165339515857541s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d3/a1467d3_w1.jpg" alt="日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.2983798376506158s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！</p>
@@ -827,9 +839,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.13129708590133748s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cc/a1467cc_w1.jpg" alt="日向坂になりましょう #14 特別番外編
-  第1回東西対抗新春プチかくし芸大会後半" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.2572514742876659s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #14 特別番外編
@@ -841,9 +852,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0808606030160693s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cb/a1467cb_w1.jpg" alt="日向坂になりましょう #14 特別番外編
-  第1回東西対抗新春プチかくし芸大会前半" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.06303155657189076s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #14 特別番外編
@@ -855,9 +865,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.18995856965066654s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ca/a1467ca_w1.jpg" alt="日向坂になりましょう #14
-  お正月なのでバラエティ対決で盛り上がろう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.0861293668673001s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #14
@@ -869,9 +878,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.006653412064229957s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14333c/a14333c_w1.jpg" alt="日向坂になりましょう #13
-  年末総決算！激動の1年をみんなで振り返りましょう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.10653448640877074s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #13
@@ -883,9 +891,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.15107009960809592s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143339/a143339_w1.jpg" alt="日向坂になりましょう #11
-  表現の幅を広げましょう！！番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.1594122508015642s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #11
@@ -897,8 +904,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.067848184234037s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143338/a143338_w1.jpg" alt="日向坂になりましょう #11 表現の幅を広げましょう！！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.1659208192665202s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #11 表現の幅を広げましょう！！</p>
@@ -909,9 +916,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1563138211754273s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143337/a143337_w1.jpg" alt="日向坂になりましょう #10
-  人情あふれる街ブラロケに挑戦しよう!!番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.2352909851821827s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #10
@@ -923,9 +929,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.22796711298503336s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143336/a143336_w1.jpg" alt="日向坂になりましょう #10
-  人情あふれる街ブラロケに挑戦しよう!!" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.04543649157425193s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #10
@@ -937,8 +942,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.07033293786475885s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143331/a143331_w1.jpg" alt="日向坂になりましょう #7 ザ・ハイテンション番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.0985164902330875s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #7 ザ・ハイテンション番外編</p>
@@ -949,8 +954,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14800230871609638s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143330/a143330_w1.jpg" alt="日向坂になりましょう #7 ザ・ハイテンション" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.19358488953183875s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #7 ザ・ハイテンション</p>
@@ -961,9 +966,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16343903968373327s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14065b/a14065b_w1.jpg" alt="日向坂になりましょう #6
-  アイドルの基本！ポージングを学ぼう！番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.15979326276309228s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #6
@@ -975,9 +979,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.09693208889241882s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14065a/a14065a_w1.jpg" alt="日向坂になりましょう #6
-  アイドルの基本！ポージングを学ぼう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.1821718708775875s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #6
@@ -989,9 +992,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.25147308325520085s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140657/a140657_w1.jpg" alt="日向坂になりましょう #4
-  アザトカワイイ仕草を身につけよう！番外編" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.07298788466532166s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #4
@@ -1003,9 +1005,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.06087383215617328s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140656/a140656_w1.jpg" alt="日向坂になりましょう #4
-  アザトカワイイ仕草を身につけよう！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.24877919351631286s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #4
@@ -1017,9 +1018,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16051946025651145s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140653/a140653_w1.jpg" alt="日向坂になりましょう #2 番外編
-  私もうプロフェッショナルなんです！後半戦" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.1387857417237257s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #2 番外編
@@ -1031,9 +1031,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.08448196469639825s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140652/a140652_w1.jpg" alt="日向坂になりましょう #2 初回だよ！全員集合
-  五期生の魅力を届けましょう！！後半戦" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.2556377816946255s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #2 初回だよ！全員集合
@@ -1045,9 +1044,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2829463432017346s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140651/a140651_w1.jpg" alt="日向坂になりましょう #1 番外編
-  私もうプロフェッショナルなんです！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.192839206490036s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #1 番外編
@@ -1059,9 +1057,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.017706217033850977s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140650/a140650_w1.jpg" alt="日向坂になりましょう #1 初回だよ！全員集合
-  五期生の魅力を届けましょう！！" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.03219388953711184s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう #1 初回だよ！全員集合
@@ -1073,9 +1070,8 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.27631706301660597s">
-    <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14064f/a14064f_w1.jpg" alt="日向坂になりましょう
-  #0 特別編 五期生のみで記者会見に臨みましょう!!" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.10941381044708054s">
+    <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
       <p class="media-title" style="margin-top:6px">日向坂になりましょう
@@ -1195,7 +1191,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/25 20:12:32</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/25 21:04:56</p>
 </footer>
 
 <script>
@@ -1221,6 +1217,44 @@ footer .heart { color: var(--pink); }
     iframe.src='https://www.tiktok.com/embed/v2/'+id;
     iframe.style.cssText='width:100%;aspect-ratio:9/16;border:none;display:block;';
     lite.replaceWith(iframe);
+  });
+})();
+</script>
+
+<!-- Debug: フォント切替スイッチ -->
+<button id="debug-font-btn" title="クリックでフォント切替（デバッグ用）">Ａ デフォルト</button>
+<script>
+(function(){
+  var FONTS = [
+    { key: 'default', label: 'デフォルト',    family: null },
+    { key: 'noto',    label: 'Noto Sans JP',  family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
+    { key: 'mplus',   label: 'M PLUS 1p',     family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
+    { key: 'zen',     label: 'Zen Maru',       family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
+  ];
+  var KEY = 'dbg_font';
+  var btn = document.getElementById('debug-font-btn');
+  function getIdx() {
+    var k = localStorage.getItem(KEY) || 'default';
+    for (var i = 0; i < FONTS.length; i++) { if (FONTS[i].key === k) return i; }
+    return 0;
+  }
+  function apply(idx) {
+    var f = FONTS[idx];
+    if (f.family) {
+      document.body.setAttribute('data-dbg-font', f.key);
+      document.body.style.setProperty('--dbg-font-family', f.family);
+      btn.classList.add('on');
+    } else {
+      document.body.removeAttribute('data-dbg-font');
+      document.body.style.removeProperty('--dbg-font-family');
+      btn.classList.remove('on');
+    }
+    btn.textContent = 'Ａ ' + f.label;
+    localStorage.setItem(KEY, f.key);
+  }
+  apply(getIdx());
+  btn.addEventListener('click', function() {
+    apply((getIdx() + 1) % FONTS.length);
   });
 })();
 </script>

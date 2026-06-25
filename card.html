@@ -211,6 +211,17 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .canvas-wrap { position: static; }
   .controls { order: -1; }
 }
+/* ── Debug: フォント切替スイッチ ── */
+body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
+#debug-font-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: #222; color: #fff; border: 2px solid #444;
+  border-radius: 10px; padding: 7px 13px;
+  font-size: 11px; font-family: monospace; cursor: pointer;
+  opacity: 0.5; transition: opacity 0.2s; white-space: nowrap;
+}
+#debug-font-btn:hover { opacity: 1; }
+#debug-font-btn.on { background: #1f7a52; border-color: #3DAA78; opacity: 0.8; }
 </style>
 </head>
 <body>
@@ -1526,6 +1537,43 @@ canvas.addEventListener("click", function (e) {
       if(window.innerWidth>768)return;
       gb.closest(".nav-group").classList.toggle("open");
     });
+  });
+})();
+</script>
+<!-- Debug: フォント切替スイッチ -->
+<button id="debug-font-btn" title="クリックでフォント切替（デバッグ用）">Ａ デフォルト</button>
+<script>
+(function(){
+  var FONTS = [
+    { key: 'default', label: 'デフォルト',    family: null },
+    { key: 'noto',    label: 'Noto Sans JP',  family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
+    { key: 'mplus',   label: 'M PLUS 1p',     family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
+    { key: 'zen',     label: 'Zen Maru',       family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
+  ];
+  var KEY = 'dbg_font';
+  var btn = document.getElementById('debug-font-btn');
+  function getIdx() {
+    var k = localStorage.getItem(KEY) || 'default';
+    for (var i = 0; i < FONTS.length; i++) { if (FONTS[i].key === k) return i; }
+    return 0;
+  }
+  function apply(idx) {
+    var f = FONTS[idx];
+    if (f.family) {
+      document.body.setAttribute('data-dbg-font', f.key);
+      document.body.style.setProperty('--dbg-font-family', f.family);
+      btn.classList.add('on');
+    } else {
+      document.body.removeAttribute('data-dbg-font');
+      document.body.style.removeProperty('--dbg-font-family');
+      btn.classList.remove('on');
+    }
+    btn.textContent = 'Ａ ' + f.label;
+    localStorage.setItem(KEY, f.key);
+  }
+  apply(getIdx());
+  btn.addEventListener('click', function() {
+    apply((getIdx() + 1) % FONTS.length);
   });
 })();
 </script>
