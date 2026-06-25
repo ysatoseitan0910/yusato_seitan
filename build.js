@@ -109,7 +109,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN","CARD","MESSAGE"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
