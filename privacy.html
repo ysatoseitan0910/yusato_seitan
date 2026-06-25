@@ -285,7 +285,7 @@ body.gothic-mode * {
 })();
 </script>
 <!-- Debug: フォント切替スイッチ -->
-<button id="debug-font-btn" title="フォント切替（デバッグ用）">Ａ<br>明朝</button>
+<button id="debug-font-btn" title="フォント切替（デバッグ用）">Ａ<br>楷書</button>
 <script>
 (function(){
   var btn = document.getElementById('debug-font-btn');
@@ -297,7 +297,7 @@ body.gothic-mode * {
       btn.classList.add('on');
     } else {
       document.body.classList.remove('gothic-mode');
-      btn.innerHTML = 'Ａ<br>明朝';
+      btn.innerHTML = 'Ａ<br>楷書';
       btn.classList.remove('on');
     }
   }
