@@ -17,7 +17,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=Yomogi&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=M+PLUS+1p:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap&family=Yomogi&display=swap" rel="stylesheet">
 <style>
 :root{
   --emerald:#3DAA78; --emerald-light:#d4ecde; --emerald-pale:#ecf7f0; --emerald-dark:#1f7a52;
@@ -138,18 +138,13 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   .preview-box{position:static;}
 }
 /* ── Debug: フォント切替スイッチ ── */
-body.gothic-mode,
-body.gothic-mode * {
-  font-family: 'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif !important;
-  letter-spacing: 0.02em;
-}
+body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
 #debug-font-btn {
   position: fixed; bottom: 20px; right: 20px; z-index: 9999;
   background: #222; color: #fff; border: 2px solid #444;
-  border-radius: 10px; padding: 8px 14px;
+  border-radius: 10px; padding: 7px 13px;
   font-size: 11px; font-family: monospace; cursor: pointer;
-  opacity: 0.55; transition: opacity 0.2s;
-  line-height: 1.4; text-align: center;
+  opacity: 0.5; transition: opacity 0.2s; white-space: nowrap;
 }
 #debug-font-btn:hover { opacity: 1; }
 #debug-font-btn.on { background: #1f7a52; border-color: #3DAA78; opacity: 0.8; }
@@ -634,27 +629,39 @@ body.gothic-mode * {
 })();
 </script>
 <!-- Debug: フォント切替スイッチ -->
-<button id="debug-font-btn" title="フォント切替（デバッグ用）">Ａ<br>楷書</button>
+<button id="debug-font-btn" title="クリックでフォント切替（デバッグ用）">Ａ デフォルト</button>
 <script>
 (function(){
-  var btn = document.getElementById('debug-font-btn');
+  var FONTS = [
+    { key: 'default', label: 'デフォルト',    family: null },
+    { key: 'noto',    label: 'Noto Sans JP',  family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
+    { key: 'mplus',   label: 'M PLUS 1p',     family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
+    { key: 'zen',     label: 'Zen Maru',       family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
+  ];
   var KEY = 'dbg_font';
-  function apply(gothic) {
-    if (gothic) {
-      document.body.classList.add('gothic-mode');
-      btn.innerHTML = 'Ａ<br>ゴシック';
+  var btn = document.getElementById('debug-font-btn');
+  function getIdx() {
+    var k = localStorage.getItem(KEY) || 'default';
+    for (var i = 0; i < FONTS.length; i++) { if (FONTS[i].key === k) return i; }
+    return 0;
+  }
+  function apply(idx) {
+    var f = FONTS[idx];
+    if (f.family) {
+      document.body.setAttribute('data-dbg-font', f.key);
+      document.body.style.setProperty('--dbg-font-family', f.family);
       btn.classList.add('on');
     } else {
-      document.body.classList.remove('gothic-mode');
-      btn.innerHTML = 'Ａ<br>楷書';
+      document.body.removeAttribute('data-dbg-font');
+      document.body.style.removeProperty('--dbg-font-family');
       btn.classList.remove('on');
     }
+    btn.textContent = 'Ａ ' + f.label;
+    localStorage.setItem(KEY, f.key);
   }
-  apply(localStorage.getItem(KEY) === '1');
+  apply(getIdx());
   btn.addEventListener('click', function() {
-    var next = !document.body.classList.contains('gothic-mode');
-    localStorage.setItem(KEY, next ? '1' : '0');
-    apply(next);
+    apply((getIdx() + 1) % FONTS.length);
   });
 })();
 </script>
