@@ -124,7 +124,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
   return template
     .replace("{{PAGE_TITLE}}", title)
     .replaceAll("{{OGP_TITLE}}", ogpTitle)
-    .replaceAll("{{OGP_DESC}}", desc)
+    .replaceAll("{{OGP_DESC}}", desc.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim())
     .replace("{{OGP_URL}}", ogpUrl)
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
@@ -163,7 +163,6 @@ function newsCard(page, badgeLabel, overrideImg) {
           <p class="news-card-title" style="margin-top:${badge?'6px':'0'}">${title}</p>
         </div>
       </div>
-      ${descHtml ? `<p class="news-card-desc" style="margin-top:10px;">${descHtml}</p>` : ""}
       ${link}
     </div>
   </div>`;
@@ -175,7 +174,6 @@ function newsCard(page, badgeLabel, overrideImg) {
     <div class="news-card-body">
       ${badge}
       <p class="news-card-title" style="margin-top:${badge?'6px':'0'}">${title}</p>
-      ${descHtml ? `<p class="news-card-desc">${descHtml}</p>` : ""}
       ${link}
     </div>
   </div>`;
@@ -197,7 +195,6 @@ function mediaCard(page, badgeLabel, overrideImg) {
     <div class="media-body">
       ${badge}
       <p class="media-title" style="margin-top:${badge?'6px':'0'}">${title}</p>
-      ${desc ? `<p class="media-desc">${desc}</p>` : ""}
       <div class="media-meta">
         <span class="media-date">${date}</span>
         ${link}
@@ -295,7 +292,6 @@ function youtubeCard(page, channelLabel = "YouTube") {
     <div class="embed-wrap" style="min-height:0;padding:0;">${embed}</div>
     <div class="embed-footer">
       <p class="embed-title">${title}</p>
-      ${desc ? `<p style="font-size:11px;color:var(--text-muted);margin-top:4px;">${desc}</p>` : ""}
     </div>
   </div>`;
 }
@@ -562,7 +558,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
+  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "佐藤優羽さんの最新情報をお届けするファンサイト<br>｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
 }
 
 async function buildCommittee(tpl) {
@@ -590,7 +586,6 @@ async function buildCommittee(tpl) {
           ${deadlineBadge(deadline)}
         </div>
         <p class="media-title">${title}</p>
-        ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
         <div class="media-meta">
           ${date && announceDate ? `<span class="media-date-small">実行日：${date}</span>` : "<span></span>"}
           ${link}
@@ -627,7 +622,6 @@ async function buildActivities(tpl) {
           <span class="media-date">${date}</span>
         </div>
         <p class="media-title">${title}</p>
-        ${desc ? `<p class="media-desc">${desc.split("\n").slice(0,3).join("<br>")}</p>` : ""}
         <div class="media-meta"><span></span>${link}</div>
       </div>
     </div>`;
@@ -692,7 +686,6 @@ async function buildMemberBlog(tpl) {
     <div class="media-body">
       ${badges}
       <p class="media-title" style="margin-top:6px">${title}</p>
-      ${desc ? `<p class="media-desc">${desc}</p>` : ""}
       <div class="media-meta">
         <span class="media-date">${date}</span>
         ${link}

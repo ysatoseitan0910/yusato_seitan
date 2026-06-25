@@ -49,12 +49,12 @@ body { font-family: 'Klee One','Noto Sans JP',sans-serif; background: var(--bg);
 nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(253,252,247,0.95); backdrop-filter: blur(10px); border-bottom: 2px dotted var(--emerald-light); z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; }
 .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .nav-logo-mark { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block; box-shadow: 0 3px 0 var(--emerald-dark); transform: rotate(-4deg); flex-shrink: 0; }
-.nav-logo-main { font-weight: 600; color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em; white-space: nowrap; }
+.nav-logo-main { font-weight: 600; color: var(--emerald-dark); font-size: 13px; letter-spacing: 0.04em; white-space: nowrap; }
 .nav-links { display: flex; gap: 0; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
-.nav-links a { text-decoration: none; font-family: 'Klee One',serif; font-size: 16px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; }
+.nav-links a { text-decoration: none; font-family: 'Klee One',serif; font-size: 14px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; }
 .nav-links a:hover, .nav-links a.active { background: var(--pink-pale); color: var(--emerald-dark); }
 .nav-group { position: relative; }
-.nav-group-btn { background: none; border: none; cursor: pointer; font-family: 'Klee One',serif; font-size: 16px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+.nav-group-btn { background: none; border: none; cursor: pointer; font-family: 'Klee One',serif; font-size: 14px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
 .nav-group-btn:hover, .nav-group:has(.active) .nav-group-btn { background: var(--pink-pale); color: var(--emerald-dark); }
 .nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
 .nav-group:hover .nav-arrow { transform: rotate(180deg); }
@@ -70,11 +70,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .editor-page { max-width: 1440px; margin: 0 auto; padding: 28px 20px 64px; }
 .editor-heading { margin-bottom: 24px; }
 .editor-heading h1 { font-size: 22px; font-weight: 600; color: var(--emerald-dark); }
-.editor-heading p { font-size: 15px; color: var(--text-muted); margin-top: 4px; }
+.editor-heading p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
 /* Template tabs */
 .tpl-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.tpl-tab { padding: 8px 20px; border: 2px solid var(--border); border-radius: 99px; background: var(--white); font-family: 'Klee One',serif; font-size: 16px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+.tpl-tab { padding: 8px 20px; border: 2px solid var(--border); border-radius: 99px; background: var(--white); font-family: 'Klee One',serif; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
 .tpl-tab:hover { border-color: var(--emerald); color: var(--emerald-dark); }
 .tpl-tab.active { border-color: var(--emerald); background: var(--emerald); color: #fff; box-shadow: 2px 2px 0 var(--emerald-dark); }
 
@@ -89,7 +89,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 /* Controls */
 .controls { background: var(--white); border: 2px solid var(--ink); border-radius: 16px; padding: 22px; box-shadow: 4px 4px 0 var(--emerald); display: flex; flex-direction: column; gap: 16px; }
-.controls-title { font-size: 15px; font-weight: 600; color: var(--ink); padding-bottom: 12px; border-bottom: 2px dashed var(--border); }
+.controls-title { font-size: 13px; font-weight: 600; color: var(--ink); padding-bottom: 12px; border-bottom: 2px dashed var(--border); }
 
 /* Section label */
 .form-section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--white); background: var(--emerald-dark); padding: 3px 12px; border-radius: 99px; display: inline-block; }
@@ -97,11 +97,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 /* Fields */
 .field-block { display: flex; flex-direction: column; gap: 6px; }
-.field-label { font-size: 15px; font-weight: 500; color: var(--text-muted); }
+.field-label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
 .field-input, .field-ta, .field-select {
   width: 100%; padding: 9px 12px;
   border: 2px solid var(--border); border-radius: 10px;
-  font-family: 'Klee One',serif; font-size: 16px;
+  font-family: 'Klee One',serif; font-size: 14px;
   background: var(--bg); color: var(--ink);
   transition: border-color 0.15s;
 }
@@ -114,7 +114,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .field-radio {
   display: flex; align-items: center; gap: 5px;
   padding: 6px 14px; border: 2px solid var(--border); border-radius: 99px;
-  background: var(--bg); cursor: pointer; font-size: 16px; transition: all 0.15s;
+  background: var(--bg); cursor: pointer; font-size: 14px; transition: all 0.15s;
 }
 .field-radio.selected { border-color: var(--emerald); background: var(--emerald-pale); color: var(--emerald-dark); }
 .field-radio input[type=radio] { display: none; }
@@ -124,7 +124,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 /* Icon upload */
 .icon-section { display: flex; flex-direction: column; gap: 8px; }
-.icon-section-label { font-size: 15px; font-weight: 500; color: var(--text-muted); }
+.icon-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
 .icon-row { display: flex; align-items: center; gap: 14px; }
 .icon-thumb-wrap { position: relative; width: 68px; height: 68px; flex-shrink: 0; }
 .icon-thumb { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: none; }
@@ -133,28 +133,28 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .icon-thumb-empty { width: 68px; height: 68px; border-radius: 50%; border: 2px dashed var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-light); }
 .icon-btns { display: flex; flex-direction: column; gap: 6px; }
 #icon-file { display: none; }
-.icon-select-btn { padding: 7px 14px; border: 2px solid var(--emerald); border-radius: 8px; background: var(--emerald-pale); color: var(--emerald-dark); font-family: 'Klee One',serif; font-size: 15px; cursor: pointer; transition: all 0.15s; text-align: center; display: inline-block; white-space: nowrap; }
+.icon-select-btn { padding: 7px 14px; border: 2px solid var(--emerald); border-radius: 8px; background: var(--emerald-pale); color: var(--emerald-dark); font-family: 'Klee One',serif; font-size: 13px; cursor: pointer; transition: all 0.15s; text-align: center; display: inline-block; white-space: nowrap; }
 .icon-select-btn:hover { background: var(--emerald-light); }
 .icon-clear-btn { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: none; color: var(--text-muted); font-family: 'Klee One',serif; font-size: 12px; cursor: pointer; transition: all 0.15s; display: none; }
 .icon-clear-btn:hover { border-color: #e88; color: #c44; }
 
 /* Download / Share */
 .download-section { padding-top: 4px; display: flex; flex-direction: column; gap: 10px; }
-.download-btn { width: 100%; padding: 13px; background: var(--emerald); color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Klee One',serif; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.download-btn { width: 100%; padding: 13px; background: var(--emerald); color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Klee One',serif; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .download-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
 .download-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
-.share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Klee One',serif; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Klee One',serif; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
 .download-note { font-size: 11px; color: var(--text-light); text-align: center; }
-.submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Klee One',serif; font-size: 16px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Klee One',serif; font-size: 14px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
 .submit-card-btn:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 #8b2050; }
 .submit-card-btn:active { transform:translate(2px,2px); box-shadow:1px 1px 0 #8b2050; }
 .submit-card-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:3px 3px 0 #8b2050; }
-.card-result { display:none; padding:10px 14px; border-radius:10px; font-size: 15px; line-height:1.6; font-family:'Klee One',serif; text-align:center; }
+.card-result { display:none; padding:10px 14px; border-radius:10px; font-size: 13px; line-height:1.6; font-family:'Klee One',serif; text-align:center; }
 .card-result.ok { background:var(--emerald-pale); color:var(--emerald-dark); border:1px solid var(--emerald-light); }
 .card-result.err { background:#fef0f0; color:#b00; border:1px solid #fcc; }
-.share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Klee One',serif; font-size: 15px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
+.share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Klee One',serif; font-size: 13px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
 .share-cb-label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--emerald); cursor:pointer; flex-shrink:0; }
 
 /* Canvas click feedback */
@@ -177,7 +177,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 /* Illustration picker */
 .illust-section { display: flex; flex-direction: column; gap: 8px; }
-.illust-section-label { font-size: 15px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.illust-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .illust-count { font-size: 11px; font-weight: 600; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 99px; padding: 2px 9px; }
 .illust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .illust-cell { position: relative; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; overflow: visible; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 4px; }
@@ -198,11 +198,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .hamburger { display: block; }
   .nav-links { display: none; flex-direction: column; align-items: stretch; position: absolute; top: var(--nav-h); left: 0; right: 0; transform: none; background: rgba(253,252,247,0.98); border-bottom: 2px dotted var(--emerald-light); padding: 8px 16px 16px; gap: 2px; z-index: 199; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
   .nav-links.open { display: flex; }
-  .nav-links a { padding: 10px 14px; font-size: 15px; border-radius: 8px; }
+  .nav-links a { padding: 10px 14px; font-size: 13px; border-radius: 8px; }
   .nav-sep { display: none; }
   .nav-committee-label { display: block; font-size: 10px; letter-spacing: 0.06em; color: var(--text-light); padding: 10px 14px 2px; border-top: 1px dashed var(--border); margin-top: 4px; }
   .nav-group { width: 100%; }
-  .nav-group-btn { width: 100%; justify-content: space-between; padding: 10px 14px; font-size: 15px; border-radius: 8px; }
+  .nav-group-btn { width: 100%; justify-content: space-between; padding: 10px 14px; font-size: 13px; border-radius: 8px; }
   .nav-dropdown { position: static; border: none; box-shadow: none; background: transparent; border-radius: 0; padding: 0 0 4px 16px; min-width: unset; display: none; }
   .nav-group.open .nav-dropdown { display: flex; }
   .nav-group.open .nav-arrow { transform: rotate(180deg); }
@@ -223,7 +223,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   <div class="nav-links" id="nav-links">
     <a href="top.html">トップ</a>
     <div class="nav-group">
-      <button class="nav-group-btn">さとうゆ <span class="nav-arrow">▾</span></button>
+      <button class="nav-group-btn">佐藤優羽さん情報 <span class="nav-arrow">▾</span></button>
       <div class="nav-dropdown">
         <a href="yu.html">佐藤優羽さんについて</a>
         <a href="yunews.html">News</a>
