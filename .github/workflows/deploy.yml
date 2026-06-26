@@ -63,6 +63,7 @@ jobs:
           DB_WEB:              ${{ secrets.DB_WEB }}
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
           DB_QUIZ:             ${{ secrets.DB_QUIZ }}
+          DB_HISTORY:          ${{ secrets.DB_HISTORY }}
 
       - name: Update thumbnails for newly synced YU_NEWS entries
         run: node update_media_thumbnails.js

@@ -20,6 +20,7 @@ const DB = {
   schedule:      process.env.DB_SCHEDULE,
   quiz:          process.env.DB_QUIZ,
   memberBlog:    process.env.DB_MEMBER_BLOG,
+  history:       process.env.DB_HISTORY || "38928fd03f5380bf981ffffd95c540bd",
 };
 
 // ── ヘルパー ──
@@ -109,7 +110,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN","CARD","MESSAGE"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","TERMS","JOIN","CARD","MESSAGE","HISTORY"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -911,21 +912,152 @@ async function buildYuNews(tpl) {
 }
 
 async function buildLemino(tpl) {
-  const pages = await queryDB(DB.lemino);
-  console.log(`  Leminoサムネイル取得中 (${pages.length}件)...`);
-  const thumbs = await Promise.all(pages.map(p => {
+  const today = new Date().toISOString().split('T')[0];
+
+  // 配信終了予定が過ぎた「日向坂で会いましょう」エントリを自動非公開化
+  // queryDB は Published=true のみ返すため、期限切れを事前にチェックする
+  const allLemino = await queryDB(DB.lemino);
+  const expired = allLemino.filter(p => {
+    const prog = getSelect(p, "Program") || getText(p, "Program");
+    const expiry = getDate(p, "配信終了予定");
+    return prog === "日向坂で会いましょう" && expiry && expiry < today;
+  });
+  if (expired.length > 0) {
+    console.log(`  Lemino: 配信終了済み ${expired.length}件を非公開化...`);
+    await Promise.all(expired.map(p =>
+      notion.pages.update({ page_id: p.id, properties: { Published: { checkbox: false } } })
+        .catch(e => console.error(`    ❌ 非公開化失敗: ${p.id}`, e.message))
+    ));
+  }
+
+  // 非公開化後の有効エントリで表示
+  const activePages = allLemino.filter(p => !expired.some(e => e.id === p.id));
+
+  console.log(`  Leminoサムネイル取得中 (${activePages.length}件)...`);
+  const thumbs = await Promise.all(activePages.map(p => {
     const stored = getMedia(p);
     return stored ? Promise.resolve(stored) : fetchLeminoThumbnail(getUrl(p));
   }));
-  const cards = pages.map((p, i) => mediaCard(p, "Lemino", thumbs[i])).join("\n");
-  const body = `<div class="grid-2">
-    <!-- GALLERY_START -->
-    ${cards}
-    <!-- GALLERY_END -->
+
+  // Programごとにグループ化
+  const PROGRAM_ORDER = ["日向坂になりましょう", "日向坂で会いましょう"];
+  const groups = {};
+  activePages.forEach((p, i) => {
+    const prog = getSelect(p, "Program") || getText(p, "Program") || "その他";
+    if (!groups[prog]) groups[prog] = [];
+    groups[prog].push({ page: p, thumb: thumbs[i] });
+  });
+
+  const displayOrder = [
+    ...PROGRAM_ORDER,
+    ...Object.keys(groups).filter(k => !PROGRAM_ORDER.includes(k)),
+  ];
+
+  const sections = displayOrder
+    .filter(prog => groups[prog]?.length)
+    .map(prog => {
+      const cards = groups[prog].map(({ page: p, thumb }) => mediaCard(p, "Lemino", thumb)).join("\n");
+      return `<h2 class="program-heading">${prog}</h2>
+    <div class="grid-2 program-grid">
+      ${cards}
+    </div>`;
+    })
+    .join("\n");
+
+  const body = `<div class="lemino-programs">
+    ${sections}
   </div>`;
   return buildPage(tpl, "Leminoまとめ", "LEMINO", "Lemino <em>まとめ</em>", "佐藤優羽さんのLemino配信をまとめています", body, "lemino.html");
 }
 
+
+// ── ヒストリーページ ──
+async function buildHistory(tpl) {
+  const pages = await queryDB(DB.history, [{ property: "Date", direction: "ascending" }]);
+
+  if (pages.length === 0) {
+    const body = `<p style="color:var(--text-muted);text-align:center;padding:60px 0">データがありません</p>`;
+    return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
+  }
+
+  // 年ごとにグループ化
+  const byYear = {};
+  for (const p of pages) {
+    const date = getDate(p);
+    const year = date ? date.slice(0, 4) : "不明";
+    if (!byYear[year]) byYear[year] = [];
+    byYear[year].push(p);
+  }
+
+  const sections = Object.entries(byYear).map(([year, items]) => {
+    const entries = items.map(p => {
+      const title = getText(p, "Name");
+      const date = fmtDate(getDate(p));
+      const desc = getText(p, "Description");
+      const url = getUrl(p);
+      const img = getMedia(p);
+      return `
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          ${img ? `<img class="tl-img" src="${escAttr(img)}" alt="${escAttr(title)}" loading="lazy">` : ""}
+          <div class="tl-body">
+            <span class="tl-date">${date}</span>
+            <p class="tl-title">${url ? `<a href="${escAttr(url)}" target="_blank" rel="noopener">${title}</a>` : title}</p>
+            ${desc ? `<p class="tl-desc">${desc.replace(/\n/g, "<br>")}</p>` : ""}
+          </div>
+        </div>`;
+    }).join("\n");
+    return `
+      <div class="tl-year-block">
+        <div class="tl-year-label">${year}</div>
+        <div class="tl-track">${entries}</div>
+      </div>`;
+  }).join("\n");
+
+  const body = `
+<style>
+.tl-wrap { max-width: 780px; margin: 0 auto; }
+.tl-year-block { margin-bottom: 32px; }
+.tl-year-label {
+  font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700;
+  color: var(--emerald-dark); padding-left: 18px;
+  border-left: 5px solid var(--emerald); margin-bottom: 12px;
+}
+.tl-track {
+  padding-left: 32px;
+  border-left: 3px solid var(--emerald-light);
+  margin-left: 12px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tl-item {
+  position: relative; display: flex; gap: 14px; align-items: flex-start;
+  background: #fff; border: 2px solid var(--border);
+  border-radius: 14px; padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.tl-dot {
+  position: absolute; left: -42px; top: 18px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--emerald); border: 2px solid #fff;
+  box-shadow: 0 0 0 2px var(--emerald);
+}
+.tl-img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.tl-body { flex: 1; min-width: 0; }
+.tl-date { font-family: 'Caveat', cursive; font-size: 13px; color: var(--text-light); display: block; margin-bottom: 2px; }
+.tl-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.5; margin: 0; }
+.tl-title a { color: var(--emerald-dark); text-decoration: none; }
+.tl-title a:hover { text-decoration: underline; }
+.tl-desc { font-size: 12px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.7; }
+@media (max-width: 768px) {
+  .tl-year-label { font-size: 24px; }
+  .tl-item { flex-direction: column; }
+  .tl-img { width: 100%; height: 140px; }
+}
+</style>
+<div class="tl-wrap">${sections}</div>`;
+
+  return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
+}
 
 // ── クイズページ ──
 async function buildQuiz(tpl) {
@@ -1445,6 +1577,7 @@ async function main() {
     "tiktok.html":     { fn: buildTiktok,    active: "TIKTOK" },
     "youtube.html":    { fn: buildYoutube,   active: "YOUTUBE" },
     "lemino.html":     { fn: buildLemino,    active: "LEMINO" },
+    "history.html":   { fn: buildHistory,   active: "HISTORY" },
     "quiz.html":       { fn: buildQuiz,      active: "QUIZ" },
   };
 

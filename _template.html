@@ -396,6 +396,15 @@ a.schedule-row:hover { background: var(--butter); }
 /* ── Grid ── */
 .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
 .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+/* ── Lemino Program グループ見出し ── */
+.program-heading {
+  font-family: 'Klee One', serif; font-size: 18px; font-weight: 700;
+  color: var(--emerald-dark); margin: 28px 0 12px;
+  padding: 8px 16px; background: var(--emerald-pale);
+  border-left: 4px solid var(--emerald); border-radius: 0 8px 8px 0;
+}
+.lemino-programs > .program-heading:first-child { margin-top: 0; }
+.program-grid { margin-bottom: 8px; }
 @media (max-width: 900px) {
   .grid-3 { grid-template-columns: repeat(2,1fr); }
   .grid-2 { grid-template-columns: 1fr; }
@@ -662,6 +671,7 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
       <div class="nav-dropdown">
         <a href="yu.html" {{ACTIVE_YU}}>佐藤優羽さんについて</a>
         <a href="yunews.html" {{ACTIVE_YUNEWS}}>News</a>
+        <a href="history.html" {{ACTIVE_HISTORY}}>ヒストリー</a>
         <a href="quiz.html" {{ACTIVE_QUIZ}}>クイズ</a>
       </div>
     </div>
