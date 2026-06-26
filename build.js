@@ -336,8 +336,8 @@ function deadlineBadge(deadlineStr) {
   let cls, label;
   if (days < 0)      { cls = "deadline-past";   label = `締切済 ${dlFmt}`; }
   else if (days === 0){ cls = "deadline-today";  label = `⏰ 本日締切！`; }
-  else if (days <= 3) { cls = "deadline-urgent"; label = `⏰ 締切 ${dlFmt}（あと${days}日）`; }
-  else if (days <= 7) { cls = "deadline-soon";   label = `締切 ${dlFmt}（あと${days}日）`; }
+  else if (days <= 3) { cls = "deadline-urgent"; label = `⏰ 締切 ${dlFmt}<br>（あと${days}日）`; }
+  else if (days <= 7) { cls = "deadline-soon";   label = `締切 ${dlFmt}<br>（あと${days}日）`; }
   else                { cls = "deadline-normal";  label = `締切 ${dlFmt}`; }
   return `<span class="deadline-badge ${cls}">${label}</span>`;
 }
