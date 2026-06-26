@@ -985,36 +985,66 @@ async function buildHistory(tpl) {
     return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
   }
 
-  // 年ごとにグループ化
+  // Type → 色のパレット（ハッシュで安定割り当て）
+  const TYPE_PALETTE = [
+    { bg: "#dbeafe", color: "#1d4ed8" }, // 青
+    { bg: "#dcfce7", color: "#15803d" }, // 緑
+    { bg: "#fef3c7", color: "#b45309" }, // 黄
+    { bg: "#f3e8ff", color: "#7c3aed" }, // 紫
+    { bg: "#ffedd5", color: "#c2410c" }, // オレンジ
+    { bg: "#fce7f3", color: "#be185d" }, // ピンク
+    { bg: "#e0f2fe", color: "#0369a1" }, // 水色
+    { bg: "#fef9c3", color: "#854d0e" }, // 黄緑
+  ];
+  const typeStyle = (type) => {
+    let h = 0;
+    for (const c of type) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+    const { bg, color } = TYPE_PALETTE[h % TYPE_PALETTE.length];
+    return `background:${bg};color:${color}`;
+  };
+
+  // 年 → 月 でグループ化（挿入順を保持）
   const byYear = {};
   for (const p of pages) {
     const date = getDate(p);
     const year = date ? date.slice(0, 4) : "不明";
-    if (!byYear[year]) byYear[year] = [];
-    byYear[year].push(p);
+    const month = date ? `${parseInt(date.slice(5, 7), 10)}月` : "不明";
+    if (!byYear[year]) byYear[year] = {};
+    if (!byYear[year][month]) byYear[year][month] = [];
+    byYear[year][month].push(p);
   }
 
-  const sections = Object.entries(byYear).map(([year, items]) => {
-    const entries = items.map(p => {
-      const title = getText(p, "Name");
-      const date = fmtDate(getDate(p));
-      const type = getSelect(p, "Type");
-      const url = getUrl(p);
-      const titleHtml = url
-        ? `<a href="${escAttr(url)}" target="_blank" rel="noopener">${title}</a>`
-        : title;
+  const sections = Object.entries(byYear).map(([year, months]) => {
+    const monthBlocks = Object.entries(months).map(([month, items]) => {
+      const entries = items.map(p => {
+        const title = getText(p, "Name");
+        const date = fmtDate(getDate(p));
+        const type = getSelect(p, "Type");
+        const url = getUrl(p);
+        const titleHtml = url
+          ? `<a href="${escAttr(url)}" target="_blank" rel="noopener">${title}</a>`
+          : title;
+        const typeBadge = type
+          ? `<span class="tl-type" style="${typeStyle(type)}">${type}</span>`
+          : "";
+        return `
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <span class="tl-date">${date}</span>
+            ${typeBadge}
+            <p class="tl-title">${titleHtml}</p>
+          </div>`;
+      }).join("\n");
       return `
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <span class="tl-date">${date}</span>
-          ${type ? `<span class="tl-type">${type}</span>` : ""}
-          <p class="tl-title">${titleHtml}</p>
-        </div>`;
+        <details class="tl-month">
+          <summary class="tl-month-label">${month}<span class="tl-month-count">${items.length}件</span></summary>
+          <div class="tl-track">${entries}</div>
+        </details>`;
     }).join("\n");
     return `
       <div class="tl-year-block">
         <div class="tl-year-label">${year}</div>
-        <div class="tl-track">${entries}</div>
+        ${monthBlocks}
       </div>`;
   }).join("\n");
 
@@ -1025,23 +1055,35 @@ async function buildHistory(tpl) {
 .tl-year-label {
   font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700;
   color: var(--emerald-dark); padding-left: 18px;
-  border-left: 5px solid var(--emerald); margin-bottom: 12px;
+  border-left: 5px solid var(--emerald); margin-bottom: 10px;
 }
+.tl-month { margin-left: 12px; margin-bottom: 6px; }
+.tl-month-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; color: var(--emerald-dark);
+  padding: 7px 14px; border-radius: 8px;
+  background: var(--emerald-pale); border: 1.5px solid var(--emerald-light);
+  cursor: pointer; list-style: none; user-select: none;
+}
+.tl-month-label::-webkit-details-marker { display: none; }
+.tl-month-label::before { content: '▶'; font-size: 10px; color: var(--emerald); transition: transform .2s; }
+details[open] .tl-month-label::before { transform: rotate(90deg); }
+.tl-month-count { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: auto; }
 .tl-track {
-  padding-left: 32px;
+  padding: 10px 0 4px 32px;
   border-left: 3px solid var(--emerald-light);
-  margin-left: 12px;
-  display: flex; flex-direction: column; gap: 10px;
+  margin-left: 10px;
+  display: flex; flex-direction: column; gap: 8px;
 }
 .tl-item {
   position: relative; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
-  padding: 10px 14px; background: #fff;
+  padding: 9px 14px; background: #fff;
   border: 2px solid var(--border); border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 .tl-dot {
-  position: absolute; left: -42px; top: 14px;
-  width: 10px; height: 10px; border-radius: 50%;
+  position: absolute; left: -40px; top: 13px;
+  width: 9px; height: 9px; border-radius: 50%;
   background: var(--emerald); border: 2px solid #fff;
   box-shadow: 0 0 0 2px var(--emerald);
 }
@@ -1051,8 +1093,7 @@ async function buildHistory(tpl) {
 }
 .tl-type {
   font-size: 11px; font-weight: 600; padding: 2px 8px;
-  border-radius: 20px; background: var(--emerald-pale);
-  color: var(--emerald-dark); white-space: nowrap; flex-shrink: 0;
+  border-radius: 20px; white-space: nowrap; flex-shrink: 0;
 }
 .tl-title {
   font-size: 14px; font-weight: 600; color: var(--text);
