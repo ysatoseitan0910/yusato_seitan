@@ -128,7 +128,7 @@ nav {
   background: var(--pink-pale); color: var(--emerald-dark);
 }
 .nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
-.nav-group:hover .nav-arrow { transform: rotate(180deg); }
+.nav-group.open .nav-arrow { transform: rotate(180deg); }
 .nav-dropdown {
   display: none; position: absolute;
   top: calc(100% + 4px); left: 0;
@@ -139,7 +139,7 @@ nav {
   z-index: 300; min-width: 170px;
   flex-direction: column; gap: 2px;
 }
-.nav-group:hover .nav-dropdown { display: flex; }
+.nav-group.open .nav-dropdown { display: flex; }
 .nav-dropdown a { border-radius: 10px; padding: 8px 14px; }
 .hamburger {
   display: none; background: none; border: none; cursor: pointer;
@@ -738,7 +738,7 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
         <div class="page-hero-tag">HISTORY</div>
         <h1>さとうゆ <em>ヒストリー</em></h1>
         <p>佐藤優羽さんの歩みをまとめた年表です</p>
-        <p class="last-updated">最終更新：2026/6/27 0:42:28</p>
+        <p class="last-updated">最終更新：2026/6/27 1:26:09</p>
       </div>
       <div class="content">
 <style>
@@ -3301,12 +3301,27 @@ Top Yell NEO 2026 SUMMER</a></p>
       gb.closest('.nav-group').classList.toggle('open');
     });
   });
+  // デスクトップ：マウスオーバーでドロップダウン表示、他クリックで閉じる
+  if(window.innerWidth>768){
+    var groups=Array.from(links.querySelectorAll('.nav-group'));
+    groups.forEach(function(g){
+      g.addEventListener('mouseenter',function(){
+        groups.forEach(function(o){o.classList.remove('open');});
+        g.classList.add('open');
+      });
+    });
+    document.addEventListener('click',function(e){
+      if(!links.contains(e.target)){
+        groups.forEach(function(g){g.classList.remove('open');});
+      }
+    });
+  }
 })();
 </script>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/27 0:42:28</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/27 1:26:09</p>
 </footer>
 
 <script>
