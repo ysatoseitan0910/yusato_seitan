@@ -207,9 +207,18 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .nav-group:hover .nav-dropdown { display: none; }
   .nav-group.open .nav-dropdown { display: flex; }
   .nav-group.open .nav-arrow { transform: rotate(180deg); }
-  .editor-body { grid-template-columns: 1fr; }
-  .canvas-wrap { position: static; }
-  .controls { order: -1; }
+  .editor-body { grid-template-columns: 1fr 140px; gap: 12px; }
+  .canvas-wrap {
+    position: sticky;
+    top: calc(var(--nav-h) + 8px);
+    max-height: calc(100vh - var(--nav-h) - 24px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+  }
+  .canvas-label { font-size: 11px; margin-bottom: 6px; }
+  .canvas-size-note { display: none; }
+  .canvas-click-hint { display: none; }
 }
 /* ── Debug: フォント切替スイッチ ── */
 body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
