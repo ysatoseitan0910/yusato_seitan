@@ -661,18 +661,20 @@ function getMemberNames(page) {
 async function buildMemberBlog(tpl) {
   const pages = await queryDB(DB.memberBlog);
 
-  // 日向坂46メンバー番号順
+  // 日向坂46メンバー番号順（ポカを先頭、以降は背番号順）
   const MEMBER_ORDER = [
-    "金村美玖","小坂菜緒","上村ひなの","髙橋未来虹","森本茉莉","山口陽世",
+    "ポカ",
+    "金村美玖","小坂菜緒","上村ひなの","高橋未来虹","森本茉莉","山口陽世",
     "石塚瑠季","小西夏菜実","清水理央","正源司陽子","竹内希来里","平尾帆夏",
     "平岡海月","藤嶋果歩","宮地すみれ","山下葉留花","渡辺莉奈","大田美月",
     "大野愛実","片山紗希","蔵盛妃那乃","坂井新奈","佐藤優羽","下田衣珠季",
-    "髙井俐香","鶴崎仁香","松尾桜",
+    "高井俐香","鶴崎仁香","松尾桜",
   ];
+  // 旧字体・異体字を統一してから照合（髙→高、嶌→嶋 など）
+  const normName = (s) => s.replace(/\s/g, "").replace(/髙/g, "高").replace(/嶌/g, "嶋");
   const memberRank = (name) => {
-    // スペースを除去して照合
-    const normalized = name.replace(/\s/g, "");
-    const idx = MEMBER_ORDER.findIndex(m => m === normalized || m.includes(normalized) || normalized.includes(m));
+    const n = normName(name);
+    const idx = MEMBER_ORDER.findIndex(m => normName(m) === n);
     return idx === -1 ? 999 : idx;
   };
 
