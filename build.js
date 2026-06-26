@@ -953,11 +953,16 @@ async function buildLemino(tpl) {
     ...Object.keys(groups).filter(k => !PROGRAM_ORDER.includes(k)),
   ];
 
+  const PROGRAM_LABELS = {
+    "日向坂になりましょう": "日向坂になりましょう（佐藤優羽さん登場回）",
+  };
+
   const sections = displayOrder
     .filter(prog => groups[prog]?.length)
     .map(prog => {
       const cards = groups[prog].map(({ page: p, thumb }) => mediaCard(p, "Lemino", thumb)).join("\n");
-      return `<h2 class="program-heading">${prog}</h2>
+      const label = PROGRAM_LABELS[prog] || prog;
+      return `<h2 class="program-heading">${label}</h2>
     <div class="grid-2 program-grid">
       ${cards}
     </div>`;
@@ -1544,6 +1549,7 @@ const PAGE_ALIASES = {
   tiktok:     ["tiktok.html"],
   youtube:    ["youtube.html"],
   lemino:     ["lemino.html"],
+  history:    ["history.html"],
   quiz:       ["quiz.html"],
 };
 
