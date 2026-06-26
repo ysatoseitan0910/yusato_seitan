@@ -17,7 +17,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=M+PLUS+1p:wght@400;700&family=M+PLUS+1:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;700&display=swap&family=Yomogi&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=Yomogi&display=swap" rel="stylesheet">
 <style>
 :root{
   --emerald:#3DAA78; --emerald-light:#d4ecde; --emerald-pale:#ecf7f0; --emerald-dark:#1f7a52;
@@ -29,7 +29,7 @@ html{overflow-x:clip}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   background:var(--bg); color:var(--text);
-  font-family:'Klee One','Noto Sans JP',sans-serif; line-height:1.75; min-height:100vh;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif; line-height:1.75; min-height:100vh;
   background-image:
     radial-gradient(circle at 8% 4%,var(--pink-pale) 0,transparent 2.5%),
     radial-gradient(circle at 95% 16%,var(--butter) 0,transparent 3%),
@@ -44,10 +44,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .nav-logo-text{display:flex;flex-direction:column;line-height:1.1;}
 .nav-logo-main{font-weight:600;color:var(--emerald-dark);font-size: 13px;letter-spacing:0.04em;white-space:nowrap;}
 .nav-links{display:flex;gap:0;align-items:center;position:absolute;left:50%;transform:translateX(-50%);}
-.nav-links a{text-decoration:none;font-family:'Klee One',serif;font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;}
+.nav-links a{text-decoration:none;font-family:'Zen Maru Gothic',serif;font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{background:var(--pink-pale);color:var(--emerald-dark);}
 .nav-group{position:relative;}
-.nav-group-btn{background:none;border:none;cursor:pointer;font-family:'Klee One',serif;font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:3px;}
+.nav-group-btn{background:none;border:none;cursor:pointer;font-family:'Zen Maru Gothic',serif;font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:3px;}
 .nav-group-btn:hover,.nav-group:has(.active) .nav-group-btn{background:var(--pink-pale);color:var(--emerald-dark);}
 .nav-arrow{font-size:10px;transition:transform 0.2s;display:inline-block;}
 .nav-group.open .nav-arrow{transform:rotate(180deg);}
@@ -62,7 +62,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 /* ── Hero ── */
 .hero{padding:calc(var(--nav-h) + 40px) 24px 28px;text-align:center;}
 .hero-tag{display:inline-block;background:var(--emerald);color:#fff;font-size:10px;font-weight:600;letter-spacing:0.14em;padding:3px 12px;border-radius:20px;margin-bottom:12px;}
-.hero h1{font-family:'Klee One',serif;font-size:32px;font-weight:600;line-height:1.25;color:var(--ink);}
+.hero h1{font-family:'Zen Maru Gothic',serif;font-size:32px;font-weight:600;line-height:1.25;color:var(--ink);}
 .hero h1 em{color:var(--emerald-dark);font-style:normal;}
 .hero-lead{font-size: 14px;color:var(--text-muted);margin-top:10px;}
 
@@ -78,7 +78,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .controls{display:flex;flex-direction:column;gap:20px;}
 .ctrl-group{}
 .ctrl-label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:8px;text-transform:uppercase;}
-textarea,input[type="text"]{width:100%;border:2px solid var(--border);border-radius:10px;padding:10px 13px;font-family:'Klee One',serif;font-size: 14px;color:var(--ink);background:#fff;transition:border-color 0.2s;outline:none;}
+textarea,input[type="text"]{width:100%;border:2px solid var(--border);border-radius:10px;padding:10px 13px;font-family:'Zen Maru Gothic',serif;font-size: 14px;color:var(--ink);background:#fff;transition:border-color 0.2s;outline:none;}
 textarea{resize:none;height:110px;line-height:1.7;}
 input[type="text"]{height:44px;}
 textarea:focus,input[type="text"]:focus{border-color:var(--emerald);}
@@ -86,7 +86,7 @@ textarea:focus,input[type="text"]:focus{border-color:var(--emerald);}
 
 /* ── Option buttons ── */
 .opt-btns{display:flex;gap:6px;flex-wrap:wrap;}
-.opt-btn{padding:7px 16px;border:2px solid var(--border);border-radius:20px;background:#fff;cursor:pointer;font-size: 13px;color:var(--text-muted);transition:all 0.15s;font-family:'Klee One',serif;line-height:1;}
+.opt-btn{padding:7px 16px;border:2px solid var(--border);border-radius:20px;background:#fff;cursor:pointer;font-size: 13px;color:var(--text-muted);transition:all 0.15s;font-family:'Zen Maru Gothic',serif;line-height:1;}
 .opt-btn:hover{border-color:var(--emerald-light);color:var(--emerald-dark);}
 .opt-btn.active{border-color:var(--emerald);background:var(--emerald-pale);color:var(--emerald-dark);font-weight:600;}
 
@@ -98,7 +98,7 @@ textarea:focus,input[type="text"]:focus{border-color:var(--emerald);}
 
 /* ── Action buttons ── */
 .action-row{display:flex;gap:10px;flex-direction:column;}
-.btn-primary,.btn-outline{padding:13px 18px;border-radius:24px;font-family:'Klee One',serif;font-size: 14px;font-weight:600;cursor:pointer;border:2px solid;transition:all 0.2s;width:100%;text-align:center;}
+.btn-primary,.btn-outline{padding:13px 18px;border-radius:24px;font-family:'Zen Maru Gothic',serif;font-size: 14px;font-weight:600;cursor:pointer;border:2px solid;transition:all 0.2s;width:100%;text-align:center;}
 .btn-primary{background:var(--emerald);border-color:var(--emerald);color:#fff;}
 .btn-primary:hover:not(:disabled){background:var(--emerald-dark);border-color:var(--emerald-dark);}
 .btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
@@ -126,7 +126,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
   .nav-links.open{display:flex;}
   .nav-links a{padding:10px 14px;font-size: 13px;border-radius:8px;}
   .nav-sep{display:none;}
-  .nav-committee-label{display:block;font-family:'Klee One',serif;font-size:10px;letter-spacing:0.06em;color:var(--text-light);padding:10px 14px 2px;border-top:1px dashed var(--border);margin-top:4px;}
+  .nav-committee-label{display:block;font-family:'Zen Maru Gothic',serif;font-size:10px;letter-spacing:0.06em;color:var(--text-light);padding:10px 14px 2px;border-top:1px dashed var(--border);margin-top:4px;}
   .nav-group{width:100%;}
   .nav-group-btn{width:100%;justify-content:space-between;padding:10px 14px;font-size: 13px;border-radius:8px;}
   .nav-dropdown{position:static;border:none;box-shadow:none;background:transparent;border-radius:0;padding:0 0 4px 16px;min-width:unset;display:none;}
@@ -257,7 +257,7 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
     <div class="ctrl-group">
       <span class="ctrl-label">フォント</span>
       <div class="opt-btns" id="font-btns">
-        <button class="opt-btn active" data-font="'Klee One', serif" style="font-family:'Klee One',serif">手書き</button>
+        <button class="opt-btn active" data-font="'Zen Maru Gothic', serif" style="font-family:'Zen Maru Gothic',serif">手書き</button>
         <button class="opt-btn" data-font="'Noto Sans JP', sans-serif" style="font-family:'Noto Sans JP',sans-serif">ゴシック</button>
         <button class="opt-btn" data-font="'Caveat', cursive" style="font-family:'Caveat',cursive">Casual</button>
         <button class="opt-btn" data-font="'Yomogi', cursive" style="font-family:'Yomogi',cursive">丸文字</button>
@@ -330,7 +330,7 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
 
   // ── State ──
   var MSG_DRAFT_KEY = 'satoyu_msg_draft_v1';
-  var _msgDefaults = { message: '', name: '', xid: '', font: "'Klee One', serif", size: 'medium', color: '#1a1a1a' };
+  var _msgDefaults = { message: '', name: '', xid: '', font: "'Zen Maru Gothic', serif", size: 'medium', color: '#1a1a1a' };
   var _msgSaved = null;
   try { _msgSaved = JSON.parse(localStorage.getItem(MSG_DRAFT_KEY) || 'null'); } catch(e) {}
   var state = Object.assign({}, _msgDefaults, _msgSaved || {});

@@ -725,7 +725,7 @@ async function buildMemberBlog(tpl) {
 .mbf-wrap { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
 .mbf-btn {
   padding:6px 16px; border:2px solid var(--border); border-radius:99px;
-  background:var(--white); font-family:'Klee One',serif; font-size:13px;
+  background:var(--white); font-family:'Zen Maru Gothic',serif; font-size:13px;
   color:var(--text-muted); cursor:pointer; transition:all 0.15s; line-height:1.4;
 }
 .mbf-btn:hover { border-color:var(--pink); color:#7a1535; }
@@ -1155,14 +1155,14 @@ async function buildQuiz(tpl) {
 }
 .quiz-start-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
 .quiz-start-box h2 {
-  font-family: 'Klee One',serif; font-size: 22px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',serif; font-size: 22px; font-weight: 600;
   color: var(--emerald-dark); margin-bottom: 12px;
 }
 .quiz-start-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
 .quiz-btn {
   display: inline-block; padding: 14px 36px;
   background: var(--emerald); color: #fff;
-  font-family: 'Klee One',serif; font-size: 16px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',serif; font-size: 16px; font-weight: 600;
   border: 2px solid var(--emerald-dark); border-radius: 50px;
   box-shadow: 3px 3px 0 var(--emerald-dark); cursor: pointer;
   text-decoration: none; transition: transform 0.1s,box-shadow 0.1s;
@@ -1182,13 +1182,13 @@ async function buildQuiz(tpl) {
   background: #fff; border: 2px solid var(--ink); border-radius: 20px;
   box-shadow: 5px 5px 0 var(--butter); padding: 28px 24px; margin-bottom: 20px;
 }
-.quiz-q-text { font-family: 'Klee One',serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
+.quiz-q-text { font-family: 'Zen Maru Gothic',serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
 
 .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 .quiz-opt-btn {
   width: 100%; padding: 14px 18px; text-align: left;
   background: #fff; border: 2px solid var(--border); border-radius: 14px;
-  font-family: 'Klee One',serif; font-size: 14px; color: var(--text);
+  font-family: 'Zen Maru Gothic',serif; font-size: 14px; color: var(--text);
   cursor: pointer; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
   line-height: 1.6;
 }
@@ -1214,7 +1214,7 @@ async function buildQuiz(tpl) {
 .quiz-result-label { font-size: 22px; margin-bottom: 8px; }
 .quiz-result-exp { font-size: 13px; color: var(--text-muted); line-height: 1.85; margin-bottom: 14px; }
 .quiz-source-link {
-  display: inline-block; font-family: 'Klee One',serif; font-size: 12px;
+  display: inline-block; font-family: 'Zen Maru Gothic',serif; font-size: 12px;
   color: var(--emerald-dark); text-decoration: none; border-bottom: 1px solid var(--emerald-light);
   margin-bottom: 16px;
 }
@@ -1239,7 +1239,7 @@ async function buildQuiz(tpl) {
 .quiz-score-circle .score-den {
   font-family: 'Caveat',cursive; font-size: 16px; color: rgba(255,255,255,0.8);
 }
-.quiz-final-msg { font-family: 'Klee One',serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.quiz-final-msg { font-family: 'Zen Maru Gothic',serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
 .quiz-final-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
 .quiz-final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
