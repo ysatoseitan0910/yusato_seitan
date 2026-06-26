@@ -671,7 +671,7 @@ async function buildMemberBlog(tpl) {
     "高井俐香","鶴崎仁香","松尾桜",
   ];
   // 旧字体・異体字を統一してから照合（髙→高、嶌→嶋 など）
-  const normName = (s) => s.replace(/\s/g, "").replace(/髙/g, "高").replace(/嶌/g, "嶋");
+  const normName = (s) => s.replace(/\s/g, "").normalize("NFKC").replace(/髙/g, "高").replace(/嶌/g, "嶋");
   const memberRank = (name) => {
     const n = normName(name);
     const idx = MEMBER_ORDER.findIndex(m => normName(m) === n);
