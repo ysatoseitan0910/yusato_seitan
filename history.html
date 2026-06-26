@@ -6,18 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/images/favicon.png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
-<title>さとうゆクイズ | さとうゆほーむ</title>
-<meta name="description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
+<title>ヒストリー | さとうゆほーむ</title>
+<meta name="description" content="佐藤優羽さんの歩みをまとめた年表です">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="さとうゆほーむ">
-<meta property="og:title" content="さとうゆクイズ | さとうゆほーむ">
-<meta property="og:description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
-<meta property="og:url" content="https://satoyu.info/quiz.html">
+<meta property="og:title" content="ヒストリー | さとうゆほーむ">
+<meta property="og:description" content="佐藤優羽さんの歩みをまとめた年表です">
+<meta property="og:url" content="https://satoyu.info/history.html">
 <meta property="og:image" content="https://satoyu.info/images/ogp.png">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="さとうゆクイズ | さとうゆほーむ">
-<meta name="twitter:description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
+<meta name="twitter:title" content="ヒストリー | さとうゆほーむ">
+<meta name="twitter:description" content="佐藤優羽さんの歩みをまとめた年表です">
 <meta name="twitter:image" content="https://satoyu.info/images/ogp.png">
 <link rel="canonical" href="{{OGP_URL}}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -671,8 +671,8 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
       <div class="nav-dropdown">
         <a href="yu.html" >佐藤優羽さんについて</a>
         <a href="yunews.html" >News</a>
-        <a href="history.html" >ヒストリー</a>
-        <a href="quiz.html" class="active">クイズ</a>
+        <a href="history.html" class="active">ヒストリー</a>
+        <a href="quiz.html" >クイズ</a>
       </div>
     </div>
     <div class="nav-group">
@@ -721,310 +721,12 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
 
 
       <div class="page-hero">
-        <div class="page-hero-tag">SATOYU QUIZ</div>
-        <h1>さとうゆ <em>クイズ</em></h1>
-        <p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p>
+        <div class="page-hero-tag">HISTORY</div>
+        <h1>さとうゆ <em>ヒストリー</em></h1>
+        <p>佐藤優羽さんの歩みをまとめた年表です</p>
         <p class="last-updated">最終更新：2026/6/26 16:00:14</p>
       </div>
-      <div class="content">
-<style>
-.quiz-wrap { max-width: 680px; margin: 0 auto; }
-.quiz-screen { display: none; }
-.quiz-screen.active { display: block; }
-.quiz-start-box {
-  text-align: center; padding: 48px 24px;
-  background: #fff; border: 2px solid var(--ink); border-radius: 24px;
-  box-shadow: 6px 6px 0 var(--pink);
-}
-.quiz-start-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
-.quiz-start-box h2 {
-  font-family: 'Klee One',serif; font-size: 22px; font-weight: 600;
-  color: var(--emerald-dark); margin-bottom: 12px;
-}
-.quiz-start-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
-.quiz-btn {
-  display: inline-block; padding: 14px 36px;
-  background: var(--emerald); color: #fff;
-  font-family: 'Klee One',serif; font-size: 16px; font-weight: 600;
-  border: 2px solid var(--emerald-dark); border-radius: 50px;
-  box-shadow: 3px 3px 0 var(--emerald-dark); cursor: pointer;
-  text-decoration: none; transition: transform 0.1s,box-shadow 0.1s;
-}
-.quiz-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
-.quiz-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
-.quiz-btn.pink { background: var(--pink); border-color: #c8456e; box-shadow: 3px 3px 0 #c8456e; color: #fff; }
-.quiz-btn.pink:hover { box-shadow: 4px 4px 0 #c8456e; }
-
-.quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-.quiz-counter { font-family: 'Caveat',cursive; font-size: 18px; color: var(--text-muted); white-space: nowrap; }
-.quiz-bar-wrap { flex: 1; height: 8px; background: var(--emerald-light); border-radius: 4px; overflow: hidden; }
-.quiz-bar { height: 100%; background: var(--emerald); border-radius: 4px; transition: width 0.4s ease; }
-.quiz-score-live { font-family: 'Caveat',cursive; font-size: 16px; color: var(--emerald-dark); white-space: nowrap; }
-
-.quiz-q-box {
-  background: #fff; border: 2px solid var(--ink); border-radius: 20px;
-  box-shadow: 5px 5px 0 var(--butter); padding: 28px 24px; margin-bottom: 20px;
-}
-.quiz-q-text { font-family: 'Klee One',serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
-
-.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.quiz-opt-btn {
-  width: 100%; padding: 14px 18px; text-align: left;
-  background: #fff; border: 2px solid var(--border); border-radius: 14px;
-  font-family: 'Klee One',serif; font-size: 14px; color: var(--text);
-  cursor: pointer; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-  line-height: 1.6;
-}
-.quiz-opt-btn:hover:not(:disabled) {
-  border-color: var(--emerald); background: var(--emerald-pale);
-  box-shadow: 2px 2px 0 var(--emerald-light);
-}
-.quiz-opt-btn.correct {
-  border-color: var(--emerald-dark); background: var(--emerald-pale);
-  box-shadow: 3px 3px 0 var(--emerald-dark); font-weight: 600;
-}
-.quiz-opt-btn.wrong {
-  border-color: #c8456e; background: var(--pink-pale);
-  box-shadow: 3px 3px 0 #c8456e;
-}
-.quiz-opt-btn:disabled { cursor: default; }
-
-.quiz-result-box {
-  background: var(--cream); border: 2px dashed var(--emerald);
-  border-radius: 16px; padding: 20px 22px; margin-bottom: 20px;
-  animation: fadeUp 0.3s ease;
-}
-.quiz-result-label { font-size: 22px; margin-bottom: 8px; }
-.quiz-result-exp { font-size: 13px; color: var(--text-muted); line-height: 1.85; margin-bottom: 14px; }
-.quiz-source-link {
-  display: inline-block; font-family: 'Klee One',serif; font-size: 12px;
-  color: var(--emerald-dark); text-decoration: none; border-bottom: 1px solid var(--emerald-light);
-  margin-bottom: 16px;
-}
-.quiz-source-link:hover { color: var(--pink); border-color: var(--pink); }
-.quiz-next-wrap { text-align: right; }
-
-.quiz-final-box {
-  text-align: center; padding: 48px 24px;
-  background: #fff; border: 2px solid var(--ink); border-radius: 24px;
-  box-shadow: 6px 6px 0 var(--emerald-light);
-}
-.quiz-score-circle {
-  width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 24px;
-  background: var(--emerald); border: 4px solid var(--emerald-dark);
-  box-shadow: 4px 4px 0 var(--emerald-dark);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.quiz-score-circle .score-num {
-  font-family: 'Caveat',cursive; font-size: 48px; font-weight: 700;
-  color: #fff; line-height: 1;
-}
-.quiz-score-circle .score-den {
-  font-family: 'Caveat',cursive; font-size: 16px; color: rgba(255,255,255,0.8);
-}
-.quiz-final-msg { font-family: 'Klee One',serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.quiz-final-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
-.quiz-final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-@media (max-width: 600px) {
-  .quiz-q-text { font-size: 15px; }
-  .quiz-opt-btn { font-size: 13px; padding: 12px 14px; }
-}
-</style>
-
-<div class="quiz-wrap">
-
-  <!-- ── スタート画面 ── -->
-  <div id="quiz-start" class="quiz-screen active">
-    <div class="quiz-start-box">
-      <div class="quiz-start-icon">✨</div>
-      <h2>さとうゆクイズ</h2>
-      <p>
-        佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！<br>
-        全10問からランダム5問に挑戦しよう♪
-      </p>
-      <button class="quiz-btn" onclick="startQuiz()">スタート！</button>
-    </div>
-  </div>
-
-  <!-- ── 問題画面 ── -->
-  <div id="quiz-question" class="quiz-screen">
-    <div class="quiz-header">
-      <span class="quiz-counter">問 <span id="q-num">1</span> / <span id="q-total">10</span></span>
-      <div class="quiz-bar-wrap">
-        <div class="quiz-bar" id="q-bar" style="width:10%"></div>
-      </div>
-      <span class="quiz-score-live">正解 <span id="q-score">0</span></span>
-    </div>
-
-    <div class="quiz-q-box">
-      <p class="quiz-q-text" id="q-text"></p>
-    </div>
-
-    <div class="quiz-options" id="q-options"></div>
-
-    <div id="q-result" class="quiz-result-box" style="display:none">
-      <div class="quiz-result-label" id="q-label"></div>
-      <p class="quiz-result-exp" id="q-exp"></p>
-      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener"></a>
-      <div class="quiz-next-wrap">
-        <button class="quiz-btn" id="q-next-btn" onclick="nextQuestion()">次の問題 →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── 結果画面 ── -->
-  <div id="quiz-final" class="quiz-screen">
-    <div class="quiz-final-box">
-      <div class="quiz-score-circle">
-        <span class="score-num" id="r-score">0</span>
-        <span class="score-den">/ <span id="r-total">10</span></span>
-      </div>
-      <p class="quiz-final-msg" id="r-msg"></p>
-      <p class="quiz-final-sub" id="r-sub"></p>
-      <div class="quiz-final-actions">
-        <button class="quiz-btn pink" onclick="startQuiz()">もう一度挑戦！</button>
-        <a class="quiz-btn" href="blog.html">ブログを読む</a>
-        <a class="quiz-btn" href="youtube.html">YouTube動画を見る</a>
-        <a class="quiz-btn" href="tiktok.html">TikTok動画を見る</a>
-        <a class="quiz-btn" href="lemino.html">Lemino動画を見る</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-(function(){
-  var ALL_QUESTIONS = [{"q":"佐藤優羽さんの誕生日は？","options":["2006/9/10","2007/2/14","2006/8/7","2002/9/10"],"answer":"A","explanation":"佐藤優羽さんの誕生日は2006年9月10日！2026年9月10日は20歳のお誕生日です。\nB、Cは同級生にあたる正源司陽子さん、藤嶌果歩さんのお誕生日。佐藤優羽さんの誕生日に正源司さんが「今同い年だもんね」と言った際、佐藤さんが「違います、年上です」と返答したエピソードも有名です。\n2025.09.20　ポカ公式ブログ「ダブルなしあわせ」\nhttps://www.hinatazaka46.com/s/official/diary/detail/65669\nDは同じ誕生日の金村美玖さんのお誕生日。佐藤優羽さんがひなあい初登場回で自己紹介をした際、時間が足りずに「金村美玖さんと・・・」で終わってしまっていました。","sourceUrl":"https://www.hinatazaka46.com/s/official/artist/42?ima=0000","sourceTitle":"日向坂46公式プロフィール"},{"q":"日向坂46 BRAND NEW LIVE 2025「OVER THE RAINBOW」で佐藤優羽さんが参加したユニット曲は次のうちどれ？","options":["シーラカンス","You're in my way","パクチー　ピーマン　グリーンピース","どうする？どうする？どうする？"],"answer":"C","explanation":"佐藤優羽さんは「パクチー　ピーマン　グリーンピース」を披露しました！\n櫻澤46、日向坂46のリズムゲーム「ユニゾンエアー」にも収録されていますので、気になる方は是非チェック✨\nＤの「どうする？どうする？どうする？」はMONSTER GROOVEツアーで披露したユニット曲です。","sourceUrl":"https://x.com/kh_unisonair/status/2041727743378030848","sourceTitle":"ユニゾンエアー公式X"},{"q":"日向坂で会いましょう #309-310\n【行くぞ!!五期生ga HAPPYプロフィール紹介】\nからの問題です。\n佐藤優羽さんが薙刀の型を披露しながら自己紹介をした際、流れていた曲は次のうちどれ？","options":["僕に続け","月と星が踊るMidnight","ソンナコトナイヨ","君しか勝たん"],"answer":"B","explanation":"答えはBの「月と星が踊るMidnight」！\n佐藤優羽さんは好きな日向坂46の楽曲として「月と星が躍るMidnight」や「ソンナコトナイヨ」を挙げていて、自己紹介の際には「月と星が躍るMidnight」に合わせて薙刀の型を披露しました！","sourceUrl":"","sourceTitle":"日向坂で会いましょう #310\n【行くぞ!!五期生ga HAPPYプロフィール紹介】"},{"q":"日向坂で会いましょう＃320-321\n【新入生も入ってきたし学力テストでもやっておこう！】\nからの問題です。\n自身のサイリウムカラーを英語で書きなさい、という問題に対する佐藤優羽さんの回答は次のうちどれ？","options":["write × write","white × emerald green","Emerald gleen × Emerald green","Emelald green × Emerald green"],"answer":"D","explanation":"答えはD！佐藤優羽さんのサイリウムカラーはエメラルドグリーン×エメラルドグリーンです。\n英語が少し苦手な佐藤さんは「エメラルド」の綴りを2種類書いて、部分点を取りに行った、と言われていました。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNmeWY=?pit_git_type=PIT","sourceTitle":"日向坂で会いましょう＃321\n【新入生も入ってきたし学力テストでもやっておこう！】"},{"q":"日向坂で会いましょう＃325-326\n【チーム対抗！！３分リレークッキング２０２５】\nで五期生が提案したメニューのうち、佐藤優羽さんが提案したものは次のうちどれ？","options":["ネギたっぷりたこ焼き","みんな涼しくなぁ〜れ☆きゅうりの一本漬け","本格あんかけうどん","トロピカルラーメン"],"answer":"B","explanation":"答えはBのきゅうりの一本漬け！\n佐藤優羽さんといえばたこ焼きのイメージもありますが、MONSTER GROOVEツアーのケータリング以降特にたこ焼きにハマったとのこと。\nCのあんかけうどんは蔵盛さんの提案で実際に調理されました。Dのトロピカルラーメンは大野さんの提案。どんな味を想定していたのか気になります。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNpc3E=?pit_git_type=PIT","sourceTitle":"日向坂で会いましょう＃325【チーム対抗！！３分リレークッキング２０２５】"},{"q":"日向坂になりましょう 五期生成長バラエティ ＃2\n【初回だよ！全員集合 五期生の魅力を届けましょう！！後半戦】\nからの問題です。\n佐藤優羽さんが自己紹介で特技として披露したのは次のうちどれ？","options":["博多弁で早口言葉","麻雀の得点計算","鉱石クイズ","百人一首暗誦"],"answer":"A","explanation":"答えはAの博多弁で早口言葉！\n麻雀の得点計算は勉強中とのことでした。\n佐藤優羽さんは鉱物も好きですが、鉱石クイズは高井さんが特技としてチャレンジしました。百人一首の暗誦は、佐藤優羽さんがオーディションで披露した特技の一つです。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL2dyb3VwL2IxMDM5NWI=?pit_git_type=PIT","sourceTitle":"日向坂になりましょう 五期生成長バラエティ ＃2\n【初回だよ！全員集合 五期生の魅力を届けましょう！！後半戦】"},{"q":"日向坂で会いましょう＃328-329\n【日向坂46 五期生　運動能力チェック隊！】\nからの問題です。\n佐藤優羽さんが運動経験として挙げたスポーツの組み合わせは次のうちどれ？","options":["なぎなた、水泳、体操","なぎなた、トランポリン、スケート","なぎなた、テニス、バレエ","なぎなた、剣道、アーティスティックスイミング"],"answer":"B","explanation":"答えはBの「なぎなた、トランポリン、スケート」！\nなぎなた以外の二つはあまり語られたことがないので意外でしたね。\nDのアーティスティックスイミングは三期生の森本さんがスポーツ経験として挙げていました。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNsNDY=?pit_git_type=PIT","sourceTitle":"日向坂で会いましょう＃328 【日向坂46 五期生　運動能力チェック隊！】"},{"q":"日向坂になりましょう 五期生成長バラエティ　#22 番外編\n【ワンフレーズを極めよう！】\nからの問題です。\n佐藤優羽さんが選択した楽曲は次のうちどれ？","options":["米津玄師「IRIS OUT」","CHICO with HoneyWorks「決戦スピリット」","L'arc~en~Ciel「HONEY」","宇多田ヒカル「First Love」"],"answer":"A","explanation":"答えはAの米津玄師「IRIS OUT」！\n#22の本編で習った「エッジボイス」を駆使して力強い歌声を披露し、一番上手く歌えたメンバーとして優勝を勝ち取りました！おしらさんに「伸び幅がえぐかった」と言われるくらい成長した佐藤さんの歌声に今後も注目です✨","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdvdXI=?pit_git_type=PIT","sourceTitle":"日向坂になりましょう 五期生成長バラエティ　#22 番外編　【ワンフレーズを極めよう！】"},{"q":"日向坂46五期生「新参者二〇二五 in TOKYO KABUKICHO TOWER」で佐藤優羽さんがセンターポジションを務めた楽曲は次のうちどれ？","options":["僕なんか","孤独たちよ","月と星が躍るMidnight","ガラス窓が汚れてる"],"answer":"D","explanation":"答えはDの「ガラス窓が汚れてる」！\n新参者開催記念坂道キャプテン対談生配信では、佐藤優羽さんが「オリジナルの振り付けしっかりやりたい」という意思を先輩メンバーに伝え、ダンスの動画を送ったりミーグリの合間にメモを持って質問に行ったりしていたことがキャプテン高橋未来虹さんの代打として登壇した松田好花さんから語られました✨\n","sourceUrl":"https://www.youtube.com/live/3rD4PQn_i9A?si=1lHYpFDFxLeiJayS&t=4777","sourceTitle":"【アーカイブ】『新参者 二〇二五 LIVE』開催記念 \"参\"坂道キャプテン対談生配信！【\"参\"坂道chコラボ】"},{"q":"2025年5月27日に開催された「日向坂46五期生おもてなし会」で、佐藤優羽さんが登場した後に思わず涙してしまった理由とは？","options":["会場がペンライトカラーのエメラルドグリーンに染まっていく会場を見て気持ちが高まった。","練習した通りのパフォーマンスが成功して安心した。","会場で家族の姿を見つけて安堵した。","極度の緊張でセリフを忘れてしまった。"],"answer":"A","explanation":"答えはA！\nおもてなし会では佐藤優羽さんは薙刀の演技を披露しました?\n当日の様子はYoutubeのドキュメンタリーや15thシングル『お願いバッハ！』TYPE-B収録特典映像「ひなたの裏側～the other side of HINATA～＜五期生 おもてなし会編＞」で観ることが出来るので、気になる方はぜひチェックしてみてください！","sourceUrl":"https://youtu.be/CiA5Qv2qYsA?si=T5WZPNmh4eXuw1qx&t=1949","sourceTitle":"\n日向坂46「五期生ドキュメンタリー」?おもてなし会への道のり?"}];
-  var QUIZ_SIZE = Math.min(5, ALL_QUESTIONS.length);
-
-  var state = { questions: [], idx: 0, score: 0 };
-
-  function shuffle(arr) {
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-    }
-    return a;
-  }
-
-  function showScreen(id) {
-    ['quiz-start','quiz-question','quiz-final'].forEach(function(s){
-      var el = document.getElementById(s);
-      if (el) { el.classList.remove('active'); }
-    });
-    var target = document.getElementById(id);
-    if (target) target.classList.add('active');
-  }
-
-  window.startQuiz = function() {
-    state.questions = shuffle(ALL_QUESTIONS).slice(0, QUIZ_SIZE);
-    state.idx = 0;
-    state.score = 0;
-    showScreen('quiz-question');
-    renderQuestion();
-  };
-
-  function renderQuestion() {
-    var q = state.questions[state.idx];
-    var num = state.idx + 1;
-    var total = state.questions.length;
-
-    document.getElementById('q-num').textContent = num;
-    document.getElementById('q-total').textContent = total;
-    document.getElementById('q-score').textContent = state.score;
-    document.getElementById('q-bar').style.width = (num / total * 100) + '%';
-    document.getElementById('q-text').textContent = q.q;
-
-    var optDiv = document.getElementById('q-options');
-    optDiv.innerHTML = '';
-    q.options.forEach(function(opt, i) {
-      var btn = document.createElement('button');
-      btn.className = 'quiz-opt-btn';
-      btn.textContent = opt;
-      btn.dataset.idx = i;
-      btn.onclick = function() { selectAnswer(i, q); };
-      optDiv.appendChild(btn);
-    });
-
-    var resBox = document.getElementById('q-result');
-    resBox.style.display = 'none';
-  }
-
-  function selectAnswer(choiceIdx, q) {
-    var opts = document.querySelectorAll('.quiz-opt-btn');
-    opts.forEach(function(b) { b.disabled = true; });
-
-    var labels = ['A','B','C','D'];
-    var chosen = labels[choiceIdx];
-    var correct = (q.answer || '').toUpperCase();
-    var isCorrect = chosen === correct;
-
-    if (isCorrect) {
-      state.score++;
-      opts[choiceIdx].classList.add('correct');
-    } else {
-      opts[choiceIdx].classList.add('wrong');
-      var correctIdx = labels.indexOf(correct);
-      if (correctIdx >= 0 && opts[correctIdx]) opts[correctIdx].classList.add('correct');
-    }
-
-    document.getElementById('q-score').textContent = state.score;
-    document.getElementById('q-label').textContent = isCorrect ? '⭕ 正解！' : '❌ 不正解';
-    document.getElementById('q-exp').textContent = q.explanation || '';
-
-    var srcEl = document.getElementById('q-source');
-    if (q.sourceUrl) {
-      var isBlog = q.sourceUrl.indexOf('hinatazaka46.com') >= 0;
-      var verb = isBlog ? 'を読む →' : 'を見る →';
-      srcEl.href = q.sourceUrl;
-      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '出典') + verb;
-      srcEl.style.display = '';
-    } else {
-      srcEl.style.display = 'none';
-    }
-
-    var nextBtn = document.getElementById('q-next-btn');
-    var isLast = state.idx >= state.questions.length - 1;
-    nextBtn.textContent = isLast ? '結果を見る ✨' : '次の問題 →';
-
-    document.getElementById('q-result').style.display = '';
-  }
-
-  window.nextQuestion = function() {
-    state.idx++;
-    if (state.idx >= state.questions.length) {
-      showFinal();
-    } else {
-      renderQuestion();
-    }
-  };
-
-  function showFinal() {
-    var s = state.score;
-    var t = state.questions.length;
-    document.getElementById('r-score').textContent = s;
-    document.getElementById('r-total').textContent = t;
-
-    var msgs = [
-      [t,       '🌟 全問正解！さとうゆクイズマスター！',   'さとうゆのことを知り尽くしてる…！すごい！'],
-      [t * 0.8, '✨ すばらしい！',                         'さとうゆのことをよく知ってるんですね♪'],
-      [t * 0.6, '💪 なかなか良い！',                       'もっとさとうゆを知ればパーフェクトも夢じゃない！'],
-      [t * 0.4, '🌱 もう少し！',                           'さとうゆのことをもっと知って再挑戦しよう！'],
-      [0,       '📖 さとうゆのことを知って再挑戦しよう！', '出演番組やブログでさとうゆのことを知ろう♪'],
-    ];
-    var msg = msgs[msgs.length - 1];
-    for (var i = 0; i < msgs.length; i++) {
-      if (s >= msgs[i][0]) { msg = msgs[i]; break; }
-    }
-    document.getElementById('r-msg').textContent = msg[1];
-    document.getElementById('r-sub').textContent = msg[2];
-    showScreen('quiz-final');
-  }
-})();
-</script></div>
+      <div class="content"><p style="color:var(--text-muted);text-align:center;padding:60px 0">データがありません</p></div>
     
 
 <!-- Activity Modal -->
