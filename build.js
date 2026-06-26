@@ -998,18 +998,17 @@ async function buildHistory(tpl) {
     const entries = items.map(p => {
       const title = getText(p, "Name");
       const date = fmtDate(getDate(p));
-      const desc = getText(p, "Description");
+      const type = getSelect(p, "Type");
       const url = getUrl(p);
-      const img = getMedia(p);
+      const titleHtml = url
+        ? `<a href="${escAttr(url)}" target="_blank" rel="noopener">${title}</a>`
+        : title;
       return `
         <div class="tl-item">
           <div class="tl-dot"></div>
-          ${img ? `<img class="tl-img" src="${escAttr(img)}" alt="${escAttr(title)}" loading="lazy">` : ""}
-          <div class="tl-body">
-            <span class="tl-date">${date}</span>
-            <p class="tl-title">${url ? `<a href="${escAttr(url)}" target="_blank" rel="noopener">${title}</a>` : title}</p>
-            ${desc ? `<p class="tl-desc">${desc.replace(/\n/g, "<br>")}</p>` : ""}
-          </div>
+          <span class="tl-date">${date}</span>
+          ${type ? `<span class="tl-type">${type}</span>` : ""}
+          <p class="tl-title">${titleHtml}</p>
         </div>`;
     }).join("\n");
     return `
@@ -1032,31 +1031,38 @@ async function buildHistory(tpl) {
   padding-left: 32px;
   border-left: 3px solid var(--emerald-light);
   margin-left: 12px;
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 10px;
 }
 .tl-item {
-  position: relative; display: flex; gap: 14px; align-items: flex-start;
-  background: #fff; border: 2px solid var(--border);
-  border-radius: 14px; padding: 14px 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: relative; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+  padding: 10px 14px; background: #fff;
+  border: 2px solid var(--border); border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 .tl-dot {
-  position: absolute; left: -42px; top: 18px;
+  position: absolute; left: -42px; top: 14px;
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--emerald); border: 2px solid #fff;
   box-shadow: 0 0 0 2px var(--emerald);
 }
-.tl-img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
-.tl-body { flex: 1; min-width: 0; }
-.tl-date { font-family: 'Caveat', cursive; font-size: 13px; color: var(--text-light); display: block; margin-bottom: 2px; }
-.tl-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.5; margin: 0; }
+.tl-date {
+  font-family: 'Caveat', cursive; font-size: 13px;
+  color: var(--text-light); white-space: nowrap; flex-shrink: 0;
+}
+.tl-type {
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border-radius: 20px; background: var(--emerald-pale);
+  color: var(--emerald-dark); white-space: nowrap; flex-shrink: 0;
+}
+.tl-title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  line-height: 1.5; margin: 0; flex: 1; min-width: 0;
+}
 .tl-title a { color: var(--emerald-dark); text-decoration: none; }
 .tl-title a:hover { text-decoration: underline; }
-.tl-desc { font-size: 12px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.7; }
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .tl-year-label { font-size: 24px; }
-  .tl-item { flex-direction: column; }
-  .tl-img { width: 100%; height: 140px; }
+  .tl-item { flex-direction: column; gap: 4px; }
 }
 </style>
 <div class="tl-wrap">${sections}</div>`;
