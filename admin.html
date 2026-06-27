@@ -114,6 +114,11 @@ header span { font-size: 13px; color: var(--text-muted); }
   border-color: var(--border); box-shadow: none;
   font-size: 13px;
 }
+.deploy-buttons { display: flex; flex-direction: column; gap: 8px; }
+.deploy-btn-quick { background: #fff; color: var(--text-muted); border-color: var(--border); box-shadow: 2px 2px 0 var(--border); font-size: 13px; }
+.deploy-btn-quick:hover:not(:disabled) { border-color: var(--emerald); color: var(--emerald-dark); transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--border); }
+.deploy-btn-quick:active:not(:disabled) { transform: translate(2px,2px); box-shadow: none; }
+.deploy-desc { font-size: 11px; color: var(--text-light); margin-top: 2px; }
 .deploy-status-area {
   margin-top: 8px; font-size: 12px; line-height: 1.6;
   min-height: 20px;
@@ -351,7 +356,16 @@ header span { font-size: 13px; color: var(--text-muted); }
     <!-- デプロイ -->
     <div class="deploy-section">
       <div class="sidebar-title">デプロイ</div>
-      <button class="deploy-btn" id="deployBtn" onclick="handleDeployClick()">🚀 今すぐデプロイ</button>
+      <div class="deploy-buttons">
+        <div>
+          <button class="deploy-btn" id="deployBtn" onclick="handleDeployClick('deploy.yml')">🚀 フルデプロイ</button>
+          <div class="deploy-desc">ブログ収集・サムネイル更新→全ページビルド（約5分）</div>
+        </div>
+        <div>
+          <button class="deploy-btn deploy-btn-quick" id="deployQuickBtn" onclick="handleDeployClick('deploy-quick.yml')">⚡ クイックデプロイ</button>
+          <div class="deploy-desc">Notionの最新データでビルドのみ（約1分）</div>
+        </div>
+      </div>
       <div class="deploy-status-area" id="deployStatus"></div>
       <div class="token-hint" id="tokenHint" style="display:none;">
         <span id="tokenHintText"></span>
@@ -992,9 +1006,9 @@ if (getPassword()) showMain();
 
 // ── GitHub Actions デプロイ ──
 const GH_REPO   = "ysatoseitan0910/yusato_seitan";
-const GH_WF     = "deploy.yml";
 const GH_BRANCH = "main";
 const GH_ACTIONS_URL = `https://github.com/${GH_REPO}/actions`;
+let pendingWorkflow = "deploy-quick.yml";
 
 function getGhToken() { return localStorage.getItem("gh_token") || ""; }
 function setGhToken(t) { localStorage.setItem("gh_token", t); }
@@ -1004,14 +1018,16 @@ let deployPollTimer = null;
 
 function initDeployUI() {
   const token = getGhToken();
-  const btn   = document.getElementById("deployBtn");
-  const hint  = document.getElementById("tokenHint");
-  const hintTxt = document.getElementById("tokenHintText");
-  const setup = document.getElementById("tokenSetupArea");
+  const btn      = document.getElementById("deployBtn");
+  const quickBtn = document.getElementById("deployQuickBtn");
+  const hint     = document.getElementById("tokenHint");
+  const hintTxt  = document.getElementById("tokenHintText");
+  const setup    = document.getElementById("tokenSetupArea");
   if (token) {
     btn.className = "deploy-btn";
-    btn.textContent = "🚀 今すぐデプロイ";
+    btn.textContent = "🚀 フルデプロイ";
     btn.disabled = false;
+    quickBtn.disabled = false;
     hint.style.display = "flex";
     hintTxt.textContent = "Token: ghp_***" + token.slice(-4);
     setup.style.display = "none";
@@ -1019,18 +1035,20 @@ function initDeployUI() {
   } else {
     btn.className = "deploy-btn no-token";
     btn.textContent = "⚙ Token を設定してデプロイ";
+    quickBtn.disabled = true;
     hint.style.display = "none";
     setup.style.display = "block";
   }
 }
 
-function handleDeployClick() {
+function handleDeployClick(wf) {
+  pendingWorkflow = wf;
   if (!getGhToken()) {
     document.getElementById("tokenSetupArea").style.display = "block";
     document.getElementById("githubTokenInput").focus();
     return;
   }
-  triggerDeploy();
+  triggerDeploy(wf);
 }
 
 function saveToken() {
@@ -1039,7 +1057,7 @@ function saveToken() {
   setGhToken(t);
   document.getElementById("githubTokenInput").value = "";
   initDeployUI();
-  triggerDeploy();
+  triggerDeploy(pendingWorkflow);
 }
 
 function resetToken() {
@@ -1049,16 +1067,17 @@ function resetToken() {
   setDeployStatus("", "");
 }
 
-async function triggerDeploy() {
+async function triggerDeploy(wf) {
   const token = getGhToken();
   if (!token) return;
-  const btn = document.getElementById("deployBtn");
-  btn.disabled = true;
+  const btn      = document.getElementById("deployBtn");
+  const quickBtn = document.getElementById("deployQuickBtn");
+  btn.disabled = true; quickBtn.disabled = true;
   btn.textContent = "⏳ 送信中...";
   setDeployStatus("", "");
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${GH_REPO}/actions/workflows/${GH_WF}/dispatches`,
+      `https://api.github.com/repos/${GH_REPO}/actions/workflows/${wf}/dispatches`,
       {
         method: "POST",
         headers: {
@@ -1076,18 +1095,15 @@ async function triggerDeploy() {
       setTimeout(() => pollRunStatus(0), 4000);
     } else if (res.status === 401 || res.status === 403) {
       setDeployStatus("❌ Token が無効です。再設定してください", "err");
-      btn.disabled = false;
-      btn.textContent = "🚀 今すぐデプロイ";
+      resetDeployBtn();
     } else {
       const body = await res.json().catch(() => ({}));
       setDeployStatus("❌ エラー: " + (body.message || res.status), "err");
-      btn.disabled = false;
-      btn.textContent = "🚀 今すぐデプロイ";
+      resetDeployBtn();
     }
   } catch (e) {
     setDeployStatus("❌ 接続エラー: " + e.message, "err");
-    btn.disabled = false;
-    btn.textContent = "🚀 今すぐデプロイ";
+    resetDeployBtn();
   }
 }
 
@@ -1161,14 +1177,17 @@ async function fetchLatestRunStatus() {
       deployPollTimer = setTimeout(() => pollRunStatus(0), 6000);
       document.getElementById("deployBtn").disabled = true;
       document.getElementById("deployBtn").textContent = "⏳ 実行中...";
+      document.getElementById("deployQuickBtn").disabled = true;
     }
   } catch (e) { /* silent */ }
 }
 
 function resetDeployBtn() {
-  const btn = document.getElementById("deployBtn");
+  const btn      = document.getElementById("deployBtn");
+  const quickBtn = document.getElementById("deployQuickBtn");
   btn.disabled = false;
-  btn.textContent = "🚀 今すぐデプロイ";
+  btn.textContent = "🚀 フルデプロイ";
+  quickBtn.disabled = false;
 }
 
 function clearDeployPoll() {
