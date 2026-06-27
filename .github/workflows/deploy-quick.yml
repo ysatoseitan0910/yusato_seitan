@@ -1,8 +1,6 @@
-name: Full Deploy (scrape + build)
+name: Quick Deploy (build only)
 
 on:
-  schedule:
-    - cron: "0,30 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -22,29 +20,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@0.39.0
-
-      - name: Add new blog posts
-        run: node add_blog_posts.js
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          DB_BLOG:      ${{ secrets.DB_BLOG }}
-
-      - name: Update blog thumbnails
-        run: node update_blog_thumbnails.js
-        env:
-          NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
-          DB_BLOG:         ${{ secrets.DB_BLOG }}
-          DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
-
-      - name: Update YouTube/Lemino thumbnails & TikTok captions
-        run: node update_media_thumbnails.js
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          DB_YOUTUBE:   ${{ secrets.DB_YOUTUBE }}
-          DB_LEMINO:    ${{ secrets.DB_LEMINO }}
-          DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
-          DB_TIKTOK:    ${{ secrets.DB_TIKTOK }}
+        run: npm install @notionhq/client@2.2.15
 
       - name: Build all pages
         run: node build.js
@@ -64,15 +40,6 @@ jobs:
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
           DB_QUIZ:             ${{ secrets.DB_QUIZ }}
           DB_HISTORY:          ${{ secrets.DB_HISTORY }}
-
-      - name: Update thumbnails for newly synced YU_NEWS entries
-        run: node update_media_thumbnails.js
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          DB_YOUTUBE:   ${{ secrets.DB_YOUTUBE }}
-          DB_LEMINO:    ${{ secrets.DB_LEMINO }}
-          DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
-          DB_TIKTOK:    ${{ secrets.DB_TIKTOK }}
 
       - name: Setup SSH
         run: |
