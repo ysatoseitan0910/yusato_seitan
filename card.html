@@ -416,22 +416,22 @@ const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
 
 const SHARED_FIELDS = [
   // 自己紹介
-  { id: "fan-name",        label: "ファン名",           placeholder: "さとうゆ推し",              required: true },
-  { id: "handle",          label: "X ID",               placeholder: "@satoyu_donguri_funfun",     required: true },
-  { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "2006年",    omittable: true },
-  { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "9月10日",   omittable: true },
+  { id: "fan-name",        label: "ファン名",           placeholder: "例：さとうゆ推し",              required: true },
+  { id: "handle",          label: "X ID",               placeholder: "例：@satoyu_donguri_funfun",     required: true },
+  { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "例：2006年",    omittable: true },
+  { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "例：9月10日",   omittable: true },
   { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
+  { id: "nickname",        label: "呼ばれ方",                       placeholder: "例：ふんふん" },
   { id: "mbti",            label: "MBTI（省略可）",       type: "select", options: MBTI_OPTIONS },
-  { id: "ohisama-history", label: "おひさま歴",                    placeholder: "4回目のひな誕祭" },
-  { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド",  omittable: true },
-  { id: "nickname",        label: "呼ばれ方",                       placeholder: "ふんふん" },
-  { id: "self-intro",      label: "自由に自己紹介",      placeholder: "リトルトゥースでもあるよ！", multiline: true },
+  { id: "ohisama-history", label: "おひさま歴",                    placeholder: "例：4回目のひな誕祭" },
+  { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "例：ドレミソラシド",  omittable: true },
+  { id: "self-intro",      label: "自由に自己紹介（省略可）", placeholder: "例：リトルトゥースでもあるよ！", multiline: true, omittable: true },
   { id: "other-oshi",     label: "他推しは？（さとうゆ一推しの場合は空欄）", placeholder: "例：松田好花" },
   // 推し紹介
-  { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "ゆうちゃん",           sectionStart: "推し紹介" },
-  { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "ティザー映像" },
-  { id: "oshi-like",      label: "○○なさとうゆが大好き！",        placeholder: "もちもち" },
-  { id: "oshi-like-free", label: "好きなところ（自由記述）",    placeholder: "もちもちのゆうちゃんが大好き！", multiline: true },
+  { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "例：ゆうちゃん",           sectionStart: "推し紹介" },
+  { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "例：ティザー映像" },
+  { id: "oshi-like",      label: "○○なさとうゆが大好き！",        placeholder: "例：もちもち" },
+  { id: "oshi-like-free", label: "好きなところ（自由記述・省略可）", placeholder: "例：ライブ終わりの「ありがとうございました！」", multiline: true, omittable: true },
   // My Best ライブ
   { id: "best-live-1-live", label: "1. ライブ名", placeholder: "例：新参者",                       sectionStart: "My Best さとうゆ（ライブ）" },
   { id: "best-live-1-song", label: "　　楽曲名",  placeholder: "例：ガラス窓が汚れてる" },
@@ -445,7 +445,7 @@ const SHARED_FIELDS = [
   { id: "best-var-3",  label: "3.", placeholder: "例：ひなこいリアルイベントの読み聞かせ" },
   // 愛を叫ぼう
   { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
-  { id: "oshi-love",      label: "自由に愛を叫ぼう！",           placeholder: "さとうゆが一推し！",   multiline: true },
+  { id: "oshi-love",      label: "自由に愛を叫ぼう！",           placeholder: "例：さとうゆが一推し！",   multiline: true },
 ];
 
 const TEMPLATES = [
@@ -563,7 +563,9 @@ function buildSelfIntroSegments(getV) {
   const history      = (getV("ohisama-history") || "").trim();
   const songRaw      = getV("song");
   const nickname     = (getV("nickname") || "").trim();
-  const free         = (getV("self-intro") || "").trim();
+  const freeRaw      = getV("self-intro");
+  const freeOmit     = freeRaw === "__OMIT__";
+  const free         = freeOmit ? null : (freeRaw || "").trim();
 
   const birthYearOmit = birthYearRaw === "__OMIT__";
   const birthMdOmit   = birthMdRaw   === "__OMIT__";
@@ -609,7 +611,7 @@ function buildSelfIntroSegments(getV) {
     segs.push(s("おひさまになったのは")); segs.push(i(history || BLANK, "ohisama-history")); segs.push(s("からだよ。"));
   }
 
-  segs.push(i(free || BLANK, "self-intro"));
+  if (!freeOmit) segs.push(i(free || BLANK, "self-intro"));
 
   const otherOshi = (getV("other-oshi") || "").trim();
   if (otherOshi) {
@@ -620,11 +622,13 @@ function buildSelfIntroSegments(getV) {
 }
 
 function buildOshiIntroSegments(getV) {
-  const name     = (getV("oshi-name")      || "").trim();
-  const reason   = (getV("oshi-reason")    || "").trim();
-  const like     = (getV("oshi-like")      || "").trim();
-  const likeFree = (getV("oshi-like-free") || "").trim();
-  const love     = (getV("oshi-love")      || "").trim();
+  const name         = (getV("oshi-name")      || "").trim();
+  const reason       = (getV("oshi-reason")    || "").trim();
+  const like         = (getV("oshi-like")      || "").trim();
+  const likeFreeRaw  = getV("oshi-like-free");
+  const likeFree     = likeFreeRaw === "__OMIT__" ? null : (likeFreeRaw || "").trim();
+  const loveRaw      = getV("oshi-love");
+  const love         = loveRaw === "__OMIT__" ? null : (loveRaw || "").trim();
 
   const n    = name || "彼女";
   const nInp = !!name;
@@ -648,17 +652,18 @@ function buildOshiIntroSegments(getV) {
     }
   }
 
-  if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
-  if (love) { segs.push(s("\n")); segs.push(i(love, "oshi-love")); }
+  if (likeFree !== null && likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
+  if (love !== null && love) { segs.push(s("\n")); segs.push(i(love, "oshi-love")); }
 
   return segs;
 }
 
 function buildOshiMainSegments(getV) {
-  const name      = (getV("oshi-name")      || "").trim();
-  const reason    = (getV("oshi-reason")    || "").trim();
-  const like      = (getV("oshi-like")      || "").trim();
-  const likeFree  = (getV("oshi-like-free") || "").trim();
+  const name         = (getV("oshi-name")      || "").trim();
+  const reason       = (getV("oshi-reason")    || "").trim();
+  const like         = (getV("oshi-like")      || "").trim();
+  const likeFreeRaw  = getV("oshi-like-free");
+  const likeFree     = likeFreeRaw === "__OMIT__" ? null : (likeFreeRaw || "").trim();
   const otherOshi = (getV("other-oshi")     || "").trim();
   const n    = name || BLANK;
   const s  = (t)      => ({ text: t, isInput: false });
@@ -671,7 +676,7 @@ function buildOshiMainSegments(getV) {
   }
   segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason || BLANK, "oshi-reason"));
   segs.push(s("で、")); segs.push(i(like || BLANK, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
-  if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
+  if (likeFree !== null) { segs.push(s("\n")); segs.push(i(likeFree || BLANK, "oshi-like-free")); }
   return segs;
 }
 
