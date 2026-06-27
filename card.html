@@ -598,6 +598,8 @@ function buildSelfIntroSegments(getV) {
     segs.push(s("。"));
   }
 
+  segs.push(s("みんなには")); segs.push(i(nickname || BLANK, "nickname")); segs.push(s("って呼ばれてるよ。"));
+
   // おひさま歴 / 楽曲 文
   if (songVal !== null) {
     segs.push(s("おひさまになったのは")); segs.push(i(history || BLANK, "ohisama-history"));
@@ -606,12 +608,11 @@ function buildSelfIntroSegments(getV) {
     segs.push(s("おひさまになったのは")); segs.push(i(history || BLANK, "ohisama-history")); segs.push(s("からだよ。"));
   }
 
-  segs.push(s("みんなには")); segs.push(i(nickname || BLANK, "nickname")); segs.push(s("って呼ばれてるよ。"));
   segs.push(i(free || BLANK, "self-intro"));
 
   const otherOshi = (getV("other-oshi") || "").trim();
   if (otherOshi) {
-    segs.push(s("実は・・・、")); segs.push(i(otherOshi, "other-oshi")); segs.push(s("も推してるよ。"));
+    segs.push(s("実は、さとうゆ以外にも")); segs.push(i(otherOshi, "other-oshi")); segs.push(s("も推してるよ。"));
   }
 
   return segs;
