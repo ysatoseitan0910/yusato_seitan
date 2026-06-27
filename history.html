@@ -648,17 +648,6 @@ footer .heart { color: var(--pink); }
   .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
 }
 
-/* ── Debug: フォント切替スイッチ ── */
-body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
-#debug-font-btn {
-  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-  background: #222; color: #fff; border: 2px solid #444;
-  border-radius: 10px; padding: 7px 13px;
-  font-size: 11px; font-family: monospace; cursor: pointer;
-  opacity: 0.5; transition: opacity 0.2s; white-space: nowrap;
-}
-#debug-font-btn:hover { opacity: 1; }
-#debug-font-btn.on { background: #1f7a52; border-color: #3DAA78; opacity: 0.8; }
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
@@ -738,7 +727,7 @@ body[data-dbg-font] * { font-family: var(--dbg-font-family) !important; }
         <div class="page-hero-tag">HISTORY</div>
         <h1>さとうゆ <em>ヒストリー</em></h1>
         <p>佐藤優羽さんの歩みをまとめた年表です</p>
-        <p class="last-updated">最終更新：2026/6/27 10:33:07</p>
+        <p class="last-updated">最終更新：2026/6/27 14:37:18</p>
       </div>
       <div class="content">
 <style>
@@ -3321,7 +3310,7 @@ Top Yell NEO 2026 SUMMER</a></p>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/27 10:33:07</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/27 14:37:18</p>
 </footer>
 
 <script>
@@ -3351,46 +3340,6 @@ Top Yell NEO 2026 SUMMER</a></p>
 })();
 </script>
 
-<!-- Debug: フォント切替スイッチ -->
-<button id="debug-font-btn" title="クリックでフォント切替（デバッグ用）">Ａ デフォルト</button>
-<script>
-(function(){
-  var FONTS = [
-    { key: 'default', label: 'デフォルト',         family: null },
-    { key: 'noto',    label: 'Noto Sans JP',       family: "'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif" },
-    { key: 'mplus1',  label: 'M PLUS 1',           family: "'M PLUS 1','Hiragino Sans',sans-serif" },
-    { key: 'zen-kaku',label: 'Zen Kaku Gothic New',family: "'Zen Kaku Gothic New','Hiragino Sans',sans-serif" },
-    { key: 'kosugi',  label: 'Kosugi Maru',        family: "'Kosugi Maru','Hiragino Sans',sans-serif" },
-    { key: 'mplus1p', label: 'M PLUS 1p',          family: "'M PLUS 1p','Hiragino Sans',sans-serif" },
-    { key: 'zen',     label: 'Zen Maru Gothic',    family: "'Zen Maru Gothic','Hiragino Sans',sans-serif" },
-  ];
-  var KEY = 'dbg_font';
-  var btn = document.getElementById('debug-font-btn');
-  function getIdx() {
-    var k = localStorage.getItem(KEY) || 'default';
-    for (var i = 0; i < FONTS.length; i++) { if (FONTS[i].key === k) return i; }
-    return 0;
-  }
-  function apply(idx) {
-    var f = FONTS[idx];
-    if (f.family) {
-      document.body.setAttribute('data-dbg-font', f.key);
-      document.body.style.setProperty('--dbg-font-family', f.family);
-      btn.classList.add('on');
-    } else {
-      document.body.removeAttribute('data-dbg-font');
-      document.body.style.removeProperty('--dbg-font-family');
-      btn.classList.remove('on');
-    }
-    btn.textContent = 'Ａ ' + f.label;
-    localStorage.setItem(KEY, f.key);
-  }
-  apply(getIdx());
-  btn.addEventListener('click', function() {
-    apply((getIdx() + 1) % FONTS.length);
-  });
-})();
-</script>
 
 </body>
 </html>
