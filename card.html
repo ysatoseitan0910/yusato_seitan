@@ -157,6 +157,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .card-result.err { background:#fef0f0; color:#b00; border:1px solid #fcc; }
 .share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Zen Maru Gothic',serif; font-size: 13px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
 .share-cb-label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--emerald); cursor:pointer; flex-shrink:0; }
+.omit-btn { margin-top: 4px; padding: 4px 14px; border: 1.5px solid var(--border); border-radius: 99px; background: none; color: var(--text-muted); font-family: 'Zen Maru Gothic',serif; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.omit-btn:hover { border-color: var(--text-muted); }
+.omit-btn.active { border-color: var(--text-muted); background: var(--text-muted); color: #fff; }
+.field-block.omitted .field-input, .field-block.omitted .field-ta { opacity: 0.4; }
 
 /* Canvas click feedback */
 #preview-canvas { cursor: pointer; }
@@ -380,16 +384,16 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 //  フィールド定義
 // ════════════════════════════════════════════════════════
 const FIELD_DEFAULTS = {
-  "fan-name":        "さとうゆ推し",
-  "handle":          "@さとうゆ",
-  "birth-year":      "2006年",
-  "birth-md":        "9月10日",
+  "fan-name":        "",
+  "handle":          "",
+  "birth-year":      "",
+  "birth-md":        "",
   "gender":          "無回答",
-  "mbti":            "ENFP",
-  "ohisama-history": "4回目のひな誕祭",
-  "song":            "ドレミソラシド",
-  "nickname":        "ふんふん",
-  "self-intro":      "リトルトゥースでもあるよ！",
+  "mbti":            "わからない",
+  "ohisama-history": "",
+  "song":            "",
+  "nickname":        "",
+  "self-intro":      "",
   "other-oshi":        "",
   "best-live-1-live":  "",
   "best-live-1-song":  "",
@@ -400,11 +404,11 @@ const FIELD_DEFAULTS = {
   "best-var-1":        "",
   "best-var-2":        "",
   "best-var-3":        "",
-  "oshi-name":         "ゆうちゃん",
-  "oshi-reason":       "ティザー映像",
-  "oshi-like":         "もちもち",
+  "oshi-name":         "",
+  "oshi-reason":       "",
+  "oshi-like":         "",
   "oshi-like-free":    "",
-  "oshi-love":         "さとうゆが一推し！",
+  "oshi-love":         "",
 };
 
 const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
@@ -414,12 +418,12 @@ const SHARED_FIELDS = [
   // 自己紹介
   { id: "fan-name",        label: "ファン名",           placeholder: "さとうゆ推し",              required: true },
   { id: "handle",          label: "X ID",               placeholder: "@satoyu_donguri_funfun",     required: true },
-  { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "2006年" },
-  { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "9月10日" },
+  { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "2006年",    omittable: true },
+  { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "9月10日",   omittable: true },
   { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
   { id: "mbti",            label: "MBTI（省略可）",       type: "select", options: MBTI_OPTIONS },
   { id: "ohisama-history", label: "おひさま歴",                    placeholder: "4回目のひな誕祭" },
-  { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド" },
+  { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "ドレミソラシド",  omittable: true },
   { id: "nickname",        label: "呼ばれ方",                       placeholder: "ふんふん" },
   { id: "self-intro",      label: "自由に自己紹介",      placeholder: "リトルトゥースでもあるよ！", multiline: true },
   { id: "other-oshi",     label: "他推しは？（さとうゆ一推しの場合は空欄）", placeholder: "例：松田好花" },
@@ -454,6 +458,8 @@ const TEMPLATES = [
 let tplIdx = 0;
 const CARD_DRAFT_KEY = "satoyu_card_draft_v1";
 const values = {};
+const omitted = new Set();
+const BLANK = "   ___";
 try {
   const _saved = localStorage.getItem(CARD_DRAFT_KEY);
   if (_saved) Object.assign(values, JSON.parse(_saved));
@@ -488,10 +494,14 @@ const canvas = document.getElementById("preview-canvas");
 const ctx    = canvas.getContext("2d");
 
 function tplKey(tpl, id) { return `${tpl.id}__${id}`; }
-function getVal(tpl, id) {
+function getRawVal(tpl, id) {
   const key = tplKey(tpl, id);
   if (key in values) return values[key];
-  return FIELD_DEFAULTS[id] || "";
+  return FIELD_DEFAULTS[id] !== undefined ? FIELD_DEFAULTS[id] : "";
+}
+function getVal(tpl, id) {
+  if (omitted.has(id)) return "__OMIT__";
+  return getRawVal(tpl, id);
 }
 let _cardSaveTimer;
 function setVal(tpl, id, v) {
@@ -545,46 +555,59 @@ function drawIconCircle(ctx, img, cx, cy, r, borderColor, borderW) {
 // ════════════════════════════════════════════════════════
 // {text, isInput, fieldId?} セグメント配列を返す。drawSegmentedText で入力部分だけハイライト描画する。
 function buildSelfIntroSegments(getV) {
-  const birthYear = (getV("birth-year") || "").trim();
-  const birthMd   = (getV("birth-md")   || "").trim();
-  const gender    =  getV("gender")  || "";
-  const mbti      =  getV("mbti")    || "";
-  const history   = (getV("ohisama-history") || "").trim();
-  const song      = (getV("song")            || "").trim();
-  const nickname  = (getV("nickname")        || "").trim();
-  const free      = (getV("self-intro")      || "").trim();
+  const birthYearRaw = getV("birth-year");
+  const birthMdRaw   = getV("birth-md");
+  const gender       = getV("gender")  || "";
+  const mbtiRaw      = getV("mbti")    || "";
+  const history      = (getV("ohisama-history") || "").trim();
+  const songRaw      = getV("song");
+  const nickname     = (getV("nickname") || "").trim();
+  const free         = (getV("self-intro") || "").trim();
 
-  const genderVal = (gender && gender !== "無回答")    ? gender : "";
-  const mbtiVal   = (mbti   && mbti   !== "わからない") ? mbti   : "";
-  const birthStr  = [birthYear, birthMd].filter(Boolean).join("");
+  const birthYearOmit = birthYearRaw === "__OMIT__";
+  const birthMdOmit   = birthMdRaw   === "__OMIT__";
+  const songOmit      = songRaw      === "__OMIT__";
 
-  const s = (t)       => ({ text: t, isInput: false });
-  const i = (t, fid)  => ({ text: t, isInput: true, fieldId: fid || null });
+  const birthYearVal = birthYearOmit ? null : ((birthYearRaw || "").trim() || "");
+  const birthMdVal   = birthMdOmit   ? null : ((birthMdRaw   || "").trim() || "");
+  const genderVal    = (gender && gender !== "無回答")    ? gender : "";
+  const mbtiVal      = (mbtiRaw && mbtiRaw !== "わからない") ? mbtiRaw : "";
+  const songVal      = songOmit ? null : ((songRaw || "").trim() || BLANK);
+
+  const s = (t)      => ({ text: t, isInput: false });
+  const i = (t, fid) => ({ text: t, isInput: true, fieldId: fid || null });
   const segs = [];
 
-  if (birthStr || genderVal || mbtiVal) {
-    if (birthStr || genderVal) {
+  // 生年月日 / 性別 / MBTI 文
+  const showBirth  = birthYearVal !== null || birthMdVal !== null;
+  const showGender = !!genderVal;
+  const showMbti   = !!mbtiVal;
+
+  if (showBirth || showGender || showMbti) {
+    if (showBirth || showGender) {
       segs.push(s("私は"));
-      if (birthStr) { segs.push(i(birthStr, "birth-year")); segs.push(s("生まれ")); }
-      if (genderVal) { if (birthStr) segs.push(s("の")); segs.push(i(genderVal, "gender")); }
-      if (mbtiVal)  { segs.push(s("で、MBTIは")); segs.push(i(mbtiVal, "mbti")); }
+      if (showBirth) {
+        const birthStr = (birthYearVal || "") + (birthMdVal || "") || BLANK;
+        segs.push(i(birthStr, "birth-year")); segs.push(s("生まれ"));
+      }
+      if (showGender) { if (showBirth) segs.push(s("の")); segs.push(i(genderVal, "gender")); }
+      if (showMbti)   { segs.push(s("で、MBTIは")); segs.push(i(mbtiVal, "mbti")); }
     } else {
       segs.push(s("MBTIは")); segs.push(i(mbtiVal, "mbti"));
     }
     segs.push(s("。"));
   }
 
-  if (history && song) {
-    segs.push(s("おひさまになったのは")); segs.push(i(history, "ohisama-history"));
-    segs.push(s("からで、好きな日向坂46の楽曲は")); segs.push(i(song, "song")); segs.push(s("だよ。"));
-  } else if (history) {
-    segs.push(s("おひさまになったのは")); segs.push(i(history, "ohisama-history")); segs.push(s("からだよ。"));
-  } else if (song) {
-    segs.push(s("好きな日向坂46の楽曲は")); segs.push(i(song, "song")); segs.push(s("だよ。"));
+  // おひさま歴 / 楽曲 文
+  if (songVal !== null) {
+    segs.push(s("おひさまになったのは")); segs.push(i(history || BLANK, "ohisama-history"));
+    segs.push(s("からで、好きな日向坂46の楽曲は")); segs.push(i(songVal, "song")); segs.push(s("だよ。"));
+  } else {
+    segs.push(s("おひさまになったのは")); segs.push(i(history || BLANK, "ohisama-history")); segs.push(s("からだよ。"));
   }
 
-  if (nickname) { segs.push(s("みんなには")); segs.push(i(nickname, "nickname")); segs.push(s("って呼ばれてるよ。")); }
-  if (free)     { segs.push(i(free, "self-intro")); }
+  segs.push(s("みんなには")); segs.push(i(nickname || BLANK, "nickname")); segs.push(s("って呼ばれてるよ。"));
+  segs.push(i(free || BLANK, "self-intro"));
 
   const otherOshi = (getV("other-oshi") || "").trim();
   if (otherOshi) {
@@ -630,29 +653,22 @@ function buildOshiIntroSegments(getV) {
 }
 
 function buildOshiMainSegments(getV) {
-  const name     = (getV("oshi-name")      || "").trim();
-  const reason   = (getV("oshi-reason")    || "").trim();
-  const like     = (getV("oshi-like")      || "").trim();
-  const likeFree = (getV("oshi-like-free") || "").trim();
-  const n    = name || "彼女";
-  const nInp = !!name;
+  const name      = (getV("oshi-name")      || "").trim();
+  const reason    = (getV("oshi-reason")    || "").trim();
+  const like      = (getV("oshi-like")      || "").trim();
+  const likeFree  = (getV("oshi-like-free") || "").trim();
+  const otherOshi = (getV("other-oshi")     || "").trim();
+  const n    = name || BLANK;
   const s  = (t)      => ({ text: t, isInput: false });
   const i  = (t, fid) => ({ text: t, isInput: true, fieldId: fid || null });
-  const ni = ()       => ({ text: n, isInput: nInp, fieldId: nInp ? "oshi-name" : null });
+  const ni = ()       => ({ text: n, isInput: true, fieldId: "oshi-name" });
   const segs = [];
-  segs.push(s("日向坂の一押しはもちろん")); segs.push(ni()); segs.push(s("だよ。"));
-  if (reason || like) {
+  if (!otherOshi) {
+    segs.push(s("日向坂の一推しはもちろん")); segs.push(ni()); segs.push(s("だよ。"));
     segs.push(s("\n"));
-    if (reason && like) {
-      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason, "oshi-reason"));
-      segs.push(s("で、")); segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
-    } else if (reason) {
-      segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason, "oshi-reason"));
-      segs.push(s("からで、")); segs.push(ni()); segs.push(s("が大好き！"));
-    } else {
-      segs.push(i(like, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
-    }
   }
+  segs.push(ni()); segs.push(s("を好きになったのは")); segs.push(i(reason || BLANK, "oshi-reason"));
+  segs.push(s("で、")); segs.push(i(like || BLANK, "oshi-like")); segs.push(s("な")); segs.push(ni()); segs.push(s("が大好き！"));
   if (likeFree) { segs.push(s("\n")); segs.push(i(likeFree, "oshi-like-free")); }
   return segs;
 }
@@ -861,7 +877,7 @@ function drawLoveMemo(ctx, x, y, memoW, memoH, MP, loveLines) {
   drawTape(ctx, x + memoW / 2, y - 2, 80, 20, -2, MM.tapeP);
   ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = MM.love; ctx.textAlign = "center"; ctx.textBaseline = "top";
   let lyy = y + MP + 8;
-  for (const ln of loveLines) { ctx.fillText("♡ " + ln + " ♡", x + memoW / 2, lyy); lyy += Math.ceil(16 * 1.7); }
+  for (const ln of loveLines) { ctx.fillText(ln, x + memoW / 2, lyy); lyy += Math.ceil(16 * 1.7); }
 }
 
 function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape, tapeCX, measureOnly) {
@@ -870,10 +886,23 @@ function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape,
   ctx.font = f(FS, false, "Yomogi");
   let contentH = 0;
   const lineGroups = [];
-  for (let i = 0; i < 3; i++) {
-    const raw = (items && items[i]) ? items[i] : "";
-    const lines = wrapText(ctx, `${i + 1}. ${raw}`, textMaxW);
-    lineGroups.push(lines);
+  for (let idx = 0; idx < 3; idx++) {
+    const raw = (items && items[idx]) ? items[idx] : "";
+    const prefix = `${idx + 1}. `;
+    const prefixW = ctx.measureText(prefix).width;
+    const contMaxW = textMaxW - prefixW;
+    // wrap with hanging indent: first line uses full width, subsequent use reduced width
+    const full = prefix + raw;
+    const lines = [];
+    let line = "", isFirst = true;
+    for (const ch of full) {
+      const limit = isFirst ? textMaxW : contMaxW;
+      if (ctx.measureText(line + ch).width > limit && line.length > 0) {
+        lines.push(line); line = ch; isFirst = false;
+      } else { line += ch; }
+    }
+    if (line) lines.push(line);
+    lineGroups.push({ lines, prefixW });
     contentH += Math.max(lines.length, 1) * lh;
   }
   const memoH = MP + 22 + 6 + contentH + MP;
@@ -891,8 +920,10 @@ function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape,
   ctx.fillText(label, x + MP, y + MP);
   let iy = y + MP + 22 + 6;
   ctx.font = f(FS, false, "Yomogi"); ctx.fillStyle = MM.ink;
-  for (const lines of lineGroups) {
-    for (const ln of lines) { ctx.fillText(ln, x + MP, iy); iy += lh; }
+  for (const { lines, prefixW } of lineGroups) {
+    for (let li = 0; li < lines.length; li++) {
+      ctx.fillText(lines[li], x + MP + (li > 0 ? prefixW : 0), iy); iy += lh;
+    }
   }
   return memoH;
 }
@@ -992,12 +1023,13 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
 
   const selfSegs = buildSelfIntroSegments(getV);
   const oshiSegs = buildOshiMainSegments(getV);
-  const loveVal  = (getV("oshi-love") || "").trim();
+  const loveVal  = (getV("oshi-love") || "").trim() || BLANK;
+  const BFS = FS - 1;
 
   const selfTextH = measureSegmentedText(ctx, selfSegs, TW, FS);
   const oshiTextH = measureSegmentedText(ctx, oshiSegs, TW, FS);
   ctx.font = f(16, false, "Yomogi");
-  const loveLines = wrapText(ctx, loveVal || "さとうゆが一推し！", TW - 40);
+  const loveLines = wrapText(ctx, loveVal, TW - 40);
   const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
 
   const liveItems = [1,2,3].map(n => {
@@ -1009,8 +1041,8 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
   const BEST_GAP  = 10;
   const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
-  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
-  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, FS, "", varItems,  MM.love, MM.tapeP, 0, true);
+  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, BFS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
+  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, BFS, "", varItems,  MM.love, MM.tapeP, 0, true);
   const bestBlockH = Math.max(liveBestH, varBestH);
 
   const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
@@ -1028,10 +1060,10 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
   drawPaperGrid(ctx, w, totalH);
   drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
   drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
-  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, FS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
-  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, FS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
+  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, BFS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
+  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, BFS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
   drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
-  if (loveVal) fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
+  fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
 
   mmFooter(ctx, w, totalH);
 
@@ -1161,10 +1193,33 @@ function buildFields() {
       const el = f.multiline ? document.createElement("textarea") : document.createElement("input");
       el.className = f.multiline ? "field-ta" : "field-input";
       el.placeholder = f.placeholder || "";
-      el.value = getVal(tpl, f.id);
+      el.value = getRawVal(tpl, f.id);
       if (!f.multiline) el.type = "text";
+      if (omitted.has(f.id)) { el.disabled = true; block.classList.add("omitted"); }
       el.addEventListener("input", e => { setVal(tpl, f.id, e.target.value); render(); });
       block.appendChild(el);
+
+      if (f.omittable) {
+        const omitBtn = document.createElement("button");
+        omitBtn.type = "button";
+        omitBtn.className = "omit-btn" + (omitted.has(f.id) ? " active" : "");
+        omitBtn.textContent = "無回答";
+        omitBtn.addEventListener("click", () => {
+          if (omitted.has(f.id)) {
+            omitted.delete(f.id);
+            omitBtn.classList.remove("active");
+            block.classList.remove("omitted");
+            el.disabled = false;
+          } else {
+            omitted.add(f.id);
+            omitBtn.classList.add("active");
+            block.classList.add("omitted");
+            el.disabled = true;
+          }
+          render();
+        });
+        block.appendChild(omitBtn);
+      }
     }
 
     container.appendChild(block);
