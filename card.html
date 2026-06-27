@@ -146,6 +146,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
+.mobile-action-bar { display: none; }
 .download-note { font-size: 11px; color: var(--text-light); text-align: center; }
 .submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Zen Maru Gothic',serif; font-size: 14px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
 .submit-card-btn:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 #8b2050; }
@@ -161,7 +162,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 #preview-canvas { cursor: pointer; }
 .canvas-click-hint { font-size: 12px; color: var(--emerald-dark); text-align: center; margin-top: 8px; opacity: 0.7; }
 .canvas-flash-overlay { position: absolute; border-radius: 6px; background: rgba(61,170,120,0.18); pointer-events: none; transition: opacity 0.4s; }
-.canvas-wrap { position: relative; }
 
 /* Form section divider with text */
 .field-divider-label { text-align: center; font-size: 12px; color: var(--text-muted); padding: 6px 0 4px; border-top: 1px dashed var(--border); letter-spacing: 0.06em; }
@@ -207,18 +207,19 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .nav-group:hover .nav-dropdown { display: none; }
   .nav-group.open .nav-dropdown { display: flex; }
   .nav-group.open .nav-arrow { transform: rotate(180deg); }
-  .editor-body { grid-template-columns: 140px 1fr; gap: 12px; }
-  .canvas-wrap {
-    position: sticky;
-    top: calc(var(--nav-h) + 8px);
-    max-height: calc(100vh - var(--nav-h) - 24px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 8px;
-  }
-  .canvas-label { font-size: 11px; margin-bottom: 6px; }
+  .editor-page { padding: 12px 14px 80px; }
+  .tpl-tabs { gap: 6px; margin-bottom: 14px; }
+  .tpl-tab { padding: 6px 14px; font-size: 13px; }
+  .editor-body { display: block; }
+  .canvas-wrap { position: relative; padding: 10px 12px; margin-bottom: 14px; display: flex; flex-direction: column; align-items: center; }
+  .canvas-label { align-self: flex-start; font-size: 11px; margin-bottom: 8px; }
+  #preview-canvas { height: 200px; width: auto; }
   .canvas-size-note { display: none; }
   .canvas-click-hint { display: none; }
+  .controls { padding: 16px; border-radius: 12px; }
+  .download-section { display: none; }
+  .mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 8px; z-index: 150; backdrop-filter: blur(8px); }
+  .mobile-action-bar .download-btn, .mobile-action-bar .share-x-btn { flex: 1; padding: 11px; font-size: 13px; }
 }
 </style>
 </head>
@@ -350,6 +351,12 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   </div>
 </div>
 
+<!-- モバイル用アクションバー -->
+<div class="mobile-action-bar">
+  <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
+  <button class="share-x-btn" id="mobile-share-x-btn">𝕏 X投稿</button>
+</div>
+
 <footer class="foot">
   <p>さとうゆほーむ ♥ 運営：佐藤優羽生誕祭実行委員会</p>
 </footer>
@@ -438,7 +445,7 @@ const SHARED_FIELDS = [
 
 const TEMPLATES = [
   { id: "notebook-v", name: "ノート縦型",   w: 600, customRender: true, fields: SHARED_FIELDS },
-  { id: "notebook",   name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
+  // { id: "notebook", name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -1400,6 +1407,12 @@ document.fonts.ready.then(() => {
   document.getElementById("share-x-btn").addEventListener("click", function () {
     if (document.getElementById("share-card-cb").checked) submitCard();
     shareToX();
+  });
+  document.getElementById("mobile-download-btn").addEventListener("click", function () {
+    document.getElementById("download-btn").click();
+  });
+  document.getElementById("mobile-share-x-btn").addEventListener("click", function () {
+    document.getElementById("share-x-btn").click();
   });
   initIconUpload();
 });
