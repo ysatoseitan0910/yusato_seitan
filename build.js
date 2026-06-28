@@ -497,7 +497,7 @@ async function buildIndex(tpl) {
       links: [{href:"committee.html",text:"委員会News"},{href:"activities.html",text:"活動報告"},{href:"about.html",text:"委員会について"},{href:"terms.html",text:"規約"},{href:"join.html",text:"入会"}] },
   ];
   const tileNav = `
-  <nav class="mobile-tile-nav" aria-label="コンテンツナビゲーション">
+  <div class="mobile-tile-nav" role="navigation" aria-label="コンテンツナビゲーション">
     <div class="tile-grid">
       ${tileGroups.map(g => `<button class="tile-item" data-group="${g.id}" aria-expanded="false">
         <div class="tile-img" style="background:${g.bg}">${g.emoji}</div>
@@ -507,7 +507,7 @@ async function buildIndex(tpl) {
     ${tileGroups.map(g => `<div class="tile-submenu" data-for="${g.id}">
       ${g.links.map(l => `<a href="${l.href}">${l.text}</a>`).join("\n      ")}
     </div>`).join("\n    ")}
-  </nav>
+  </div>
   <script>
   (function(){
     var tiles = document.querySelectorAll('.tile-item[data-group]');

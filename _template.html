@@ -648,13 +648,13 @@ footer .heart { color: var(--pink); }
   .committee-row-title { grid-area: title; }
   .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
 
-  /* トップページ専用: page-heroを非表示にし、contentに上余白を追加 */
-  .page-hero--index { display: none; }
-  .page-hero--index + .content { padding-top: calc(var(--nav-h) + 16px); }
+  /* トップページ専用: page-heroを非表示 */
+  .page-hero--index { display: none !important; }
 
   /* ── モバイルタイルナビ ── */
   .mobile-tile-nav {
     display: block;
+    padding-top: calc(var(--nav-h) + 16px);
     margin-bottom: 24px;
   }
   .tile-grid {
