@@ -528,6 +528,13 @@ async function buildIndex(tpl) {
 
   const body = `
   ${tileNav}
+  <div class="top-intro">
+    <p class="top-intro-text">
+      <strong>さとうゆほーむ</strong>は、日向坂46五期生・佐藤優羽さんの情報をまとめた非公式ファンサイトです。
+      ブログ・YouTube・TikTok・ライブ・ニュースなど、さとうゆに関するコンテンツをお届けしています。<br>
+      運営：<a href="about.html">佐藤優羽生誕祭実行委員会</a>　<a href="site-info.html" class="top-intro-more">このサイトについて →</a>
+    </p>
+  </div>
   <div class="top-layout">
 
     <!-- メインコンテンツ -->
