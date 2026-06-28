@@ -969,11 +969,43 @@ async function buildYuNews(tpl) {
     return newsCard(p, undefined, img);
   }).join("\n");
 
-  const body = `<div class="grid-3">
+  const body = `<style>
+.load-more-wrap{text-align:center;padding:32px 16px 16px;}
+.load-more-btn{background:var(--emerald);color:#fff;border:2px solid var(--emerald-dark);border-radius:99px;padding:12px 32px;font-family:'Zen Maru Gothic',serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 var(--emerald-dark);transition:all 0.15s;}
+.load-more-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--emerald-dark);}
+.load-more-count{font-size:12px;color:#6b8a78;margin-bottom:10px;font-family:'Zen Maru Gothic',serif;}
+</style>
+<div class="grid-3" id="yunews-grid">
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
-  </div>`;
+  </div>
+  <div class="load-more-wrap" id="load-more-wrap">
+    <p class="load-more-count" id="load-more-count"></p>
+    <button class="load-more-btn" id="load-more-btn">もっと見る</button>
+  </div>
+  <script>
+  (function(){
+    const BATCH=50;
+    const grid=document.getElementById('yunews-grid');
+    const btn=document.getElementById('load-more-btn');
+    const countEl=document.getElementById('load-more-count');
+    const all=Array.from(grid.querySelectorAll('.news-card'));
+    const total=all.length;
+    let shown=0;
+    all.forEach(c=>c.style.display='none');
+    function showMore(){
+      const next=Math.min(shown+BATCH,total);
+      for(let i=shown;i<next;i++) all[i].style.display='';
+      shown=next;
+      countEl.textContent=shown+' / '+total+' 件表示中';
+      if(total-shown<=0){ document.getElementById('load-more-wrap').style.display='none'; }
+      else{ btn.textContent='もっと見る（残り'+(total-shown)+'件）'; }
+    }
+    btn.addEventListener('click',showMore);
+    showMore();
+  })();
+  </script>`;
   return buildPage(tpl, "佐藤優羽さんNews", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body, "yunews.html");
 }
 
