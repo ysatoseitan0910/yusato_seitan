@@ -117,23 +117,24 @@ function loadTemplate(active) {
   return t;
 }
 
-function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "", heroClass = "") {
+function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "", heroClass = "", ogpDesc = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
   const ogpTitle = `${title} | さとうゆほーむ`;
   const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   const heroClassAttr = heroClass ? ` ${heroClass}` : "";
+  const effectiveOgpDesc = (ogpDesc || desc).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
   return template
     .replace("{{PAGE_TITLE}}", title)
     .replaceAll("{{OGP_TITLE}}", ogpTitle)
-    .replaceAll("{{OGP_DESC}}", desc.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim())
+    .replaceAll("{{OGP_DESC}}", effectiveOgpDesc)
     .replace("{{OGP_URL}}", ogpUrl)
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
       <div class="page-hero${heroClassAttr}">
         <div class="page-hero-tag">${tag}</div>
         <h1>${h1}</h1>
-        <p>${desc}</p>
+        ${desc ? `<p>${desc}</p>` : ''}
         <p class="last-updated">最終更新：${now}</p>
       </div>
       <div class="content">${body}</div>
@@ -611,7 +612,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "佐藤優羽さんの最新情報をお届けするファンサイト<br>｜運営：佐藤優羽生誕祭実行委員会", body, "index.html", "", "page-hero--index");
+  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "", body, "index.html", "", "page-hero--index", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会");
 }
 
 async function buildCommittee(tpl) {
