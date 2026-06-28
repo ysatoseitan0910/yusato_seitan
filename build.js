@@ -499,10 +499,7 @@ async function buildIndex(tpl) {
   const tileNav = `
   <div class="mobile-tile-nav" role="navigation" aria-label="コンテンツナビゲーション">
     <div class="tile-grid">
-      ${tileGroups.map(g => `<button class="tile-item" data-group="${g.id}" aria-expanded="false">
-        <div class="tile-img" style="background:${g.bg}">${g.emoji}</div>
-        <span>${g.label}</span>
-      </button>`).join("\n      ")}
+      ${tileGroups.map(g => `<button class="tile-item" data-group="${g.id}" aria-expanded="false">${g.label}</button>`).join("\n      ")}
     </div>
     ${tileGroups.map(g => `<div class="tile-submenu" data-for="${g.id}">
       ${g.links.map(l => `<a href="${l.href}">${l.text}</a>`).join("\n      ")}
