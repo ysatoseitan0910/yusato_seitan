@@ -578,7 +578,7 @@ function buildSelfIntroSegments(getV) {
 
   const birthYearVal = birthYearOmit ? null : ((birthYearRaw || "").trim() || "");
   const birthMdVal   = birthMdOmit   ? null : ((birthMdRaw   || "").trim() || "");
-  const genderVal    = (gender && gender !== "無回答")    ? gender : "";
+  const genderVal    = (gender && gender !== "無回答")    ? (gender === "男性" ? "🚹" : gender === "女性" ? "🚺" : gender) : "";
   const mbtiVal      = (mbtiRaw && mbtiRaw !== "わからない") ? mbtiRaw : "";
   const songVal      = songOmit ? null : ((songRaw || "").trim() || BLANK);
 
