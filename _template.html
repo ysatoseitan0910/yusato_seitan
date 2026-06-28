@@ -648,9 +648,9 @@ footer .heart { color: var(--pink); }
   .committee-row-title { grid-area: title; }
   .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
 
-  /* タイルナビがあるページ（トップページ）ではpage-heroを非表示にし、contentに上余白を追加 */
-  body:has(.mobile-tile-nav) .page-hero { display: none; }
-  body:has(.mobile-tile-nav) .content { padding-top: calc(var(--nav-h) + 16px); }
+  /* トップページ専用: page-heroを非表示にし、contentに上余白を追加 */
+  .page-hero--index { display: none; }
+  .page-hero--index + .content { padding-top: calc(var(--nav-h) + 16px); }
 
   /* ── モバイルタイルナビ ── */
   .mobile-tile-nav {

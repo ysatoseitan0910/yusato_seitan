@@ -117,11 +117,12 @@ function loadTemplate(active) {
   return t;
 }
 
-function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "") {
+function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "", heroClass = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
   const ogpTitle = `${title} | さとうゆほーむ`;
   const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
+  const heroClassAttr = heroClass ? ` ${heroClass}` : "";
   return template
     .replace("{{PAGE_TITLE}}", title)
     .replaceAll("{{OGP_TITLE}}", ogpTitle)
@@ -129,7 +130,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
     .replace("{{OGP_URL}}", ogpUrl)
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
-      <div class="page-hero">
+      <div class="page-hero${heroClassAttr}">
         <div class="page-hero-tag">${tag}</div>
         <h1>${h1}</h1>
         <p>${desc}</p>
@@ -607,7 +608,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "佐藤優羽さんの最新情報をお届けするファンサイト<br>｜運営：佐藤優羽生誕祭実行委員会", body, "index.html");
+  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "佐藤優羽さんの最新情報をお届けするファンサイト<br>｜運営：佐藤優羽生誕祭実行委員会", body, "index.html", "", "page-hero--index");
 }
 
 async function buildCommittee(tpl) {
