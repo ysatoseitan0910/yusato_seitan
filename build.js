@@ -494,7 +494,7 @@ async function buildIndex(tpl) {
     { id: "card",      label: "カード作成",     emoji: "🎴", bg: "var(--emerald-pale)",
       links: [{href:"card.html",text:"プロフィールカード"},{href:"message.html",text:"お誕生日メッセージ"}] },
     { id: "committee", label: "委員会",         emoji: "🌿", bg: "var(--cream)",
-      links: [{href:"committee.html",text:"委員会News"},{href:"activities.html",text:"活動報告"},{href:"about.html",text:"委員会について"},{href:"terms.html",text:"規約"},{href:"join.html",text:"入会"}] },
+      links: [{href:"committee.html",text:"委員会News"},{href:"activities.html",text:"活動報告"},{href:"about.html",text:"委員会について"},{href:"site-info.html",text:"このサイトについて"},{href:"terms.html",text:"規約"},{href:"join.html",text:"入会"}] },
   ];
   const tileNav = `
   <div class="mobile-tile-nav" role="navigation" aria-label="コンテンツナビゲーション">
