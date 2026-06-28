@@ -190,6 +190,7 @@ nav {
 }
 
 /* ── Top layout（トップページ専用） ── */
+.mobile-tile-nav { display: none; }
 .top-layout {
   display: grid; grid-template-columns: minmax(0,1fr) 300px;
   gap: 28px; align-items: start;
@@ -646,6 +647,87 @@ footer .heart { color: var(--pink); }
   .committee-row-date  { grid-area: date; font-size: 15px; }
   .committee-row-title { grid-area: title; }
   .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
+
+  /* ── モバイルタイルナビ ── */
+  .mobile-tile-nav {
+    display: block;
+    margin-bottom: 24px;
+  }
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .tile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+  }
+  .tile-img {
+    width: 100%;
+    height: 72px;
+    border-radius: 14px;
+    border: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.13);
+    transition: transform 0.1s, box-shadow 0.1s, border-color 0.1s;
+    overflow: hidden;
+  }
+  .tile-img img {
+    width: 100%; height: 100%;
+    object-fit: cover; border-radius: 12px;
+  }
+  .tile-item.active .tile-img {
+    border-color: var(--emerald-dark);
+    box-shadow: 3px 3px 0 var(--emerald-dark);
+  }
+  .tile-item:active .tile-img {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.08);
+  }
+  .tile-item span {
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-muted);
+    line-height: 1.3;
+    word-break: keep-all;
+  }
+  .tile-item.active span { color: var(--emerald-dark); }
+  /* サブメニューパネル */
+  .tile-submenu {
+    display: none;
+    flex-direction: column;
+    margin-top: 8px;
+    background: #fff;
+    border: 2px solid var(--emerald);
+    border-radius: 14px;
+    padding: 4px 10px;
+  }
+  .tile-submenu.open { display: flex; }
+  .tile-submenu a {
+    display: block;
+    padding: 10px 6px;
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--border);
+    transition: background 0.12s;
+  }
+  .tile-submenu a:last-child { border-bottom: none; }
+  .tile-submenu a:active { background: var(--emerald-pale); border-radius: 8px; }
 }
 
 </style>
@@ -727,13 +809,13 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">INTERVIEW</div>
         <h1>インタビュー、 <em>雑誌掲載集</em></h1>
         <p>佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています</p>
-        <p class="last-updated">最終更新：2026/6/28 15:28:54</p>
+        <p class="last-updated">最終更新：2026/6/28 17:39:00</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-  <div class="card media-card" style="animation-delay:0.0909172538721795s">
-    <img class="media-img" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/e9728fd0-3f53-810c-bd4e-0003d0b09af4/b53b9cf4-66dc-4847-86fa-488b00f3e352/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZCCWYWD5%2F20260628%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260628T062854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD6lj9aOf1lsQNzyXxrYX2huR8RI%2FmPqek38IuPJg7R2AIgdhxfh9BR2NSThhXEX6fPlpQNGsAQENUTihs3rwgeNVYqiAQIj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA2Sn8irfQ%2BL4aTMMyrcAwHJSNmCfC57t1G0gGJ6aXrCSHqHQZPBVTYBtbJXOGPQASPjxQ%2BeFuCixyPkm4scYVL%2FKW3fbnjXWJ9Nxb1CsGnZeVykVPj6rVjSN80JLa8Oqjn67rteG4LtZ5yrGH%2BBZTIv6aq3VPjO2N6KCpPta3K5pJvWkHJbfkpiHNfOpIXfh36qekEHZnW7svWdyqiMERjCXBaHFWcQkRwSkM8omjvq%2BL5KZvhxVDGQGs5GTj9g%2B8GRm6E5t10LLjWkeRvBa5iDrQi9V%2FXRvyRse8hvsVb%2BoHKP89c9hVa2pCpxKNZNqYatj3hYsiPrgEL8aJ52nzNRUakbKD1xLpRBmE4jq5wQj69dceAKxIHiXpu56pvJNvBK0DTaJ6hBGBeApHh1zOwOBv%2BsjRH5BLBtr6PrJbAqhW52Rq9OSakIV7LEUc1iubxGnUo%2BmWNqEKlt6J64QrKc8lfdCF8nxVz63FeuHrITkKQ%2Fe7Y7UVMtQkWzq6xy7t4axudYFIqrYJCMly%2Bo9Ywx9XZ4E85wfZkJ4Aq%2F%2FHZliP9gaez5LaIOy5af1FPf%2F19DAOf3fKT7zS6UGpqkaKdfMZHIyHzvjXoeYVrfuM4po4CEZUaLN8kry7%2Bt%2FTbtVjN21AHT2vUgwixtMJDsgtIGOqUBx9piSVXYbO7lXwJdvtqanVzpgrqxfIu6%2BA9zG147u7tOIRMaE%2BDofL6RDiwddb80M2PNvjjC1Qk%2BwKvPiRECNUZuSd8cAtlZ%2B9oDByPiA0H%2Bz1ty0SUDsYSAzO204biRxnGEv4rCCVo9Aau8dZ4mHtkl4RP4rPvv2bhNKwlw8DJmvB4zZKNtg16Zh2w0GnX77HcvRWXKrxsaI4gph0O%2BTvkbUa9t&X-Amz-Signature=adca874611364efbcad298bb04b194173281f4fd10977db34de7248fd6ff8cae&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt="Top Yell NEO 2026 SUMMER" loading="lazy">
+  <div class="card media-card" style="animation-delay:0.27204424680095346s">
+    <img class="media-img" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/e9728fd0-3f53-810c-bd4e-0003d0b09af4/b53b9cf4-66dc-4847-86fa-488b00f3e352/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WYJ3GP6I%2F20260628%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260628T083900Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC5VG9RDS9Kgih81orHHbe8s9FKKSCgMVxwiS6ou696XwIgG5UyBvheGxXTJsRCjBOxYZ51n8oDeETTUbEuwDSWp9QqiAQIj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDJzFrAqIGYoelE9SHyrcA0PDGCwbUUYg0plmHIGWVbRrkRRxutaUJGGR8iVenzlH4cigeCzDzqIqo5nY%2BII3FrO%2FWdYrz6xQj4Ufi%2F3V%2FcQGIRTKThvndivs3xsfp0fDW8N2Hb0o54W7F3tGpqdCYwvcTGY%2FUCZAECLFMHq%2Bf9aujDyiS8TPO%2Bxzr7L6CyHWDtd8R%2BSOgA%2BFpSjuRROf0PAc9bis0hZCXVOlqM3qgQhVgUoQl0%2B2hjMR9x0LiYxIsHbVu8Mr2%2F5JIKT1%2FurlyGJO6cS6GgH67N4b1CQqP%2BX9LvzxryyUgyyqzEMRt8G8aFPmxOtXZDc4RW4KxFw7qKv%2Fr6rhLxdZ6Hqq8bpzME5doM3z5q3UWP68N5yRl5RxXwICYo3pdtm6HW75j9YlzcifNiqG%2BfCb8edDSnLVe3cRD4jj60AKX0ZuKI76nqtp47W6d86KLuxIRY86SaB3ZmXEcHxVqS9i52ylKR0G9S13zrRai2X5Ua5IKruMlE%2BGYE8zdP7L9IoYGNJK22mD8yffD1seK0JfdSC%2BZP%2BBHP7oWZeye%2BPOK9ffgyR%2BG9a6%2B25dCzEca4RbkU4QDtIZMHME%2F%2BwkliyS3PqWzGyPu6RB3fr3DjurGyIx03Ds%2F8tGcFTFDVBKaIueX2woMI%2FsgtIGOqUB%2BFQspsFCHSP%2FjnJ0g%2F6tMDbQtNHs5986ofAOVh5MEE7w8HalxidHigwt60VQtokutLZxP1XL1cwipq8IE9SwhtVywIMKjmvkdSzf5Beylqv0fsP3oDW2N1UE02F6fWOM7fQfMjbiGpmGHprAtnCKqjUV4SJkRa%2FQole15fcoZ8OZMyAsPySS8OTOYkl72HcQIiYMT7mpPELydauBQ3ltHgH%2F%2B1KP&X-Amz-Signature=47d51906456ce09c8e46c166ec451db1226985c75b5a8b25f2428f3d3604906c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt="Top Yell NEO 2026 SUMMER" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
       <p class="media-title" style="margin-top:6px">Top Yell NEO 2026 SUMMER</p>
@@ -744,7 +826,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14561799469206105s">
+  <div class="card media-card" style="animation-delay:0.015402513705550746s">
     <img class="media-img" src="https://hondana-image.s3.amazonaws.com/book/image/10171452/31c769f9-7284-4d18-9b56-106abe42f7b9.jpg" alt="BRODY (ブロディ) 2026年 8月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -756,7 +838,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.07876029427442528s">
+  <div class="card media-card" style="animation-delay:0.007460578256345118s">
     <img class="media-img" src="https://bltweb.jp/wp/wp-content/uploads/2026/05/260417_BLT3817-1536x1024.jpg" alt="B.L.T 2026年7月号　中面グラビア&インタビュー" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -768,7 +850,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.10956181465260151s">
+  <div class="card media-card" style="animation-delay:0.11399439865436345s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/1RgI/wm/1RgIV5wg9KEQDVdN3BXa33ixULASorQC47WZ166JeYM.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜後編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -780,7 +862,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.26201175775389324s">
+  <div class="card media-card" style="animation-delay:0.015654852928307816s">
     <img class="media-img" src="https://img-mdpr.freetls.fastly.net/article/zPaj/wm/zPajhkvm3JUAVSkeC9EqMXpBe1AmH_8nkmewso0H9a0.jpg?width=1520&auto=webp&quality=80" alt="モデルプレス　2026年1月インタビュー＜前編＞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -792,7 +874,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16798042250856063s">
+  <div class="card media-card" style="animation-delay:0.12515927648397138s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/71d+7nWc6eL._SY522_.jpg" alt="BRODY賞" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -804,7 +886,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1694402486546075s">
+  <div class="card media-card" style="animation-delay:0.20755365507775697s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/815XQDOi-fL._SY522_.jpg" alt="BRODY (ブロディ) 2025年 12月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -816,7 +898,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.12013748194146953s">
+  <div class="card media-card" style="animation-delay:0.19089394116857197s">
     <img class="media-img" src="https://m.media-amazon.com/images/I/81wWuPh-6bL._SL1500_.jpg" alt="Ray(レイ) 2025年 08 月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -828,7 +910,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.016859864133109203s">
+  <div class="card media-card" style="animation-delay:0.15315876844740967s">
     <img class="media-img" src="https://bltweb.jp/wp/wp-content/uploads/2025/04/BLT2506_H1.jpg" alt="B.L.T. 2025年6月号" loading="lazy">
     <div class="media-body">
       <span class="badge badge-interview">インタビュー、雑誌掲載</span>
@@ -963,7 +1045,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 15:28:54</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 17:39:00</p>
 </footer>
 
 <script>
