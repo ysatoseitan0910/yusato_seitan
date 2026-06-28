@@ -193,7 +193,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .illust-cell.selected .illust-badge { display: flex; }
 .illust-hint { font-size: 11px; color: var(--text-light); }
 
-.preview-check-btn { display: none; }
 /* Footer */
 .foot { text-align: center; padding: 32px 16px; }
 .foot p { font-size: 11px; color: var(--text-light); }
@@ -222,7 +221,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .canvas-size-note { display: none; }
   .canvas-click-hint { display: none; }
   .controls { padding: 16px; border-radius: 12px; }
-  .preview-check-btn { display: block; width: 100%; padding: 12px; margin-top: 12px; background: var(--emerald); color: #fff; border: none; border-radius: 10px; font-family: 'Zen Maru Gothic', serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .preview-scroll-btn { flex: 1; padding: 11px 4px; background: var(--emerald-pale); color: var(--emerald-dark); border: 2px solid var(--emerald); border-radius: 10px; font-family: 'Zen Maru Gothic', serif; font-size: 12px; font-weight: 700; cursor: pointer; }
   .download-section { display: none; }
   .mobile-action-bar { display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; z-index: 150; backdrop-filter: blur(8px); }
   .mobile-action-btns { display: flex; gap: 8px; }
@@ -343,7 +342,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
       <div id="fields-list"></div>
       <hr class="field-divider">
-      <button class="preview-check-btn" id="preview-check-btn">👁 プレビューを確認する</button>
 
       <div class="download-section">
         <label class="share-cb-label">
@@ -368,6 +366,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
     入力した情報を委員会に共有する
   </label>
   <div class="mobile-action-btns">
+    <button class="preview-scroll-btn" id="preview-scroll-btn">👁 プレビュー確認</button>
     <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
     <button class="share-x-btn" id="mobile-share-x-btn">𝕏 X投稿</button>
   </div>
@@ -1485,7 +1484,8 @@ document.fonts.ready.then(() => {
   document.getElementById("mobile-share-x-btn").addEventListener("click", function () {
     document.getElementById("share-x-btn").click();
   });
-  document.getElementById("preview-check-btn").addEventListener("click", function () {
+  const previewScrollBtn = document.getElementById("preview-scroll-btn");
+  if (previewScrollBtn) previewScrollBtn.addEventListener("click", function () {
     document.querySelector(".canvas-wrap").scrollIntoView({behavior: "smooth", block: "start"});
   });
   const shareCb = document.getElementById("share-card-cb");
