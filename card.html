@@ -193,6 +193,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .illust-cell.selected .illust-badge { display: flex; }
 .illust-hint { font-size: 11px; color: var(--text-light); }
 
+.preview-check-btn { display: none; }
 /* Footer */
 .foot { text-align: center; padding: 32px 16px; }
 .foot p { font-size: 11px; color: var(--text-light); }
@@ -211,19 +212,23 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .nav-group:hover .nav-dropdown { display: none; }
   .nav-group.open .nav-dropdown { display: flex; }
   .nav-group.open .nav-arrow { transform: rotate(180deg); }
-  .editor-page { padding: 12px 14px 80px; }
+  .editor-page { padding: 12px 14px 120px; }
   .tpl-tabs { gap: 6px; margin-bottom: 14px; }
   .tpl-tab { padding: 6px 14px; font-size: 13px; }
   .editor-body { display: block; }
-  .canvas-wrap { position: relative; padding: 10px 12px; margin-bottom: 14px; display: flex; flex-direction: column; align-items: center; }
-  .canvas-label { align-self: flex-start; font-size: 11px; margin-bottom: 8px; }
-  #preview-canvas { height: 200px; width: auto; }
+  .canvas-wrap { display: none; position: relative; left: -14px; width: 100vw; margin-bottom: 14px; flex-direction: column; align-items: flex-start; }
+  .canvas-wrap.visible { display: flex; }
+  .canvas-label { font-size: 11px; margin-bottom: 8px; padding-left: 14px; }
+  #preview-canvas { width: 100%; height: auto; display: block; }
   .canvas-size-note { display: none; }
   .canvas-click-hint { display: none; }
   .controls { padding: 16px; border-radius: 12px; }
+  .preview-check-btn { display: block; width: 100%; padding: 12px; margin-top: 12px; background: var(--emerald); color: #fff; border: none; border-radius: 10px; font-family: 'Zen Maru Gothic', serif; font-size: 14px; font-weight: 700; cursor: pointer; }
   .download-section { display: none; }
-  .mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 8px; z-index: 150; backdrop-filter: blur(8px); }
+  .mobile-action-bar { display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; z-index: 150; backdrop-filter: blur(8px); }
+  .mobile-action-btns { display: flex; gap: 8px; }
   .mobile-action-bar .download-btn, .mobile-action-bar .share-x-btn { flex: 1; padding: 11px; font-size: 13px; }
+  .mobile-action-bar .share-cb-label { font-size: 12px; padding: 4px 0; }
 }
 </style>
 </head>
@@ -339,6 +344,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
       <div id="fields-list"></div>
       <hr class="field-divider">
+      <button class="preview-check-btn" id="preview-check-btn">👁 プレビューを確認する</button>
 
       <div class="download-section">
         <label class="share-cb-label">
@@ -358,8 +364,14 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 <!-- モバイル用アクションバー -->
 <div class="mobile-action-bar">
-  <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
-  <button class="share-x-btn" id="mobile-share-x-btn">𝕏 X投稿</button>
+  <label class="share-cb-label">
+    <input type="checkbox" id="mobile-share-card-cb" checked>
+    入力した情報を委員会に共有する
+  </label>
+  <div class="mobile-action-btns">
+    <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
+    <button class="share-x-btn" id="mobile-share-x-btn">𝕏 X投稿</button>
+  </div>
 </div>
 
 <footer class="foot">
@@ -460,7 +472,7 @@ let tplIdx = 0;
 const CARD_DRAFT_KEY = "satoyu_card_draft_v1";
 const values = {};
 const omitted = new Set();
-const BLANK = "   ___";
+const BLANK = "   ";
 try {
   const _saved = localStorage.getItem(CARD_DRAFT_KEY);
   if (_saved) Object.assign(values, JSON.parse(_saved));
@@ -1408,6 +1420,15 @@ document.fonts.ready.then(() => {
   document.getElementById("mobile-share-x-btn").addEventListener("click", function () {
     document.getElementById("share-x-btn").click();
   });
+  document.getElementById("preview-check-btn").addEventListener("click", function () {
+    const wrap = document.querySelector(".canvas-wrap");
+    wrap.classList.add("visible");
+    setTimeout(() => wrap.scrollIntoView({behavior: "smooth", block: "start"}), 10);
+  });
+  const shareCb = document.getElementById("share-card-cb");
+  const mobileShareCb = document.getElementById("mobile-share-card-cb");
+  mobileShareCb.addEventListener("change", () => { shareCb.checked = mobileShareCb.checked; });
+  shareCb.addEventListener("change", () => { mobileShareCb.checked = shareCb.checked; });
   initIconUpload();
 });
 
