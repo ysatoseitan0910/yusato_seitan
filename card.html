@@ -193,6 +193,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .illust-cell.selected .illust-badge { display: flex; }
 .illust-hint { font-size: 11px; color: var(--text-light); }
 
+.preview-check-btn { display: none; }
 /* Footer */
 .foot { text-align: center; padding: 32px 16px; }
 .foot p { font-size: 11px; color: var(--text-light); }
@@ -211,19 +212,23 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .nav-group:hover .nav-dropdown { display: none; }
   .nav-group.open .nav-dropdown { display: flex; }
   .nav-group.open .nav-arrow { transform: rotate(180deg); }
-  .editor-page { padding: 12px 14px 80px; }
+  .editor-page { padding: 12px 14px 120px; }
   .tpl-tabs { gap: 6px; margin-bottom: 14px; }
   .tpl-tab { padding: 6px 14px; font-size: 13px; }
   .editor-body { display: block; }
-  .canvas-wrap { position: relative; padding: 10px 12px; margin-bottom: 14px; display: flex; flex-direction: column; align-items: center; }
-  .canvas-label { align-self: flex-start; font-size: 11px; margin-bottom: 8px; }
-  #preview-canvas { height: 200px; width: auto; }
+  .canvas-wrap { display: none; position: relative; left: -14px; width: 100vw; margin-bottom: 14px; flex-direction: column; align-items: flex-start; }
+  .canvas-wrap.visible { display: flex; }
+  .canvas-label { font-size: 11px; margin-bottom: 8px; padding-left: 14px; }
+  #preview-canvas { width: 100%; height: auto; display: block; }
   .canvas-size-note { display: none; }
   .canvas-click-hint { display: none; }
   .controls { padding: 16px; border-radius: 12px; }
+  .preview-check-btn { display: block; width: 100%; padding: 12px; margin-top: 12px; background: var(--emerald); color: #fff; border: none; border-radius: 10px; font-family: 'Zen Maru Gothic', serif; font-size: 14px; font-weight: 700; cursor: pointer; }
   .download-section { display: none; }
-  .mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 8px; z-index: 150; backdrop-filter: blur(8px); }
+  .mobile-action-bar { display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; z-index: 150; backdrop-filter: blur(8px); }
+  .mobile-action-btns { display: flex; gap: 8px; }
   .mobile-action-bar .download-btn, .mobile-action-bar .share-x-btn { flex: 1; padding: 11px; font-size: 13px; }
+  .mobile-action-bar .share-cb-label { font-size: 12px; padding: 4px 0; }
 }
 </style>
 </head>
@@ -339,6 +344,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
       <div id="fields-list"></div>
       <hr class="field-divider">
+      <button class="preview-check-btn" id="preview-check-btn">👁 プレビューを確認する</button>
 
       <div class="download-section">
         <label class="share-cb-label">
@@ -358,8 +364,14 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 <!-- モバイル用アクションバー -->
 <div class="mobile-action-bar">
-  <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
-  <button class="share-x-btn" id="mobile-share-x-btn">𝕏 X投稿</button>
+  <label class="share-cb-label">
+    <input type="checkbox" id="mobile-share-card-cb" checked>
+    入力した情報を委員会に共有する
+  </label>
+  <div class="mobile-action-btns">
+    <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
+    <button class="share-x-btn" id="mobile-share-x-btn">𝕏 X投稿</button>
+  </div>
 </div>
 
 <footer class="foot">
@@ -450,7 +462,6 @@ const SHARED_FIELDS = [
 ];
 
 const TEMPLATES = [
-  { id: "notebook-v", name: "ノート縦型",   w: 600, customRender: true, fields: SHARED_FIELDS },
   // { id: "notebook", name: "ノート見開き", w: 880, customRender: true, fields: SHARED_FIELDS },
 ];
 
@@ -461,7 +472,7 @@ let tplIdx = 0;
 const CARD_DRAFT_KEY = "satoyu_card_draft_v1";
 const values = {};
 const omitted = new Set();
-const BLANK = "   ___";
+const BLANK = "   ";
 try {
   const _saved = localStorage.getItem(CARD_DRAFT_KEY);
   if (_saved) Object.assign(values, JSON.parse(_saved));
@@ -1022,77 +1033,8 @@ function drawNotebookCute(ctx, w, getV, ico, measureOnly) {
 }
 
 // ════════════════════════════════════════════════════════
-//  ノート縦型（マステ＆メモ）
-// ════════════════════════════════════════════════════════
-function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
-  const PAD = 22, MP = 16, FS = 14;
-  const memoW = w - PAD * 2, TW = memoW - MP * 2;
-  const labelH = 22, headerH = 50, icoR = 22, TM = 24, GAP = 26;
-
-  const selfSegs = buildSelfIntroSegments(getV);
-  const oshiSegs = buildOshiMainSegments(getV);
-  const loveVal  = (getV("oshi-love") || "").trim() || BLANK;
-  const BFS = FS - 1;
-
-  const selfTextH = measureSegmentedText(ctx, selfSegs, TW, FS);
-  const oshiTextH = measureSegmentedText(ctx, oshiSegs, TW, FS);
-  ctx.font = f(16, false, "Yomogi");
-  const loveLines = wrapText(ctx, loveVal, TW - 40);
-  const loveTextH = loveLines.length * Math.ceil(16 * 1.7);
-
-  const liveItems = [1,2,3].map(n => {
-    const live = (getV("best-live-" + n + "-live") || "").trim();
-    const song = (getV("best-live-" + n + "-song") || "").trim();
-    if (live && song) return live + "の" + song;
-    return live || song || "";
-  });
-  const varItems  = [1,2,3].map(n => (getV("best-var-"  + n) || "").trim());
-  const BEST_GAP  = 10;
-  const halfBestW = Math.floor((memoW - BEST_GAP) / 2);
-  const liveBestH = drawBestMemo(ctx, 0, 0, halfBestW, MP, BFS, "", liveItems, MM.oshi, MM.tapeB, 0, true);
-  const varBestH  = drawBestMemo(ctx, 0, 0, halfBestW, MP, BFS, "", varItems,  MM.love, MM.tapeP, 0, true);
-  const bestBlockH = Math.max(liveBestH, varBestH);
-
-  const selfMemoH = MP + headerH + 12 + labelH + 2 + selfTextH + MP;
-  const oshiMemoH = MP + labelH + 2 + oshiTextH + MP;
-  const loveMemoH = MP + 8 + loveTextH + MP;
-
-  const X = PAD, selfY = TM;
-  const oshiY = selfY + selfMemoH + GAP;
-  const bestY  = oshiY + oshiMemoH + GAP;
-  const loveY  = bestY + bestBlockH + GAP;
-  const totalH = loveY + loveMemoH + 46;
-
-  if (measureOnly) return totalH;
-
-  drawPaperGrid(ctx, w, totalH);
-  drawSelfMemo(ctx, X, selfY, memoW, selfMemoH, MP, FS, labelH, headerH, icoR, getV, ico, selfSegs, 0, w);
-  drawLabeledMemo(ctx, X, oshiY, memoW, oshiMemoH, MP, FS, labelH, "＊ さとうゆの好きなところ ＊", MM.oshi, MM.tapeB, X + memoW - 46, 4, oshiSegs, MM.hlOshi);
-  drawBestMemo(ctx, X,                       bestY, halfBestW, MP, BFS, "🎤 My Best さとうゆ（ライブ）",     liveItems, MM.oshi, MM.tapeB, X + 34,                                      false);
-  drawBestMemo(ctx, X + halfBestW + BEST_GAP, bestY, halfBestW, MP, BFS, "📺 My Best さとうゆ（バラエティ等）", varItems,  MM.love, MM.tapeP, X + halfBestW + BEST_GAP + halfBestW - 34, false);
-  drawLoveMemo(ctx, X, loveY, memoW, loveMemoH, MP, loveLines);
-  fieldZoneMap["oshi-love"] = { x1: X, x2: X + memoW, y1: loveY, y2: loveY + loveMemoH };
-
-  mmFooter(ctx, w, totalH);
-
-  const slots = [
-    { cx: X + memoW - MP - 18, cy: selfY + MP + icoR, size: 84, rot: -11 },
-    { cx: X + memoW - 12,      cy: selfY + selfMemoH + 2, size: 58, rot: 13 },
-    { cx: X + 34,              cy: oshiY - 12, size: 56, rot: -13 },
-    { cx: X + memoW - 12,      cy: loveY + loveMemoH + 2, size: 61, rot: 10 },
-    { cx: X + 10,              cy: loveY + loveMemoH + 2, size: 50, rot: -8 },
-  ];
-  drawIllustSlots(ctx, slots, getV);
-  drawDoodle(ctx, X + 6, selfY + selfMemoH - 28, "♡", 16, "#f0a8c0", -12);
-  drawDoodle(ctx, X + memoW - 4, oshiY + oshiMemoH - 6, "♡", 15, "#9ec9b0", 0);
-  drawDoodle(ctx, X + memoW / 2 + 34, loveY + loveMemoH - 2, "✦", 12, "#f4cf6b", 0);
-  return totalH;
-}
-
-// ════════════════════════════════════════════════════════
 const DRAW_FNS = {
-  notebook:     drawNotebookCute,
-  "notebook-v": drawNotebookVerticalCute,
+  notebook: drawNotebookCute,
 };
 
 function render() {
@@ -1167,6 +1109,7 @@ function buildFields() {
       f.options.forEach(opt => {
         const lbl = document.createElement("label");
         lbl.className = "field-radio" + (currentVal === opt ? " selected" : "");
+        lbl.dataset.opt = opt;
         const inp = document.createElement("input");
         inp.type = "radio";
         inp.name = `${tpl.id}-${f.id}`;
@@ -1284,7 +1227,7 @@ function updateIllustUI() {
 function updateIllustVisibility() {
   const sec = document.getElementById("illust-section");
   const div = document.getElementById("illust-divider");
-  const show = ["notebook", "notebook-v"].includes(TEMPLATES[tplIdx].id);
+  const show = ["notebook"].includes(TEMPLATES[tplIdx].id);
   if (sec) sec.style.display = show ? "flex" : "none";
   if (div) div.style.display = show ? "" : "none";
 }
@@ -1477,6 +1420,15 @@ document.fonts.ready.then(() => {
   document.getElementById("mobile-share-x-btn").addEventListener("click", function () {
     document.getElementById("share-x-btn").click();
   });
+  document.getElementById("preview-check-btn").addEventListener("click", function () {
+    const wrap = document.querySelector(".canvas-wrap");
+    wrap.classList.add("visible");
+    setTimeout(() => wrap.scrollIntoView({behavior: "smooth", block: "start"}), 10);
+  });
+  const shareCb = document.getElementById("share-card-cb");
+  const mobileShareCb = document.getElementById("mobile-share-card-cb");
+  mobileShareCb.addEventListener("change", () => { shareCb.checked = mobileShareCb.checked; });
+  shareCb.addEventListener("change", () => { mobileShareCb.checked = shareCb.checked; });
   initIconUpload();
 });
 

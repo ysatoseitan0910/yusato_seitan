@@ -270,6 +270,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 
     <div class="notice">
       ℹ️ 送信後の内容は委員会が確認します。不適切な内容はご掲載できない場合があります。<br>
+      送信いただいたメッセージカードは、委員会がまとめて佐藤優羽さんにお届けします。<br>
       入力いただいたファンネーム・X IDは生誕企画の運営にのみ使用します。詳しくは<a href="privacy.html" style="color:inherit;font-weight:600;">プライバシーポリシー</a>をご確認ください。
     </div>
 
@@ -277,7 +278,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 
     <div class="action-row">
       <button id="btn-download" class="btn-outline">💾 PNG保存</button>
-      <button id="btn-submit" class="btn-primary">✉️ 佐藤優羽さんに送る</button>
+      <button id="btn-submit" class="btn-primary">✉️ 佐藤優羽生誕祭実行委員会に送る</button>
     </div>
 
   </div>
@@ -551,7 +552,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       });
       var data = await res.json();
       if (!res.ok) throw new Error(data.error || '送信に失敗しました');
-      showResult('ok', '🎉 メッセージを送信しました！佐藤優羽さんへ届けます♡');
+      showResult('ok', '🎉 メッセージを送信しました！委員会からまとめて佐藤優羽さんへお届けします♡');
       // 送信後クリア
       msgText.value = ''; msgName.value = ''; document.getElementById('msg-xid').value = '';
       state.message = ''; state.name = '';
@@ -562,7 +563,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       showResult('err', e.message || '送信に失敗しました。もう一度お試しください。');
     } finally {
       btn.disabled = false;
-      btn.textContent = '✉️ 佐藤優羽さんに送る';
+      btn.textContent = '✉️ 佐藤優羽生誕祭実行委員会に送る';
     }
   });
 
