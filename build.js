@@ -481,45 +481,52 @@ async function buildIndex(tpl) {
   // ── サイドバー: X（固定ツイート・oEmbed） ──
   const xEmbedHtml = await fetchTwitterOembed("https://x.com/ysatoseitan/status/2040992766583550402?s=20");
 
+  const tileGroups = [
+    { id: "satoyu",    label: "さとうゆ情報",  emoji: "💚", bg: "var(--emerald-light)",
+      links: [{href:"yu.html",text:"佐藤優羽さんについて"},{href:"yunews.html",text:"News"},{href:"history.html",text:"ヒストリー"},{href:"quiz.html",text:"クイズ"}] },
+    { id: "blog",      label: "ブログ等",       emoji: "📝", bg: "var(--pink)",
+      links: [{href:"blog.html",text:"ブログ"},{href:"member-blog.html",text:"他メンバーブログ"},{href:"interview.html",text:"インタビュー"}] },
+    { id: "sns",       label: "SNS",            emoji: "📱", bg: "var(--butter)",
+      links: [{href:"x.html",text:"X"},{href:"tiktok.html",text:"TikTok"}] },
+    { id: "video",     label: "動画",           emoji: "▶️",  bg: "var(--sky)",
+      links: [{href:"youtube.html",text:"YouTube"},{href:"lemino.html",text:"Lemino"}] },
+    { id: "card",      label: "カード作成",     emoji: "🎴", bg: "var(--emerald-pale)",
+      links: [{href:"card.html",text:"プロフィールカード"},{href:"message.html",text:"お誕生日メッセージ"}] },
+    { id: "committee", label: "委員会",         emoji: "🌿", bg: "var(--cream)",
+      links: [{href:"committee.html",text:"委員会News"},{href:"activities.html",text:"活動報告"},{href:"about.html",text:"委員会について"},{href:"terms.html",text:"規約"},{href:"join.html",text:"入会"}] },
+  ];
   const tileNav = `
   <nav class="mobile-tile-nav" aria-label="コンテンツナビゲーション">
-    <a href="blog.html" class="tile-item">
-      <div class="tile-img" style="background:var(--emerald-light)">📝</div>
-      <span>ブログ</span>
-    </a>
-    <a href="youtube.html" class="tile-item">
-      <div class="tile-img" style="background:var(--pink)">▶️</div>
-      <span>YouTube</span>
-    </a>
-    <a href="tiktok.html" class="tile-item">
-      <div class="tile-img" style="background:var(--butter)">🎵</div>
-      <span>TikTok</span>
-    </a>
-    <a href="lemino.html" class="tile-item">
-      <div class="tile-img" style="background:var(--sky)">🎬</div>
-      <span>Lemino</span>
-    </a>
-    <a href="x.html" class="tile-item">
-      <div class="tile-img" style="background:var(--emerald-light)">𝕏</div>
-      <span>Xまとめ</span>
-    </a>
-    <a href="member-blog.html" class="tile-item">
-      <div class="tile-img" style="background:var(--pink)">👥</div>
-      <span>他メンバーブログ</span>
-    </a>
-    <a href="interview.html" class="tile-item">
-      <div class="tile-img" style="background:var(--butter)">📰</div>
-      <span>インタビュー</span>
-    </a>
-    <a href="quiz.html" class="tile-item">
-      <div class="tile-img" style="background:var(--sky)">❓</div>
-      <span>クイズ</span>
-    </a>
-    <a href="yu.html" class="tile-item">
-      <div class="tile-img" style="background:var(--emerald-pale)">💚</div>
-      <span>さとうゆについて</span>
-    </a>
-  </nav>`;
+    <div class="tile-grid">
+      ${tileGroups.map(g => `<button class="tile-item" data-group="${g.id}" aria-expanded="false">
+        <div class="tile-img" style="background:${g.bg}">${g.emoji}</div>
+        <span>${g.label}</span>
+      </button>`).join("\n      ")}
+    </div>
+    ${tileGroups.map(g => `<div class="tile-submenu" data-for="${g.id}">
+      ${g.links.map(l => `<a href="${l.href}">${l.text}</a>`).join("\n      ")}
+    </div>`).join("\n    ")}
+  </nav>
+  <script>
+  (function(){
+    var tiles = document.querySelectorAll('.tile-item[data-group]');
+    var menus = document.querySelectorAll('.tile-submenu');
+    tiles.forEach(function(tile){
+      tile.addEventListener('click', function(){
+        var id = tile.dataset.group;
+        var isActive = tile.classList.contains('active');
+        tiles.forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-expanded','false'); });
+        menus.forEach(function(m){ m.classList.remove('open'); });
+        if (!isActive) {
+          tile.classList.add('active');
+          tile.setAttribute('aria-expanded','true');
+          var menu = document.querySelector('.tile-submenu[data-for="' + id + '"]');
+          if (menu) menu.classList.add('open');
+        }
+      });
+    });
+  })();
+  </script>`;
 
   const body = `
   ${tileNav}
