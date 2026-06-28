@@ -481,7 +481,48 @@ async function buildIndex(tpl) {
   // ── サイドバー: X（固定ツイート・oEmbed） ──
   const xEmbedHtml = await fetchTwitterOembed("https://x.com/ysatoseitan/status/2040992766583550402?s=20");
 
+  const tileNav = `
+  <nav class="mobile-tile-nav" aria-label="コンテンツナビゲーション">
+    <a href="blog.html" class="tile-item">
+      <div class="tile-img" style="background:var(--emerald-light)">📝</div>
+      <span>ブログ</span>
+    </a>
+    <a href="youtube.html" class="tile-item">
+      <div class="tile-img" style="background:var(--pink)">▶️</div>
+      <span>YouTube</span>
+    </a>
+    <a href="tiktok.html" class="tile-item">
+      <div class="tile-img" style="background:var(--butter)">🎵</div>
+      <span>TikTok</span>
+    </a>
+    <a href="lemino.html" class="tile-item">
+      <div class="tile-img" style="background:var(--sky)">🎬</div>
+      <span>Lemino</span>
+    </a>
+    <a href="x.html" class="tile-item">
+      <div class="tile-img" style="background:var(--emerald-light)">𝕏</div>
+      <span>Xまとめ</span>
+    </a>
+    <a href="member-blog.html" class="tile-item">
+      <div class="tile-img" style="background:var(--pink)">👥</div>
+      <span>他メンバーブログ</span>
+    </a>
+    <a href="interview.html" class="tile-item">
+      <div class="tile-img" style="background:var(--butter)">📰</div>
+      <span>インタビュー</span>
+    </a>
+    <a href="quiz.html" class="tile-item">
+      <div class="tile-img" style="background:var(--sky)">❓</div>
+      <span>クイズ</span>
+    </a>
+    <a href="yu.html" class="tile-item">
+      <div class="tile-img" style="background:var(--emerald-pale)">💚</div>
+      <span>さとうゆについて</span>
+    </a>
+  </nav>`;
+
   const body = `
+  ${tileNav}
   <div class="top-layout">
 
     <!-- メインコンテンツ -->
