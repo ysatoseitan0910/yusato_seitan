@@ -91,9 +91,14 @@ nav {
   white-space: nowrap;
 }
 .nav-logo-sub {
-  font-family: 'Caveat',cursive; font-weight: 500;
-  font-size: 14px; color: var(--pink); letter-spacing: 0.04em; margin-top: -1px;
-  white-space: nowrap;
+  font-family: 'Zen Maru Gothic', serif; font-weight: 400;
+  font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;
+}
+.unofficial-badge {
+  display: inline-block; background: var(--emerald-light); color: var(--emerald-dark);
+  font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 3px;
+  vertical-align: middle;
 }
 .nav-links {
   display: flex; gap: 0; align-items: center;
@@ -581,6 +586,7 @@ footer .heart { color: var(--pink); }
 /* ── Mobile ── */
 @media (max-width: 768px) {
   nav { padding: 0 16px; }
+  .nav-logo-sub { max-width: 190px; }
   .hamburger { display: block; }
   .nav-links {
     display: none; flex-direction: column; align-items: stretch;
@@ -751,6 +757,7 @@ footer .heart { color: var(--pink); }
     <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
     <span class="nav-logo-text">
       <span class="nav-logo-main">さとうゆほーむ</span>
+      <span class="nav-logo-sub"><span class="unofficial-badge">非公式</span>ファンサイト｜運営：佐藤優羽生誕祭実行委員会</span>
     </span>
   </a>
   <div class="nav-links">
@@ -800,6 +807,7 @@ footer .heart { color: var(--pink); }
         <a href="committee.html" >委員会News</a>
         <a href="activities.html" class="active">活動報告</a>
         <a href="about.html" >委員会について</a>
+        <a href="site-info.html" >このサイトについて</a>
         <a href="terms.html" >規約</a>
         <a href="join.html" >入会</a>
       </div>
@@ -813,12 +821,12 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">ACTIVITIES</div>
         <h1>活動 <em>報告</em></h1>
         <p>委員会の活動をご紹介します</p>
-        <p class="last-updated">最終更新：2026/6/28 19:49:32</p>
+        <p class="last-updated">最終更新：2026/6/28 20:10:00</p>
       </div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-    <div class="card media-card" style="animation-delay:0.21630622703591232s" data-act-modal="1" data-title="日向坂46 17thシングル「Kind of love」発売記念リアルミート＆グリート@幕張メッセで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.06.13" data-status="" data-desc="＼　祝！幕張ミーグリ！　／
+    <div class="card media-card" style="animation-delay:0.2810556450736597s" data-act-modal="1" data-title="日向坂46 17thシングル「Kind of love」発売記念リアルミート＆グリート@幕張メッセで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.06.13" data-status="" data-desc="＼　祝！幕張ミーグリ！　／
 
 6月13日(土)に幕張メッセにて開催の #リアルミーグリ へ、#佐藤優羽 さん宛に祝花のお贈りすることができました。
 
@@ -834,7 +842,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.04369802661210049s" data-act-modal="1" data-title="7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.04.04" data-status="" data-desc="＼　祝！ひな誕祭 開催！　／
+    <div class="card media-card" style="animation-delay:0.20143979982154084s" data-act-modal="1" data-title="7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.04.04" data-status="" data-desc="＼　祝！ひな誕祭 開催！　／
 
 4月4日、5日に横浜スタジアムにて開催の #七回目のひな誕祭 へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
@@ -851,7 +859,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.15059302263375302s" data-act-modal="1" data-title="銀だこ創業日をお祝いしました！
+    <div class="card media-card" style="animation-delay:0.21414381077754957s" data-act-modal="1" data-title="銀だこ創業日をお祝いしました！
 #ゆうちゃんたこ焼き食べたよ" data-date="2026.03.14" data-status="" data-desc="/／
  今日は銀だこ創業日！│ ˙ᵕ˙ )꜆
 \＼
@@ -878,7 +886,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.1996327064332706s" data-act-modal="1" data-title="佐藤優羽お披露目1周年をお祝いしました！" data-date="2026.03.14" data-status="" data-desc="3月14日12時は #佐藤優羽 さんのテザー公開からちょうど1周年ですね
+    <div class="card media-card" style="animation-delay:0.1776060655960174s" data-act-modal="1" data-title="佐藤優羽お披露目1周年をお祝いしました！" data-date="2026.03.14" data-status="" data-desc="3月14日12時は #佐藤優羽 さんのテザー公開からちょうど1周年ですね
 
 公開から、あっという間の1年…
 この1年でたくさんの魅力を見せてくれましたね
@@ -898,7 +906,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.08345033273979478s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@京都パルスプラザで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.03.08" data-status="" data-desc="＼　祝！京都ミーグリ！　／
+    <div class="card media-card" style="animation-delay:0.02236226305672522s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@京都パルスプラザで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.03.08" data-status="" data-desc="＼　祝！京都ミーグリ！　／
 
 3月8日(日)に京都パルスプラザにて開催の #リアルミーグリ へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
@@ -914,7 +922,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.1412108868003428s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@パシフィコ横浜で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.02.07" data-status="" data-desc="＼　祝！横浜ミーグリ！　／
+    <div class="card media-card" style="animation-delay:0.2681345120536846s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@パシフィコ横浜で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.02.07" data-status="" data-desc="＼　祝！横浜ミーグリ！　／
 
 2月7日(土)にパシフィコ横浜にて開催の #リアルミーグリ へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
@@ -930,7 +938,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.24626022317847762s" data-act-modal="1" data-title="2026年の生誕委員募集を開始しました!!" data-date="2026.01.01" data-status="" data-desc="2026年1月1日(木)より、2026年度の生誕委員募集を開始いたします。
+    <div class="card media-card" style="animation-delay:0.198552001832581s" data-act-modal="1" data-title="2026年の生誕委員募集を開始しました!!" data-date="2026.01.01" data-status="" data-desc="2026年1月1日(木)より、2026年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
 ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2026-01-01_001.png">
@@ -945,7 +953,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.26097734415561785s" data-act-modal="1" data-title="2025年度生誕祭レーン装飾を実施しました。" data-date="2025.10.19" data-status="" data-desc="2025年10月19日（日）開催
+    <div class="card media-card" style="animation-delay:0.11917173230135236s" data-act-modal="1" data-title="2025年度生誕祭レーン装飾を実施しました。" data-date="2025.10.19" data-status="" data-desc="2025年10月19日（日）開催
 15thシングル『お願いバッハ！』発売記念リアルミート＆グリート（個別トーク会）にて
 生誕祭レーン装飾を実施しまたした。" data-url="" data-img="https://satoyu.info/images/activities/2025-10-19_001.png">
       <img class="media-img" src="https://satoyu.info/images/activities/2025-10-19_001.png" alt="2025年度生誕祭レーン装飾を実施しました。" loading="lazy">
@@ -959,7 +967,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.274039825049071s" data-act-modal="1" data-title="2025年生誕祭に際し企画を実施しました！" data-date="2025.09.10" data-status="" data-desc="下記画像の場所にてメセカ設置4カ所、駅広告2か所の企画を実施しました。
+    <div class="card media-card" style="animation-delay:0.029694980411521188s" data-act-modal="1" data-title="2025年生誕祭に際し企画を実施しました！" data-date="2025.09.10" data-status="" data-desc="下記画像の場所にてメセカ設置4カ所、駅広告2か所の企画を実施しました。
 
 ご協力いただきました。皆様改めましてありがとうございます。" data-url="" data-img="https://satoyu.info/images/activities/2025-09-10_001.png">
       <img class="media-img" src="https://satoyu.info/images/activities/2025-09-10_001.png" alt="2025年生誕祭に際し企画を実施しました！" loading="lazy">
@@ -973,7 +981,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.19055609413491403s" data-act-modal="1" data-title="2025年度の生誕委員募集を開始しました!!" data-date="2025.04.11" data-status="" data-desc="2025年4月11日(金)より、2025年度の生誕委員募集を開始いたします。
+    <div class="card media-card" style="animation-delay:0.2694011663575112s" data-act-modal="1" data-title="2025年度の生誕委員募集を開始しました!!" data-date="2025.04.11" data-status="" data-desc="2025年4月11日(金)より、2025年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
 ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2025-04-11_001.png">
@@ -988,7 +996,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.19058600355135563s" data-act-modal="1" data-title="佐藤優羽生誕祭実行委員会 HPを開設しました！" data-date="2025.03.13" data-status="" data-desc="佐藤優羽生誕祭実行委員会のホームページへアクセスいただき誠にありがとうございます。
+    <div class="card media-card" style="animation-delay:0.08586626210354543s" data-act-modal="1" data-title="佐藤優羽生誕祭実行委員会 HPを開設しました！" data-date="2025.03.13" data-status="" data-desc="佐藤優羽生誕祭実行委員会のホームページへアクセスいただき誠にありがとうございます。
 このたび、当委員会の活動開始とあわせ、ホームページを開設いたしました。
 当委員会の活動をわかりやすく掲載してまいりたいと存じます。
 今後とも、なにとぞよろしくお願い申し上げます。" data-url="" data-img="">
@@ -1126,7 +1134,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 19:49:32</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 20:10:00</p>
 </footer>
 
 <script>

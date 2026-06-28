@@ -91,9 +91,14 @@ nav {
   white-space: nowrap;
 }
 .nav-logo-sub {
-  font-family: 'Caveat',cursive; font-weight: 500;
-  font-size: 14px; color: var(--pink); letter-spacing: 0.04em; margin-top: -1px;
-  white-space: nowrap;
+  font-family: 'Zen Maru Gothic', serif; font-weight: 400;
+  font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;
+}
+.unofficial-badge {
+  display: inline-block; background: var(--emerald-light); color: var(--emerald-dark);
+  font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 3px;
+  vertical-align: middle;
 }
 .nav-links {
   display: flex; gap: 0; align-items: center;
@@ -581,6 +586,7 @@ footer .heart { color: var(--pink); }
 /* ── Mobile ── */
 @media (max-width: 768px) {
   nav { padding: 0 16px; }
+  .nav-logo-sub { max-width: 190px; }
   .hamburger { display: block; }
   .nav-links {
     display: none; flex-direction: column; align-items: stretch;
@@ -751,6 +757,7 @@ footer .heart { color: var(--pink); }
     <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
     <span class="nav-logo-text">
       <span class="nav-logo-main">さとうゆほーむ</span>
+      <span class="nav-logo-sub"><span class="unofficial-badge">非公式</span>ファンサイト｜運営：佐藤優羽生誕祭実行委員会</span>
     </span>
   </a>
   <div class="nav-links">
@@ -800,6 +807,7 @@ footer .heart { color: var(--pink); }
         <a href="committee.html" >委員会News</a>
         <a href="activities.html" >活動報告</a>
         <a href="about.html" >委員会について</a>
+        <a href="site-info.html" >このサイトについて</a>
         <a href="terms.html" >規約</a>
         <a href="join.html" >入会</a>
       </div>
@@ -813,7 +821,7 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">SATOYU QUIZ</div>
         <h1>さとうゆ <em>クイズ</em></h1>
         <p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p>
-        <p class="last-updated">最終更新：2026/6/28 19:49:40</p>
+        <p class="last-updated">最終更新：2026/6/28 20:10:15</p>
       </div>
       <div class="content">
 <style>
@@ -1236,7 +1244,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 19:49:40</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 20:10:15</p>
 </footer>
 
 <script>
