@@ -888,16 +888,22 @@ async function buildX(tpl) {
     var btn=sec.querySelector('.x-more-btn');
     var third=grid?grid.querySelector('.x-card--third'):null;
     var mobile=window.innerWidth<600;
-    if(third&&mobile) third.style.display='none';
-    function remaining(){return(tpl?tpl.content.querySelectorAll('.x-card').length:0)+((third&&third.style.display==='none')?1:0);}
-    function refresh(){var r=remaining();if(btn){if(r>0)btn.textContent='さらに表示（'+r+'件）';else btn.closest('.x-more-wrap').style.display='none';}}
-    refresh();
-    if(btn)btn.addEventListener('click',function(){
-      if(third&&third.style.display==='none')third.style.display='';
-      if(tpl){grid.appendChild(tpl.content.cloneNode(true));tpl.remove();}
+    var BATCH=mobile?2:3;
+    var pool=[];
+    if(third&&mobile){third.style.display='none';pool.push({dom:true,el:third});}
+    if(tpl){Array.from(tpl.content.querySelectorAll('.x-card')).forEach(function(c){pool.push({dom:false,el:c});});}
+    function showBatch(){
+      pool.splice(0,BATCH).forEach(function(item){
+        if(item.dom)item.el.style.display='';
+        else grid.appendChild(item.el);
+      });
       if(window.twttr&&window.twttr.widgets)twttr.widgets.load(grid);
-      btn.closest('.x-more-wrap').style.display='none';
-    });
+      if(pool.length>0)btn.textContent='さらに表示（残り'+pool.length+'件）';
+      else btn.closest('.x-more-wrap').style.display='none';
+    }
+    if(!btn)return;
+    if(pool.length>0){btn.textContent='さらに表示（'+pool.length+'件）';btn.addEventListener('click',showBatch);}
+    else{btn.closest('.x-more-wrap').style.display='none';}
   });
   function loadWidgets(){var s=document.createElement('script');s.src='https://platform.twitter.com/widgets.js';s.async=true;s.charset='utf-8';document.body.appendChild(s);}
   var tweet=document.querySelector('.twitter-tweet');
