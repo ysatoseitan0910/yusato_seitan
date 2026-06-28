@@ -648,6 +648,10 @@ footer .heart { color: var(--pink); }
   .committee-row-title { grid-area: title; }
   .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
 
+  /* タイルナビがあるページ（トップページ）ではpage-heroを非表示にし、contentに上余白を追加 */
+  body:has(.mobile-tile-nav) .page-hero { display: none; }
+  body:has(.mobile-tile-nav) .content { padding-top: calc(var(--nav-h) + 16px); }
+
   /* ── モバイルタイルナビ ── */
   .mobile-tile-nav {
     display: block;
@@ -809,7 +813,7 @@ footer .heart { color: var(--pink); }
         <div class="page-hero-tag">HISTORY</div>
         <h1>さとうゆ <em>ヒストリー</em></h1>
         <p>佐藤優羽さんの歩みをまとめた年表です</p>
-        <p class="last-updated">最終更新：2026/6/28 17:41:44</p>
+        <p class="last-updated">最終更新：2026/6/28 18:08:27</p>
       </div>
       <div class="content">
 <style>
@@ -3392,7 +3396,7 @@ Top Yell NEO 2026 SUMMER</a></p>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 17:41:44</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/28 18:08:27</p>
 </footer>
 
 <script>
