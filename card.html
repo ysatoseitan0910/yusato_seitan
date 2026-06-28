@@ -118,6 +118,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 }
 .field-radio.selected { border-color: var(--emerald); background: var(--emerald-pale); color: var(--emerald-dark); }
 .field-radio input[type=radio] { display: none; }
+.field-radio[data-opt="男性"]         { border-color: #bfdbfe; color: #1d4ed8; }
+.field-radio[data-opt="男性"].selected { border-color: #3b82f6; background: #eff6ff; color: #1e40af; }
+.field-radio[data-opt="女性"]         { border-color: var(--pink); color: #be185d; }
+.field-radio[data-opt="女性"].selected { border-color: #ec4899; background: var(--pink-pale); color: #9d174d; }
 
 /* Divider */
 .field-divider { border: none; border-top: 1px dashed var(--border); }
@@ -421,7 +425,7 @@ const SHARED_FIELDS = [
   { id: "handle",          label: "X ID",               placeholder: "例：@satoyu_donguri_funfun",     required: true },
   { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "例：2006年",    omittable: true },
   { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "例：9月10日",   omittable: true },
-  { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
+  { id: "gender",          label: "性別",               type: "radio",  options: ["男性","女性","無回答"] },
   { id: "nickname",        label: "呼ばれ方",                       placeholder: "例：ふんふん" },
   { id: "mbti",            label: "MBTI（省略可）",       type: "select", options: MBTI_OPTIONS },
   { id: "ohisama-history", label: "おひさま歴",                    placeholder: "例：4回目のひな誕祭" },
@@ -1167,6 +1171,7 @@ function buildFields() {
       f.options.forEach(opt => {
         const lbl = document.createElement("label");
         lbl.className = "field-radio" + (currentVal === opt ? " selected" : "");
+        lbl.dataset.opt = opt;
         const inp = document.createElement("input");
         inp.type = "radio";
         inp.name = `${tpl.id}-${f.id}`;
@@ -1179,6 +1184,12 @@ function buildFields() {
           render();
         });
         lbl.appendChild(inp);
+        if (opt === "男性" || opt === "女性") {
+          const ic = document.createElement("span");
+          ic.textContent = opt === "男性" ? "♂" : "♀";
+          ic.style.cssText = "font-weight:700;font-size:13px;margin-right:1px;";
+          lbl.appendChild(ic);
+        }
         lbl.appendChild(document.createTextNode(opt));
         group.appendChild(lbl);
       });
