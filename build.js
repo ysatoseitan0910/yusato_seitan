@@ -21,6 +21,7 @@ const DB = {
   quiz:          process.env.DB_QUIZ,
   memberBlog:    process.env.DB_MEMBER_BLOG,
   history:       process.env.DB_HISTORY || "38928fd03f5380bf981ffffd95c540bd",
+  news:          process.env.DB_NEWS,
 };
 
 // ── ヘルパー ──
@@ -360,11 +361,12 @@ function actModalAttrs(p) {
 
 // ── ページビルダー ──
 async function buildIndex(tpl) {
-  const [yuNews, activities, committeeNews, schedule] = await Promise.all([
+  const [yuNews, activities, committeeNews, schedule, news] = await Promise.all([
     queryDB(DB.yuNews),
     queryDB(DB.activities),
     queryDB(DB.committeeNews, [{ property: "Priority", direction: "ascending" }]),
     queryDB(DB.schedule, [{ property: "Date", direction: "ascending" }]),
+    DB.news ? queryDB(DB.news).catch(() => []) : Promise.resolve([]),
   ]);
 
   // ── 委員会News: リスト行（全件・クリックでモーダル） ──
@@ -388,6 +390,23 @@ async function buildIndex(tpl) {
       <span class="committee-row-meta">${statusBadge(status)}${deadlineBadge(deadline)}</span>
     </div>`;
   }).join("\n");
+
+  // ── 最新ニュース ──
+  const newsSection = news.length ? `
+  <div class="top-news">
+    <span class="top-news-label">📢 最新ニュース</span>
+    <div class="top-news-items">
+      ${news.slice(0, 10).map(p => {
+        const title = getText(p, "Name");
+        const date  = fmtDate(getDate(p));
+        const url   = getUrl(p);
+        const text  = url
+          ? `<a href="${escAttr(url)}" class="top-news-text" target="_blank" rel="noopener">${title}</a>`
+          : `<span class="top-news-text">${title}</span>`;
+        return `<div class="top-news-item"><span class="top-news-date">${date}</span>${text}</div>`;
+      }).join("\n      ")}
+    </div>
+  </div>` : "";
 
   // ── 活動報告: サムネイルグリッド ──
   const actCards = activities.map(p => {
@@ -549,6 +568,7 @@ async function buildIndex(tpl) {
       運営：<a href="about.html">佐藤優羽生誕祭実行委員会</a>　<a href="site-info.html" class="top-intro-more">このサイトについて →</a>
     </p>
   </div>
+  ${newsSection}
   <div class="top-layout">
 
     <!-- メインコンテンツ -->
