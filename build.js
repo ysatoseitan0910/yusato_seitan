@@ -135,7 +135,6 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
         <div class="page-hero-tag">${tag}</div>
         <h1>${h1}</h1>
         ${desc ? `<p>${desc}</p>` : ''}
-        <p class="last-updated">最終更新：${now}</p>
       </div>
       <div class="content">${body}</div>
     `)
