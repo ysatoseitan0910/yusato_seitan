@@ -40,7 +40,7 @@ jobs:
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
           DB_QUIZ:             ${{ secrets.DB_QUIZ }}
           DB_HISTORY:          ${{ secrets.DB_HISTORY }}
-          DB_NEWS:             ${{ secrets.DB_NEWS }}
+          DB_TOP_NEWS:         ${{ secrets.DB_TOP_NEWS }}
 
       - name: Setup SSH
         run: |

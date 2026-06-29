@@ -21,7 +21,7 @@ const DB = {
   quiz:          process.env.DB_QUIZ,
   memberBlog:    process.env.DB_MEMBER_BLOG,
   history:       process.env.DB_HISTORY || "38928fd03f5380bf981ffffd95c540bd",
-  news:          process.env.DB_NEWS,
+  news:          process.env.DB_TOP_NEWS,
 };
 
 // ── ヘルパー ──
