@@ -257,6 +257,13 @@ header span { font-size: 13px; color: var(--text-muted); }
 }
 .list-del-btn:hover:not(:disabled) { background: #fde7e7; border-color: #e88; }
 .list-del-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.list-unpub-btn {
+  padding: 3px 10px; border: 1.5px solid var(--border); border-radius: 6px;
+  background: #f7f7f7; color: var(--text-muted); font-size: 12px; cursor: pointer;
+  font-family: inherit; transition: all 0.15s; white-space: nowrap;
+}
+.list-unpub-btn:hover:not(:disabled) { background: var(--emerald-pale); border-color: var(--emerald); color: var(--emerald-dark); }
+.list-unpub-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 @media (max-width: 600px) {
   .panel-tab { font-size: 16px; padding: 10px 18px; }
   .list-table td:nth-child(3) { display: none; }
@@ -964,8 +971,11 @@ function renderListTable(items, db) {
     const pub  = item.published === true  ? '<span class="pub-badge pub-true">公開</span>'
                : item.published === false ? '<span class="pub-badge pub-false">非公開</span>'
                : '';
+    const unpubBtn = item.published === true
+      ? `<button class="list-unpub-btn" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}" onclick="unpublishRecord('${escHtml(db)}', this)">非公開</button> `
+      : '';
     const delBtn = `<button class="list-del-btn" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}" onclick="deleteRecord('${escHtml(db)}', this)">削除</button>`;
-    return `<tr class="list-row" data-db="${escHtml(db)}" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}"><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td>${delBtn}</td></tr>`;
+    return `<tr class="list-row" data-db="${escHtml(db)}" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}"><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td style="white-space:nowrap;">${unpubBtn}${delBtn}</td></tr>`;
   }).join('');
   return `<table class="list-table"><thead><tr><th>タイトル</th><th>日付</th><th>公開</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
 }
@@ -1002,6 +1012,36 @@ async function deleteRecord(db, btnEl) {
     alert('接続エラー: ' + e.message);
     btnEl.disabled = false;
     btnEl.textContent = '削除';
+  }
+}
+
+async function unpublishRecord(db, btnEl) {
+  const pageId = btnEl.dataset.id;
+  const name   = btnEl.dataset.name || '（無題）';
+  const row    = btnEl.closest('tr');
+  if (!confirm(`「${name}」を非公開にしますか？`)) return;
+  btnEl.disabled = true;
+  btnEl.textContent = '...';
+  try {
+    const res = await fetch(`${API_BASE}/unpublish/${db}/${pageId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${getPassword()}` }
+    });
+    if (res.status === 401) { logout(); return; }
+    if (res.ok) {
+      const pubCell = row.querySelector('td:nth-child(3)');
+      if (pubCell) pubCell.innerHTML = '<span class="pub-badge pub-false">非公開</span>';
+      btnEl.remove();
+    } else {
+      const d = await res.json().catch(() => ({}));
+      alert('非公開化失敗: ' + (d.error || 'エラー'));
+      btnEl.disabled = false;
+      btnEl.textContent = '非公開';
+    }
+  } catch (e) {
+    alert('接続エラー: ' + e.message);
+    btnEl.disabled = false;
+    btnEl.textContent = '非公開';
   }
 }
 
@@ -1369,7 +1409,7 @@ function closeDetailModal() {
 document.getElementById('list-content').addEventListener('click', function(e) {
   const row = e.target.closest('.list-row');
   if (!row) return;
-  if (e.target.closest('.list-del-btn') || e.target.closest('a')) return;
+  if (e.target.closest('.list-del-btn') || e.target.closest('.list-unpub-btn') || e.target.closest('a')) return;
   openDetail(row.dataset.db, row.dataset.id, row.dataset.name);
 });
 

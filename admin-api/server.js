@@ -75,7 +75,7 @@ app.use((req, res, next) => {
   if (origin === "https://satoyu.info" || origin === "https://www.satoyu.info") {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
@@ -303,6 +303,19 @@ app.delete("/delete/:db/:pageId", auth, async (req, res) => {
   if (!DB[dbKey]) return res.status(404).json({ error: "不明なDB" });
   try {
     await notion.pages.update({ page_id: pageId, archived: true });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// レコード非公開化（Published = false）
+app.patch("/unpublish/:db/:pageId", auth, async (req, res) => {
+  const { db: dbKey, pageId } = req.params;
+  if (!DB[dbKey]) return res.status(404).json({ error: "不明なDB" });
+  try {
+    await notion.pages.update({ page_id: pageId, properties: { Published: { checkbox: false } } });
     res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
