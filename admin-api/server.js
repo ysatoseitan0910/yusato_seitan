@@ -236,13 +236,15 @@ app.post("/add/memberblog", auth, async (req, res) => {
 
 // Lemino
 app.post("/add/lemino", auth, async (req, res) => {
-  const { name, date, url, description } = req.body;
+  const { name, date, url, description, program, expiryDate } = req.body;
   if (!name) return res.status(400).json({ error: "タイトルは必須です" });
   try {
     const props = { Name: { title: t(name) }, Published: { checkbox: true } };
-    if (date) props.Date = { date: { start: date } };
-    if (url)  props.URL  = { url };
+    if (date)        props.Date        = { date: { start: date } };
+    if (url)         props.URL         = { url };
     if (description) props.Description = { rich_text: t(description) };
+    if (program)     props.Program     = { select: { name: program } };
+    if (expiryDate)  props["配信終了予定"] = { date: { start: expiryDate } };
     await notion.pages.create({ parent: { database_id: DB.lemino }, properties: props });
     res.json({ ok: true });
   } catch (e) {
@@ -302,6 +304,28 @@ app.delete("/delete/:db/:pageId", auth, async (req, res) => {
   try {
     await notion.pages.update({ page_id: pageId, archived: true });
     res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DBスキーマ取得（select / multi_select のオプション一覧）
+app.get("/schema/:db", auth, async (req, res) => {
+  const { db: dbKey } = req.params;
+  const dbId = DB[dbKey];
+  if (!dbId) return res.status(404).json({ error: "不明なDB" });
+  try {
+    const db = await notion.databases.retrieve({ database_id: dbId });
+    const schema = {};
+    for (const [key, prop] of Object.entries(db.properties)) {
+      if (prop.type === "select") {
+        schema[key] = { type: "select", options: (prop.select?.options || []).map(o => o.name) };
+      } else if (prop.type === "multi_select") {
+        schema[key] = { type: "multi_select", options: (prop.multi_select?.options || []).map(o => o.name) };
+      }
+    }
+    res.json(schema);
   } catch (e) {
     console.error(e.message);
     res.status(500).json({ error: e.message });
