@@ -299,10 +299,10 @@ footer .heart{color:var(--pink);}
     </div>
     <p>コンテンツに関するご指摘・著作権に関するお問い合わせ・その他サイトに関するご連絡は、下記よりお願いいたします。</p>
     <ul>
-      <li>X（旧Twitter）: <a href="https://x.com/ysatoseitan" style="color:var(--emerald-dark);font-weight:600;">@ysatoseitan</a> へのDM</li>
+      <li>メール: <a class="js-email" href="#" style="color:var(--emerald-dark);font-weight:600;"><span class="js-email-txt"></span></a></li>
     </ul>
     <p>いただいたご連絡は確認のうえ、対応いたします。</p>
-    <a href="https://x.com/ysatoseitan" class="contact-link" target="_blank" rel="noopener noreferrer">X (@ysatoseitan) を開く →</a>
+    <a href="#" class="contact-link js-email">メールでお問い合わせ →</a>
   </div>
 
 </div>
@@ -348,6 +348,11 @@ footer .heart{color:var(--pink);}
       }
     });
   }
+})();
+(function(){
+  var _e=['y.satoseitan0910','gmail.com'].join('@');
+  document.querySelectorAll('.js-email').forEach(function(a){a.href='mailto:'+_e;});
+  document.querySelectorAll('.js-email-txt').forEach(function(s){s.textContent=_e;});
 })();
 </script>
 </body>
