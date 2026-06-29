@@ -235,8 +235,8 @@ footer .heart{color:var(--pink);}
 
   <div class="section">
     <h2>お問い合わせ</h2>
-    <p>個人情報の取り扱いに関するご質問・削除のご要望は、当委員会のXアカウントまでお問い合わせください。</p>
-    <p><a href="https://x.com/ysatoseitan" target="_blank" rel="noopener">@ysatoseitan</a></p>
+    <p>個人情報の取り扱いに関するご質問・削除のご要望は、下記メールアドレスまでお問い合わせください。</p>
+    <p><a class="js-email" href="#" style="color:var(--emerald-dark);font-weight:600;"><span class="js-email-txt"></span></a></p>
   </div>
 
 </div>
@@ -283,6 +283,11 @@ footer .heart{color:var(--pink);}
       }
     });
   }
+})();
+(function(){
+  var _e=['y.satoseitan0910','gmail.com'].join('@');
+  document.querySelectorAll('.js-email').forEach(function(a){a.href='mailto:'+_e;});
+  document.querySelectorAll('.js-email-txt').forEach(function(s){s.textContent=_e;});
 })();
 </script>
 </body>
