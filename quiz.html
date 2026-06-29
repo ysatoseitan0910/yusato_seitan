@@ -177,6 +177,33 @@ nav {
   font-family: 'Caveat',cursive; font-size: 14px;
   color: var(--text-light); margin-top: 6px; letter-spacing: 0.04em;
 }
+/* ── トップページ hero 2カラム（PC専用） ── */
+.page-hero--index {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+.page-hero-left {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 24px;
+}
+.top-hero-img-wrap {
+  flex-shrink: 0;
+  width: clamp(240px, 30%, 360px);
+  align-self: flex-end;
+  margin-left: 24px;
+}
+.top-hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px 16px 0 0;
+  object-fit: cover;
+  object-position: top center;
+}
 
 /* ── Content area ── */
 .content {
@@ -868,9 +895,7 @@ footer .heart { color: var(--pink); }
 
 
       <div class="page-hero">
-        <div class="page-hero-tag">SATOYU QUIZ</div>
-        <h1>さとうゆ <em>クイズ</em></h1>
-        <p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p>
+        <div class="page-hero-tag">SATOYU QUIZ</div><h1>さとうゆ <em>クイズ</em></h1><p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p>
       </div>
       <div class="content">
 <style>
@@ -1293,7 +1318,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 12:39:13</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 14:18:38</p>
 </footer>
 
 <script>
