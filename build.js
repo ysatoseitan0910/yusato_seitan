@@ -959,6 +959,22 @@ async function buildX(tpl) {
 
   body += `\n  <script>
 (function(){
+  var widgetsLoaded=false, pending=[];
+
+  function renderCard(card){
+    if(card.dataset.rendered)return;
+    card.dataset.rendered='1';
+    if(widgetsLoaded){
+      window.twttr&&window.twttr.widgets&&twttr.widgets.load(card);
+    }else{
+      pending.push(card);
+    }
+  }
+
+  var cardObs=('IntersectionObserver' in window)?new IntersectionObserver(function(entries,o){
+    entries.forEach(function(e){if(e.isIntersecting){renderCard(e.target);o.unobserve(e.target);}});
+  },{rootMargin:'200px'}):null;
+
   document.querySelectorAll('.x-section').forEach(function(sec){
     var grid=sec.querySelector('.x-embed-grid');
     var tpl=sec.querySelector('.x-more-tpl');
@@ -973,23 +989,42 @@ async function buildX(tpl) {
       pool.splice(0,BATCH).forEach(function(item){
         if(item.dom)item.el.style.display='';
         else grid.appendChild(item.el);
+        if(cardObs)cardObs.observe(item.el);else renderCard(item.el);
       });
-      if(window.twttr&&window.twttr.widgets)twttr.widgets.load(grid);
       if(pool.length>0)btn.textContent='さらに表示（残り'+pool.length+'件）';
       else btn.closest('.x-more-wrap').style.display='none';
     }
     if(!btn)return;
     if(pool.length>0){btn.textContent='さらに表示（'+pool.length+'件）';btn.addEventListener('click',showBatch);}
-    else{btn.closest('.x-more-wrap').style.display='none';}
+    else btn.closest('.x-more-wrap').style.display='none';
   });
-  function loadWidgets(){var s=document.createElement('script');s.src='https://platform.twitter.com/widgets.js';s.async=true;s.charset='utf-8';document.body.appendChild(s);}
-  var tweet=document.querySelector('.twitter-tweet');
-  if(!tweet){return;}
+
+  function loadWidgets(){
+    var s=document.createElement('script');
+    s.src='https://platform.twitter.com/widgets.js';
+    s.async=true;s.charset='utf-8';
+    s.onload=function(){
+      widgetsLoaded=true;
+      window.twttr&&window.twttr.ready(function(){
+        pending.forEach(function(c){twttr.widgets.load(c);});
+        pending=[];
+      });
+    };
+    document.body.appendChild(s);
+  }
+
+  var tweets=document.querySelectorAll('.twitter-tweet');
+  if(!tweets.length)return;
+
+  document.querySelectorAll('.x-card').forEach(function(card){
+    if(cardObs)cardObs.observe(card);else renderCard(card);
+  });
+
   if(!('IntersectionObserver' in window)){loadWidgets();return;}
   var obs=new IntersectionObserver(function(entries){
     if(entries[0].isIntersecting){loadWidgets();obs.disconnect();}
   },{rootMargin:'300px'});
-  obs.observe(tweet);
+  obs.observe(tweets[0]);
 })();
 <\/script>`;
 
