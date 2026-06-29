@@ -186,6 +186,31 @@ nav {
 
 /* ── Top layout（トップページ専用） ── */
 .mobile-tile-nav { display: none; }
+.top-news {
+  border-left: 4px solid var(--emerald);
+  background: #fff;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.top-news-label {
+  font-family: 'Zen Maru Gothic', serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--emerald-dark);
+  white-space: nowrap;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.top-news-items { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+.top-news-item { display: flex; align-items: baseline; gap: 10px; }
+.top-news-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.top-news-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+a.top-news-text { text-decoration: none; }
+a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; }
 .top-intro {
   background: var(--emerald-pale);
   border: 1px solid var(--emerald-light);
@@ -3501,7 +3526,7 @@ Top Yell NEO 2026 SUMMER</a></p>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 10:25:51</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 10:46:09</p>
 </footer>
 
 <script>

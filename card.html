@@ -647,7 +647,7 @@ function buildOshiIntroSegments(getV) {
   const ni = ()       => ({ text: n, isInput: nInp, fieldId: nInp ? "oshi-name" : null });
   const segs = [];
 
-  segs.push(s("日向坂の一押しはもちろん")); segs.push(ni()); segs.push(s("だよ。"));
+  segs.push(s("日向坂の一推しはもちろん")); segs.push(ni()); segs.push(s("だよ。"));
 
   if (reason || like) {
     segs.push(s("\n"));
@@ -947,7 +947,7 @@ function drawBestMemo(ctx, x, y, blockW, MP, FS, label, items, labelColor, tape,
 
 function mmFooter(ctx, w, totalH) {
   ctx.font = f(11); ctx.fillStyle = "#a0957f"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
-  ctx.fillText("satoyu.info　#さとうゆ一押しプロフィール", w / 2, totalH - 10);
+  ctx.fillText("satoyu.info　#さとうゆ一推しプロフィール", w / 2, totalH - 10);
 }
 
 // ════════════════════════════════════════════════════════
@@ -1371,7 +1371,7 @@ function download() {
   a.click();
 }
 
-const TWEET_TEXT = "#さとうゆ一押しプロフィール\nhttps://satoyu.info";
+const TWEET_TEXT = "#さとうゆ一推しプロフィール\nhttps://satoyu.info";
 
 async function shareToX() {
   const btn = document.getElementById("share-x-btn");
