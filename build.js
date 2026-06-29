@@ -498,17 +498,32 @@ async function buildIndex(tpl) {
   ];
   const tileNav = `
   <div class="mobile-tile-nav" role="navigation" aria-label="コンテンツナビゲーション">
-    <div class="tile-grid">
-      ${tileGroups.map(g => `<button class="tile-item" data-group="${g.id}" aria-expanded="false">${g.label}</button>`).join("\n      ")}
+    <button class="tile-menu-toggle" aria-expanded="false">Menu <span class="tile-toggle-arrow">▾</span></button>
+    <div class="tile-body">
+      <div class="tile-grid">
+        ${tileGroups.map(g => `<button class="tile-item" data-group="${g.id}" aria-expanded="false">${g.label}</button>`).join("\n        ")}
+      </div>
+      ${tileGroups.map(g => `<div class="tile-submenu" data-for="${g.id}">
+        ${g.links.map(l => `<a href="${l.href}">${l.text}</a>`).join("\n        ")}
+      </div>`).join("\n      ")}
     </div>
-    ${tileGroups.map(g => `<div class="tile-submenu" data-for="${g.id}">
-      ${g.links.map(l => `<a href="${l.href}">${l.text}</a>`).join("\n      ")}
-    </div>`).join("\n    ")}
   </div>
   <script>
   (function(){
+    var toggle = document.querySelector('.tile-menu-toggle');
+    var tileBody = document.querySelector('.tile-body');
     var tiles = document.querySelectorAll('.tile-item[data-group]');
     var menus = document.querySelectorAll('.tile-submenu');
+    if (toggle && tileBody) {
+      toggle.addEventListener('click', function(){
+        var open = tileBody.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (!open) {
+          tiles.forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-expanded','false'); });
+          menus.forEach(function(m){ m.classList.remove('open'); });
+        }
+      });
+    }
     tiles.forEach(function(tile){
       tile.addEventListener('click', function(){
         var id = tile.dataset.group;

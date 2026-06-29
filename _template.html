@@ -671,6 +671,43 @@ footer .heart { color: var(--pink); }
     padding-top: calc(var(--nav-h) + 16px);
     margin-bottom: 24px;
   }
+  .tile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    background: var(--emerald-pale);
+    border: 2px solid var(--emerald-light);
+    border-radius: 12px;
+    padding: 10px;
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--emerald-dark);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.08);
+    transition: all 0.12s;
+  }
+  .tile-menu-toggle[aria-expanded="true"] {
+    background: var(--emerald-light);
+    border-color: var(--emerald-dark);
+    box-shadow: 2px 2px 0 var(--emerald-dark);
+  }
+  .tile-toggle-arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-style: normal;
+  }
+  .tile-menu-toggle[aria-expanded="true"] .tile-toggle-arrow {
+    transform: rotate(180deg);
+  }
+  .tile-body {
+    display: none;
+    margin-top: 8px;
+  }
+  .tile-body.open { display: block; }
   .tile-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
