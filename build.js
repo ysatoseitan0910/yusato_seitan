@@ -430,7 +430,7 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   // ── 佐藤優羽さんNews: 均一グリッド ──
-  const yuNewsSlice = yuNews.slice(0, 20);
+  const yuNewsSlice = yuNews.slice(0, 12);
 
   // TikTokは保存済みURLが期限切れになるため常にoEmbedから取得
   const tiktokTargetsIdx = yuNewsSlice.map(p =>
@@ -764,11 +764,39 @@ async function buildActivities(tpl) {
 async function buildBlog(tpl) {
   const pages = await queryDB(DB.blog);
   const cards = pages.map(p => mediaCard(p, "Blog")).join("\n");
-  const body = `<div class="grid-3">
+  const body = `<div class="grid-3" id="blog-grid">
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
-  </div>`;
+  </div>
+  <div class="load-more-wrap" id="blog-more-wrap">
+    <p class="load-more-count" id="blog-more-count"></p>
+    <button class="load-more-btn" id="blog-more-btn">もっと見る</button>
+  </div>
+  <script>
+  (function(){
+    var mobile=window.innerWidth<768;
+    var BATCH=mobile?10:30;
+    var grid=document.getElementById('blog-grid');
+    var btn=document.getElementById('blog-more-btn');
+    var countEl=document.getElementById('blog-more-count');
+    var wrap=document.getElementById('blog-more-wrap');
+    var all=Array.from(grid.querySelectorAll('.card'));
+    var total=all.length;
+    var shown=0;
+    all.forEach(function(c){c.style.display='none';});
+    function showMore(){
+      var next=Math.min(shown+BATCH,total);
+      for(var i=shown;i<next;i++) all[i].style.display='';
+      shown=next;
+      countEl.textContent=shown+' / '+total+' 件表示中';
+      if(shown>=total) wrap.style.display='none';
+      else btn.textContent='もっと見る（残り'+(total-shown)+'件）';
+    }
+    btn.addEventListener('click',showMore);
+    showMore();
+  })();
+  <\/script>`;
   return buildPage(tpl, "ブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body, "blog.html");
 }
 
@@ -866,25 +894,64 @@ async function buildMemberBlog(tpl) {
   ${cards}
   <!-- GALLERY_END -->
 </div>
+<div class="load-more-wrap" id="mblog-more-wrap">
+  <p class="load-more-count" id="mblog-more-count"></p>
+  <button class="load-more-btn" id="mblog-more-btn">もっと見る</button>
+</div>
 <script>
 (function(){
-  var btns = document.querySelectorAll('.mbf-btn');
-  var cards = document.querySelectorAll('.mblog-card');
+  var mobile=window.innerWidth<768;
+  var BATCH=mobile?10:30;
+  var btns=document.querySelectorAll('.mbf-btn');
+  var cards=Array.from(document.querySelectorAll('.mblog-card'));
+  var moreWrap=document.getElementById('mblog-more-wrap');
+  var moreBtn=document.getElementById('mblog-more-btn');
+  var countEl=document.getElementById('mblog-more-count');
+  var currentMember='';
+  var shown=0;
+
+  function getFiltered(){
+    if(!currentMember) return cards;
+    return cards.filter(function(c){
+      return (c.dataset.members||'').split(',').indexOf(currentMember)>=0;
+    });
+  }
+
+  function reset(){
+    var filtered=getFiltered();
+    cards.forEach(function(c){c.style.display='none';});
+    shown=0;
+    if(currentMember){
+      filtered.forEach(function(c){c.style.display='';});
+      shown=filtered.length;
+      moreWrap.style.display='none';
+    } else {
+      moreWrap.style.display='';
+      showMore();
+    }
+  }
+
+  function showMore(){
+    var filtered=getFiltered();
+    var total=filtered.length;
+    var next=Math.min(shown+BATCH,total);
+    for(var i=shown;i<next;i++) filtered[i].style.display='';
+    shown=next;
+    countEl.textContent=shown+' / '+total+' 件表示中';
+    if(shown>=total) moreWrap.style.display='none';
+    else{ moreWrap.style.display=''; moreBtn.textContent='もっと見る（残り'+(total-shown)+'件）'; }
+  }
+
   btns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var member = this.dataset.member;
-      btns.forEach(function(b){ b.classList.remove('mbf-btn--active'); });
+    btn.addEventListener('click',function(){
+      btns.forEach(function(b){b.classList.remove('mbf-btn--active');});
       this.classList.add('mbf-btn--active');
-      cards.forEach(function(card){
-        if(!member){
-          card.style.display = '';
-        } else {
-          var ms = (card.dataset.members || '').split(',');
-          card.style.display = ms.indexOf(member) >= 0 ? '' : 'none';
-        }
-      });
+      currentMember=this.dataset.member;
+      reset();
     });
   });
+  moreBtn.addEventListener('click',showMore);
+  reset();
 })();
 <\/script>`;
 
@@ -1036,11 +1103,39 @@ async function buildTiktok(tpl) {
   console.log(`  TikTokサムネイル取得中 (${pages.length}件)...`);
   const thumbs = await Promise.all(pages.map(p => fetchOembedThumbnail(getUrl(p))));
   const cards = pages.map((p, i) => tiktokCard(p, thumbs[i])).join("\n");
-  const body = `<div class="grid-3">
+  const body = `<div class="grid-3" id="tiktok-grid">
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
-  </div>`;
+  </div>
+  <div class="load-more-wrap" id="tiktok-more-wrap">
+    <p class="load-more-count" id="tiktok-more-count"></p>
+    <button class="load-more-btn" id="tiktok-more-btn">もっと見る</button>
+  </div>
+  <script>
+  (function(){
+    var mobile=window.innerWidth<768;
+    var BATCH=mobile?6:9;
+    var grid=document.getElementById('tiktok-grid');
+    var btn=document.getElementById('tiktok-more-btn');
+    var countEl=document.getElementById('tiktok-more-count');
+    var wrap=document.getElementById('tiktok-more-wrap');
+    var all=Array.from(grid.querySelectorAll('.card'));
+    var total=all.length;
+    var shown=0;
+    all.forEach(function(c){c.style.display='none';});
+    function showMore(){
+      var next=Math.min(shown+BATCH,total);
+      for(var i=shown;i<next;i++) all[i].style.display='';
+      shown=next;
+      countEl.textContent=shown+' / '+total+' 件表示中';
+      if(shown>=total) wrap.style.display='none';
+      else btn.textContent='もっと見る（残り'+(total-shown)+'件）';
+    }
+    btn.addEventListener('click',showMore);
+    showMore();
+  })();
+  <\/script>`;
   return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>まとめ</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
 }
 
@@ -1113,43 +1208,39 @@ async function buildYuNews(tpl) {
     return newsCard(p, undefined, img);
   }).join("\n");
 
-  const body = `<style>
-.load-more-wrap{text-align:center;padding:32px 16px 16px;}
-.load-more-btn{background:var(--emerald);color:#fff;border:2px solid var(--emerald-dark);border-radius:99px;padding:12px 32px;font-family:'Zen Maru Gothic',serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 var(--emerald-dark);transition:all 0.15s;}
-.load-more-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--emerald-dark);}
-.load-more-count{font-size:12px;color:#6b8a78;margin-bottom:10px;font-family:'Zen Maru Gothic',serif;}
-</style>
-<div class="grid-3" id="yunews-grid">
+  const body = `<div class="grid-3" id="yunews-grid">
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
   </div>
-  <div class="load-more-wrap" id="load-more-wrap">
-    <p class="load-more-count" id="load-more-count"></p>
-    <button class="load-more-btn" id="load-more-btn">もっと見る</button>
+  <div class="load-more-wrap" id="yunews-more-wrap">
+    <p class="load-more-count" id="yunews-more-count"></p>
+    <button class="load-more-btn" id="yunews-more-btn">もっと見る</button>
   </div>
   <script>
   (function(){
-    const BATCH=50;
-    const grid=document.getElementById('yunews-grid');
-    const btn=document.getElementById('load-more-btn');
-    const countEl=document.getElementById('load-more-count');
-    const all=Array.from(grid.querySelectorAll('.news-card'));
-    const total=all.length;
-    let shown=0;
-    all.forEach(c=>c.style.display='none');
+    var mobile=window.innerWidth<768;
+    var BATCH=mobile?10:15;
+    var grid=document.getElementById('yunews-grid');
+    var btn=document.getElementById('yunews-more-btn');
+    var countEl=document.getElementById('yunews-more-count');
+    var wrap=document.getElementById('yunews-more-wrap');
+    var all=Array.from(grid.querySelectorAll('.news-card'));
+    var total=all.length;
+    var shown=0;
+    all.forEach(function(c){c.style.display='none';});
     function showMore(){
-      const next=Math.min(shown+BATCH,total);
-      for(let i=shown;i<next;i++) all[i].style.display='';
+      var next=Math.min(shown+BATCH,total);
+      for(var i=shown;i<next;i++) all[i].style.display='';
       shown=next;
       countEl.textContent=shown+' / '+total+' 件表示中';
-      if(total-shown<=0){ document.getElementById('load-more-wrap').style.display='none'; }
-      else{ btn.textContent='もっと見る（残り'+(total-shown)+'件）'; }
+      if(shown>=total) wrap.style.display='none';
+      else btn.textContent='もっと見る（残り'+(total-shown)+'件）';
     }
     btn.addEventListener('click',showMore);
     showMore();
   })();
-  </script>`;
+  <\/script>`;
   return buildPage(tpl, "佐藤優羽さんNews", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body, "yunews.html");
 }
 
@@ -1199,15 +1290,47 @@ async function buildLemino(tpl) {
     "日向坂になりましょう": "日向坂になりましょう（佐藤優羽さん登場回）",
   };
 
+  const LEMINO_BATCH = 8;
   const sections = displayOrder
     .filter(prog => groups[prog]?.length)
-    .map(prog => {
+    .map((prog, idx) => {
       const cards = groups[prog].map(({ page: p, thumb }) => mediaCard(p, "Lemino", thumb)).join("\n");
       const label = PROGRAM_LABELS[prog] || prog;
+      const gridId = `lemino-grid-${idx}`;
+      const wrapId = `lemino-more-wrap-${idx}`;
+      const btnId  = `lemino-more-btn-${idx}`;
+      const cntId  = `lemino-more-count-${idx}`;
       return `<h2 class="program-heading">${label}</h2>
-    <div class="grid-2 program-grid">
+    <div class="grid-2 program-grid" id="${gridId}">
       ${cards}
-    </div>`;
+    </div>
+    <div class="load-more-wrap" id="${wrapId}">
+      <p class="load-more-count" id="${cntId}"></p>
+      <button class="load-more-btn" id="${btnId}">もっと見る</button>
+    </div>
+    <script>
+    (function(){
+      var BATCH=${LEMINO_BATCH};
+      var grid=document.getElementById('${gridId}');
+      var btn=document.getElementById('${btnId}');
+      var countEl=document.getElementById('${cntId}');
+      var wrap=document.getElementById('${wrapId}');
+      var all=Array.from(grid.querySelectorAll('.card'));
+      var total=all.length;
+      var shown=0;
+      all.forEach(function(c){c.style.display='none';});
+      function showMore(){
+        var next=Math.min(shown+BATCH,total);
+        for(var i=shown;i<next;i++) all[i].style.display='';
+        shown=next;
+        countEl.textContent=shown+' / '+total+' 件表示中';
+        if(shown>=total) wrap.style.display='none';
+        else btn.textContent='もっと見る（残り'+(total-shown)+'件）';
+      }
+      btn.addEventListener('click',showMore);
+      showMore();
+    })();
+    <\/script>`;
     })
     .join("\n");
 
