@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/images/favicon.png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
@@ -141,6 +140,17 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 </style>
 </head>
 <body>
+
+<!-- 準備中オーバーレイ（公開時に削除） -->
+<div id="coming-soon-overlay" style="position:fixed;inset:0;z-index:9999;background:#f4faf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Zen Maru Gothic','Klee One',serif;">
+  <div style="text-align:center;padding:40px 24px;max-width:420px;">
+    <div style="font-size:48px;margin-bottom:20px;">🌿</div>
+    <h1 style="font-size:28px;font-weight:700;color:#1f7a52;margin-bottom:16px;">準備中</h1>
+    <p style="font-size:15px;color:#4d7062;line-height:1.8;margin-bottom:32px;">このページは現在準備中です。<br>もうしばらくお待ちください。</p>
+    <a href="/" style="display:inline-block;padding:12px 32px;background:#3DAA78;color:#fff;border-radius:99px;text-decoration:none;font-size:15px;font-weight:700;box-shadow:3px 3px 0 #1f7a52;">トップへ戻る</a>
+  </div>
+</div>
+<script>if(new URLSearchParams(location.search).get('preview')==='1'){var o=document.getElementById('coming-soon-overlay');if(o)o.style.display='none';}</script>
 
 <nav>
   <a href="index.html" class="nav-logo">
