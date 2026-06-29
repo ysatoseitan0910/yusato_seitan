@@ -177,6 +177,33 @@ nav {
   font-family: 'Caveat',cursive; font-size: 14px;
   color: var(--text-light); margin-top: 6px; letter-spacing: 0.04em;
 }
+/* ── トップページ hero 2カラム（PC専用） ── */
+.page-hero--index {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+.page-hero-left {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 24px;
+}
+.top-hero-img-wrap {
+  flex-shrink: 0;
+  width: clamp(240px, 30%, 360px);
+  align-self: flex-end;
+  margin-left: 24px;
+}
+.top-hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px 16px 0 0;
+  object-fit: cover;
+  object-position: top center;
+}
 
 /* ── Content area ── */
 .content {
