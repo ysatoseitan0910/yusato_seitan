@@ -177,33 +177,94 @@ nav {
   font-family: 'Caveat',cursive; font-size: 14px;
   color: var(--text-light); margin-top: 6px; letter-spacing: 0.04em;
 }
-/* ── トップページ hero 2カラム（PC専用） ── */
+/* ── トップページ hero グリッドレイアウト（PC） ── */
 .page-hero--index {
-  display: flex;
-  align-items: flex-end;
-  gap: 0;
-  padding-bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr clamp(180px, 24%, 300px);
+  row-gap: 20px;
+  padding: calc(var(--nav-h) + 36px) 28px 28px;
   overflow: hidden;
 }
-.page-hero-left {
-  flex: 1;
-  min-width: 0;
-  padding-bottom: 24px;
-}
+/* wrapperを透過してchildrenを直接グリッドアイテムにする */
+.page-hero--index .page-hero-left { display: contents; }
+.page-hero--index .page-hero-tag  { grid-column: 1; justify-self: start; }
+.page-hero--index h1               { grid-column: 1; }
+.page-hero--index .top-intro       { grid-column: 1; width: 100%; }
+.page-hero--index .top-news        { grid-column: 1; width: 100%; }
+/* イラスト：h1行〜ニュース行にまたがる（行2〜4）、縦中央揃え */
 .top-hero-img-wrap {
-  flex-shrink: 0;
-  width: clamp(240px, 30%, 360px);
-  align-self: flex-end;
-  margin-left: 24px;
+  grid-column: 2;
+  grid-row: 2 / 5;
+  padding: 0 0 0 24px;
+  align-self: center;
 }
 .top-hero-img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 16px 16px 0 0;
-  object-fit: cover;
-  object-position: top center;
+  border-radius: 8px;
 }
+.top-intro-mobile    { display: none; }
+.top-news-mobile-only { display: none; }
+
+/* ── PC専用ヒーロー（案A：サイド分割） ── */
+.hero-mobile-wrap { display: none; }
+.hero-pc-wrap { display: block; }
+.hero-pc {
+  max-width: 1180px; margin: 0 auto;
+  padding: calc(var(--nav-h) + 44px) 28px 30px;
+  display: flex; align-items: center; gap: 44px;
+  position: relative;
+}
+.hero-pc-dot { position: absolute; border-radius: 50%; pointer-events: none; }
+.hero-pc-text { flex: 1; min-width: 0; }
+.hero-pc-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--pink); color: #fff;
+  font-family: 'Zen Maru Gothic', serif; font-weight: 600;
+  font-size: 15px; letter-spacing: 0.1em;
+  padding: 9px 20px; border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(247,182,200,0.5);
+  transform: rotate(-2deg);
+  margin-bottom: 26px;
+}
+.hero-pc-badge::before { content: "🌿"; }
+.hero-pc-title {
+  font-family: 'Zen Maru Gothic', serif; font-weight: 700;
+  font-size: 64px; line-height: 1.08; color: var(--emerald-dark);
+  letter-spacing: 0.01em; margin-bottom: 26px;
+}
+.hero-pc-title em {
+  color: var(--emerald); font-style: normal;
+  background: linear-gradient(transparent 58%, var(--butter) 58%, var(--butter) 92%, transparent 92%);
+  padding: 0 4px;
+}
+.hero-pc-box {
+  background: var(--emerald-pale); border: 1px solid var(--emerald-light);
+  border-radius: 14px; padding: 18px 24px;
+  font-size: 14px; line-height: 1.85; color: var(--text-muted);
+}
+.hero-pc-box p { margin-bottom: 6px; }
+.hero-pc-box p:last-child { margin-bottom: 0; }
+.hero-pc-box strong { color: var(--emerald-dark); font-weight: 700; }
+.hero-pc-box a { color: var(--emerald-dark); font-weight: 600; text-decoration: none; }
+.hero-pc-box a:hover { text-decoration: underline; }
+.hero-pc-box-link { margin-left: 26px; }
+.hero-pc-imgwrap { flex: none; width: 330px; position: relative; }
+.hero-pc-imgwrap::before {
+  content: ""; position: absolute;
+  top: -16px; right: -16px; left: 16px; bottom: 16px;
+  border: 3px dashed var(--emerald-light); border-radius: 28px; z-index: 0;
+}
+.hero-pc-img {
+  position: relative; z-index: 1;
+  width: 100%; height: auto; display: block;
+  border-radius: 26px; border: 6px solid #fff;
+  background: var(--emerald-pale);
+  box-shadow: 0 16px 38px rgba(31,122,82,0.18);
+}
+/* PC専用ヒーロー内ニュース（情報ボックスの直下） */
+.hero-pc-news { margin: 16px 0 0; }
 
 /* ── Content area ── */
 .content {
@@ -643,6 +704,9 @@ footer .heart { color: var(--pink); }
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
+  /* PCヒーロー↔モバイルヒーロー切り替え */
+  .hero-pc-wrap { display: none; }
+  .hero-mobile-wrap { display: block; }
   nav { padding: 0 16px; }
   .hamburger { display: block; }
   .nav-links {
@@ -711,14 +775,46 @@ footer .heart { color: var(--pink); }
   .committee-row-title { grid-area: title; }
   .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
 
-  /* トップページ専用: page-heroを非表示 */
-  .page-hero--index { display: none !important; }
+  /* 紹介文の出し分け */
+  .top-intro-pc { display: none; }
+  .top-intro-mobile { display: block; }
+
+  /* トップページ専用: モバイルはflexコンパクト2カラム */
+  .page-hero--index {
+    display: flex;
+    overflow: visible;
+    padding: 0;
+  }
+  .page-hero--index .page-hero-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
+    padding: calc(var(--nav-h) + 14px) 16px 14px;
+    gap: 10px;
+  }
+  .page-hero--index .page-hero-tag { grid-column: unset; }
+  .page-hero--index h1 { grid-column: unset; font-size: 24px; }
+  .page-hero--index .top-intro { width: 100%; }
+  .page-hero--index .top-news { display: none; }
+  .top-hero-img-wrap {
+    grid-column: unset;
+    grid-row: unset;
+    width: 38%;
+    padding: calc(var(--nav-h) + 14px) 12px 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+  .top-hero-img { height: auto; object-fit: initial; border-radius: 8px; }
+  .top-news-mobile-only { display: block; }
 
   /* ── モバイルタイルナビ ── */
   .mobile-tile-nav {
     display: block;
-    padding-top: calc(var(--nav-h) + 16px);
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   .tile-menu-toggle {
     display: flex;
@@ -894,13 +990,11 @@ footer .heart { color: var(--pink); }
 </nav>
 
 
-      <div class="page-hero">
-        <div class="page-hero-tag">ACTIVITIES</div><h1>活動 <em>報告</em></h1><p>委員会の活動をご紹介します</p>
-      </div>
+      <div class="page-hero"><div class="page-hero-tag">ACTIVITIES</div><h1>活動 <em>報告</em></h1><p>委員会の活動をご紹介します</p></div>
       <div class="content"><div class="grid-2">
     <!-- GALLERY_START -->
     
-    <div class="card media-card" style="animation-delay:0.25292926976635155s" data-act-modal="1" data-title="日向坂46 17thシングル「Kind of love」発売記念リアルミート＆グリート@幕張メッセで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.06.13" data-status="" data-desc="＼　祝！幕張ミーグリ！　／
+    <div class="card media-card" style="animation-delay:0.15621860527429332s" data-act-modal="1" data-title="日向坂46 17thシングル「Kind of love」発売記念リアルミート＆グリート@幕張メッセで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.06.13" data-status="" data-desc="＼　祝！幕張ミーグリ！　／
 
 6月13日(土)に幕張メッセにて開催の #リアルミーグリ へ、#佐藤優羽 さん宛に祝花のお贈りすることができました。
 
@@ -916,7 +1010,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.04297209888354063s" data-act-modal="1" data-title="7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.04.04" data-status="" data-desc="＼　祝！ひな誕祭 開催！　／
+    <div class="card media-card" style="animation-delay:0.023993548006817498s" data-act-modal="1" data-title="7回目のひな誕祭で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.04.04" data-status="" data-desc="＼　祝！ひな誕祭 開催！　／
 
 4月4日、5日に横浜スタジアムにて開催の #七回目のひな誕祭 へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
@@ -933,7 +1027,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.12673117956454227s" data-act-modal="1" data-title="銀だこ創業日をお祝いしました！
+    <div class="card media-card" style="animation-delay:0.0456453580082725s" data-act-modal="1" data-title="銀だこ創業日をお祝いしました！
 #ゆうちゃんたこ焼き食べたよ" data-date="2026.03.14" data-status="" data-desc="/／
  今日は銀だこ創業日！│ ˙ᵕ˙ )꜆
 \＼
@@ -960,7 +1054,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.20729330740540136s" data-act-modal="1" data-title="佐藤優羽お披露目1周年をお祝いしました！" data-date="2026.03.14" data-status="" data-desc="3月14日12時は #佐藤優羽 さんのテザー公開からちょうど1周年ですね
+    <div class="card media-card" style="animation-delay:0.14048161414880772s" data-act-modal="1" data-title="佐藤優羽お披露目1周年をお祝いしました！" data-date="2026.03.14" data-status="" data-desc="3月14日12時は #佐藤優羽 さんのテザー公開からちょうど1周年ですね
 
 公開から、あっという間の1年…
 この1年でたくさんの魅力を見せてくれましたね
@@ -980,7 +1074,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.29748953140794526s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@京都パルスプラザで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.03.08" data-status="" data-desc="＼　祝！京都ミーグリ！　／
+    <div class="card media-card" style="animation-delay:0.15059083842390764s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@京都パルスプラザで佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.03.08" data-status="" data-desc="＼　祝！京都ミーグリ！　／
 
 3月8日(日)に京都パルスプラザにて開催の #リアルミーグリ へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
@@ -996,7 +1090,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.07123015326515758s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@パシフィコ横浜で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.02.07" data-status="" data-desc="＼　祝！横浜ミーグリ！　／
+    <div class="card media-card" style="animation-delay:0.10693218731819391s" data-act-modal="1" data-title="日向坂46 16thシングル「クリフハンガー」発売記念リアルミート＆グリート@パシフィコ横浜で佐藤優羽さんへ祝花を贈らせていただきました！" data-date="2026.02.07" data-status="" data-desc="＼　祝！横浜ミーグリ！　／
 
 2月7日(土)にパシフィコ横浜にて開催の #リアルミーグリ へ、#佐藤優羽 ちゃん宛に祝花を贈らせていただきました
 
@@ -1012,7 +1106,7 @@ footer .heart { color: var(--pink); }
       </div>
     </div>
 
-    <div class="card media-card" style="animation-delay:0.10600546385180085s" data-act-modal="1" data-title="2026年の生誕委員募集を開始しました!!" data-date="2026.01.01" data-status="" data-desc="2026年1月1日(木)より、2026年度の生誕委員募集を開始いたします。
+    <div class="card media-card" style="animation-delay:0.026862244679206015s" data-act-modal="1" data-title="2026年の生誕委員募集を開始しました!!" data-date="2026.01.01" data-status="" data-desc="2026年1月1日(木)より、2026年度の生誕委員募集を開始いたします。
 参加をご希望の方は、ご参加希望の方へをご確認ください。
 募集は8月上旬までを予定しております。
 ご質問等ございましたら、お気軽に佐藤優羽生誕祭実行委員会 X (@ysatoseitan)までご連絡ください！" data-url="" data-img="https://satoyu.info/images/activities/2026-01-01_001.png">
@@ -1150,7 +1244,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 14:18:26</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 15:13:11</p>
 </footer>
 
 <script>
