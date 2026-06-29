@@ -118,16 +118,19 @@ function loadTemplate(active) {
   return t;
 }
 
-function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "", heroClass = "", ogpDesc = "", heroExtra = "") {
+function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "", heroClass = "", ogpDesc = "", heroExtra = "", heroLeftExtra = "", customHero = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
   const ogpTitle = `${title} | さとうゆほーむ`;
   const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   const heroClassAttr = heroClass ? ` ${heroClass}` : "";
   const effectiveOgpDesc = (ogpDesc || desc).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
-  const heroInner = heroExtra
-    ? `<div class="page-hero-left"><div class="page-hero-tag">${tag}</div><h1>${h1}</h1>${desc ? `<p>${desc}</p>` : ''}</div>${heroExtra}`
+  const heroInner = (heroExtra || heroLeftExtra)
+    ? `<div class="page-hero-left"><div class="page-hero-tag">${tag}</div><h1>${h1}</h1>${desc ? `<p>${desc}</p>` : ''}${heroLeftExtra}</div>${heroExtra}`
     : `<div class="page-hero-tag">${tag}</div><h1>${h1}</h1>${desc ? `<p>${desc}</p>` : ''}`;
+  const heroBlock = customHero
+    ? customHero
+    : `<div class="page-hero${heroClassAttr}">${heroInner}</div>`;
   return template
     .replace("{{PAGE_TITLE}}", title)
     .replaceAll("{{OGP_TITLE}}", ogpTitle)
@@ -135,9 +138,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
     .replace("{{OGP_URL}}", ogpUrl)
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
-      <div class="page-hero${heroClassAttr}">
-        ${heroInner}
-      </div>
+      ${heroBlock}
       <div class="content">${body}</div>
     `)
     .replace("<!-- LAST_UPDATED -->", now);
@@ -561,15 +562,52 @@ async function buildIndex(tpl) {
   })();
   </script>`;
 
+  // ── PC専用ヒーロー（案A：サイド分割） ──
+  const pcHeroHtml = `
+<div class="hero-pc-wrap">
+  <div class="hero-pc">
+    <span class="hero-pc-dot" style="left:70px;top:84px;width:14px;height:14px;background:var(--pink);"></span>
+    <span class="hero-pc-dot" style="left:110px;top:118px;width:8px;height:8px;background:var(--emerald-light);"></span>
+    <span class="hero-pc-dot" style="left:44%;bottom:30px;width:10px;height:10px;background:var(--butter);"></span>
+    <div class="hero-pc-text">
+      <div class="hero-pc-badge">SATOYU HOME</div>
+      <h1 class="hero-pc-title">さとうゆ<em>ほーむ</em></h1>
+      <div class="hero-pc-box">
+        <p><strong>さとうゆほーむ</strong>は、日向坂46五期生・佐藤優羽さんの情報をまとめた非公式ファンサイトです。</p>
+        <p>運営：<a href="about.html">佐藤優羽生誕祭実行委員会</a><a href="site-info.html" class="hero-pc-box-link">このサイトについて →</a></p>
+      </div>
+      ${newsSection ? newsSection.replace('<div class="top-news">', '<div class="top-news hero-pc-news">') : ""}
+    </div>
+    <div class="hero-pc-imgwrap">
+      <img src="/images/円周率.png" alt="佐藤優羽さんイラスト" class="hero-pc-img" loading="eager">
+    </div>
+  </div>
+</div>`;
+
+  // ── モバイル用ヒーロー（既存のコンパクト2カラム） ──
+  const mobileHeroHtml = `
+<div class="hero-mobile-wrap">
+  <div class="page-hero page-hero--index">
+    <div class="page-hero-left">
+      <div class="page-hero-tag">SATOYU HOME</div>
+      <h1>さとうゆ<em>ほーむ</em></h1>
+      <div class="top-intro">
+        <p class="top-intro-text top-intro-mobile">
+          佐藤優羽さんの情報をまとめた非公式ファンサイトです。｜運営：佐藤優羽生誕祭実行委員会
+        </p>
+      </div>
+    </div>
+    <div class="top-hero-img-wrap">
+      <img src="/images/円周率.png" alt="佐藤優羽さんイラスト" class="top-hero-img" loading="eager">
+    </div>
+  </div>
+</div>`;
+
+  const customHero = pcHeroHtml + mobileHeroHtml;
+
   const body = `
   ${tileNav}
-  <div class="top-intro">
-    <p class="top-intro-text">
-      <strong>さとうゆほーむ</strong>は、日向坂46五期生・佐藤優羽さんの情報をまとめた非公式ファンサイトです。<br>
-      運営：<a href="about.html">佐藤優羽生誕祭実行委員会</a>　<a href="site-info.html" class="top-intro-more">このサイトについて →</a>
-    </p>
-  </div>
-  ${newsSection}
+  ${newsSection ? `<div class="top-news-mobile-only">${newsSection}</div>` : ""}
   <div class="top-layout">
 
     <!-- メインコンテンツ -->
@@ -647,8 +685,7 @@ async function buildIndex(tpl) {
 
   </div>`;
 
-  const heroImg = `<div class="top-hero-img-wrap"><img src="/images/円周率.png" alt="佐藤優羽さんイラスト" class="top-hero-img" loading="eager"></div>`;
-  return buildPage(tpl, "トップ", "SATOYU HOME", "さとうゆ<em>ほーむ</em>", "", body, "index.html", "", "page-hero--index", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会", heroImg);
+  return buildPage(tpl, "トップ", "", "", "", body, "index.html", "", "", "佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会", "", "", customHero);
 }
 
 async function buildCommittee(tpl) {
