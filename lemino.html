@@ -90,16 +90,6 @@ nav {
   color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em;
   white-space: nowrap;
 }
-.nav-logo-sub {
-  font-family: 'Zen Maru Gothic', serif; font-weight: 400;
-  font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em;
-  white-space: normal; max-width: 260px; line-height: 1.4;
-}
-.unofficial-badge {
-  display: inline-block; background: var(--emerald-light); color: var(--emerald-dark);
-  font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 3px;
-  vertical-align: middle;
-}
 .nav-links {
   display: flex; gap: 0; align-items: center;
   position: absolute; left: 50%; transform: translateX(-50%);
@@ -204,7 +194,7 @@ nav {
   margin-bottom: 24px;
 }
 .top-intro-text {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-muted);
   line-height: 1.8;
 }
@@ -605,7 +595,6 @@ footer .heart { color: var(--pink); }
 /* ── Mobile ── */
 @media (max-width: 768px) {
   nav { padding: 0 16px; }
-  .nav-logo-sub { max-width: 200px; }
   .hamburger { display: block; }
   .nav-links {
     display: none; flex-direction: column; align-items: stretch;
@@ -682,6 +671,43 @@ footer .heart { color: var(--pink); }
     padding-top: calc(var(--nav-h) + 16px);
     margin-bottom: 24px;
   }
+  .tile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    background: var(--emerald-pale);
+    border: 2px solid var(--emerald-light);
+    border-radius: 12px;
+    padding: 10px;
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--emerald-dark);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.08);
+    transition: all 0.12s;
+  }
+  .tile-menu-toggle[aria-expanded="true"] {
+    background: var(--emerald-light);
+    border-color: var(--emerald-dark);
+    box-shadow: 2px 2px 0 var(--emerald-dark);
+  }
+  .tile-toggle-arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-style: normal;
+  }
+  .tile-menu-toggle[aria-expanded="true"] .tile-toggle-arrow {
+    transform: rotate(180deg);
+  }
+  .tile-body {
+    display: none;
+    margin-top: 8px;
+  }
+  .tile-body.open { display: block; }
   .tile-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -760,7 +786,6 @@ footer .heart { color: var(--pink); }
     <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
     <span class="nav-logo-text">
       <span class="nav-logo-main">さとうゆほーむ</span>
-      <span class="nav-logo-sub"><span class="unofficial-badge">非公式</span>ファンサイト｜運営：佐藤優羽生誕祭実行委員会</span>
     </span>
   </a>
   <div class="nav-links">
@@ -829,7 +854,7 @@ footer .heart { color: var(--pink); }
     <h2 class="program-heading">日向坂になりましょう（佐藤優羽さん登場回）</h2>
     <div class="grid-2 program-grid">
       
-  <div class="card media-card" style="animation-delay:0.03768872621681385s">
+  <div class="card media-card" style="animation-delay:0.23065778741732948s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f5/a1490f5_w1.jpg" alt="日向坂になりましょう #25 番外編 もぐもぐたいむ" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -841,7 +866,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.04848603313016337s">
+  <div class="card media-card" style="animation-delay:0.13657029878816876s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f4/a1490f4_w1.jpg" alt="日向坂になりましょう #25 1年間の全てを出しつくしましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -853,7 +878,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.06053599941584564s">
+  <div class="card media-card" style="animation-delay:0.278941775630472s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f1/a1490f1_w1.jpg" alt="日向坂になりましょう #23 番外編 マッドサイエンティスト坂井の食べ合わせ実験!!" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -865,7 +890,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.12918156824937713s">
+  <div class="card media-card" style="animation-delay:0.0165423123951987s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490f0/a1490f0_w1.jpg" alt="日向坂になりましょう #23 検証バラエティに挑戦しましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -877,7 +902,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.06594201556636214s">
+  <div class="card media-card" style="animation-delay:0.2600647059214933s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ef/a1490ef_w1.jpg" alt="日向坂になりましょう #22 番外編 ワンフレーズを極めよう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -889,7 +914,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2112084347185618s">
+  <div class="card media-card" style="animation-delay:0.2662763782943251s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ee/a1490ee_w1.jpg" alt="日向坂になりましょう #22 私たちもボイトレで歌唱力を強化しましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -901,7 +926,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.13143618055683576s">
+  <div class="card media-card" style="animation-delay:0.12440315480160224s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490eb/a1490eb_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！番外編" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -913,7 +938,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.09099131362240176s">
+  <div class="card media-card" style="animation-delay:0.28564057871981985s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490ea/a1490ea_w1.jpg" alt="日向坂になりましょう #20 瞬発力を鍛えよう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -925,7 +950,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2153547241751436s">
+  <div class="card media-card" style="animation-delay:0.07396118583249604s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d4/a1467d4_w1.jpg" alt="日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！番外編" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -937,7 +962,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.13430981165606262s">
+  <div class="card media-card" style="animation-delay:0.1071344587655619s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467d3/a1467d3_w1.jpg" alt="日向坂になりましょう #18 五期生のゲームセンスを確かめましょう！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -949,7 +974,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.12198485172940658s">
+  <div class="card media-card" style="animation-delay:0.039217445953868155s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cc/a1467cc_w1.jpg" alt="日向坂になりましょう #14 特別番外編
   第1回東西対抗新春プチかくし芸大会後半" loading="lazy">
     <div class="media-body">
@@ -963,7 +988,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.002990880984773536s">
+  <div class="card media-card" style="animation-delay:0.21082147797260373s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467cb/a1467cb_w1.jpg" alt="日向坂になりましょう #14 特別番外編
   第1回東西対抗新春プチかくし芸大会前半" loading="lazy">
     <div class="media-body">
@@ -977,7 +1002,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.01959891833461458s">
+  <div class="card media-card" style="animation-delay:0.17136243591127667s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ca/a1467ca_w1.jpg" alt="日向坂になりましょう #14
   お正月なのでバラエティ対決で盛り上がろう！" loading="lazy">
     <div class="media-body">
@@ -991,7 +1016,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1187764215424505s">
+  <div class="card media-card" style="animation-delay:0.016900104990001098s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14333c/a14333c_w1.jpg" alt="日向坂になりましょう #13
   年末総決算！激動の1年をみんなで振り返りましょう！" loading="lazy">
     <div class="media-body">
@@ -1005,7 +1030,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.015782921470339772s">
+  <div class="card media-card" style="animation-delay:0.1820087323438865s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143339/a143339_w1.jpg" alt="日向坂になりましょう #11
   表現の幅を広げましょう！！番外編" loading="lazy">
     <div class="media-body">
@@ -1019,7 +1044,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.26641035836369387s">
+  <div class="card media-card" style="animation-delay:0.2130301640763136s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143338/a143338_w1.jpg" alt="日向坂になりましょう #11 表現の幅を広げましょう！！" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1031,7 +1056,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.09341660611173282s">
+  <div class="card media-card" style="animation-delay:0.13453396656491257s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143337/a143337_w1.jpg" alt="日向坂になりましょう #10
   人情あふれる街ブラロケに挑戦しよう!!番外編" loading="lazy">
     <div class="media-body">
@@ -1045,7 +1070,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1795674637685913s">
+  <div class="card media-card" style="animation-delay:0.10797985575082615s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143336/a143336_w1.jpg" alt="日向坂になりましょう #10
   人情あふれる街ブラロケに挑戦しよう!!" loading="lazy">
     <div class="media-body">
@@ -1059,7 +1084,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.22914626892030093s">
+  <div class="card media-card" style="animation-delay:0.27577413698576414s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143331/a143331_w1.jpg" alt="日向坂になりましょう #7 ザ・ハイテンション番外編" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1071,7 +1096,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.17697840226579875s">
+  <div class="card media-card" style="animation-delay:0.0833424904027485s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143330/a143330_w1.jpg" alt="日向坂になりましょう #7 ザ・ハイテンション" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1083,7 +1108,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.26076405784588574s">
+  <div class="card media-card" style="animation-delay:0.24755918370378954s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14065b/a14065b_w1.jpg" alt="日向坂になりましょう #6
   アイドルの基本！ポージングを学ぼう！番外編" loading="lazy">
     <div class="media-body">
@@ -1097,7 +1122,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.06052088059674332s">
+  <div class="card media-card" style="animation-delay:0.15551254985593158s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14065a/a14065a_w1.jpg" alt="日向坂になりましょう #6
   アイドルの基本！ポージングを学ぼう！" loading="lazy">
     <div class="media-body">
@@ -1111,7 +1136,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.051274029381264664s">
+  <div class="card media-card" style="animation-delay:0.08858911196109862s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140657/a140657_w1.jpg" alt="日向坂になりましょう #4
   アザトカワイイ仕草を身につけよう！番外編" loading="lazy">
     <div class="media-body">
@@ -1125,7 +1150,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.020243026101964243s">
+  <div class="card media-card" style="animation-delay:0.2621120118346618s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140656/a140656_w1.jpg" alt="日向坂になりましょう #4
   アザトカワイイ仕草を身につけよう！" loading="lazy">
     <div class="media-body">
@@ -1139,7 +1164,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.019580417806528482s">
+  <div class="card media-card" style="animation-delay:0.24870576561014135s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140653/a140653_w1.jpg" alt="日向坂になりましょう #2 番外編
   私もうプロフェッショナルなんです！後半戦" loading="lazy">
     <div class="media-body">
@@ -1153,7 +1178,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.07890026308411013s">
+  <div class="card media-card" style="animation-delay:0.019025484613790566s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140652/a140652_w1.jpg" alt="日向坂になりましょう #2 初回だよ！全員集合
   五期生の魅力を届けましょう！！後半戦" loading="lazy">
     <div class="media-body">
@@ -1167,7 +1192,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2459983888139082s">
+  <div class="card media-card" style="animation-delay:0.17454429803862737s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140651/a140651_w1.jpg" alt="日向坂になりましょう #1 番外編
   私もうプロフェッショナルなんです！" loading="lazy">
     <div class="media-body">
@@ -1181,7 +1206,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0002909865002730383s">
+  <div class="card media-card" style="animation-delay:0.13383396737873998s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140650/a140650_w1.jpg" alt="日向坂になりましょう #1 初回だよ！全員集合
   五期生の魅力を届けましょう！！" loading="lazy">
     <div class="media-body">
@@ -1195,7 +1220,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.06228811363026451s">
+  <div class="card media-card" style="animation-delay:0.21990742795874324s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14064f/a14064f_w1.jpg" alt="日向坂になりましょう
   #0 特別編 五期生のみで記者会見に臨みましょう!!" loading="lazy">
     <div class="media-body">
@@ -1212,7 +1237,7 @@ footer .heart { color: var(--pink); }
 <h2 class="program-heading">日向坂で会いましょう</h2>
     <div class="grid-2 program-grid">
       
-  <div class="card media-card" style="animation-delay:0.11721994818049405s">
+  <div class="card media-card" style="animation-delay:0.2626184163903912s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c8/a1490c8_w1.jpg" alt="日向坂で会いましょう #368
   【ひなたフェス２０２６を盛り上げましょう！！】" loading="lazy">
     <div class="media-body">
@@ -1226,7 +1251,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.13676662970087886s">
+  <div class="card media-card" style="animation-delay:0.0960858836189198s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c7/a1490c7_w1.jpg" alt="日向坂で会いましょう #367 【軍団再編総選挙！後半戦】" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1238,7 +1263,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.10010695241428803s">
+  <div class="card media-card" style="animation-delay:0.03468974854214217s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c6/a1490c6_w1.jpg" alt="日向坂で会いましょう #366
   【日向坂46最新相関図！＆軍団再編総選挙！】" loading="lazy">
     <div class="media-body">
@@ -1252,7 +1277,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.28592497661852917s">
+  <div class="card media-card" style="animation-delay:0.2437890032901043s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c5/a1490c5_w1.jpg" alt="日向坂で会いましょう #365 【日向坂46最新相関図！】" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1264,7 +1289,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.02759316057478831s">
+  <div class="card media-card" style="animation-delay:0.19622109237451954s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c3/a1490c3_w1.jpg" alt="日向坂で会いましょう #364
   【坂井新奈の公式お姉ちゃんを決めましょう！！後半戦】" loading="lazy">
     <div class="media-body">
@@ -1278,7 +1303,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.22680627638281126s">
+  <div class="card media-card" style="animation-delay:0.041404950456807255s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c4/a1490c4_w1.jpg" alt="日向坂で会いましょう #363 【17thシングル「Kind
   of love」ヒットキャンペーン】" loading="lazy">
     <div class="media-body">
@@ -1292,7 +1317,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.10815233732013431s">
+  <div class="card media-card" style="animation-delay:0.2607643373256426s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c2/a1490c2_w1.jpg" alt="日向坂で会いましょう #362
   【坂井新奈の公式お姉ちゃんを決めましょう！！】" loading="lazy">
     <div class="media-body">
@@ -1306,7 +1331,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.08203439206133557s">
+  <div class="card media-card" style="animation-delay:0.22018841293752361s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c1/a1490c1_w1.jpg" alt="日向坂で会いましょう #361
   【細かすぎて伝わらない日向坂46モノマネＧＰ！リターンズ!!!】" loading="lazy">
     <div class="media-body">
@@ -1320,7 +1345,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1041719291378294s">
+  <div class="card media-card" style="animation-delay:0.2367303974067254s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490c0/a1490c0_w1.jpg" alt="日向坂で会いましょう #360
   【クイズ本人に聞きました！褒め褒めストラックアウト！】" loading="lazy">
     <div class="media-body">
@@ -1334,7 +1359,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.04538824153667518s">
+  <div class="card media-card" style="animation-delay:0.2889623354348901s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490bf/a1490bf_w1.jpg" alt="日向坂で会いましょう #359
   【おまっとさんでした！第６回プレゼン大会！！後半戦】" loading="lazy">
     <div class="media-body">
@@ -1348,7 +1373,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.028939368799013664s">
+  <div class="card media-card" style="animation-delay:0.1783806553991896s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1490be/a1490be_w1.jpg" alt="日向坂で会いましょう #358
   【おまっとさんでした！第６回プレゼン大会】" loading="lazy">
     <div class="media-body">
@@ -1362,7 +1387,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.24949332181226908s">
+  <div class="card media-card" style="animation-delay:0.2579809319038339s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ae/a1467ae_w1.jpg" alt="日向坂で会いましょう #357
   【まもなく加入１年！五期生殻破り道場！】" loading="lazy">
     <div class="media-body">
@@ -1376,7 +1401,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14697649570697216s">
+  <div class="card media-card" style="animation-delay:0.0726551941492052s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ad/a1467ad_w1.jpg" alt="日向坂で会いましょう #356
   【７回目のひな誕祭に向けて仕上げましょう！後半戦】" loading="lazy">
     <div class="media-body">
@@ -1390,7 +1415,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.08372422219071116s">
+  <div class="card media-card" style="animation-delay:0.23933376714716662s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ac/a1467ac_w1.jpg" alt="日向坂で会いましょう #355
   【７回目のひな誕祭に向けて仕上げましょう！】" loading="lazy">
     <div class="media-body">
@@ -1404,7 +1429,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.059597862989763724s">
+  <div class="card media-card" style="animation-delay:0.040621977779119s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467ab/a1467ab_w1.jpg" alt="日向坂で会いましょう #354
   【ちょっと遅れましたが新成人をお祝いしましょう！！後半戦】" loading="lazy">
     <div class="media-body">
@@ -1418,7 +1443,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.27685284375939456s">
+  <div class="card media-card" style="animation-delay:0.14006732214171172s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467aa/a1467aa_w1.jpg" alt="日向坂で会いましょう #353
   【ちょっと遅れましたが新成人をお祝いしましょう！！】" loading="lazy">
     <div class="media-body">
@@ -1432,7 +1457,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.24207629680164308s">
+  <div class="card media-card" style="animation-delay:0.1455229235726821s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a9/a1467a9_w1.jpg" alt="日向坂で会いましょう #352
   【松田の卒業を祝いてぇか！大餅つき大会】" loading="lazy">
     <div class="media-body">
@@ -1446,7 +1471,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14085488375008454s">
+  <div class="card media-card" style="animation-delay:0.2825335256804874s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a8/a1467a8_w1.jpg" alt="日向坂で会いましょう #351
   【アイドル番組を忘れるな！ドキドキ妄想告白シチュエーション後半戦】" loading="lazy">
     <div class="media-body">
@@ -1460,7 +1485,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.266057193325009s">
+  <div class="card media-card" style="animation-delay:0.16534320117902915s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a7/a1467a7_w1.jpg" alt="日向坂で会いましょう #350
   【アイドル番組を忘れるな！ドキドキ妄想告白シチュエーション】" loading="lazy">
     <div class="media-body">
@@ -1474,7 +1499,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.279504756684332s">
+  <div class="card media-card" style="animation-delay:0.08183781716769607s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a6/a1467a6_w1.jpg" alt="日向坂で会いましょう #349 【まだまだなにもがみちの世界
   大野愛実を掘り下げよう！】" loading="lazy">
     <div class="media-body">
@@ -1488,7 +1513,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.20057550612463032s">
+  <div class="card media-card" style="animation-delay:0.2918614337868484s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a5/a1467a5_w1.jpg" alt="日向坂で会いましょう #348
   【16thシングル「クリフハンガー」ヒットキャンペーン】" loading="lazy">
     <div class="media-body">
@@ -1502,7 +1527,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.26875400407995914s">
+  <div class="card media-card" style="animation-delay:0.1973924546504017s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a4/a1467a4_w1.jpg" alt="日向坂で会いましょう #347
   【ちょっと聞いてョ！忘れられたBIG NEWS！】" loading="lazy">
     <div class="media-body">
@@ -1516,7 +1541,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.05725910048459312s">
+  <div class="card media-card" style="animation-delay:0.13197598930653512s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a1467a3/a1467a3_w1.jpg" alt="日向坂で会いましょう #346
   【午年を駆け抜けろ！占い争奪ダービー後半戦】" loading="lazy">
     <div class="media-body">
@@ -1530,7 +1555,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.043073127599570916s">
+  <div class="card media-card" style="animation-delay:0.017069965763410955s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143310/a143310_w1.jpg" alt="日向坂で会いましょう #345
   【午年を駆け抜けろ！占い争奪ダービー】" loading="lazy">
     <div class="media-body">
@@ -1544,7 +1569,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.10636819510479291s">
+  <div class="card media-card" style="animation-delay:0.07385266735820097s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14330f/a14330f_w1.jpg" alt="日向坂で会いましょう #344 【オトナだけの夜 後半戦】" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1556,7 +1581,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1252076654970926s">
+  <div class="card media-card" style="animation-delay:0.16985859741521236s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14330e/a14330e_w1.jpg" alt="日向坂で会いましょう #343 【オトナだけの夜】" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1568,7 +1593,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.01924109912459828s">
+  <div class="card media-card" style="animation-delay:0.2941084146120275s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14330d/a14330d_w1.jpg" alt="日向坂で会いましょう #342
   【冷めた経済に活気を！チャチャコイン年末調整 後半戦】" loading="lazy">
     <div class="media-body">
@@ -1582,7 +1607,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2011379534001589s">
+  <div class="card media-card" style="animation-delay:0.004932418965889051s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14330c/a14330c_w1.jpg" alt="日向坂で会いましょう #341
   【冷めた経済に活気を！チャチャコイン年末調整】" loading="lazy">
     <div class="media-body">
@@ -1596,7 +1621,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.015425195016349667s">
+  <div class="card media-card" style="animation-delay:0.03271643740338315s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14330b/a14330b_w1.jpg" alt="日向坂で会いましょう #340
   【河田陽菜卒業記念カワフェス２０２５〜秋頃〜】" loading="lazy">
     <div class="media-body">
@@ -1610,7 +1635,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.07708135498181772s">
+  <div class="card media-card" style="animation-delay:0.23328766275207174s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14330a/a14330a_w1.jpg" alt="日向坂で会いましょう #339
   【知られざる素顔を覗き見！五期生生態チェック 後半戦】" loading="lazy">
     <div class="media-body">
@@ -1624,7 +1649,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2695743680325781s">
+  <div class="card media-card" style="animation-delay:0.19451138279548008s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143309/a143309_w1.jpg" alt="日向坂で会いましょう #338
   【知られざる素顔を覗き見！五期生生態チェック】" loading="lazy">
     <div class="media-body">
@@ -1638,7 +1663,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2913229241049833s">
+  <div class="card media-card" style="animation-delay:0.26855430115437084s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143308/a143308_w1.jpg" alt="日向坂で会いましょう #337
   【共通点を見つけよう！いい友選手権！】" loading="lazy">
     <div class="media-body">
@@ -1652,7 +1677,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2150349019928522s">
+  <div class="card media-card" style="animation-delay:0.19271818017165368s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143307/a143307_w1.jpg" alt="日向坂で会いましょう #336
   【五期生の素顔を知ろう！抜き打ち家族アンケート後半戦】" loading="lazy">
     <div class="media-body">
@@ -1666,7 +1691,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.10363222689422306s">
+  <div class="card media-card" style="animation-delay:0.1221942601417497s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143306/a143306_w1.jpg" alt="日向坂で会いましょう #335
   【五期生の素顔を知ろう！抜き打ち家族アンケート】" loading="lazy">
     <div class="media-body">
@@ -1680,7 +1705,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.25032467468004543s">
+  <div class="card media-card" style="animation-delay:0.16990218266884466s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143305/a143305_w1.jpg" alt="日向坂で会いましょう #334
   【クイズ本人に聞きました！褒め褒めストラックアウト！】" loading="lazy">
     <div class="media-body">
@@ -1694,7 +1719,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.1189007487871292s">
+  <div class="card media-card" style="animation-delay:0.026560661673393215s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a143304/a143304_w1.jpg" alt="日向坂で会いましょう #333
   【日向坂４６下剋上バトル！後半戦】" loading="lazy">
     <div class="media-body">
@@ -1708,7 +1733,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.16604473255904328s">
+  <div class="card media-card" style="animation-delay:0.20665562907734794s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140633/a140633_w1.jpg" alt="日向坂で会いましょう #332 【日向坂４６下克上バトル！】" loading="lazy">
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -1720,7 +1745,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.12334780118319963s">
+  <div class="card media-card" style="animation-delay:0.013935387472911853s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140632/a140632_w1.jpg" alt="日向坂で会いましょう #331
   【若様バースデーをお祝いしよう！】" loading="lazy">
     <div class="media-body">
@@ -1734,7 +1759,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.11912232060042688s">
+  <div class="card media-card" style="animation-delay:0.26469895909939184s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140631/a140631_w1.jpg" alt="日向坂で会いましょう #330 【15th
   シングル「お願いバッハ！」ヒットキャンペーン】" loading="lazy">
     <div class="media-body">
@@ -1748,7 +1773,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.18028309045205598s">
+  <div class="card media-card" style="animation-delay:0.008296928144641735s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140630/a140630_w1.jpg" alt="日向坂で会いましょう #329 【日向坂46
   五期生　運動能力チェック隊！後半戦】" loading="lazy">
     <div class="media-body">
@@ -1762,7 +1787,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.17415055310105076s">
+  <div class="card media-card" style="animation-delay:0.064597671747341s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14062f/a14062f_w1.jpg" alt="日向坂で会いましょう #328 【日向坂46
   五期生　運動能力チェック隊！】" loading="lazy">
     <div class="media-body">
@@ -1776,7 +1801,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.0633651577919786s">
+  <div class="card media-card" style="animation-delay:0.10261557357475948s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14062e/a14062e_w1.jpg" alt="日向坂で会いましょう #327
   【クイズ本人に聞きました！褒め褒めストラックアウト！】" loading="lazy">
     <div class="media-body">
@@ -1790,7 +1815,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.046499473574775595s">
+  <div class="card media-card" style="animation-delay:0.23306606948741496s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14062d/a14062d_w1.jpg" alt="日向坂で会いましょう #326
   【チーム対抗！！３分リレークッキング２０２５後半戦】" loading="lazy">
     <div class="media-body">
@@ -1804,7 +1829,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.028153289722934825s">
+  <div class="card media-card" style="animation-delay:0.2670921008942157s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14062c/a14062c_w1.jpg" alt="日向坂で会いましょう #325
   【チーム対抗！！３分リレークッキング２０２５】" loading="lazy">
     <div class="media-body">
@@ -1818,7 +1843,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.09169698156125354s">
+  <div class="card media-card" style="animation-delay:0.11075747546841201s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14062b/a14062b_w1.jpg" alt="日向坂で会いましょう #324 【集まれ！一匹狼たちよ
   ご褒美ロケツアー！！完結編】" loading="lazy">
     <div class="media-body">
@@ -1832,7 +1857,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.20313624079770567s">
+  <div class="card media-card" style="animation-delay:0.22315342468468063s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a14062a/a14062a_w1.jpg" alt="日向坂で会いましょう #323 【集まれ！一匹狼たちよ
   ご褒美ロケツアー！！】" loading="lazy">
     <div class="media-body">
@@ -1846,7 +1871,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.14862175999159394s">
+  <div class="card media-card" style="animation-delay:0.2881100922647331s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140629/a140629_w1.jpg" alt="日向坂で会いましょう #322 【帰ってきた
   ひな川淳二の怪談ナイト】" loading="lazy">
     <div class="media-body">
@@ -1860,7 +1885,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.04152170209041856s">
+  <div class="card media-card" style="animation-delay:0.06406114657101054s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140628/a140628_w1.jpg" alt="日向坂で会いましょう #321
   【新入生も入ってきたし学力テストでもやっておこう！完結編】" loading="lazy">
     <div class="media-body">
@@ -1874,7 +1899,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.2044088942676479s">
+  <div class="card media-card" style="animation-delay:0.2844139407059039s">
     <img class="media-img" src="https://img.lemino.docomo.ne.jp/cms/a140627/a140627_w1.jpg" alt="日向坂で会いましょう #320
   【新入生も入ってきたし学力テストでもやっておこう！】" loading="lazy">
     <div class="media-body">
@@ -1888,7 +1913,7 @@ footer .heart { color: var(--pink); }
     </div>
   </div>
 
-  <div class="card media-card" style="animation-delay:0.006534988884542625s">
+  <div class="card media-card" style="animation-delay:0.1482910297685887s">
     <div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>
     <div class="media-body">
       <span class="badge badge-lemino">Lemino</span>
@@ -2024,7 +2049,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 9:09:25</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 10:10:03</p>
 </footer>
 
 <script>

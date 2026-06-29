@@ -90,16 +90,6 @@ nav {
   color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em;
   white-space: nowrap;
 }
-.nav-logo-sub {
-  font-family: 'Zen Maru Gothic', serif; font-weight: 400;
-  font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em;
-  white-space: normal; max-width: 260px; line-height: 1.4;
-}
-.unofficial-badge {
-  display: inline-block; background: var(--emerald-light); color: var(--emerald-dark);
-  font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 3px;
-  vertical-align: middle;
-}
 .nav-links {
   display: flex; gap: 0; align-items: center;
   position: absolute; left: 50%; transform: translateX(-50%);
@@ -204,7 +194,7 @@ nav {
   margin-bottom: 24px;
 }
 .top-intro-text {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-muted);
   line-height: 1.8;
 }
@@ -605,7 +595,6 @@ footer .heart { color: var(--pink); }
 /* ── Mobile ── */
 @media (max-width: 768px) {
   nav { padding: 0 16px; }
-  .nav-logo-sub { max-width: 200px; }
   .hamburger { display: block; }
   .nav-links {
     display: none; flex-direction: column; align-items: stretch;
@@ -682,6 +671,43 @@ footer .heart { color: var(--pink); }
     padding-top: calc(var(--nav-h) + 16px);
     margin-bottom: 24px;
   }
+  .tile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    background: var(--emerald-pale);
+    border: 2px solid var(--emerald-light);
+    border-radius: 12px;
+    padding: 10px;
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--emerald-dark);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.08);
+    transition: all 0.12s;
+  }
+  .tile-menu-toggle[aria-expanded="true"] {
+    background: var(--emerald-light);
+    border-color: var(--emerald-dark);
+    box-shadow: 2px 2px 0 var(--emerald-dark);
+  }
+  .tile-toggle-arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-style: normal;
+  }
+  .tile-menu-toggle[aria-expanded="true"] .tile-toggle-arrow {
+    transform: rotate(180deg);
+  }
+  .tile-body {
+    display: none;
+    margin-top: 8px;
+  }
+  .tile-body.open { display: block; }
   .tile-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -760,7 +786,6 @@ footer .heart { color: var(--pink); }
     <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
     <span class="nav-logo-text">
       <span class="nav-logo-main">さとうゆほーむ</span>
-      <span class="nav-logo-sub"><span class="unofficial-badge">非公式</span>ファンサイト｜運営：佐藤優羽生誕祭実行委員会</span>
     </span>
   </a>
   <div class="nav-links">
@@ -3476,7 +3501,7 @@ Top Yell NEO 2026 SUMMER</a></p>
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 9:09:26</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/29 10:10:06</p>
 </footer>
 
 <script>
