@@ -312,6 +312,53 @@ header span { font-size: 13px; color: var(--text-muted); }
   .detail-modal { max-height: 90vh; }
   .detail-prop-key { width: 100px; }
 }
+
+/* ── チップ・マルチセレクト ── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0; }
+.chip {
+  display: inline-flex; align-items: center; padding: 6px 13px;
+  border: 2px solid var(--border); border-radius: 99px; cursor: pointer;
+  font-size: 13px; transition: all 0.12s; user-select: none; -webkit-user-select: none;
+}
+.chip input[type="checkbox"] { display: none; }
+.chip:has(input:checked) {
+  border-color: var(--emerald); background: var(--emerald-pale);
+  color: var(--emerald-dark); font-weight: 600;
+}
+/* タグ追加UI */
+.tag-chips-wrap { display: flex; flex-direction: column; gap: 6px; }
+.tag-chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; }
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+  background: var(--emerald-light); border-radius: 99px;
+  font-size: 13px; color: var(--emerald-dark); font-weight: 600;
+}
+.tag-pill-del {
+  background: none; border: none; cursor: pointer; font-size: 15px;
+  color: var(--emerald-dark); opacity: 0.65; padding: 0; line-height: 1;
+}
+.tag-pill-del:hover { opacity: 1; }
+.tag-input-row { display: flex; gap: 6px; }
+.tag-input-row input { flex: 1; }
+.tag-add-btn {
+  padding: 9px 14px; border: 2px solid var(--emerald); border-radius: 9px;
+  background: var(--emerald-pale); color: var(--emerald-dark);
+  font-family: 'Klee One', serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; white-space: nowrap; transition: all 0.12s;
+}
+.tag-add-btn:hover { background: var(--emerald-light); }
+.tag-suggestions {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 4px; padding-top: 4px;
+}
+.tag-sug-label { font-size: 11px; color: var(--text-muted); align-self: center; margin-right: 2px; }
+.tag-sug-btn {
+  padding: 3px 10px; border: 1.5px solid var(--border); border-radius: 99px;
+  background: transparent; font-size: 12px; color: var(--text-muted);
+  cursor: pointer; font-family: inherit; transition: all 0.12s;
+}
+.tag-sug-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); background: var(--emerald-pale); }
+.schema-hint { font-size: 12px; color: var(--text-muted); display: inline-block; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -458,7 +505,10 @@ header span { font-size: 13px; color: var(--text-muted); }
         </div>
         <div class="field">
           <label>ステータス</label>
-          <input type="text" id="committee-status" placeholder="例: 募集中、終了">
+          <select id="committee-status">
+            <option value="">— 選択 —</option>
+          </select>
+          <span class="schema-hint" id="committee-status-hint">⏳ 読み込み中...</span>
         </div>
         <div class="field">
           <label>締め切り日</label>
@@ -497,7 +547,10 @@ header span { font-size: 13px; color: var(--text-muted); }
         </div>
         <div class="field">
           <label>ステータス</label>
-          <input type="text" id="activities-status" placeholder="例: 募集中、終了">
+          <select id="activities-status">
+            <option value="">— 選択 —</option>
+          </select>
+          <span class="schema-hint" id="activities-status-hint">⏳ 読み込み中...</span>
         </div>
         <div class="field full">
           <label>説明</label>
@@ -531,8 +584,15 @@ header span { font-size: 13px; color: var(--text-muted); }
           <input type="url" id="x-url" placeholder="https://x.com/...">
         </div>
         <div class="field full">
-          <label>タグ（カンマ区切り）</label>
-          <input type="text" id="x-tags" placeholder="例: 生誕委員会, お知らせ">
+          <label>タグ（複数追加可）</label>
+          <div class="tag-chips-wrap">
+            <div class="tag-chips" id="x-tag-chips"></div>
+            <div class="tag-input-row">
+              <input type="text" id="x-tag-input" placeholder="タグ名を入力...">
+              <button type="button" class="tag-add-btn" onclick="addTagChip('x')">追加</button>
+            </div>
+            <div class="tag-suggestions" id="x-tag-suggestions" style="display:none;"></div>
+          </div>
         </div>
       </div>
       <div class="submit-row">
@@ -614,6 +674,17 @@ header span { font-size: 13px; color: var(--text-muted); }
           <label>URL</label>
           <input type="url" id="lemino-url" placeholder="https://lemino.docomo.ne.jp/...">
         </div>
+        <div class="field">
+          <label>番組</label>
+          <select id="lemino-program">
+            <option value="">— 選択 —</option>
+          </select>
+          <span class="schema-hint" id="lemino-program-hint">⏳ 読み込み中...</span>
+        </div>
+        <div class="field">
+          <label>配信終了予定日</label>
+          <input type="date" id="lemino-expiry">
+        </div>
         <div class="field full">
           <label>説明</label>
           <textarea id="lemino-description" placeholder="説明文..."></textarea>
@@ -642,8 +713,10 @@ header span { font-size: 13px; color: var(--text-muted); }
           <input type="url" id="memberblog-url" placeholder="https://www.hinatazaka46.com/...">
         </div>
         <div class="field full">
-          <label>メンバー名（カンマ区切り）</label>
-          <input type="text" id="memberblog-members" placeholder="例：加藤史帆, 丹生明里">
+          <label>メンバー（複数選択可）</label>
+          <div class="chip-group" id="memberblog-member-chips">
+            <span class="schema-hint">⏳ 読み込み中...</span>
+          </div>
         </div>
         <div class="field full">
           <label>説明</label>
@@ -752,6 +825,7 @@ function switchDB(name) {
   document.getElementById('panels-wrap').style.display = _currentTab === 'add'  ? '' : 'none';
   document.getElementById('list-area').style.display   = _currentTab === 'list' ? '' : 'none';
   if (_currentTab === 'list') loadList(name);
+  if (['committee','activities','x','memberblog','lemino'].includes(name)) initDynamicFields(name);
 }
 
 function showMessages() {
@@ -848,6 +922,7 @@ function reloadList() { loadList(_currentDB); }
 const DB_LABELS = {
   quiz: '📝 クイズ', committee: '📢 委員会News', activities: '🌿 活動報告',
   x: '𝕏 X', tiktok: '🎵 TikTok', youtube: '▶ YouTube', lemino: '🎬 Lemino',
+  memberblog: '📔 他メンバーブログ',
 };
 
 async function loadList(db) {
@@ -952,11 +1027,17 @@ function getPayload(db) {
   };
   if (db === "committee") return { name: val("committee-name"), date: val("committee-date"), url: val("committee-url"), status: val("committee-status"), deadline: val("committee-deadline"), description: val("committee-description"), mediaUrl: val("committee-mediaUrl") };
   if (db === "activities") return { name: val("activities-name"), date: val("activities-date"), url: val("activities-url"), status: val("activities-status"), description: val("activities-description"), mediaUrl: val("activities-mediaUrl") };
-  if (db === "x") return { name: val("x-name"), date: val("x-date"), url: val("x-url"), tags: val("x-tags") };
+  if (db === "x") {
+    const tags = (_tagChipData.x || []).join(',');
+    return { name: val("x-name"), date: val("x-date"), url: val("x-url"), tags };
+  }
   if (db === "tiktok") return { name: val("tiktok-name"), date: val("tiktok-date"), url: val("tiktok-url") };
   if (db === "youtube") return { name: val("youtube-name"), date: val("youtube-date"), url: val("youtube-url"), channel: val("youtube-channel") };
-  if (db === "lemino") return { name: val("lemino-name"), date: val("lemino-date"), url: val("lemino-url"), description: val("lemino-description") };
-  if (db === "memberblog") return { name: val("memberblog-name"), date: val("memberblog-date"), url: val("memberblog-url"), members: val("memberblog-members"), description: val("memberblog-description") };
+  if (db === "lemino") return { name: val("lemino-name"), date: val("lemino-date"), url: val("lemino-url"), description: val("lemino-description"), program: val("lemino-program"), expiryDate: val("lemino-expiry") };
+  if (db === "memberblog") {
+    const members = [...document.querySelectorAll('#memberblog-member-chips input[type=checkbox]:checked')].map(cb => cb.value).join(',');
+    return { name: val("memberblog-name"), date: val("memberblog-date"), url: val("memberblog-url"), members, description: val("memberblog-description") };
+  }
 }
 
 function clearForm(db) {
@@ -965,6 +1046,8 @@ function clearForm(db) {
   panel.querySelectorAll("select").forEach(el => el.selectedIndex = 0);
   const firstRadio = panel.querySelector('input[type=radio]');
   if (firstRadio) firstRadio.checked = true;
+  panel.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; });
+  if (_tagChipData[db]) { _tagChipData[db] = []; renderTagChips(db); }
 }
 
 async function submit(db) {
@@ -1290,7 +1373,144 @@ document.getElementById('list-content').addEventListener('click', function(e) {
   openDetail(row.dataset.db, row.dataset.id, row.dataset.name);
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetailModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetailModal();
+  if (e.key === 'Enter' && e.target.id === 'x-tag-input') { e.preventDefault(); addTagChip('x'); }
+});
+
+// ── スキーマ・動的フィールド ──
+const _schemaCache = {};
+const _tagChipData = { x: [] };
+
+async function loadSchema(db) {
+  if (_schemaCache[db]) return _schemaCache[db];
+  try {
+    const res = await fetch(`${API_BASE}/schema/${db}`, {
+      headers: { Authorization: `Bearer ${getPassword()}` }
+    });
+    if (!res.ok) return null;
+    _schemaCache[db] = await res.json();
+    return _schemaCache[db];
+  } catch (e) { return null; }
+}
+
+async function initDynamicFields(db) {
+  const schema = await loadSchema(db);
+
+  // ステータス select（committee / activities）
+  if (db === 'committee' || db === 'activities') {
+    const sel   = document.getElementById(db + '-status');
+    const hint  = document.getElementById(db + '-status-hint');
+    if (sel) {
+      const opts = schema?.Status?.options || [];
+      while (sel.options.length > 1) sel.remove(1);
+      opts.forEach(name => {
+        const o = document.createElement('option'); o.value = name; o.textContent = name; sel.appendChild(o);
+      });
+    }
+    if (hint) hint.style.display = 'none';
+  }
+
+  // 番組 select（lemino）
+  if (db === 'lemino') {
+    const sel  = document.getElementById('lemino-program');
+    const hint = document.getElementById('lemino-program-hint');
+    if (sel) {
+      const opts = schema?.Program?.options || ['日向坂になりましょう','日向坂で会いましょう','その他'];
+      while (sel.options.length > 1) sel.remove(1);
+      opts.forEach(name => {
+        const o = document.createElement('option'); o.value = name; o.textContent = name; sel.appendChild(o);
+      });
+    }
+    if (hint) hint.style.display = 'none';
+  }
+
+  // タグ suggestions（x）
+  if (db === 'x') {
+    const sugEl = document.getElementById('x-tag-suggestions');
+    const tagOpts = schema?.Tag?.options || [];
+    if (sugEl && tagOpts.length) {
+      sugEl.style.display = '';
+      sugEl.innerHTML = '';
+      const lbl = document.createElement('span');
+      lbl.className = 'tag-sug-label';
+      lbl.textContent = 'よく使われるタグ：';
+      sugEl.appendChild(lbl);
+      tagOpts.forEach(name => {
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'tag-sug-btn'; btn.textContent = name;
+        btn.onclick = () => addTagFromSug('x', name);
+        sugEl.appendChild(btn);
+      });
+    }
+  }
+
+  // Member checkboxes（memberblog）
+  if (db === 'memberblog') {
+    const container = document.getElementById('memberblog-member-chips');
+    if (container) {
+      const members = schema?.Member?.options?.length
+        ? schema.Member.options
+        : ["ポカ","金村美玖","小坂菜緒","上村ひなの","高橋未来虹","森本茉莉","山口陽世",
+           "石塚瑠季","小西夏菜実","清水理央","正源司陽子","竹内希来里","平尾帆夏",
+           "平岡海月","藤嶋果歩","宮地すみれ","山下葉留花","渡辺莉奈","大田美月",
+           "大野愛実","片山紗希","蔵盛妃那乃","坂井新奈","佐藤優羽","下田衣珠季",
+           "高井俐香","鶴崎仁香","松尾桜"];
+      container.innerHTML = '';
+      members.forEach(name => {
+        const lbl = document.createElement('label');
+        lbl.className = 'chip';
+        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = name;
+        const sp = document.createElement('span'); sp.textContent = name;
+        lbl.appendChild(cb); lbl.appendChild(sp);
+        container.appendChild(lbl);
+      });
+    }
+  }
+}
+
+// タグチップUI
+function addTagChip(prefix) {
+  const input = document.getElementById(prefix + '-tag-input');
+  const tag = (input?.value || '').trim();
+  if (!tag) return;
+  if (!_tagChipData[prefix]) _tagChipData[prefix] = [];
+  if (!_tagChipData[prefix].includes(tag)) {
+    _tagChipData[prefix].push(tag);
+    renderTagChips(prefix);
+  }
+  if (input) { input.value = ''; input.focus(); }
+}
+
+function addTagFromSug(prefix, tag) {
+  if (!_tagChipData[prefix]) _tagChipData[prefix] = [];
+  if (!_tagChipData[prefix].includes(tag)) {
+    _tagChipData[prefix].push(tag);
+    renderTagChips(prefix);
+  }
+}
+
+function removeTagChip(prefix, idx) {
+  if (!_tagChipData[prefix]) return;
+  _tagChipData[prefix].splice(idx, 1);
+  renderTagChips(prefix);
+}
+
+function renderTagChips(prefix) {
+  const container = document.getElementById(prefix + '-tag-chips');
+  if (!container) return;
+  const tags = _tagChipData[prefix] || [];
+  container.innerHTML = '';
+  tags.forEach((tag, i) => {
+    const pill = document.createElement('span'); pill.className = 'tag-pill';
+    const text = document.createTextNode(tag); pill.appendChild(text);
+    const del = document.createElement('button');
+    del.type = 'button'; del.className = 'tag-pill-del'; del.textContent = '×';
+    del.onclick = () => removeTagChip(prefix, i);
+    pill.appendChild(del);
+    container.appendChild(pill);
+  });
+}
 </script>
 
 <!-- 詳細モーダル -->
