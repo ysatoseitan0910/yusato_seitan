@@ -1196,6 +1196,14 @@ footer .heart { color: var(--pink); }
     var correct = (q.answer || '').toUpperCase();
     var isCorrect = chosen === correct;
 
+    if (typeof gtag === 'function') {
+      gtag('event', 'quiz_answer', {
+        question_no: state.idx + 1,
+        question: q.q.slice(0, 100),
+        correct: isCorrect ? 1 : 0
+      });
+    }
+
     if (isCorrect) {
       state.score++;
       opts[choiceIdx].classList.add('correct');
@@ -1255,6 +1263,9 @@ footer .heart { color: var(--pink); }
     }
     document.getElementById('r-msg').textContent = msg[1];
     document.getElementById('r-sub').textContent = msg[2];
+    if (typeof gtag === 'function') {
+      gtag('event', 'quiz_complete', { score: s, total: t });
+    }
     showScreen('quiz-final');
   }
 })();
@@ -1381,7 +1392,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/6/30 23:26:13</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/7/1 0:05:17</p>
 </footer>
 
 <script>
