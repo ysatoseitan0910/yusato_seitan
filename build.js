@@ -1714,6 +1714,14 @@ async function buildQuiz(tpl) {
     var correct = (q.answer || '').toUpperCase();
     var isCorrect = chosen === correct;
 
+    if (typeof gtag === 'function') {
+      gtag('event', 'quiz_answer', {
+        question_no: state.idx + 1,
+        question: q.q.slice(0, 100),
+        correct: isCorrect ? 1 : 0
+      });
+    }
+
     if (isCorrect) {
       state.score++;
       opts[choiceIdx].classList.add('correct');
@@ -1773,6 +1781,9 @@ async function buildQuiz(tpl) {
     }
     document.getElementById('r-msg').textContent = msg[1];
     document.getElementById('r-sub').textContent = msg[2];
+    if (typeof gtag === 'function') {
+      gtag('event', 'quiz_complete', { score: s, total: t });
+    }
     showScreen('quiz-final');
   }
 })();
