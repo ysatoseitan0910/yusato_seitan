@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- トップページ -->
   <url>
     <loc>https://satoyu.info/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- 佐藤優羽さん情報 -->
   <url>
     <loc>https://satoyu.info/yu.html</loc>
     <changefreq>monthly</changefreq>
@@ -30,7 +28,6 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- ブログ等 -->
   <url>
     <loc>https://satoyu.info/blog.html</loc>
     <changefreq>daily</changefreq>
@@ -47,7 +44,6 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- SNS -->
   <url>
     <loc>https://satoyu.info/x.html</loc>
     <changefreq>daily</changefreq>
@@ -59,7 +55,6 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- 動画 -->
   <url>
     <loc>https://satoyu.info/youtube.html</loc>
     <changefreq>weekly</changefreq>
@@ -71,7 +66,6 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- 委員会 -->
   <url>
     <loc>https://satoyu.info/committee.html</loc>
     <changefreq>weekly</changefreq>
