@@ -1,2 +1,5 @@
 User-agent: *
-Disallow: /
+Disallow: /admin.html
+Disallow: /admin-api/
+
+Sitemap: https://satoyu.info/sitemap.xml
