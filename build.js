@@ -1504,8 +1504,11 @@ async function buildWeekly(tpl) {
   const style = `
 <style>
 .wk-wrap { max-width: 760px; margin: 0 auto; }
+.wk-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.wk-tab { padding: 7px 16px; border: 2px solid var(--emerald-light); border-radius: 99px; background: #fff; font-family: 'Zen Maru Gothic', serif; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all .15s; }
+.wk-tab:hover { border-color: var(--emerald); color: var(--emerald-dark); }
+.wk-tab.active { background: var(--emerald); color: #fff; border-color: var(--emerald); box-shadow: 2px 2px 0 var(--emerald-dark); }
 .wk-week { background: var(--white, #fff); border: 2px solid var(--emerald-light); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px; box-shadow: 0 3px 14px rgba(31,122,82,0.06); scroll-margin-top: 80px; }
-.wk-week:target { border-color: var(--emerald); box-shadow: 0 0 0 3px var(--emerald-light); }
 .wk-week-title { font-family: 'Zen Maru Gothic', serif; font-size: 20px; font-weight: 700; color: var(--emerald-dark); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 2px dashed var(--emerald-light); }
 .wk-sec { font-size: 14px; font-weight: 700; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 8px; padding: 5px 12px; display: inline-block; margin: 14px 0 8px; }
 .wk-list { list-style: none; padding: 0 0 0 4px; margin: 0; display: flex; flex-direction: column; gap: 7px; }
@@ -1522,17 +1525,40 @@ async function buildWeekly(tpl) {
     return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
   }
 
-  const sections = weeks.map(p => {
+  const weekData = weeks.map(p => {
     const title = getText(p, "Name");
-    const inner = renderWeeklyBody(getText(p, "Body"));
     const anchor = "w-" + (getDate(p) || "");
-    return `<div class="wk-week" id="${escAttr(anchor)}">
-      <h2 class="wk-week-title">${escAttr(title)}</h2>
-      ${inner}
-    </div>`;
-  }).join("\n");
+    const m = title.match(/（(.+?)）/);
+    const label = m ? m[1] : title;
+    return { title, anchor, label, inner: renderWeeklyBody(getText(p, "Body")) };
+  });
 
-  const body = `${style}<div class="wk-wrap">${sections}</div>`;
+  const tabs = weekData.map(w =>
+    `<button class="wk-tab" data-week="${escAttr(w.anchor)}">${escAttr(w.label)}</button>`
+  ).join("");
+
+  const sections = weekData.map(w =>
+    `<div class="wk-week" id="${escAttr(w.anchor)}">
+      <h2 class="wk-week-title">${escAttr(w.title)}</h2>
+      ${w.inner}
+    </div>`
+  ).join("\n");
+
+  const script = `<script>(function(){
+    var tabs=[].slice.call(document.querySelectorAll('.wk-tab'));
+    var weeks=[].slice.call(document.querySelectorAll('.wk-week'));
+    function show(id){
+      weeks.forEach(function(w){ w.style.display=(w.id===id)?'':'none'; });
+      tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.week===id); });
+    }
+    var hashId=location.hash?location.hash.slice(1):'';
+    var initial=(hashId&&document.getElementById(hashId))?hashId:(weeks[0]&&weeks[0].id);
+    if(initial) show(initial);
+    tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.week); history.replaceState(null,'','#'+t.dataset.week); }); });
+    window.addEventListener('hashchange', function(){ var h=location.hash.slice(1); if(h&&document.getElementById(h)) show(h); });
+  })();</script>`;
+
+  const body = `${style}<div class="wk-wrap"><div class="wk-tabs">${tabs}</div>${sections}</div>${script}`;
   return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
 }
 
