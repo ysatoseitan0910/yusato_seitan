@@ -1504,7 +1504,8 @@ async function buildWeekly(tpl) {
   const style = `
 <style>
 .wk-wrap { max-width: 760px; margin: 0 auto; }
-.wk-week { background: var(--white, #fff); border: 2px solid var(--emerald-light); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px; box-shadow: 0 3px 14px rgba(31,122,82,0.06); }
+.wk-week { background: var(--white, #fff); border: 2px solid var(--emerald-light); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px; box-shadow: 0 3px 14px rgba(31,122,82,0.06); scroll-margin-top: 80px; }
+.wk-week:target { border-color: var(--emerald); box-shadow: 0 0 0 3px var(--emerald-light); }
 .wk-week-title { font-family: 'Zen Maru Gothic', serif; font-size: 20px; font-weight: 700; color: var(--emerald-dark); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 2px dashed var(--emerald-light); }
 .wk-sec { font-size: 14px; font-weight: 700; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 8px; padding: 5px 12px; display: inline-block; margin: 14px 0 8px; }
 .wk-list { list-style: none; padding: 0 0 0 4px; margin: 0; display: flex; flex-direction: column; gap: 7px; }
@@ -1524,7 +1525,8 @@ async function buildWeekly(tpl) {
   const sections = weeks.map(p => {
     const title = getText(p, "Name");
     const inner = renderWeeklyBody(getText(p, "Body"));
-    return `<div class="wk-week">
+    const anchor = "w-" + (getDate(p) || "");
+    return `<div class="wk-week" id="${escAttr(anchor)}">
       <h2 class="wk-week-title">${escAttr(title)}</h2>
       ${inner}
     </div>`;

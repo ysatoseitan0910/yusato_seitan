@@ -665,6 +665,7 @@ app.post("/generate/weekly", auth, async (req, res) => {
         Name:      { title: t(title) },
         Body:      { rich_text: richChunks(body) },
         Date:      { date: { start: end } },
+        URL:       { url: `https://satoyu.info/weekly.html#w-${end}` },
         Published: { checkbox: true },
       },
     });
