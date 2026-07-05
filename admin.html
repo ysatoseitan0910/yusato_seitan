@@ -1022,52 +1022,73 @@ function _truncToWidth(ctx, s, maxW) {
   return s + '…';
 }
 
+function _wrapCanvas(x, text, maxW) {
+  const lines = []; let line = '';
+  for (const ch of String(text)) {
+    if (x.measureText(line + ch).width > maxW && line) { lines.push(line); line = ch; }
+    else line += ch;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
 function drawWeeklyOgp(range, sections) {
-  const W = 1200, H = 630;
+  const W = 1200, H = 630, FAM = "'Zen Maru Gothic','Noto Sans JP',sans-serif";
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, W, H);
   g.addColorStop(0, '#eaf7ef'); g.addColorStop(1, '#d2ecdc');
   x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#3DAA78'; x.fillRect(0, 0, 18, H);
-  // 星の飾り
   x.fillStyle = 'rgba(154,211,178,0.5)';
-  [[1090,90,30],[1140,180,18],[70,560,22],[1130,540,26]].forEach(function(s){
+  [[1090,88,30],[1140,175,18],[70,560,22],[1135,545,26]].forEach(function(s){
     x.beginPath();
     for (var i=0;i<5;i++){var a=-Math.PI/2+i*2*Math.PI/5;x.lineTo(s[0]+Math.cos(a)*s[2],s[1]+Math.sin(a)*s[2]);var a2=a+Math.PI/5;x.lineTo(s[0]+Math.cos(a2)*s[2]*0.45,s[1]+Math.sin(a2)*s[2]*0.45);}
     x.closePath(); x.fill();
   });
   // タイトル
   x.textAlign = 'left'; x.textBaseline = 'alphabetic';
-  x.fillStyle = '#1f7a52'; x.font = "700 66px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
-  x.fillText('今週のさとうゆ', 70, 132);
-  x.fillStyle = '#c85f7e'; x.font = "700 40px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
-  x.fillText('（' + range + '）', 74, 186);
-  x.strokeStyle = '#9ad3b2'; x.lineWidth = 3;
-  x.beginPath(); x.moveTo(74, 212); x.lineTo(W - 70, 212); x.stroke();
-  // セクション見出し＋主要トピック
-  const perSec = sections.length >= 4 ? 1 : 2;
-  let yy = 272; const maxY = 566;
+  x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('今週のさとうゆ', 70, 120);
+  x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168);
+  x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(W - 70, 192); x.stroke();
+
+  const LX = 74, IX = 84, maxItemW = W - 150, maxY = 600;
+  let yy = 240;
   for (const s of sections) {
     if (yy > maxY) break;
-    x.font = "700 30px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
-    const lw = x.measureText(s.label).width;
+    const count = s.items.length;
+    const unit = s.label.indexOf('TikTok') >= 0 ? '本' : '件';
+    const labelText = s.label + '（' + count + unit + '）';
+    // ラベルピル（カテゴリごとに件数表示）
+    x.font = "700 27px " + FAM;
+    const lw = x.measureText(labelText).width;
     x.fillStyle = '#3DAA78';
-    if (x.roundRect) { x.beginPath(); x.roundRect(74, yy - 32, lw + 30, 44, 22); x.fill(); }
-    else x.fillRect(74, yy - 32, lw + 30, 44);
-    x.fillStyle = '#fff'; x.fillText(s.label, 89, yy);
-    yy += 56;
-    x.font = "400 31px 'Zen Maru Gothic','Noto Sans JP',sans-serif"; x.fillStyle = '#33463c';
-    for (const it of s.items.slice(0, perSec)) {
-      if (yy > maxY) break;
-      x.fillText(_truncToWidth(x, '・' + it, W - 150), 82, yy);
-      yy += 46;
+    if (x.roundRect) { x.beginPath(); x.roundRect(LX, yy - 29, lw + 28, 40, 20); x.fill(); }
+    else x.fillRect(LX, yy - 29, lw + 28, 40);
+    x.fillStyle = '#fff'; x.fillText(labelText, LX + 14, yy);
+    yy += 46;
+
+    if (s.label === 'できごと') {
+      // 1件だけ全文表示（省略しない）＋「他○件」
+      x.font = "400 28px " + FAM; x.fillStyle = '#33463c';
+      for (const ln of _wrapCanvas(x, '・' + s.items[0], maxItemW)) {
+        if (yy > maxY) break; x.fillText(ln, IX, yy); yy += 37;
+      }
+      if (count > 1) { x.font = "500 25px " + FAM; x.fillStyle = '#6d887a'; x.fillText('　他' + (count - 1) + '件', IX, yy); yy += 37; }
+    } else if (s.label === 'ブログ') {
+      // 改行せず全件を「／」で並べる（幅に応じて縮小）
+      let fs = 28; let txt = '・' + s.items.join('　／　');
+      x.font = "400 " + fs + "px " + FAM;
+      while (x.measureText(txt).width > maxItemW && fs > 18) { fs--; x.font = "400 " + fs + "px " + FAM; }
+      if (x.measureText(txt).width > maxItemW) txt = _truncToWidth(x, txt, maxItemW);
+      x.fillStyle = '#33463c'; x.fillText(txt, IX, yy); yy += 40;
     }
-    yy += 16;
+    // TikTok・他メンバーブログ登場 は件数のみ（ラベルに表示済み）
+    yy += 12;
   }
   // フッター
-  x.fillStyle = '#6d887a'; x.font = "500 26px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
-  x.textAlign = 'right'; x.fillText('さとうゆほーむ ♥ satoyu.info', W - 70, H - 38);
+  x.fillStyle = '#6d887a'; x.font = "500 26px " + FAM;
+  x.textAlign = 'right'; x.fillText('さとうゆほーむ ♥ satoyu.info', W - 70, H - 34);
   return c.toDataURL('image/png');
 }
 
