@@ -1091,11 +1091,17 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
 //  プロフィール帳（Canvaデザイン再現）
 // ════════════════════════════════════════════════════════
 const PB = {
-  bg1:"#eef8f1", bg2:"#dcefe4",
-  green:"#3DAA78", greenDark:"#1f7a52", greenSoft:"#9ad3b2", greenLine:"#7cc79b",
-  cream:"#fffdf6", ink:"#33463c", sub:"#6d887a",
-  coral:"#e594ac", coralDark:"#c85f7e",
-  star:"#bfe3cf",
+  bg1:"#eaf5ed", bg2:"#d3e8d8",
+  cream:"#fffdf8", white:"#ffffff",
+  brown:"#4a3626", brownSoft:"#7a5f49",
+  ink:"#3a2e24",
+  red:"#df5340",
+  green:"#43a877", greenDeep:"#2f7f57",
+  accent:"#4aa07a",
+  star:"#cfe9d8", starOutline:"#a6d5ba", starBold:"#4f9d73",
+  sub:"#93a89a",
+  // 旧名（残存ヘルパー互換用）
+  greenDark:"#2f7f57", greenSoft:"#9ad3b2", greenLine:"#7cc79b", coral:"#df5340", coralDark:"#c14a3a",
 };
 
 function pbFit(ctx, text, maxW, startFs, bold, fam) {
@@ -1230,8 +1236,164 @@ function pbStars(ctx, w, h) {
   });
 }
 
+// ぷっくりアウトライン文字
+function pbOutlineText(ctx, text, x, y, fs, fill, stroke, sw, align, fam) {
+  ctx.font = f(fs, true, fam || "Zen Maru Gothic");
+  ctx.textAlign = align || "left"; ctx.textBaseline = "alphabetic";
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  if (stroke && sw) { ctx.strokeStyle = stroke; ctx.lineWidth = sw; ctx.strokeText(text, x, y); }
+  ctx.fillStyle = fill; ctx.fillText(text, x, y);
+}
+
+// 5角星
+function pbStar(ctx, cx, cy, r, rot, fill, stroke, lw) {
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate((rot || 0) * Math.PI / 180);
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = -Math.PI/2 + i * 2*Math.PI/5;
+    const a2 = a + Math.PI/5;
+    ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+    ctx.lineTo(Math.cos(a2)*r*0.44, Math.sin(a2)*r*0.44);
+  }
+  ctx.closePath();
+  if (fill)   { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 2; ctx.lineJoin = "round"; ctx.stroke(); }
+  ctx.restore();
+}
+
+// ふわふわ入道雲（円の集合・白＋影・枠なし）
+function pbFluffyCloud(ctx, x, y, w, h, fill) {
+  const circles = [
+    [0.17, 0.60, 0.30], [0.39, 0.44, 0.37], [0.61, 0.42, 0.39], [0.83, 0.58, 0.32],
+    [0.29, 0.76, 0.30], [0.51, 0.80, 0.35], [0.72, 0.76, 0.31],
+  ];
+  const path = () => {
+    ctx.beginPath();
+    for (const [rx, ry, rr] of circles) {
+      const cx = x + rx*w, cy = y + ry*h, r = rr*h;
+      ctx.moveTo(cx + r, cy); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    }
+  };
+  ctx.save();
+  ctx.shadowColor = "rgba(110,145,124,0.34)"; ctx.shadowBlur = 9; ctx.shadowOffsetY = 5;
+  ctx.fillStyle = fill; path(); ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = fill; path(); ctx.fill();
+}
+
+// もこもこ枠のボックス（すきなところ・自由記述用）
+function pbBumpyBox(ctx, x, y, w, h, r, fill, stroke, lw, dash) {
+  ctx.save();
+  ctx.shadowColor = "rgba(110,145,124,0.26)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
+  pbScallopPath(ctx, x, y, w, h, r);
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.restore();
+  pbScallopPath(ctx, x, y, w, h, r);
+  ctx.strokeStyle = stroke; ctx.lineWidth = lw || 2.5;
+  if (dash) ctx.setLineDash(dash);
+  ctx.stroke(); ctx.setLineDash([]);
+}
+
+// 方眼グリッド
+function pbGrid(ctx, x, y, w, h) {
+  ctx.save();
+  ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1.4;
+  for (let gx = x; gx <= x + w; gx += 26) { ctx.beginPath(); ctx.moveTo(gx, y); ctx.lineTo(gx, y + h); ctx.stroke(); }
+  for (let gy = y; gy <= y + h; gy += 26) { ctx.beginPath(); ctx.moveTo(x, gy); ctx.lineTo(x + w, gy); ctx.stroke(); }
+  ctx.restore();
+}
+
+// 上部の空（やわらかい白い雲）
+function pbTopClouds(ctx, w) {
+  ctx.save();
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  const blobs = [[w*0.16,34,64,26],[w*0.5,22,86,32],[w*0.85,40,68,26],[w*0.68,66,52,20],[w*0.32,68,56,22]];
+  for (const [cx, cy, rx, ry] of blobs) { ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2); ctx.fill(); }
+  ctx.restore();
+}
+
+// 星ちりばめ
+function pbStarField(ctx, w, h) {
+  const out = [[0.31,0.09,10],[0.60,0.055,9],[0.11,0.19,8],[0.90,0.13,9],
+               [0.19,0.43,11],[0.81,0.40,10],[0.95,0.55,9],[0.05,0.57,10],
+               [0.50,0.52,9],[0.35,0.62,8],[0.71,0.60,9],[0.14,0.74,10],[0.88,0.75,9],[0.50,0.85,10]];
+  for (const [rx, ry, r] of out) pbStar(ctx, rx*w, ry*h, r, ((rx+ry)*720) % 50 - 25, null, PB.starOutline, 2);
+  const fil = [[0.45,0.14,5],[0.72,0.20,5],[0.24,0.30,4],[0.84,0.30,5],[0.50,0.36,4],
+               [0.34,0.50,5],[0.66,0.48,4],[0.90,0.66,5],[0.10,0.66,4],[0.28,0.82,5],[0.78,0.87,4]];
+  for (const [rx, ry, r] of fil) pbStar(ctx, rx*w, ry*h, r, 10, PB.star, null, 0);
+  pbStar(ctx, 30, 30, 12, -8, PB.starBold, null, 0);
+  pbStar(ctx, 150, 26, 10, 12, PB.starBold, null, 0);
+  pbStar(ctx, w - 84, 24, 9, 0, PB.starBold, null, 0);
+}
+
+// かいたひ 日付ボックス
+function pbDateBoxes(ctx, rightX, cy, y, m, d) {
+  const vals = [y, m, d], units = ["ねん", "がつ", "にち"];
+  ctx.textBaseline = "middle";
+  ctx.font = f(12, true);
+  const labelW = ctx.measureText("かいたひ").width;
+  const bws = vals.map(v => { ctx.font = f(14, false, "Yomogi"); return Math.max(30, ctx.measureText(v || "").width + 16); });
+  ctx.font = f(12, true);
+  const uws = units.map(u => ctx.measureText(u).width);
+  const gap = 4, pad = 5, bh = 26;
+  let total = labelW + 8;
+  for (let i = 0; i < 3; i++) total += bws[i] + gap + uws[i] + (i < 2 ? pad : 0);
+  let x = rightX - total;
+  ctx.textAlign = "left"; ctx.font = f(12, true); ctx.fillStyle = PB.brownSoft;
+  ctx.fillText("かいたひ", x, cy); x += labelW + 8;
+  for (let i = 0; i < 3; i++) {
+    ctx.save();
+    ctx.shadowColor = "rgba(110,145,124,0.18)"; ctx.shadowBlur = 4; ctx.shadowOffsetY = 2;
+    ctx.beginPath(); ctx.roundRect(x, cy - bh/2, bws[i], bh, 7);
+    ctx.fillStyle = PB.white; ctx.fill();
+    ctx.restore();
+    ctx.beginPath(); ctx.roundRect(x, cy - bh/2, bws[i], bh, 7);
+    ctx.strokeStyle = PB.brown; ctx.lineWidth = 1.8; ctx.stroke();
+    ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.textAlign = "center";
+    ctx.fillText(vals[i] || "", x + bws[i]/2, cy + 1);
+    x += bws[i] + gap;
+    ctx.font = f(12, true); ctx.fillStyle = PB.brownSoft; ctx.textAlign = "left";
+    ctx.fillText(units[i], x, cy); x += uws[i] + pad;
+  }
+}
+
+// マステ付き傾き写真カード
+function pbPhotoCard(ctx, cx, cy, bw, bh, rot, ico) {
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot * Math.PI / 180);
+  ctx.save();
+  ctx.shadowColor = "rgba(80,70,50,0.22)"; ctx.shadowBlur = 11; ctx.shadowOffsetY = 5;
+  ctx.beginPath(); ctx.roundRect(-bw/2, -bh/2, bw, bh, 8);
+  ctx.fillStyle = PB.white; ctx.fill();
+  ctx.restore();
+  if (ico) {
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(-bw/2 + 7, -bh/2 + 7, bw - 14, bh - 14, 5); ctx.clip();
+    const iw = ico.naturalWidth || ico.width, ih = ico.naturalHeight || ico.height;
+    const sc = Math.max((bw-14)/iw, (bh-14)/ih), dw = iw*sc, dh = ih*sc;
+    ctx.drawImage(ico, -dw/2, -dh/2, dw, dh);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = PB.sub; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = f(13, false); ctx.fillText("しゃしん", 0, -5);
+    ctx.font = f(11, false); ctx.fillText("をはってね", 0, 15);
+  }
+  ctx.beginPath(); ctx.roundRect(-bw/2, -bh/2, bw, bh, 8);
+  ctx.strokeStyle = PB.brown; ctx.lineWidth = 2.5; ctx.stroke();
+  // washi tape
+  ctx.save();
+  ctx.translate(0, -bh/2); ctx.rotate(-9 * Math.PI / 180);
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = "#bfe3cf"; ctx.fillRect(-36, -11, 72, 20);
+  ctx.strokeStyle = "rgba(120,180,140,0.5)"; ctx.lineWidth = 1; ctx.strokeRect(-36, -11, 72, 20);
+  ctx.restore();
+  ctx.restore();
+}
+
 function drawProfileBook(ctx, w, getV, ico, measureOnly) {
-  const PAD = 24, innerW = w - PAD*2;
+  const PAD = 22, innerW = w - PAD*2;
   const fanName   = (getV("fan-name")  || "").trim();
   const handle    = (getV("handle")    || "").trim();
   const wy = (getV("wrote-y")||"").trim(), wm = (getV("wrote-m")||"").trim(), wd = (getV("wrote-d")||"").trim();
@@ -1242,60 +1404,48 @@ function drawProfileBook(ctx, w, getV, ico, measureOnly) {
   const freeText  = (getV("free-note") || "").trim();
 
   // ── レイアウト計測 ──
-  const headerY = 20, headerH = 40;
-  const photoW = 190, photoH = 118;
-  const photoX = w - PAD - photoW;
-  const nameBlockY = headerY + headerH + 20;
-  const nameBlockH = photoH;
+  const headerBaseY = 58;                       // ぷろふぃーる ベースライン
+  const nameBoxY = 80, nameBoxH = 150;          // なまえ／推し ボックス（固定高）
+  const photoBW = 152, photoBH = 118;
+  const photoCX = w - PAD - photoBW/2 - 4, photoCY = nameBoxY + 54;
 
-  const selfY = nameBlockY + nameBlockH + 24;
-  const selfPadX = 20, selfPadTop = 34, selfPadBot = 18, selfLH = Math.ceil(14*1.95);
-  const selfLines = pbLines(ctx, selfText || "（じこしょうかいを入力してね）", f(14,false,"Yomogi"), innerW - selfPadX*2, 2);
+  const selfY = nameBoxY + nameBoxH + 26;
+  const selfPadX = 22, selfPadTop = 36, selfPadBot = 20, selfLH = Math.ceil(14*1.95);
+  const selfLines = pbLines(ctx, selfText || "（じこしょうかいを入力してね）", f(14,false,"Yomogi"), innerW - selfPadX*2, 3);
   const selfBoxH = selfPadTop + selfLines.length*selfLH + selfPadBot;
 
-  const cloudsY = selfY + selfBoxH + 36;
-  const colGap = 22, rowGap = 34, cloudR = 12;
+  // 雲メモ（ラベルは雲の上）
+  const cloudsY = selfY + selfBoxH + 26;        // 1段目ラベルの上端
+  const colGap = 16, rowGap = 24, cloudR = 15, labelH = 26;
   const cloudW = Math.floor((innerW - colGap*2) / 3);
-  const cloudPadX = 16, cloudPadTop = 20, cloudLabelH = 18, cloudPadBot = 18, cloudLH = 20;
-  const cloudLineArr = cloudVals.map(v => pbLines(ctx, v, f(12,false,"Yomogi"), cloudW - cloudPadX*2, 2));
-  const cloudHs = cloudLineArr.map(ls => cloudPadTop + cloudLabelH + 4 + ls.length*cloudLH + cloudPadBot);
+  const cloudTextW = Math.floor(cloudW * 0.74), cloudLH = 19;
+  const cloudLineArr = cloudVals.map(v => pbLines(ctx, v, f(12,false,"Yomogi"), cloudTextW, 1));
+  const cloudHs = cloudLineArr.map(ls => Math.max(94, 30 + ls.length*cloudLH + 30));
   const row1H = Math.max(cloudHs[0], cloudHs[1], cloudHs[2]);
   const row2H = Math.max(cloudHs[3], cloudHs[4], cloudHs[5]);
-  const row2Y = cloudsY + row1H + rowGap;
-  const cloudsBottom = row2Y + row2H;
+  const row1CloudY = cloudsY + labelH;
+  const row2LabelY = row1CloudY + row1H + rowGap;
+  const row2CloudY = row2LabelY + labelH;
+  const cloudsBottom = row2CloudY + row2H;
 
-  const botY = cloudsBottom + 32, botGap = 22;
-  const bestW = Math.round(innerW * 0.55);
+  // 下段2ボックス
+  const botY = cloudsBottom + 30, botGap = 20;
+  const bestW = Math.round(innerW * 0.54);
   const freeW = innerW - bestW - botGap;
   const bestX = PAD, freeX = PAD + bestW + botGap;
 
-  const bestPadX = 20, bestHeaderH = 32, bestPadTop = 12, bestPadBot = 18, bestLH = Math.ceil(14*1.7);
+  const bestPadX = 22, bestHeaderH = 76, bestPadTop = 6, bestPadBot = 22, bestLH = Math.ceil(15*1.9);
   const bestTextW = bestW - bestPadX*2;
-  ctx.font = f(14, false, "Yomogi");
-  const bestLineGroups = []; let bestContentH = 0;
-  for (let i = 0; i < 3; i++) {
-    const prefix = (i+1) + ". ";
-    const pw = ctx.measureText(prefix).width;
-    const full = prefix + (bestVals[i] || "");
-    const lines = []; let line = "", first = true;
-    for (const ch of full) {
-      const limit = first ? bestTextW : bestTextW - pw;
-      if (ctx.measureText(line + ch).width > limit && line.length > 0) { lines.push(line); line = ch; first = false; }
-      else line += ch;
-    }
-    if (line) lines.push(line);
-    if (!lines.length) lines.push(prefix);
-    bestLineGroups.push({ lines, pw });
-    bestContentH += lines.length*bestLH;
-  }
+  const bestLineArr = bestVals.map(v => pbLines(ctx, v, f(15,false,"Yomogi"), bestTextW - 26, 1));
+  const bestContentH = bestLineArr.reduce((s, ls) => s + Math.max(1, ls.length)*bestLH + 8, 0);
   const bestBoxH = bestHeaderH + bestPadTop + bestContentH + bestPadBot;
 
-  const freePadX = 18, freeHeaderH = 30, freePadTop = 12, freePadBot = 18, freeLH = Math.ceil(13*1.9);
-  const freeLines = pbLines(ctx, freeText || "自由に書いてね♪", f(13,false,"Yomogi"), freeW - freePadX*2, 3);
+  const freePadX = 24, freeHeaderH = 64, freePadTop = 8, freePadBot = 24, freeLH = Math.ceil(13*1.95);
+  const freeLines = pbLines(ctx, freeText || "", f(13,false,"Yomogi"), freeW - freePadX*2, 4);
   const freeBoxH = freeHeaderH + freePadTop + freeLines.length*freeLH + freePadBot;
 
   const bottomBlockH = Math.max(bestBoxH, freeBoxH);
-  const totalH = botY + bottomBlockH + 48;
+  const totalH = botY + bottomBlockH + 46;
 
   if (measureOnly) return totalH;
 
@@ -1303,35 +1453,42 @@ function drawProfileBook(ctx, w, getV, ico, measureOnly) {
   const g = ctx.createLinearGradient(0, 0, 0, totalH);
   g.addColorStop(0, PB.bg1); g.addColorStop(1, PB.bg2);
   ctx.fillStyle = g; ctx.fillRect(0, 0, w, totalH);
-  pbStars(ctx, w, totalH);
+  pbTopClouds(ctx, w);
+  pbGrid(ctx, 0, selfY + selfBoxH + 6, w, totalH - (selfY + selfBoxH + 6));   // 下部に方眼
+  pbStarField(ctx, w, totalH);
 
   // ── ヘッダー ──
-  pbPill(ctx, PAD, headerY, headerH, "ぷろふぃーる");
-  pbDateGroup(ctx, w - PAD, headerY + headerH/2, wy, wm, wd);
+  pbOutlineText(ctx, "ぷろふぃーる", PAD, headerBaseY, 34, PB.green, PB.brown, 6);
+  pbDateBoxes(ctx, w - PAD, 34, wy, wm, wd);
 
-  // ── なまえ・推し・写真 ──
-  pbPhoto(ctx, photoX, nameBlockY, photoW, photoH, ico);
-  const colX = PAD, colW = photoX - PAD - 18;
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.font = f(12, true); ctx.fillStyle = PB.green;
-  ctx.fillText("なまえ", colX, nameBlockY + 2);
-  ctx.font = f(22, false, "Yomogi"); ctx.fillStyle = PB.ink;
-  ctx.fillText(fanName || "　", colX + 6, nameBlockY + 20);
-  ctx.strokeStyle = PB.greenSoft; ctx.lineWidth = 1.5; ctx.setLineDash([2, 4]);
-  ctx.beginPath(); ctx.moveTo(colX, nameBlockY + 54); ctx.lineTo(colX + colW, nameBlockY + 54); ctx.stroke(); ctx.setLineDash([]);
-  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = PB.sub; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, colX + 6, nameBlockY + 58); }
-  const oshiY = nameBlockY + 80;
-  ctx.font = f(12, true); ctx.fillStyle = PB.coralDark; ctx.textBaseline = "top"; ctx.fillText("推し", colX, oshiY + 2);
-  ctx.font = f(16, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.fillText("佐藤優羽", colX + 40, oshiY);
-  const oshi2Y = oshiY + 26;
-  ctx.font = f(12, true); ctx.fillStyle = PB.sub; ctx.fillText("他推し", colX, oshi2Y + 2);
-  ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.fillText(otherOshi || "　", colX + 50, oshi2Y);
-  fieldZoneMap["fan-name"]   = { x1: colX, x2: photoX, y1: nameBlockY, y2: nameBlockY + 56 };
-  fieldZoneMap["other-oshi"] = { x1: colX, x2: photoX, y1: oshi2Y - 2, y2: oshi2Y + 20 };
+  // ── なまえ・推し ボックス ──
+  pbRoundBox(ctx, PAD, nameBoxY, innerW, nameBoxH, 18, PB.cream, PB.brown, 2.5);
+  const colX = PAD + 22, colRight = photoCX - photoBW/2 - 14;
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.font = f(13, true); ctx.fillStyle = PB.brownSoft; ctx.fillText("なまえ", colX, nameBoxY + 34);
+  ctx.font = f(23, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.fillText(fanName || "", colX + 4, nameBoxY + 66);
+  ctx.strokeStyle = PB.brownSoft; ctx.lineWidth = 1.4; ctx.setLineDash([2, 4]);
+  ctx.beginPath(); ctx.moveTo(colX, nameBoxY + 76); ctx.lineTo(colRight, nameBoxY + 76); ctx.stroke(); ctx.setLineDash([]);
+  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = PB.sub; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, colX + 4, nameBoxY + 90); }
+  const oshiBase = nameBoxY + 120;
+  ctx.font = f(13, true); ctx.fillStyle = PB.brownSoft; ctx.fillText("推し", colX, oshiBase);
+  ctx.font = f(19, true, "Zen Maru Gothic"); ctx.fillStyle = PB.brown; ctx.fillText("佐藤優羽", colX + 42, oshiBase + 1);
+  const oshi2X = colX + 42 + ctx.measureText("佐藤優羽").width + 20;
+  ctx.font = f(12, true); ctx.fillStyle = PB.red; ctx.fillText("他推し", oshi2X, oshiBase);
+  ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.fillText(otherOshi || "", oshi2X + ctx.measureText("").width + 42, oshiBase);
+  // 写真カード（ボックス上に重ねる）
+  pbPhotoCard(ctx, photoCX, photoCY, photoBW, photoBH, 4, ico);
+  fieldZoneMap["fan-name"]   = { x1: PAD, x2: colRight, y1: nameBoxY + 20, y2: nameBoxY + 90 };
+  fieldZoneMap["other-oshi"] = { x1: oshi2X - 4, x2: colRight, y1: oshiBase - 16, y2: oshiBase + 8 };
 
   // ── じこしょうかい ──
-  pbRoundBox(ctx, PAD, selfY, innerW, selfBoxH, 16, PB.cream, PB.greenLine, 2);
-  pbTab(ctx, PAD + 66, selfY, "じこしょうかい", PB.green, "#fff");
+  pbRoundBox(ctx, PAD, selfY, innerW, selfBoxH, 16, PB.cream, PB.brown, 2.5);
+  ctx.font = f(14, true, "Zen Maru Gothic"); ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  const jLabel = "じこしょうかい", jLabelW = ctx.measureText(jLabel).width;
+  ctx.fillStyle = PB.cream; ctx.fillRect(PAD + 14, selfY - 2, jLabelW + 14, 4);   // 枠線を隠す
+  ctx.fillStyle = PB.red; ctx.fillText(jLabel, PAD + 20, selfY);
+  ctx.strokeStyle = PB.brownSoft; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(PAD + 20 + jLabelW + 8, selfY); ctx.lineTo(PAD + innerW - 16, selfY); ctx.stroke();
   ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = selfText ? PB.ink : PB.sub;
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   let sy = selfY + selfPadTop;
@@ -1342,51 +1499,66 @@ function drawProfileBook(ctx, w, getV, ico, measureOnly) {
   for (let i = 0; i < 6; i++) {
     const col = i % 3, row = Math.floor(i / 3);
     const cx = PAD + col*(cloudW + colGap);
-    const cyv = row === 0 ? cloudsY : row2Y;
+    const labelY = row === 0 ? cloudsY : row2LabelY;
+    const cloudY = row === 0 ? row1CloudY : row2CloudY;
     const chv = row === 0 ? row1H : row2H;
-    pbCloud(ctx, cx, cyv, cloudW, chv, PB.cream, PB.greenSoft, cloudR);
+    // ラベル（雲の上・赤太字）
     ctx.textAlign = "center"; ctx.textBaseline = "top";
-    pbFit(ctx, CLOUD_CATS[i], cloudW - cloudPadX*2, 13, true);
-    ctx.fillStyle = (i % 2 === 0) ? PB.green : PB.coralDark;
-    ctx.fillText(CLOUD_CATS[i], cx + cloudW/2, cyv + cloudPadTop);
-    ctx.font = f(12, false, "Yomogi"); ctx.fillStyle = cloudVals[i] ? PB.ink : PB.sub; ctx.textAlign = "left";
-    let ty = cyv + cloudPadTop + cloudLabelH + 4;
-    for (const ln of cloudLineArr[i]) { ctx.fillText(ln, cx + cloudPadX, ty); ty += cloudLH; }
-    fieldZoneMap["cloud-" + (i+1)] = { x1: cx, x2: cx + cloudW, y1: cyv, y2: cyv + chv };
+    pbFit(ctx, CLOUD_CATS[i], cloudW - 8, 14, true);
+    ctx.fillStyle = PB.red; ctx.fillText(CLOUD_CATS[i], cx + cloudW/2, labelY);
+    // 雲
+    pbFluffyCloud(ctx, cx, cloudY, cloudW, chv, PB.white);
+    // 中身
+    ctx.font = f(12, false, "Yomogi"); ctx.fillStyle = cloudVals[i] ? PB.ink : PB.sub;
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    const lines = cloudLineArr[i];
+    let ty = cloudY + (chv - lines.length*cloudLH) / 2 + 2;
+    for (const ln of lines) { ctx.fillText(ln, cx + cloudW/2, ty); ty += cloudLH; }
+    fieldZoneMap["cloud-" + (i+1)] = { x1: cx, x2: cx + cloudW, y1: labelY, y2: cloudY + chv };
   }
 
-  // ── さとうゆのすきなところ ベスト3 ──
-  pbCloud(ctx, bestX, botY, bestW, bestBoxH, PB.cream, PB.coral, 12);
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  pbFit(ctx, "佐藤優羽さんのすきなところ", bestTextW - 46, 14, true);
-  ctx.fillStyle = PB.coralDark; ctx.fillText("佐藤優羽さんのすきなところ", bestX + bestPadX, botY + 14);
-  pbTab(ctx, bestX + bestW - bestPadX - 22, botY + 20, "BEST3", PB.coral, "#fff");
-  ctx.font = f(14, false, "Yomogi"); ctx.textAlign = "left"; ctx.textBaseline = "top";
+  // ── 佐藤優羽さんのすきなところ ベスト3 ──
+  pbBumpyBox(ctx, bestX, botY, bestW, bestBoxH, 15, PB.white, PB.brown, 2.5);
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.font = f(15, true); ctx.fillStyle = PB.brown; ctx.fillText("佐藤優羽さんの", bestX + bestPadX, botY + 30);
+  pbOutlineText(ctx, "すきな ところ", bestX + bestPadX - 2, botY + 60, 24, PB.brown, PB.cream, 3);
+  ctx.font = f(10, true); ctx.fillStyle = PB.brownSoft; ctx.textAlign = "center";
+  ctx.fillText("べすと", bestX + bestW - 44, botY + 30);
+  pbOutlineText(ctx, "3", bestX + bestW - 56, botY + 66, 52, PB.accent, PB.white, 5);
+  ctx.font = f(15, false, "Yomogi"); ctx.textAlign = "left"; ctx.textBaseline = "top";
   let by = botY + bestHeaderH + bestPadTop;
-  for (const { lines, pw } of bestLineGroups) {
-    for (let li = 0; li < lines.length; li++) {
-      ctx.fillStyle = PB.ink; ctx.fillText(lines[li], bestX + bestPadX + (li > 0 ? pw : 0), by); by += bestLH;
-    }
+  for (let i = 0; i < 3; i++) {
+    ctx.font = f(17, true); ctx.fillStyle = PB.accent; ctx.textBaseline = "top";
+    ctx.fillText((i+1) + "", bestX + bestPadX, by);
+    ctx.font = f(15, false, "Yomogi"); ctx.fillStyle = bestVals[i] ? PB.ink : PB.sub;
+    const lines = bestLineArr[i];
+    let ly = by;
+    for (const ln of lines) { ctx.fillText(ln, bestX + bestPadX + 26, ly); ly += bestLH; }
+    // 点線
+    const rowBottom = by + Math.max(1, lines.length)*bestLH + 3;
+    ctx.strokeStyle = PB.brownSoft; ctx.lineWidth = 1.2; ctx.setLineDash([2, 4]);
+    ctx.beginPath(); ctx.moveTo(bestX + bestPadX + 26, rowBottom); ctx.lineTo(bestX + bestW - bestPadX, rowBottom); ctx.stroke(); ctx.setLineDash([]);
+    by = rowBottom + 8;
   }
-  fieldZoneMap["best-1"] = { x1: bestX, x2: bestX + bestW, y1: botY, y2: botY + bestBoxH };
+  fieldZoneMap["best-1"] = { x1: bestX, x2: bestX + bestW, y1: botY + bestHeaderH, y2: botY + bestBoxH };
 
   // ── 自由記述こーなー ──
-  pbRoundBox(ctx, freeX, botY, freeW, bottomBlockH, 16, PB.cream, PB.coral, 2, [2, 5]);
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  pbFit(ctx, "自由記述こーなー", freeW - freePadX*2, 14, true);
-  ctx.fillStyle = PB.coralDark; ctx.fillText("自由記述こーなー", freeX + freePadX, botY + 14);
+  pbBumpyBox(ctx, freeX, botY, freeW, bottomBlockH, 14, PB.white, PB.brown, 2.5, [1, 5]);
+  pbOutlineText(ctx, "自由記述", freeX + freePadX, botY + 40, 22, PB.brown, PB.cream, 3);
+  pbOutlineText(ctx, "こーなー", freeX + freePadX, botY + 66, 22, PB.brown, PB.cream, 3);
   ctx.font = f(13, false, "Yomogi"); ctx.fillStyle = freeText ? PB.ink : PB.sub;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
   let fy = botY + freeHeaderH + freePadTop;
   for (const ln of freeLines) { ctx.fillText(ln, freeX + freePadX, fy); fy += freeLH; }
   fieldZoneMap["free-note"] = { x1: freeX, x2: freeX + freeW, y1: botY, y2: botY + bottomBlockH };
 
   // ── イラスト（マスコット位置・選んで配置） ──
   const slots = [
-    { cx: photoX - 6,          cy: nameBlockY + photoH - 8, size: 58, rot: -10 },
-    { cx: w - PAD - 6,         cy: row2Y - 8,               size: 54, rot: 12 },
-    { cx: bestX + 22,          cy: botY + bestBoxH - 6,     size: 52, rot: 10 },
-    { cx: freeX + freeW - 4,   cy: botY - 4,                size: 48, rot: 12 },
-    { cx: PAD + innerW - 14,   cy: selfY - 6,               size: 46, rot: 10 },
+    { cx: PAD + innerW - 26,   cy: selfY + selfBoxH - 6,  size: 56, rot: -8 },
+    { cx: w - PAD - 4,         cy: row2LabelY - 6,        size: 50, rot: 12 },
+    { cx: freeX + freeW - 8,   cy: botY + 4,              size: 50, rot: 12 },
+    { cx: bestX + bestW - 10,  cy: botY + bestBoxH - 4,   size: 52, rot: 10 },
+    { cx: PAD + 20,            cy: botY + bestBoxH + 2,   size: 46, rot: -10 },
   ];
   drawIllustSlots(ctx, slots, getV);
 
