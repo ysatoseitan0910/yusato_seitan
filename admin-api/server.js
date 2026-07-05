@@ -67,6 +67,8 @@ const DB = {
   messages:   process.env.DB_MESSAGES,
   cards:      process.env.DB_CARDS,
   memberblog: process.env.DB_MEMBER_BLOG,
+  history:    process.env.DB_HISTORY,
+  topnews:    process.env.DB_TOP_NEWS,
 };
 
 // CORS
@@ -381,6 +383,7 @@ app.get("/list/:db", auth, async (req, res) => {
       date: p.properties.Date?.date?.start || null,
       url: p.properties.URL?.url || null,
       published: p.properties.Published?.checkbox ?? null,
+      body: p.properties.Body ? getText(p.properties.Body) : null,
     }));
     res.json({ items, total: items.length });
   } catch (e) {
@@ -533,6 +536,133 @@ app.get("/messages", auth, async (req, res) => {
       cursor = resp.has_more ? resp.next_cursor : null;
     } while (cursor);
     res.json(results);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── 「今週のさとうゆ」週次まとめ生成 ──
+function jstToday() {
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+}
+// 指定日を含む週の月曜〜日曜を返す（日付文字列演算・タイムゾーン非依存）
+function weekRange(dateStr) {
+  const d = new Date((dateStr || jstToday()) + "T00:00:00Z");
+  const dow = d.getUTCDay();                 // 0=日 .. 6=土
+  const offMon = dow === 0 ? -6 : 1 - dow;   // その週の月曜まで
+  const mon = new Date(d); mon.setUTCDate(d.getUTCDate() + offMon);
+  const sun = new Date(mon); sun.setUTCDate(mon.getUTCDate() + 6);
+  const fmt = x => x.toISOString().slice(0, 10);
+  return { start: fmt(mon), end: fmt(sun) };
+}
+function mdShort(dateStr) {
+  if (!dateStr) return "";
+  const p = dateStr.slice(0, 10).split("-");
+  return `${parseInt(p[1], 10)}/${parseInt(p[2], 10)}`;
+}
+function plainText(prop) {
+  if (!prop) return "";
+  if (prop.title)     return prop.title.map(s => s.plain_text).join("");
+  if (prop.rich_text) return prop.rich_text.map(s => s.plain_text).join("");
+  return "";
+}
+function multiNames(prop) {
+  return prop && prop.multi_select ? prop.multi_select.map(o => o.name) : [];
+}
+function truncate(s, n) {
+  s = String(s || "").replace(/\s+/g, " ").trim();
+  return s.length > n ? s.slice(0, n - 1) + "…" : s;
+}
+async function queryByDate(dbId, start, end) {
+  const results = [];
+  let cursor;
+  do {
+    const r = await notion.databases.query({
+      database_id: dbId,
+      start_cursor: cursor,
+      page_size: 100,
+      filter: { and: [
+        { property: "Date", date: { on_or_after: start } },
+        { property: "Date", date: { on_or_before: end } },
+      ] },
+      sorts: [{ property: "Date", direction: "ascending" }],
+    });
+    results.push(...r.results);
+    cursor = r.has_more ? r.next_cursor : null;
+  } while (cursor);
+  return results;
+}
+// rich_text は1オブジェクト2000文字上限のため分割
+function richChunks(str) {
+  const out = [];
+  let s = String(str || "");
+  while (s.length > 1900) { out.push({ text: { content: s.slice(0, 1900) } }); s = s.slice(1900); }
+  if (s.length) out.push({ text: { content: s } });
+  return out.length ? out : [{ text: { content: "" } }];
+}
+
+app.post("/generate/weekly", auth, async (req, res) => {
+  if (!DB.history || !DB.topnews) {
+    return res.status(503).json({ error: "DB_HISTORY / DB_TOP_NEWS が未設定です" });
+  }
+  try {
+    const { start, end } = weekRange(req.body && req.body.date);
+    const [hist, tt, mb] = await Promise.all([
+      queryByDate(DB.history, start, end),
+      DB.tiktok     ? queryByDate(DB.tiktok, start, end)     : Promise.resolve([]),
+      DB.memberblog ? queryByDate(DB.memberblog, start, end) : Promise.resolve([]),
+    ]);
+
+    const eventLines = hist.map(p => {
+      const nm = plainText(p.properties.Name).replace(/\s+/g, " ").trim();
+      const types = multiNames(p.properties.Type);
+      const tag = types.length ? `[${types.join("/")}] ` : "";
+      return `・${mdShort(p.properties.Date?.date?.start)} ${tag}${nm}`.trim();
+    });
+    const ttLines = tt.map(p =>
+      `・${mdShort(p.properties.Date?.date?.start)} ${truncate(plainText(p.properties.Name), 34)}`.trim());
+    const mbLines = mb.map(p => {
+      const members = multiNames(p.properties.Member).join("・");
+      const nm = truncate(plainText(p.properties.Name), 30);
+      return `・${mdShort(p.properties.Date?.date?.start)} ${members ? members + " " : ""}「${nm}」`.trim();
+    });
+
+    const sec = [];
+    if (eventLines.length) sec.push("▼できごと\n" + eventLines.join("\n"));
+    if (ttLines.length)    sec.push(`▼TikTok（${ttLines.length}本）\n` + ttLines.join("\n"));
+    if (mbLines.length)    sec.push(`▼他メンバーブログ（${mbLines.length}件）\n` + mbLines.join("\n"));
+
+    const rangeLabel = `${mdShort(start)}〜${mdShort(end)}`;
+    const title = `今週のさとうゆ（${rangeLabel}）`;
+    const body =
+      `📅今週のさとうゆ（${rangeLabel}）\n\n` +
+      (sec.length ? sec.join("\n\n") : "今週は大きな更新はありませんでした。") +
+      `\n\n#佐藤優羽 #さとうゆ #日向坂46\nhttps://satoyu.info`;
+
+    // 同名の既存レコードをアーカイブ（重複防止）
+    const existing = await notion.databases.query({
+      database_id: DB.topnews,
+      filter: { property: "Name", title: { equals: title } },
+    });
+    for (const pg of existing.results) {
+      await notion.pages.update({ page_id: pg.id, archived: true });
+    }
+
+    const page = await notion.pages.create({
+      parent: { database_id: DB.topnews },
+      properties: {
+        Name:      { title: t(title) },
+        Body:      { rich_text: richChunks(body) },
+        Date:      { date: { start: end } },
+        Published: { checkbox: true },
+      },
+    });
+
+    res.json({
+      ok: true, pageId: page.id, title, body, start, end, range: rangeLabel,
+      counts: { events: eventLines.length, tiktok: ttLines.length, memberblog: mbLines.length },
+    });
   } catch (e) {
     console.error(e.message);
     res.status(500).json({ error: e.message });
