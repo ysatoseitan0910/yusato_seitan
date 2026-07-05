@@ -86,6 +86,7 @@ jobs:
         run: |
           rsync -avz --delete \
             --exclude='/uploads/' \
+            --exclude='/ogp/' \
             --exclude='.github' \
             --exclude='node_modules' \
             --exclude='build.js' \

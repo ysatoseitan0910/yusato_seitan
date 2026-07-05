@@ -696,4 +696,19 @@ app.patch("/topnews/:pageId/body", auth, async (req, res) => {
   }
 });
 
+// 今週のさとうゆ OGP画像を保存（毎週作り変え）
+const OGP_DIR = "/var/www/satoyu/ogp";
+app.post("/ogp/weekly", auth, async (req, res) => {
+  const { imageBase64 } = req.body || {};
+  if (!imageBase64) return res.status(400).json({ error: "画像がありません" });
+  try {
+    fs.mkdirSync(OGP_DIR, { recursive: true });
+    fs.writeFileSync(path.join(OGP_DIR, "weekly.png"), Buffer.from(imageBase64, "base64"));
+    res.json({ ok: true, url: "https://satoyu.info/ogp/weekly.png" });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(3001, () => console.log("satoyu admin API running on :3001"));
