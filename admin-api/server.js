@@ -615,11 +615,20 @@ app.post("/generate/weekly", auth, async (req, res) => {
     ]);
 
     const urlOf = p => (p.properties.URL && p.properties.URL.url) ? "\n" + p.properties.URL.url : "";
-    const eventLines = hist.map(p => {
+    // 年表：本人ブログ（Type=ブログ）は「できごと」から分けて「ブログ」に
+    const isBlogType = p => multiNames(p.properties.Type).some(name => name.includes("ブログ"));
+    const histEvents = hist.filter(p => !isBlogType(p));
+    const histBlogs  = hist.filter(isBlogType);
+
+    const eventLines = histEvents.map(p => {
       const nm = plainText(p.properties.Name).replace(/\s+/g, " ").trim();
       const types = multiNames(p.properties.Type);
       const tag = types.length ? `[${types.join("/")}] ` : "";
       return `・${mdShort(p.properties.Date?.date?.start)} ${tag}${nm}`.trim() + urlOf(p);
+    });
+    const blogLines = histBlogs.map(p => {
+      const nm = plainText(p.properties.Name).replace(/\s+/g, " ").trim();
+      return `・${mdShort(p.properties.Date?.date?.start)} ${nm}`.trim() + urlOf(p);
     });
     const ttLines = tt.map(p =>
       `・${mdShort(p.properties.Date?.date?.start)} ${truncate(plainText(p.properties.Name), 34)}`.trim() + urlOf(p));
@@ -631,15 +640,15 @@ app.post("/generate/weekly", auth, async (req, res) => {
 
     const sec = [];
     if (eventLines.length) sec.push("▼できごと\n" + eventLines.join("\n"));
+    if (blogLines.length)  sec.push("▼ブログ\n" + blogLines.join("\n"));
     if (ttLines.length)    sec.push(`▼TikTok（${ttLines.length}本）\n` + ttLines.join("\n"));
-    if (mbLines.length)    sec.push(`▼他メンバーブログ（${mbLines.length}件）\n` + mbLines.join("\n"));
+    if (mbLines.length)    sec.push(`▼他メンバーブログ登場（${mbLines.length}件）\n` + mbLines.join("\n"));
 
     const rangeLabel = `${mdShort(start)}〜${mdShort(end)}`;
     const title = `今週のさとうゆ（${rangeLabel}）`;
     const body =
       `📅今週のさとうゆ（${rangeLabel}）\n\n` +
-      (sec.length ? sec.join("\n\n") : "今週は大きな更新はありませんでした。") +
-      `\n\n#佐藤優羽 #さとうゆ #日向坂46\nhttps://satoyu.info`;
+      (sec.length ? sec.join("\n\n") : "今週は大きな更新はありませんでした。");
 
     // 同名の既存レコードをアーカイブ（重複防止）
     const existing = await notion.databases.query({
@@ -664,6 +673,22 @@ app.post("/generate/weekly", auth, async (req, res) => {
       ok: true, pageId: page.id, title, body, start, end, range: rangeLabel,
       counts: { events: eventLines.length, tiktok: ttLines.length, memberblog: mbLines.length },
     });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 今週のさとうゆ 本文（Body）を更新
+app.patch("/topnews/:pageId/body", auth, async (req, res) => {
+  const { pageId } = req.params;
+  const { body } = req.body || {};
+  try {
+    await notion.pages.update({
+      page_id: pageId,
+      properties: { Body: { rich_text: richChunks(body || "") } },
+    });
+    res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
     res.status(500).json({ error: e.message });

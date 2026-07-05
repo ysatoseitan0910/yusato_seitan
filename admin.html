@@ -777,7 +777,7 @@ header span { font-size: 13px; color: var(--text-muted); }
       </div>
 
       <div class="weekly-gen-card">
-        <p class="weekly-gen-desc">対象週（月曜〜日曜）の <b>年表イベント・TikTok・他メンバーブログ</b> をまとめて「最新NEWS(DB_TOP_NEWS)」に登録します。</p>
+        <p class="weekly-gen-desc">対象週（月曜〜日曜）の <b>できごと・本人ブログ・TikTok・他メンバーブログ登場</b> をまとめて、HPの「今週のさとうゆ」ページ（<a href="/weekly.html" target="_blank" rel="noopener">weekly.html</a>）に追加します（DB_TOP_NEWSに登録）。</p>
         <div class="weekly-gen-row">
           <div class="field" style="margin:0;">
             <label>対象週の日付（この日を含む週）</label>
@@ -789,12 +789,15 @@ header span { font-size: 13px; color: var(--text-muted); }
 
         <div id="weekly-result" style="display:none;margin-top:14px;">
           <div class="weekly-result-title" id="weekly-result-title"></div>
-          <textarea id="weekly-result-body" class="weekly-textarea" spellcheck="false" oninput="updateWeeklyCharcount()"></textarea>
+          <textarea id="weekly-result-body" class="weekly-textarea" spellcheck="false"></textarea>
           <div class="weekly-result-actions">
-            <span class="weekly-charcount" id="weekly-charcount"></span>
-            <button class="btn" style="background:#000;" onclick="postToXFromTextarea()">𝕏 この内容でXに投稿</button>
+            <span class="status" id="weekly-save-status"></span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn" href="/weekly.html" target="_blank" rel="noopener" style="background:var(--emerald-dark,#1f7a52);text-decoration:none;">🔗 ページを開く</a>
+              <button class="btn submit-btn" onclick="saveWeeklyBody()">💾 本文を保存</button>
+            </div>
           </div>
-          <p class="weekly-note">「Xに投稿」を押すとX投稿画面が開きます（本文は自動入力されます）。280文字を超える場合は投稿画面で調整してください。</p>
+          <p class="weekly-note">この本文がHPの「今週のさとうゆ」ページにリンク付きで表示されます。編集して「保存」すると次回ビルドで反映されます（各項目のURL行がハイパーリンクになります）。</p>
         </div>
       </div>
 
@@ -939,12 +942,12 @@ async function generateWeekly() {
     const d = await res.json();
     if (!res.ok) throw new Error(d.error || 'エラー');
     status.className = 'status ok';
-    status.textContent = `✅ 作成しDB_TOP_NEWSに登録しました（できごと${d.counts.events}件 / TikTok${d.counts.tiktok}件 / 他メンバーブログ${d.counts.memberblog}件）`;
+    status.textContent = `✅ 「今週のさとうゆ」ページに追加しました（できごと${d.counts.events}件 / TikTok${d.counts.tiktok}件 / 他メンバーブログ登場${d.counts.memberblog}件）`;
+    _weeklyPageId = d.pageId;
     document.getElementById('weekly-result').style.display = '';
     document.getElementById('weekly-result-title').textContent = d.title;
-    const ta = document.getElementById('weekly-result-body');
-    ta.value = d.body;
-    updateWeeklyCharcount();
+    document.getElementById('weekly-result-body').value = d.body;
+    document.getElementById('weekly-save-status').textContent = '';
     loadTopNews();
   } catch (e) {
     status.className = 'status err';
@@ -955,20 +958,42 @@ async function generateWeekly() {
   }
 }
 
-function updateWeeklyCharcount() {
-  const ta = document.getElementById('weekly-result-body');
-  const cc = document.getElementById('weekly-charcount');
-  const len = [...ta.value].length;
-  cc.textContent = `${len} 文字`;
-  cc.classList.toggle('over', len > 280);
+var _weeklyPageId = null;
+
+async function saveWeeklyBody() {
+  if (!_weeklyPageId) { alert('先に「今週のさとうゆを作成する」を実行してください'); return; }
+  const st = document.getElementById('weekly-save-status');
+  const body = document.getElementById('weekly-result-body').value;
+  st.className = 'status';
+  st.textContent = '⏳ 保存中...';
+  try {
+    const res = await fetch(`${API_BASE}/topnews/${_weeklyPageId}/body`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getPassword()}` },
+      body: JSON.stringify({ body }),
+    });
+    if (res.status === 401) { logout(); return; }
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'エラー');
+    st.className = 'status ok';
+    st.textContent = '✅ 保存しました（次回ビルドで反映）';
+    loadTopNews();
+  } catch (e) {
+    st.className = 'status err';
+    st.textContent = '❌ ' + e.message;
+  }
 }
 
-function postToX(text) {
-  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text || '');
-  window.open(url, '_blank', 'noopener,width=600,height=560');
-}
-function postToXFromTextarea() {
-  postToX(document.getElementById('weekly-result-body').value);
+// 一覧から本文を編集エリアへ読み込む
+function editTopNews(i) {
+  const item = _topnewsCache[i];
+  if (!item) return;
+  _weeklyPageId = item.id;
+  document.getElementById('weekly-result').style.display = '';
+  document.getElementById('weekly-result-title').textContent = item.name || '';
+  document.getElementById('weekly-result-body').value = item.body || '';
+  document.getElementById('weekly-save-status').textContent = '';
+  document.getElementById('weekly-result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function loadTopNews() {
@@ -1007,21 +1032,14 @@ function renderTopNewsList(items) {
     const date = item.date ? item.date : '—';
     const pub  = item.published === true  ? '<span class="pub-badge pub-true">公開</span>'
                : item.published === false ? '<span class="pub-badge pub-false">非公開</span>' : '';
-    const xBtn = item.body
-      ? `<button class="topnews-xbtn" onclick="postToXFromCache(${i})">𝕏 X投稿</button> `
-      : '';
+    const editBtn = `<button class="topnews-xbtn" style="background:var(--emerald-dark,#1f7a52);" onclick="editTopNews(${i})">✏ 編集</button> `;
     const unpubBtn = item.published === true
       ? `<button class="list-unpub-btn" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}" onclick="unpublishRecord('topnews', this)">非公開</button> `
       : '';
     const delBtn = `<button class="list-del-btn" data-id="${escHtml(item.id)}" data-name="${escHtml(item.name || '')}" onclick="deleteRecord('topnews', this)">削除</button>`;
-    return `<tr class="list-row" data-id="${escHtml(item.id)}" data-name="${name}"><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td style="white-space:nowrap;">${xBtn}${unpubBtn}${delBtn}</td></tr>`;
+    return `<tr class="list-row" data-id="${escHtml(item.id)}" data-name="${name}"><td class="list-name">${name}</td><td class="list-date">${date}</td><td>${pub}</td><td style="white-space:nowrap;">${editBtn}${unpubBtn}${delBtn}</td></tr>`;
   }).join('');
   return `<table class="list-table"><thead><tr><th>タイトル</th><th>日付</th><th>公開</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
-}
-
-function postToXFromCache(i) {
-  const item = _topnewsCache[i];
-  if (item && item.body) postToX(item.body);
 }
 
 function switchTab(tab) {

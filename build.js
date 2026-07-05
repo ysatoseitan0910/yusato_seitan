@@ -111,7 +111,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","SITE_INFO","TERMS","JOIN","CARD","MESSAGE","HISTORY"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","SITE_INFO","TERMS","JOIN","CARD","MESSAGE","HISTORY","WEEKLY"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -1461,6 +1461,79 @@ details[open] .tl-month-label::before { transform: rotate(90deg); }
   return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
 }
 
+// ── 今週のさとうゆ ──
+// DB_TOP_NEWS の「今週のさとうゆ（…）」レコードのBodyをパースしてリンク付きで表示
+function renderWeeklyBody(text) {
+  const sections = [];
+  let cur = null;
+  for (const raw of String(text || "").split("\n")) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (line.startsWith("📅")) continue;                  // タイトル行はNameを使う
+    if (line.startsWith("#")) continue;                    // 旧レコードのハッシュタグ
+    if (/^https?:\/\/satoyu\.info\/?$/.test(line)) continue; // 旧レコードのフッターURL
+    if (line.startsWith("▼")) {
+      cur = { label: line.replace(/^▼/, "").trim(), items: [] };
+      sections.push(cur);
+      continue;
+    }
+    if (/^https?:\/\//.test(line)) {
+      if (cur && cur.items.length) cur.items[cur.items.length - 1].url = line;
+      continue;
+    }
+    const itemText = line.replace(/^・/, "").trim();
+    if (!cur) { cur = { label: "", items: [] }; sections.push(cur); }
+    cur.items.push({ text: itemText, url: null });
+  }
+  return sections.map(s => {
+    const items = s.items.map(it => {
+      const safe = escAttr(it.text);
+      return it.url
+        ? `<li class="wk-item"><a href="${escAttr(it.url)}" target="_blank" rel="noopener">${safe}</a></li>`
+        : `<li class="wk-item wk-item-plain">${safe}</li>`;
+    }).join("");
+    const label = s.label ? `<h3 class="wk-sec">${escAttr(s.label)}</h3>` : "";
+    return `${label}<ul class="wk-list">${items}</ul>`;
+  }).join("\n");
+}
+
+async function buildWeekly(tpl) {
+  const all = await queryDB(DB.news, [{ property: "Date", direction: "descending" }]);
+  const weeks = all.filter(p => getText(p, "Name").startsWith("今週のさとうゆ"));
+
+  const style = `
+<style>
+.wk-wrap { max-width: 760px; margin: 0 auto; }
+.wk-week { background: var(--white, #fff); border: 2px solid var(--emerald-light); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px; box-shadow: 0 3px 14px rgba(31,122,82,0.06); }
+.wk-week-title { font-family: 'Zen Maru Gothic', serif; font-size: 20px; font-weight: 700; color: var(--emerald-dark); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 2px dashed var(--emerald-light); }
+.wk-sec { font-size: 14px; font-weight: 700; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 8px; padding: 5px 12px; display: inline-block; margin: 14px 0 8px; }
+.wk-list { list-style: none; padding: 0 0 0 4px; margin: 0; display: flex; flex-direction: column; gap: 7px; }
+.wk-item { font-size: 14px; line-height: 1.6; padding-left: 16px; position: relative; }
+.wk-item::before { content: '・'; position: absolute; left: 0; color: var(--emerald); }
+.wk-item a { color: var(--text, #0f1e16); text-decoration: none; border-bottom: 1px solid var(--emerald-light); transition: color .15s, border-color .15s; }
+.wk-item a:hover { color: var(--emerald-dark); border-color: var(--emerald); }
+.wk-item-plain { color: var(--text-muted); }
+.wk-empty { text-align: center; color: var(--text-muted); padding: 60px 0; }
+</style>`;
+
+  if (!weeks.length) {
+    const body = `${style}<div class="wk-wrap"><p class="wk-empty">まだ「今週のさとうゆ」はありません。</p></div>`;
+    return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
+  }
+
+  const sections = weeks.map(p => {
+    const title = getText(p, "Name");
+    const inner = renderWeeklyBody(getText(p, "Body"));
+    return `<div class="wk-week">
+      <h2 class="wk-week-title">${escAttr(title)}</h2>
+      ${inner}
+    </div>`;
+  }).join("\n");
+
+  const body = `${style}<div class="wk-wrap">${sections}</div>`;
+  return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
+}
+
 // ── クイズページ ──
 async function buildQuiz(tpl) {
   // quiz_questions.json から問題を読み込む（ファイルがなければ空）
@@ -1992,6 +2065,7 @@ async function main() {
     "youtube.html":    { fn: buildYoutube,   active: "YOUTUBE" },
     "lemino.html":     { fn: buildLemino,    active: "LEMINO" },
     "history.html":   { fn: buildHistory,   active: "HISTORY" },
+    "weekly.html":    { fn: buildWeekly,    active: "WEEKLY" },
     "quiz.html":       { fn: buildQuiz,      active: "QUIZ" },
   };
 
