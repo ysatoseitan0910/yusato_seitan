@@ -639,8 +639,8 @@ app.post("/generate/weekly", auth, async (req, res) => {
     });
 
     const sec = [];
-    if (eventLines.length) sec.push("▼できごと\n" + eventLines.join("\n"));
-    if (blogLines.length)  sec.push("▼ブログ\n" + blogLines.join("\n"));
+    if (eventLines.length) sec.push(`▼できごと（${eventLines.length}件）\n` + eventLines.join("\n"));
+    if (blogLines.length)  sec.push(`▼ブログ（${blogLines.length}件）\n` + blogLines.join("\n"));
     if (ttLines.length)    sec.push(`▼TikTok（${ttLines.length}本）\n` + ttLines.join("\n"));
     if (mbLines.length)    sec.push(`▼他メンバーブログ登場（${mbLines.length}件）\n` + mbLines.join("\n"));
 
