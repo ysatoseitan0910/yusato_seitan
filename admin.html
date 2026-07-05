@@ -7,7 +7,7 @@
 <link rel="icon" href="/images/favicon.png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
 <title>管理ページ | さとうゆほーむ</title>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --emerald: #3DAA78;
@@ -948,7 +948,9 @@ async function generateWeekly() {
     document.getElementById('weekly-result-title').textContent = d.title;
     document.getElementById('weekly-result-body').value = d.body;
     document.getElementById('weekly-save-status').textContent = '';
-    loadTopNews();
+    await loadTopNews();
+    const ogpOk = await updateWeeklyOgp();
+    if (ogpOk) status.textContent += '／OGP画像も更新しました🖼';
   } catch (e) {
     status.className = 'status err';
     status.textContent = '❌ ' + e.message;
@@ -977,7 +979,8 @@ async function saveWeeklyBody() {
     if (!res.ok) throw new Error(d.error || 'エラー');
     st.className = 'status ok';
     st.textContent = '✅ 保存しました（次回ビルドで反映）';
-    loadTopNews();
+    await loadTopNews();
+    await updateWeeklyOgp();
   } catch (e) {
     st.className = 'status err';
     st.textContent = '❌ ' + e.message;
@@ -994,6 +997,96 @@ function editTopNews(i) {
   document.getElementById('weekly-result-body').value = item.body || '';
   document.getElementById('weekly-save-status').textContent = '';
   document.getElementById('weekly-result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── OGP画像（今週のさとうゆ）を最新週の内容で生成しアップロード ──
+function parseWeeklyBody(text) {
+  const sections = []; let cur = null;
+  for (const raw of String(text || '').split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (line.startsWith('📅') || line.startsWith('#')) continue;
+    if (/^https?:\/\/satoyu\.info\/?$/.test(line)) continue;
+    if (line.startsWith('▼')) { cur = { label: line.replace(/^▼/, '').replace(/（.*?）/, '').trim(), items: [] }; sections.push(cur); continue; }
+    if (/^https?:\/\//.test(line)) continue;
+    const t = line.replace(/^・/, '').trim();
+    if (!cur) { cur = { label: '', items: [] }; sections.push(cur); }
+    cur.items.push(t);
+  }
+  return sections.filter(s => s.items.length);
+}
+
+function _truncToWidth(ctx, s, maxW) {
+  if (ctx.measureText(s).width <= maxW) return s;
+  while (s.length && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
+  return s + '…';
+}
+
+function drawWeeklyOgp(range, sections) {
+  const W = 1200, H = 630;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#eaf7ef'); g.addColorStop(1, '#d2ecdc');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#3DAA78'; x.fillRect(0, 0, 18, H);
+  // 星の飾り
+  x.fillStyle = 'rgba(154,211,178,0.5)';
+  [[1090,90,30],[1140,180,18],[70,560,22],[1130,540,26]].forEach(function(s){
+    x.beginPath();
+    for (var i=0;i<5;i++){var a=-Math.PI/2+i*2*Math.PI/5;x.lineTo(s[0]+Math.cos(a)*s[2],s[1]+Math.sin(a)*s[2]);var a2=a+Math.PI/5;x.lineTo(s[0]+Math.cos(a2)*s[2]*0.45,s[1]+Math.sin(a2)*s[2]*0.45);}
+    x.closePath(); x.fill();
+  });
+  // タイトル
+  x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+  x.fillStyle = '#1f7a52'; x.font = "700 66px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
+  x.fillText('今週のさとうゆ', 70, 132);
+  x.fillStyle = '#c85f7e'; x.font = "700 40px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
+  x.fillText('（' + range + '）', 74, 186);
+  x.strokeStyle = '#9ad3b2'; x.lineWidth = 3;
+  x.beginPath(); x.moveTo(74, 212); x.lineTo(W - 70, 212); x.stroke();
+  // セクション見出し＋主要トピック
+  const perSec = sections.length >= 4 ? 1 : 2;
+  let yy = 272; const maxY = 566;
+  for (const s of sections) {
+    if (yy > maxY) break;
+    x.font = "700 30px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
+    const lw = x.measureText(s.label).width;
+    x.fillStyle = '#3DAA78';
+    if (x.roundRect) { x.beginPath(); x.roundRect(74, yy - 32, lw + 30, 44, 22); x.fill(); }
+    else x.fillRect(74, yy - 32, lw + 30, 44);
+    x.fillStyle = '#fff'; x.fillText(s.label, 89, yy);
+    yy += 56;
+    x.font = "400 31px 'Zen Maru Gothic','Noto Sans JP',sans-serif"; x.fillStyle = '#33463c';
+    for (const it of s.items.slice(0, perSec)) {
+      if (yy > maxY) break;
+      x.fillText(_truncToWidth(x, '・' + it, W - 150), 82, yy);
+      yy += 46;
+    }
+    yy += 16;
+  }
+  // フッター
+  x.fillStyle = '#6d887a'; x.font = "500 26px 'Zen Maru Gothic','Noto Sans JP',sans-serif";
+  x.textAlign = 'right'; x.fillText('さとうゆほーむ ♥ satoyu.info', W - 70, H - 38);
+  return c.toDataURL('image/png');
+}
+
+async function updateWeeklyOgp() {
+  try {
+    const weekly = _topnewsCache.filter(x => (x.name || '').startsWith('今週のさとうゆ') && x.body);
+    weekly.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const newest = weekly[0];
+    if (!newest) return false;
+    const range = ((newest.name || '').match(/（(.+?)）/) || [])[1] || '';
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+    const dataUrl = drawWeeklyOgp(range, parseWeeklyBody(newest.body));
+    const res = await fetch(`${API_BASE}/ogp/weekly`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getPassword()}` },
+      body: JSON.stringify({ imageBase64: dataUrl.split(',')[1] }),
+    });
+    return res.ok;
+  } catch (e) { return false; }
 }
 
 async function loadTopNews() {
