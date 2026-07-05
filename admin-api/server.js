@@ -614,18 +614,19 @@ app.post("/generate/weekly", auth, async (req, res) => {
       DB.memberblog ? queryByDate(DB.memberblog, start, end) : Promise.resolve([]),
     ]);
 
+    const urlOf = p => (p.properties.URL && p.properties.URL.url) ? "\n" + p.properties.URL.url : "";
     const eventLines = hist.map(p => {
       const nm = plainText(p.properties.Name).replace(/\s+/g, " ").trim();
       const types = multiNames(p.properties.Type);
       const tag = types.length ? `[${types.join("/")}] ` : "";
-      return `・${mdShort(p.properties.Date?.date?.start)} ${tag}${nm}`.trim();
+      return `・${mdShort(p.properties.Date?.date?.start)} ${tag}${nm}`.trim() + urlOf(p);
     });
     const ttLines = tt.map(p =>
-      `・${mdShort(p.properties.Date?.date?.start)} ${truncate(plainText(p.properties.Name), 34)}`.trim());
+      `・${mdShort(p.properties.Date?.date?.start)} ${truncate(plainText(p.properties.Name), 34)}`.trim() + urlOf(p));
     const mbLines = mb.map(p => {
       const members = multiNames(p.properties.Member).join("・");
       const nm = truncate(plainText(p.properties.Name), 30);
-      return `・${mdShort(p.properties.Date?.date?.start)} ${members ? members + " " : ""}「${nm}」`.trim();
+      return `・${mdShort(p.properties.Date?.date?.start)} ${members ? members + " " : ""}「${nm}」`.trim() + urlOf(p);
     });
 
     const sec = [];
