@@ -2037,6 +2037,71 @@ async function syncToYuNews() {
   }
 }
 
+// ── Blog / Interview / Lemino / YouTube を DB_HISTORY(年表) に集約 ──
+// この日付以降のDateを持つ新規エントリのみ取り込む（既存の一括バックフィルは行わない）
+const SYNC_HISTORY_SINCE = "2026-07-06";
+
+function historyType(kind, page, name) {
+  // 「日向坂で会いましょう」は地上波（Name含む or LeminoのProgram）
+  const prog = getSelect(page, "Program") || getText(page, "Program");
+  if ((name && name.includes("日向坂で会いましょう")) || prog === "日向坂で会いましょう") return "地上波";
+  if (kind === "blog")   return "ブログ";
+  if (kind === "lemino") return "ネット配信";
+  if (kind === "youtube") return "YouTube";
+  if (kind === "interview") {
+    const cats = getTags(page, "Category");            // multi_select: 雑誌 / Web
+    if (cats.includes("雑誌")) return "出版";
+    if (cats.includes("Web"))  return "WEB";
+    return "出版";                                       // カテゴリ未設定時のフォールバック
+  }
+  return "その他";
+}
+
+async function syncToHistory() {
+  if (!DB.history) { console.log("  DB_HISTORY未設定 → スキップ"); return; }
+  const sources = [
+    { db: DB.blog,      kind: "blog" },
+    { db: DB.interview, kind: "interview" },
+    { db: DB.lemino,    kind: "lemino" },
+    { db: DB.youtube,   kind: "youtube" },
+  ];
+  const existingUrls = await queryAllUrls(DB.history);
+  console.log(`  年表 既存URL: ${existingUrls.size}件`);
+
+  for (const { db, kind } of sources) {
+    if (!db) continue;
+    const pages = await queryDB(db);
+    for (const page of pages) {
+      const url  = getUrl(page);
+      const name = getText(page, "Name") || getText(page, "Title");
+      let date   = getDate(page);
+      if (!date && kind === "interview") date = getDate(page, "発売日");
+      if (!url || existingUrls.has(url)) continue;
+      if (!name) continue;
+      if (!date || date < SYNC_HISTORY_SINCE) continue;   // 今後の分だけ
+      const type = historyType(kind, page, name);
+      const [Y, M, D] = date.split("-");
+      const props = {
+        Name:      { title: [{ text: { content: name } }] },
+        URL:       { url },
+        Date:      { date: { start: date } },
+        Year:      { rich_text: [{ text: { content: String(parseInt(Y, 10)) } }] },
+        Month:     { rich_text: [{ text: { content: String(parseInt(M, 10)) } }] },
+        Day:       { rich_text: [{ text: { content: String(parseInt(D, 10)) } }] },
+        Type:      { multi_select: [{ name: type }] },
+        Published: { checkbox: true },
+      };
+      try {
+        await notion.pages.create({ parent: { database_id: DB.history }, properties: props });
+        existingUrls.add(url);
+        console.log(`  ✅ 年表に追加: [${type}] ${name}`);
+      } catch (e) {
+        console.error(`  ❌ 年表追加失敗: ${name}`, e.message);
+      }
+    }
+  }
+}
+
 // ── DB_QUIZからquiz_questions.jsonを生成 ──
 async function buildQuizJson() {
   if (!DB.quiz) { console.log("  DB_QUIZ未設定 → スキップ"); return; }
@@ -2088,6 +2153,8 @@ async function main() {
   } else {
     console.log("🔄 Yu Newsへ自動集約中...");
     await syncToYuNews();
+    console.log("🗓️  年表へ自動集約中...");
+    await syncToHistory();
     console.log("📝 クイズデータ生成中...");
     await buildQuizJson();
   }
