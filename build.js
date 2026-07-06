@@ -1328,7 +1328,11 @@ async function buildLemino(tpl) {
 
 // ── ヒストリーページ ──
 async function buildHistory(tpl) {
-  const pages = await queryDB(DB.history, [{ property: "Date", direction: "ascending" }]);
+  const pages = await queryDB(DB.history, [{ property: "Date", direction: "descending" }]);
+  // ビルド時点（JST）の年月 → その月をデフォルトで開く
+  const _nowJst = new Date(Date.now() + 9 * 3600 * 1000);
+  const curYear  = String(_nowJst.getUTCFullYear());
+  const curMonth = `${_nowJst.getUTCMonth() + 1}月`;
 
   if (pages.length === 0) {
     const body = `<p style="color:var(--text-muted);text-align:center;padding:60px 0">データがありません</p>`;
@@ -1385,8 +1389,9 @@ async function buildHistory(tpl) {
             <p class="tl-title">${titleHtml}</p>
           </div>`;
       }).join("\n");
+      const openAttr = (year === curYear && month === curMonth) ? " open" : "";
       return `
-        <details class="tl-month">
+        <details class="tl-month"${openAttr}>
           <summary class="tl-month-label">${month}<span class="tl-month-count">${items.length}件</span></summary>
           <div class="tl-track">${entries}</div>
         </details>`;
