@@ -1368,8 +1368,11 @@ async function buildHistory(tpl) {
     byYear[year][month].push(p);
   }
 
-  const sections = Object.entries(byYear).map(([year, months]) => {
-    const monthBlocks = Object.entries(months).map(([month, items]) => {
+  // 年キー("2026")は整数風のためJSが昇順に並べ替えてしまうので、明示的に降順ソート
+  const yv = y => (y === "不明" ? -Infinity : Number(y));
+  const mv = m => (m === "不明" ? -Infinity : parseInt(m, 10));
+  const sections = Object.entries(byYear).sort((a, b) => yv(b[0]) - yv(a[0])).map(([year, months]) => {
+    const monthBlocks = Object.entries(months).sort((a, b) => mv(b[0]) - mv(a[0])).map(([month, items]) => {
       const entries = items.map(p => {
         const title = getText(p, "Name");
         const date = fmtDate(getDate(p));
