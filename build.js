@@ -290,7 +290,7 @@ function youtubeCard(page, channelLabel = "YouTube") {
     : `<a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--emerald)">動画を見る</a>`;
   return `
   <div class="card embed-card" style="animation-delay:${Math.random()*0.3}s">
-    <div class="embed-header">
+    <div class="embed-header embed-header-ch">
       <span class="badge badge-youtube">${escAttr(channelLabel)}</span>
       <span style="font-size:10px;color:var(--text-light)">${date}</span>
     </div>
