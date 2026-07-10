@@ -297,8 +297,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 <div class="editor-page">
   <div class="editor-heading">
-    <h1>プロフィール帳（テスト）</h1>
-    <p>あなたのプロフィールと「さとうゆのすきなところ」を書き込めるプロフィール帳です。</p>
+    <h1>推しぷろふぃーる（テスト）</h1>
+    <p>「さとうゆ推し ぷろふぃーる」を入力して、オリジナルの推しプロフィールカードを作成できます。</p>
   </div>
 
   <div class="tpl-tabs" id="tpl-tabs"></div>
@@ -434,15 +434,14 @@ const SHARED_FIELDS = [
   { id: "wrote-y",    label: "かいた日：年（任意）", placeholder: "例：2026" },
   { id: "wrote-m",    label: "かいた日：月（任意）", placeholder: "例：7" },
   { id: "wrote-d",    label: "かいた日：日（任意）", placeholder: "例：5" },
-  { id: "other-oshi", label: "他推し（さとうゆ一推しの場合は空欄）", placeholder: "例：松田好花" },
   { id: "self-intro", label: "じこしょうかい（自由記述）", placeholder: "例：はじめまして！さとうゆが大好きなおひさまです。", multiline: true },
-  // 雲メモ（カテゴリー名は CLOUD_CATS で編集）
-  { id: "cloud-1", label: CLOUD_CATS[0], placeholder: "自由に記入", sectionStart: "プロフィール（雲メモ）" },
-  { id: "cloud-2", label: CLOUD_CATS[1], placeholder: "自由に記入" },
-  { id: "cloud-3", label: CLOUD_CATS[2], placeholder: "自由に記入" },
-  { id: "cloud-4", label: CLOUD_CATS[3], placeholder: "自由に記入" },
-  { id: "cloud-5", label: CLOUD_CATS[4], placeholder: "自由に記入" },
-  { id: "cloud-6", label: CLOUD_CATS[5], placeholder: "自由に記入" },
+  // 雲メモ（ラベルなし・自由記入・6つ）
+  { id: "cloud-1", label: "雲①", placeholder: "自由に記入", sectionStart: "雲メモ（自由記入・6つ）" },
+  { id: "cloud-2", label: "雲②", placeholder: "自由に記入" },
+  { id: "cloud-3", label: "雲③", placeholder: "自由に記入" },
+  { id: "cloud-4", label: "雲④", placeholder: "自由に記入" },
+  { id: "cloud-5", label: "雲⑤", placeholder: "自由に記入" },
+  { id: "cloud-6", label: "雲⑥", placeholder: "自由に記入" },
   // さとうゆのすきなところ ベスト3
   { id: "best-1", label: "1.", placeholder: "例：ライブ終わりの「ありがとうございました！」", sectionStart: "佐藤優羽さんのすきなところ ベスト3" },
   { id: "best-2", label: "2.", placeholder: "例：もちもちほっぺ" },
@@ -453,7 +452,7 @@ const SHARED_FIELDS = [
 ];
 
 const TEMPLATES = [
-  { id: "profilebook", name: "プロフィール帳", w: 600, customRender: true, fields: SHARED_FIELDS },
+  { id: "oshiprofile", name: "推しぷろふぃーる", w: 722, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -493,6 +492,11 @@ ILLUSTS.forEach(it => {
   img.onload = () => { illustImgs[it.id] = img; render(); };
   img.src = it.src;
 });
+
+// 背景画像（推しぷろふぃーる）
+const oshiBg = new Image();
+oshiBg.onload = () => render();
+oshiBg.src = "/images/satoyu_osi_profile.png";
 
 const canvas = document.getElementById("preview-canvas");
 const ctx    = canvas.getContext("2d");
@@ -1569,10 +1573,112 @@ function drawProfileBook(ctx, w, getV, ico, measureOnly) {
 }
 
 // ════════════════════════════════════════════════════════
+//  推しぷろふぃーる（背景画像 satoyu_osi_profile.png に文字を重ねる）
+//  座標は 722×1026 の背景画像基準
+// ════════════════════════════════════════════════════════
+const OSHI_INK = "#4a3a2c";      // 手書き文字（濃い茶）
+const OSHI_INK2 = "#3a4a40";     // 雲の中の文字
+
+// ボックス内に左上基準で折り返し描画
+function opBoxText(ctx, text, x, y, maxW, fs, lh, color) {
+  text = (text || "").trim(); if (!text) return;
+  ctx.font = f(fs, false, "Yomogi"); ctx.fillStyle = color || OSHI_INK;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  let yy = y;
+  for (const ln of wrapText(ctx, text, maxW)) { ctx.fillText(ln, x, yy); yy += lh; }
+}
+// 雲の中に中央寄せ（上下中央）で描画
+function opCloudText(ctx, text, cx, cy, maxW, fs) {
+  text = (text || "").trim(); if (!text) return;
+  ctx.font = f(fs, false, "Yomogi"); ctx.fillStyle = OSHI_INK2;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const lines = wrapText(ctx, text, maxW);
+  const lh = Math.ceil(fs * 1.35);
+  let yy = cy - (lines.length - 1) * lh / 2;
+  for (const ln of lines) { ctx.fillText(ln, cx, yy); yy += lh; }
+}
+// 1行（幅に合わせて自動縮小、収まらなければ末尾…）
+function opLineText(ctx, text, x, baseY, maxW, startFs) {
+  text = (text || "").trim(); if (!text) return;
+  let fs = startFs; ctx.font = f(fs, false, "Yomogi");
+  while (ctx.measureText(text).width > maxW && fs > 10) { fs--; ctx.font = f(fs, false, "Yomogi"); }
+  let t = text;
+  if (ctx.measureText(t).width > maxW) { while (t.length && ctx.measureText(t + "…").width > maxW) t = t.slice(0, -1); t += "…"; }
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.fillText(t, x, baseY);
+}
+// 傾いた写真カードにアイコンをはめ込む
+function opPhoto(ctx, ico) {
+  if (!ico) return;
+  ctx.save();
+  ctx.translate(564, 184); ctx.rotate(-8 * Math.PI / 180);
+  ctx.beginPath(); ctx.roundRect(-84, -56, 168, 112, 6); ctx.clip();
+  const iw = ico.naturalWidth || ico.width, ih = ico.naturalHeight || ico.height;
+  const sc = Math.max(168 / iw, 112 / ih);
+  ctx.drawImage(ico, -iw * sc / 2, -ih * sc / 2, iw * sc, ih * sc);
+  ctx.restore();
+}
+
+function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
+  const H = 1026;
+  if (measureOnly) return H;
+
+  // 背景画像
+  if (oshiBg && oshiBg.complete && oshiBg.naturalWidth) ctx.drawImage(oshiBg, 0, 0, 722, H);
+  else { ctx.fillStyle = "#e9f4ec"; ctx.fillRect(0, 0, 722, H); }
+
+  // かいた日
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = f(19, false, "Yomogi"); ctx.fillText((getV("wrote-y") || "").trim(), 375, 58);
+  ctx.fillText((getV("wrote-m") || "").trim(), 502, 64);
+  ctx.fillText((getV("wrote-d") || "").trim(), 608, 60);
+
+  // なまえ（点線の上）＋ X ID
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  opLineText(ctx, getV("fan-name"), 70, 188, 380, 24);
+  const handle = (getV("handle") || "").trim();
+  if (handle) { ctx.font = f(13, false, "Yomogi"); ctx.fillStyle = "#6d887a"; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, 70, 218); }
+
+  // 写真
+  opPhoto(ctx, ico);
+
+  // じこしょうかい
+  opBoxText(ctx, getV("self-intro"), 48, 332, 630, 15, 28, OSHI_INK);
+
+  // 雲メモ 6つ（中央寄せ・自由記入）
+  const CLOUDS = [[140, 516], [363, 516], [595, 526], [163, 616], [385, 620], [595, 615]];
+  for (let i = 0; i < 6; i++) opCloudText(ctx, getV("cloud-" + (i + 1)), CLOUDS[i][0], CLOUDS[i][1], 155, 14);
+
+  // すきなところ ベスト3
+  opLineText(ctx, getV("best-1"), 98, 808, 252, 16);
+  opLineText(ctx, getV("best-2"), 98, 882, 252, 16);
+  opLineText(ctx, getV("best-3"), 98, 958, 252, 16);
+
+  // 自由記述こーなー
+  opBoxText(ctx, getV("free-note"), 418, 800, 262, 14, 26, OSHI_INK);
+
+  // クリック→入力欄ジャンプ用ゾーン
+  fieldZoneMap["fan-name"]   = { x1: 40,  x2: 455, y1: 150, y2: 235 };
+  fieldZoneMap["self-intro"] = { x1: 30,  x2: 700, y1: 300, y2: 425 };
+  fieldZoneMap["cloud-1"]    = { x1: 45,  x2: 235, y1: 470, y2: 560 };
+  fieldZoneMap["cloud-2"]    = { x1: 268, x2: 458, y1: 470, y2: 560 };
+  fieldZoneMap["cloud-3"]    = { x1: 500, x2: 690, y1: 480, y2: 570 };
+  fieldZoneMap["cloud-4"]    = { x1: 68,  x2: 258, y1: 575, y2: 660 };
+  fieldZoneMap["cloud-5"]    = { x1: 290, x2: 480, y1: 575, y2: 665 };
+  fieldZoneMap["cloud-6"]    = { x1: 500, x2: 690, y1: 575, y2: 660 };
+  fieldZoneMap["best-1"]     = { x1: 40,  x2: 360, y1: 780, y2: 830 };
+  fieldZoneMap["best-2"]     = { x1: 40,  x2: 360, y1: 855, y2: 905 };
+  fieldZoneMap["best-3"]     = { x1: 40,  x2: 360, y1: 930, y2: 980 };
+  fieldZoneMap["free-note"]  = { x1: 390, x2: 700, y1: 700, y2: 1015 };
+  return H;
+}
+
+// ════════════════════════════════════════════════════════
 const DRAW_FNS = {
   notebook:      drawNotebookCute,
   "notebook-v":  drawNotebookVerticalCute,
   profilebook:   drawProfileBook,
+  oshiprofile:   drawOshiProfile,
 };
 
 function render() {
@@ -1895,14 +2001,13 @@ async function submitCard() {
     fanName,
     handle:          getVal(tpl, "handle"),
     wroteDate:       [getVal(tpl, "wrote-y"), getVal(tpl, "wrote-m"), getVal(tpl, "wrote-d")].map(s => (s||"").trim()).filter(Boolean).join("/"),
-    otherOshi:       getVal(tpl, "other-oshi"),
     selfIntro:       getVal(tpl, "self-intro"),
-    cloud1:          CLOUD_CATS[0] + "：" + getVal(tpl, "cloud-1"),
-    cloud2:          CLOUD_CATS[1] + "：" + getVal(tpl, "cloud-2"),
-    cloud3:          CLOUD_CATS[2] + "：" + getVal(tpl, "cloud-3"),
-    cloud4:          CLOUD_CATS[3] + "：" + getVal(tpl, "cloud-4"),
-    cloud5:          CLOUD_CATS[4] + "：" + getVal(tpl, "cloud-5"),
-    cloud6:          CLOUD_CATS[5] + "：" + getVal(tpl, "cloud-6"),
+    cloud1:          getVal(tpl, "cloud-1"),
+    cloud2:          getVal(tpl, "cloud-2"),
+    cloud3:          getVal(tpl, "cloud-3"),
+    cloud4:          getVal(tpl, "cloud-4"),
+    cloud5:          getVal(tpl, "cloud-5"),
+    cloud6:          getVal(tpl, "cloud-6"),
     best1:           getVal(tpl, "best-1"),
     best2:           getVal(tpl, "best-2"),
     best3:           getVal(tpl, "best-3"),
