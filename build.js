@@ -1258,7 +1258,7 @@ async function buildLemino(tpl) {
   }));
 
   // Programごとにグループ化
-  const PROGRAM_ORDER = ["日向坂になりましょう", "日向坂で会いましょう"];
+  const PROGRAM_ORDER = ["まだまだ！日向坂で会いましょう", "日向坂になりましょう", "日向坂で会いましょう"];
   const groups = {};
   activePages.forEach((p, i) => {
     const prog = getSelect(p, "Program") || getText(p, "Program") || "その他";
@@ -1272,6 +1272,7 @@ async function buildLemino(tpl) {
   ];
 
   const PROGRAM_LABELS = {
+    "まだまだ！日向坂で会いましょう": "まだまだ！日向坂で会いましょう（佐藤優羽さん登場回）",
     "日向坂になりましょう": "日向坂になりましょう（佐藤優羽さん登場回）",
   };
 

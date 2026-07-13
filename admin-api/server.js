@@ -561,6 +561,21 @@ function mdShort(dateStr) {
   const p = dateStr.slice(0, 10).split("-");
   return `${parseInt(p[1], 10)}/${parseInt(p[2], 10)}`;
 }
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function isMonday(dateStr) {
+  return new Date(dateStr + "T00:00:00Z").getUTCDay() === 1;
+}
+// 「日向坂で会いましょう」「まだまだ！日向坂で会いましょう」は日曜の深夜放送のため、
+// カレンダー上が月曜のものは前日（日曜）に放送されたものとして扱う
+function effectiveDate(name, dateStr) {
+  if (!dateStr) return "";
+  if (name && name.includes("日向坂で会いましょう") && isMonday(dateStr)) return addDays(dateStr, -1);
+  return dateStr;
+}
 function plainText(prop) {
   if (!prop) return "";
   if (prop.title)     return prop.title.map(s => s.plain_text).join("");
@@ -608,27 +623,34 @@ app.post("/generate/weekly", auth, async (req, res) => {
   }
   try {
     const { start, end } = weekRange(req.body && req.body.date);
-    const [hist, tt, mb] = await Promise.all([
-      queryByDate(DB.history, start, end),
+    // 年表は翌月曜まで拾う（日曜深夜放送の「日向坂で会いましょう」系が月曜日付で入るため）
+    const [histRaw, tt, mb] = await Promise.all([
+      queryByDate(DB.history, start, addDays(end, 1)),
       DB.tiktok     ? queryByDate(DB.tiktok, start, end)     : Promise.resolve([]),
       DB.memberblog ? queryByDate(DB.memberblog, start, end) : Promise.resolve([]),
     ]);
 
+    // 実効日付（日曜深夜放送の補正）を付けて、この週に入るものだけに絞る
+    const histItems = histRaw
+      .map(p => ({ p, d: effectiveDate(plainText(p.properties.Name), p.properties.Date?.date?.start) }))
+      .filter(x => x.d && x.d >= start && x.d <= end)
+      .sort((a, b) => a.d.localeCompare(b.d));
+
     const urlOf = p => (p.properties.URL && p.properties.URL.url) ? "\n" + p.properties.URL.url : "";
     // 年表：本人ブログ（Type=ブログ）は「できごと」から分けて「ブログ」に
-    const isBlogType = p => multiNames(p.properties.Type).some(name => name.includes("ブログ"));
-    const histEvents = hist.filter(p => !isBlogType(p));
-    const histBlogs  = hist.filter(isBlogType);
+    const isBlogType = x => multiNames(x.p.properties.Type).some(name => name.includes("ブログ"));
+    const histEvents = histItems.filter(x => !isBlogType(x));
+    const histBlogs  = histItems.filter(isBlogType);
 
-    const eventLines = histEvents.map(p => {
+    const eventLines = histEvents.map(({ p, d }) => {
       const nm = plainText(p.properties.Name).replace(/\s+/g, " ").trim();
       const types = multiNames(p.properties.Type);
       const tag = types.length ? `[${types.join("/")}] ` : "";
-      return `・${mdShort(p.properties.Date?.date?.start)} ${tag}${nm}`.trim() + urlOf(p);
+      return `・${mdShort(d)} ${tag}${nm}`.trim() + urlOf(p);
     });
-    const blogLines = histBlogs.map(p => {
+    const blogLines = histBlogs.map(({ p, d }) => {
       const nm = plainText(p.properties.Name).replace(/\s+/g, " ").trim();
-      return `・${mdShort(p.properties.Date?.date?.start)} ${nm}`.trim() + urlOf(p);
+      return `・${mdShort(d)} ${nm}`.trim() + urlOf(p);
     });
     const ttLines = tt.map(p =>
       `・${mdShort(p.properties.Date?.date?.start)} ${truncate(plainText(p.properties.Name), 34)}`.trim() + urlOf(p));
