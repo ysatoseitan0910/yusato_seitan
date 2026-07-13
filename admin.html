@@ -1032,6 +1032,19 @@ function _wrapCanvas(x, text, maxW) {
   return lines;
 }
 
+// OGP用のテキスト整形
+// できごと：「7/8 [WEB] 「密着！…」スタート」→「7/8 「密着！…」スタート」（タグと末尾の【サブタイトル】を除去）
+function _ogpEventText(s) {
+  return String(s || '')
+    .replace(/\s*\[[^\]]*\]\s*/, ' ')
+    .replace(/\s*【[^】]*】\s*$/, '')
+    .trim();
+}
+// 他メンバーブログ：「7/7 ポカ 「しんばんぐみはじまる」」→「7/7 ポカ」（末尾のブログタイトルを除去）
+function _ogpMemberText(s) {
+  return String(s || '').replace(/\s*「[^」]*」\s*$/, '').trim();
+}
+
 function drawWeeklyOgp(range, sections, megane) {
   const W = 1200, H = 630, FAM = "'Zen Maru Gothic','Noto Sans JP',sans-serif";
   const c = document.createElement('canvas'); c.width = W; c.height = H;
@@ -1058,38 +1071,67 @@ function drawWeeklyOgp(range, sections, megane) {
   x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168);
   x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(textRight, 192); x.stroke();
 
-  const LX = 74, IX = 84, maxItemW = textRight - IX, maxY = 600;
-  let yy = 240;
-  for (const s of sections) {
-    if (yy > maxY) break;
+  const LX = 74, IX = 84, maxItemW = textRight - IX, maxY = 600, TOP = 240;
+
+  // 表示内容を整形（できごと・他メンバーブログ登場は全件表示、TikTokは件数のみ）
+  const prep = sections.map(function (s) {
     const count = s.items.length;
     const unit = s.label.indexOf('TikTok') >= 0 ? '本' : '件';
     const labelText = s.label + '（' + count + unit + '）';
+    let mode = 'count', lines = [];
+    if (s.label === 'できごと') {
+      mode = 'list'; lines = s.items.map(_ogpEventText);
+    } else if (s.label === '他メンバーブログ登場') {
+      mode = 'list'; lines = s.items.map(_ogpMemberText);
+    } else if (s.label === 'ブログ') {
+      mode = 'inline'; lines = ['・' + s.items.join('　／　')];
+    }
+    return { labelText: labelText, mode: mode, lines: lines };
+  });
+
+  // 収まるようにフォントを自動調整
+  let FS = 28, LH = 37;
+  for (; FS >= 17; FS--) {
+    LH = Math.round(FS * 1.32);
+    x.font = "400 " + FS + "px " + FAM;
+    let h = 0;
+    for (const p of prep) {
+      h += 46;
+      if (p.mode === 'list') for (const ln of p.lines) h += _wrapCanvas(x, '・' + ln, maxItemW).length * LH;
+      else if (p.mode === 'inline') h += LH + 3;
+      h += 12;
+    }
+    if (TOP + h <= maxY) break;
+  }
+
+  let yy = TOP;
+  for (const p of prep) {
+    if (yy > maxY) break;
     // ラベルピル（カテゴリごとに件数表示）
     x.font = "700 27px " + FAM;
-    const lw = x.measureText(labelText).width;
+    const lw = x.measureText(p.labelText).width;
     x.fillStyle = '#3DAA78';
     if (x.roundRect) { x.beginPath(); x.roundRect(LX, yy - 29, lw + 28, 40, 20); x.fill(); }
     else x.fillRect(LX, yy - 29, lw + 28, 40);
-    x.fillStyle = '#fff'; x.fillText(labelText, LX + 14, yy);
+    x.fillStyle = '#fff'; x.fillText(p.labelText, LX + 14, yy);
     yy += 46;
 
-    if (s.label === 'できごと') {
-      // 1件だけ全文表示（省略しない）＋「他○件」
-      x.font = "400 28px " + FAM; x.fillStyle = '#33463c';
-      for (const ln of _wrapCanvas(x, '・' + s.items[0], maxItemW)) {
-        if (yy > maxY) break; x.fillText(ln, IX, yy); yy += 37;
+    if (p.mode === 'list') {
+      x.font = "400 " + FS + "px " + FAM; x.fillStyle = '#33463c';
+      for (const item of p.lines) {
+        for (const ln of _wrapCanvas(x, '・' + item, maxItemW)) {
+          if (yy > maxY) break;
+          x.fillText(ln, IX, yy); yy += LH;
+        }
       }
-      if (count > 1) { x.font = "500 25px " + FAM; x.fillStyle = '#6d887a'; x.fillText('　他' + (count - 1) + '件', IX, yy); yy += 37; }
-    } else if (s.label === 'ブログ') {
-      // 改行せず全件を「／」で並べる（幅に応じて縮小）
-      let fs = 28; let txt = '・' + s.items.join('　／　');
+    } else if (p.mode === 'inline') {
+      let fs = FS, txt = p.lines[0];
       x.font = "400 " + fs + "px " + FAM;
-      while (x.measureText(txt).width > maxItemW && fs > 18) { fs--; x.font = "400 " + fs + "px " + FAM; }
+      while (x.measureText(txt).width > maxItemW && fs > 16) { fs--; x.font = "400 " + fs + "px " + FAM; }
       if (x.measureText(txt).width > maxItemW) txt = _truncToWidth(x, txt, maxItemW);
-      x.fillStyle = '#33463c'; x.fillText(txt, IX, yy); yy += 40;
+      x.fillStyle = '#33463c'; x.fillText(txt, IX, yy); yy += LH + 3;
     }
-    // TikTok・他メンバーブログ登場 は件数のみ（ラベルに表示済み）
+    // TikTok は件数のみ（ラベルに表示済み）
     yy += 12;
   }
   // フッター
