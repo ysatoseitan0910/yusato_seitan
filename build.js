@@ -2043,9 +2043,13 @@ async function syncToYuNews() {
 const SYNC_HISTORY_SINCE = "2026-07-06";
 
 function historyType(kind, page, name) {
-  // 「日向坂で会いましょう」は地上波（Name含む or LeminoのProgram）
   const prog = getSelect(page, "Program") || getText(page, "Program");
-  if ((name && name.includes("日向坂で会いましょう")) || prog === "日向坂で会いましょう") return "地上波";
+  const text = `${name || ""} ${prog || ""}`;
+  // 「まだまだ！日向坂で会いましょう」はLemino限定 → ネット配信（※「日向坂で会いましょう」を含むため先に判定）
+  // サブタイトルに偶然「まだまだ」が入る通常回を誤判定しないよう、連続した番組名のみに一致させる
+  if (/まだまだ[！!]?\s*日向坂で会いましょう/.test(text)) return "ネット配信";
+  // 「日向坂で会いましょう」は地上波
+  if (text.includes("日向坂で会いましょう")) return "地上波";
   if (kind === "blog")   return "ブログ";
   if (kind === "lemino") return "ネット配信";
   if (kind === "youtube") return "YouTube";
