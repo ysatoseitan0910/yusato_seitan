@@ -1534,10 +1534,13 @@ async function buildWeekly(tpl) {
     return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
   }
 
-  // OGP画像：最新週のもの（管理ページ生成時にweekly.pngへ上書き）。?v=で新しい週を認識させる
+  // OGP画像：最新週のもの（管理ページ生成時にweekly.pngへ上書き）
+  // ?v= は「最新週レコードの更新時刻」にする。週の日付だけだと、同じ週で画像を差し替えても
+  // URLが変わらず SNS/OGPツールが古い画像をキャッシュし続けるため。
   const latestEnd = getDate(weeks[0]) || "";
   const latestLabel = (getText(weeks[0], "Name").match(/（(.+?)）/) || [])[1] || "";
-  const ogpImage = latestEnd ? `${SITE_URL}/ogp/weekly.png?v=${latestEnd}` : "";
+  const ogpVer = String(weeks[0].last_edited_time || latestEnd).replace(/\D/g, "").slice(0, 14);
+  const ogpImage = latestEnd ? `${SITE_URL}/ogp/weekly.png?v=${ogpVer}` : "";
   const ogpDesc = latestLabel ? `今週のさとうゆ（${latestLabel}）｜出来事・ブログ・TikTok・他メンバーブログ登場まとめ` : "";
 
   const weekData = weeks.map(p => {
