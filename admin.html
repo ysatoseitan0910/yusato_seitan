@@ -1032,7 +1032,7 @@ function _wrapCanvas(x, text, maxW) {
   return lines;
 }
 
-function drawWeeklyOgp(range, sections) {
+function drawWeeklyOgp(range, sections, megane) {
   const W = 1200, H = 630, FAM = "'Zen Maru Gothic','Noto Sans JP',sans-serif";
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
@@ -1046,13 +1046,19 @@ function drawWeeklyOgp(range, sections) {
     for (var i=0;i<5;i++){var a=-Math.PI/2+i*2*Math.PI/5;x.lineTo(s[0]+Math.cos(a)*s[2],s[1]+Math.sin(a)*s[2]);var a2=a+Math.PI/5;x.lineTo(s[0]+Math.cos(a2)*s[2]*0.45,s[1]+Math.sin(a2)*s[2]*0.45);}
     x.closePath(); x.fill();
   });
+  // 右にイラスト（透過PNG）
+  const IMG_H = 470, IMG_W = Math.round(IMG_H * 505 / 723);
+  const IMG_X = W - 36 - IMG_W, IMG_Y = Math.round((H - IMG_H) / 2);
+  if (megane) x.drawImage(megane, IMG_X, IMG_Y, IMG_W, IMG_H);
+  const textRight = (megane ? IMG_X - 24 : W - 70);   // テキストはイラストの手前まで
+
   // タイトル
   x.textAlign = 'left'; x.textBaseline = 'alphabetic';
   x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('今週のさとうゆ', 70, 120);
   x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168);
-  x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(W - 70, 192); x.stroke();
+  x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(textRight, 192); x.stroke();
 
-  const LX = 74, IX = 84, maxItemW = W - 150, maxY = 600;
+  const LX = 74, IX = 84, maxItemW = textRight - IX, maxY = 600;
   let yy = 240;
   for (const s of sections) {
     if (yy > maxY) break;
@@ -1092,6 +1098,18 @@ function drawWeeklyOgp(range, sections) {
   return c.toDataURL('image/png');
 }
 
+// OGPの右に載せるイラスト（透過PNG）
+var _meganeImg = null;
+function loadMeganeImg() {
+  return new Promise(function (resolve) {
+    if (_meganeImg) return resolve(_meganeImg);
+    const img = new Image();
+    img.onload = function () { _meganeImg = img; resolve(img); };
+    img.onerror = function () { resolve(null); };
+    img.src = '/images/megane_tp.png';
+  });
+}
+
 async function updateWeeklyOgp() {
   try {
     const weekly = _topnewsCache.filter(x => (x.name || '').startsWith('今週のさとうゆ') && x.body);
@@ -1100,7 +1118,8 @@ async function updateWeeklyOgp() {
     if (!newest) return false;
     const range = ((newest.name || '').match(/（(.+?)）/) || [])[1] || '';
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
-    const dataUrl = drawWeeklyOgp(range, parseWeeklyBody(newest.body));
+    const megane = await loadMeganeImg();
+    const dataUrl = drawWeeklyOgp(range, parseWeeklyBody(newest.body), megane);
     const res = await fetch(`${API_BASE}/ogp/weekly`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getPassword()}` },
