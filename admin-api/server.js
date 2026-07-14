@@ -437,6 +437,9 @@ app.post("/cards", async (req, res) => {
           ohishamaHistory, song, nickname, selfIntro, otherOshi,
           bestLive1, bestLive2, bestLive3, bestVar1, bestVar2, bestVar3,
           oshiName, oshiReason, oshiLike, oshiLikeFree, oshiLove,
+          // 推しぷろふぃーる（2026-07 リニューアル）
+          wroteDate, favMV, favHinaai, yuCallName, kikkake, favPair,
+          best1, best2, best3, freeNote, illusts,
           imageBase64 } = req.body;
 
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
@@ -488,6 +491,18 @@ app.post("/cards", async (req, res) => {
     if (oshiLikeFree)    props.OshiLikeFree    = { rich_text: t(oshiLikeFree) };
     if (oshiLove)        props.OshiLove        = { rich_text: t(oshiLove) };
     if (template)        props.Template        = { rich_text: t(template) };
+    // 推しぷろふぃーる（新カード）
+    if (wroteDate)       props.WroteDate       = { rich_text: t(wroteDate) };
+    if (favMV)           props.FavMV           = { rich_text: t(favMV) };
+    if (favHinaai)       props.FavHinaai       = { rich_text: t(favHinaai) };
+    if (yuCallName)      props.YuCallName      = { rich_text: t(yuCallName) };
+    if (kikkake)         props.Kikkake         = { rich_text: t(kikkake) };
+    if (favPair)         props.FavPair         = { rich_text: t(favPair) };
+    if (best1)           props.Best1           = { rich_text: t(best1) };
+    if (best2)           props.Best2           = { rich_text: t(best2) };
+    if (best3)           props.Best3           = { rich_text: t(best3) };
+    if (freeNote)        props.FreeNote        = { rich_text: t(freeNote) };
+    if (illusts)         props.Illusts         = { rich_text: t(illusts) };
     if (cardImageUrl)    props.CardImage       = { url: cardImageUrl };
 
     // 同一X IDの既存レコードをアーカイブ（最新のみ保持）

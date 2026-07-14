@@ -231,8 +231,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 </head>
 <body>
 
-<!-- 準備中オーバーレイ（公開時に削除） -->
-<div id="coming-soon-overlay" style="position:fixed;inset:0;z-index:150;background:#f4faf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Zen Maru Gothic','Klee One',serif;">
+<!-- 準備中オーバーレイ（公開時に削除）／?preview=1 で非表示 -->
+<div id="coming-soon-overlay" style="position:fixed;inset:0;z-index:400;background:#f4faf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',serif;">
   <div style="text-align:center;padding:40px 24px;max-width:420px;">
     <div style="font-size:48px;margin-bottom:20px;">🌿</div>
     <h1 style="font-size:28px;font-weight:700;color:#1f7a52;margin-bottom:16px;">準備中</h1>
@@ -307,8 +307,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 <div class="editor-page">
   <div class="editor-heading">
-    <h1>プロフィールカード作成</h1>
-    <p>自己紹介と推し紹介を入力してオリジナルカードを作成できます。</p>
+    <h1>推しぷろふぃーる</h1>
+    <p>「さとうゆ推し ぷろふぃーる」を入力して、オリジナルの推しプロフィールカードを作成できます。</p>
   </div>
 
   <div class="tpl-tabs" id="tpl-tabs"></div>
@@ -346,9 +346,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <hr class="field-divider">
 
       <div class="illust-section" id="illust-section">
-        <div class="illust-section-label">イラストを選ぶ <span class="illust-count" id="illust-count">0 / 5</span></div>
+        <div class="illust-section-label">イラストを選ぶ <span class="illust-count" id="illust-count">0 / 3</span></div>
         <div class="illust-grid" id="illust-grid"></div>
-        <div class="illust-hint">タップで選択（最大4点）。選んだ順にカードへ散りばめられます。</div>
+        <div class="illust-hint">タップで選択（最大3点）。選んだ順に「じこしょうかい」の右 → 雲の左外側 → 雲の右外側 に配置されます。</div>
       </div>
       <hr class="field-divider" id="illust-divider">
 
@@ -357,7 +357,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
       <div class="download-section">
         <label class="share-cb-label">
-          <input type="checkbox" id="share-card-cb" checked>
+          <input type="checkbox" id="share-card-cb">
           入力した情報を委員会に共有する
         </label>
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
@@ -374,7 +374,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 <!-- モバイル用アクションバー -->
 <div class="mobile-action-bar">
   <label class="share-cb-label">
-    <input type="checkbox" id="mobile-share-card-cb" checked>
+    <input type="checkbox" id="mobile-share-card-cb">
     入力した情報を委員会に共有する
   </label>
   <div class="mobile-action-btns">
@@ -406,73 +406,113 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ════════════════════════════════════════════════════════
 //  フィールド定義
 // ════════════════════════════════════════════════════════
-const FIELD_DEFAULTS = {
-  "fan-name":        "",
-  "handle":          "",
-  "birth-year":      "",
-  "birth-md":        "",
-  "gender":          "無回答",
-  "mbti":            "わからない",
-  "ohisama-history": "",
-  "song":            "",
-  "nickname":        "",
-  "self-intro":      "",
-  "other-oshi":        "",
-  "best-live-1-live":  "",
-  "best-live-1-song":  "",
-  "best-live-2-live":  "",
-  "best-live-2-song":  "",
-  "best-live-3-live":  "",
-  "best-live-3-song":  "",
-  "best-var-1":        "",
-  "best-var-2":        "",
-  "best-var-3":        "",
-  "oshi-name":         "",
-  "oshi-reason":       "",
-  "oshi-like":         "",
-  "oshi-like-free":    "",
-  "oshi-love":         "",
+// ★★★ 雲メモ6つのカテゴリー名はここで自由に編集できます ★★★
+//     （ラベルを変えるだけでフォーム・カードの見出しが変わります）
+const CLOUD_CATS = [
+  "好きになったきっかけ",
+  "趣味",
+  "好きな食べ物",
+  "好きな鉱石",
+  "好きな色",
+  "好きな場所",
+];
+
+// 雲メモの項目名（カード上の見出し＝入力フォームのラベルと共通）
+const CLOUD_LABELS = [
+  "好きな日向坂46の楽曲",
+  "好きな日向坂46のMV",
+  "好きなひなあいの企画",
+  "佐藤優羽さんの呼び方",
+  "佐藤優羽さんを好きになったきっかけ",
+  "好きなペア",
+];
+
+// カード上の見出しだけ改行させたいもの（入力フォームのラベルは1行のまま）
+const CLOUD_LABEL_LINES = {
+  5: ["佐藤優羽さんを", "好きになったきっかけ"],   // 雲⑤（cloud-5）
 };
+
+// 背景画像のサイズ（satoyu_osi_profile3.png）
+const OSHI_W = 724, OSHI_H = 1022;
+
+// 雲6つの枠（背景 satoyu_osi_profile3.png / 724×1022 基準）
+// 旧背景から：左列 +20 / 中央列 −3 / 右列 −20 の横ずれ（縦は変化なし）
+// ly=ラベルの縦中心の基準／入力枠は ix1..ix2, iy1..iy2
+const CLOUD_SPECS = [
+  { lx1:  75, lx2: 255, ly: 452, ix1: 110, ix2: 220, iy1: 460, iy2: 510 },
+  { lx1: 272, lx2: 452, ly: 452, ix1: 307, ix2: 417, iy1: 460, iy2: 510 },
+  { lx1: 485, lx2: 665, ly: 452, ix1: 520, ix2: 630, iy1: 460, iy2: 510 },
+  { lx1:  75, lx2: 255, ly: 571, ix1: 110, ix2: 220, iy1: 585, iy2: 640 },
+  { lx1: 272, lx2: 452, ly: 571, ix1: 307, ix2: 417, iy1: 585, iy2: 640 },
+  { lx1: 485, lx2: 665, ly: 571, ix1: 520, ix2: 630, iy1: 585, iy2: 640 },
+];
 
 const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
                       "ISTJ","ISFJ","ESTJ","ESFJ","ISTP","ISFP","ESTP","ESFP","わからない"];
 
+const FIELD_DEFAULTS = {
+  "fan-name":   "",
+  "handle":     "",
+  "wrote-y":    "",
+  "wrote-m":    "",
+  "wrote-d":    "",
+  "oshi-name":  "佐藤優羽",
+  "other-oshi": "",
+  "birth-year":      "",
+  "birth-md":        "",
+  "gender":          "無回答",
+  "mbti":            "わからない",
+  "nickname":        "",
+  "ohisama-history": "",
+  "self-intro": "",
+  "cloud-1":    "",
+  "cloud-2":    "",
+  "cloud-3":    "",
+  "cloud-4":    "",
+  "cloud-5":    "",
+  "cloud-6":    "",
+  "best-1":     "",
+  "best-2":     "",
+  "best-3":     "",
+  "free-note":  "",
+};
+
 const SHARED_FIELDS = [
-  // 自己紹介
-  { id: "fan-name",        label: "ファン名",           placeholder: "例：さとうゆ推し",              required: true },
-  { id: "handle",          label: "X ID",               placeholder: "例：@satoyu_donguri_funfun",     required: true },
-  { id: "birth-year",      label: "誕生年（省略可）",    placeholder: "例：2006年",    omittable: true },
-  { id: "birth-md",        label: "誕生月日（省略可）",  placeholder: "例：9月10日",   omittable: true },
+  // 基本情報
+  { id: "wrote-y",    label: "かいた日：年", placeholder: "例：2026" },
+  { id: "wrote-m",    label: "かいた日：月", placeholder: "例：7" },
+  { id: "wrote-d",    label: "かいた日：日", placeholder: "例：5" },
+  { id: "fan-name",   label: "なまえ",           placeholder: "例：さとうゆ推し",            required: true },
+  { id: "handle",     label: "X ID（任意）",     placeholder: "例：@satoyu_donguri_funfun" },
+  { id: "oshi-name",  label: "推し（固定）",     readonly: true, fixed: "佐藤優羽" },
+  { id: "other-oshi", label: "他推し（さとうゆ一推しなら空欄）", placeholder: "例：松田好花" },
+  // じこしょうかい（card.html と同じ構成：誕生年〜おひさま歴 ＋ 自由に自己紹介）
+  { id: "birth-year",      label: "誕生年（省略可）",   placeholder: "例：2006年",  omittable: true, sectionStart: "じこしょうかい" },
+  { id: "birth-md",        label: "誕生月日（省略可）", placeholder: "例：9月10日", omittable: true },
   { id: "gender",          label: "性別",               type: "radio",  options: ["🚹","🚺","無回答"] },
-  { id: "nickname",        label: "呼ばれ方",                       placeholder: "例：ふんふん" },
-  { id: "mbti",            label: "MBTI（省略可）",       type: "select", options: MBTI_OPTIONS },
-  { id: "ohisama-history", label: "おひさま歴",                    placeholder: "例：4回目のひな誕祭" },
-  { id: "song",            label: "好きな日向坂46の楽曲（省略可）", placeholder: "例：ドレミソラシド",  omittable: true },
+  { id: "nickname",        label: "呼ばれ方",           placeholder: "例：ふんふん" },
+  { id: "mbti",            label: "MBTI（省略可）",     type: "select", options: MBTI_OPTIONS },
+  { id: "ohisama-history", label: "おひさま歴",         placeholder: "例：4回目のひな誕祭" },
   { id: "self-intro",      label: "自由に自己紹介（省略可）", placeholder: "例：リトルトゥースでもあるよ！", multiline: true, omittable: true },
-  { id: "other-oshi",     label: "他推しは？（さとうゆ一推しの場合は空欄）", placeholder: "例：松田好花" },
-  // 推し紹介
-  { id: "oshi-name",    label: "佐藤優羽さんの呼び方", placeholder: "例：ゆうちゃん",           sectionStart: "推し紹介" },
-  { id: "oshi-reason",  label: "好きになったきっかけ", placeholder: "例：ティザー映像" },
-  { id: "oshi-like",      label: "○○なさとうゆが大好き！",        placeholder: "例：もちもち" },
-  { id: "oshi-like-free", label: "好きなところ（自由記述・省略可）", placeholder: "例：特に好きなのはライブ終わりの「ありがとうございました！」", multiline: true, omittable: true },
-  // My Best ライブ
-  { id: "best-live-1-live", label: "1. ライブ名", placeholder: "例：新参者",                       sectionStart: "My Best さとうゆ（ライブ）" },
-  { id: "best-live-1-song", label: "　　楽曲名",  placeholder: "例：ガラス窓が汚れてる" },
-  { id: "best-live-2-live", label: "2. ライブ名", placeholder: "例：MONSTER GROOVE" },
-  { id: "best-live-2-song", label: "　　楽曲名",  placeholder: "例：どうする？どうする？どうする？" },
-  { id: "best-live-3-live", label: "3. ライブ名", placeholder: "例：17th ひなた坂LIVE" },
-  { id: "best-live-3-song", label: "　　楽曲名",  placeholder: "例：恋する魚は空を飛ぶ" },
-  // My Best バラエティ等
-  { id: "best-var-1",  label: "1.", placeholder: "例：ひななりのボイトレ回",                    sectionStart: "My Best さとうゆ（バラエティ等）" },
-  { id: "best-var-2",  label: "2.", placeholder: "例：エンジェルさとうゆのみ～んなむざい" },
-  { id: "best-var-3",  label: "3.", placeholder: "例：ひなこいリアルイベントの読み聞かせ" },
-  // 愛を叫ぼう
-  { type: "divider", label: "佐藤優羽さんに愛を叫ぼう！" },
-  { id: "oshi-love",      label: "自由に愛を叫ぼう！",           placeholder: "例：さとうゆが一推し！",   multiline: true },
+  // 雲メモ（6つ）※カード上の見出しは CLOUD_LABELS と共通
+  // ※ 雲・ベスト3は改行を自分で入れられるように複数行入力にしている
+  { id: "cloud-1", rows: 2, label: CLOUD_LABELS[0], placeholder: "例：円周率",            multiline: true, sectionStart: "雲メモ（6つ）" },
+  { id: "cloud-2", rows: 2, label: CLOUD_LABELS[1], placeholder: "例：キュン",            multiline: true },
+  { id: "cloud-3", rows: 2, label: CLOUD_LABELS[2], placeholder: "例：それは盛ってるで！", multiline: true },
+  { id: "cloud-4", rows: 2, label: CLOUD_LABELS[3], placeholder: "例：ゆうちゃん",        multiline: true },
+  { id: "cloud-5", rows: 2, label: CLOUD_LABELS[4], placeholder: "例：16thひなた坂LIVE",  multiline: true },
+  { id: "cloud-6", rows: 2, label: CLOUD_LABELS[5], placeholder: "例：こさかな×さとうゆ", multiline: true },
+  // さとうゆのすきなところ ベスト3
+  { id: "best-1", rows: 2, label: "1.", placeholder: "例：ライブ終わりの「ありがとうございました！」", multiline: true, sectionStart: "佐藤優羽さんのすきなところ ベスト3" },
+  { id: "best-2", rows: 2, label: "2.", placeholder: "例：もちもちほっぺ", multiline: true },
+  { id: "best-3", rows: 2, label: "3.", placeholder: "例：全力の笑顔",     multiline: true },
+  // 自由記述こーなー
+  { type: "divider", label: "自由記述こーなー" },
+  { id: "free-note", label: "自由に書こう！", placeholder: "例：さとうゆが一推し！", multiline: true },
 ];
 
 const TEMPLATES = [
-  { id: "notebook-v", name: "ノート縦型", w: 600, customRender: true, fields: SHARED_FIELDS },
+  { id: "oshiprofile", name: "推しぷろふぃーる", w: OSHI_W, customRender: true, fields: SHARED_FIELDS },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -480,6 +520,7 @@ const TEMPLATES = [
 // ════════════════════════════════════════════════════════
 let tplIdx = 0;
 const CARD_DRAFT_KEY = "satoyu_card_draft_v1";
+const CARD_ICON_KEY  = "satoyu_card_icon_v1";
 const values = {};
 const omitted = new Set();
 const BLANK = "   ";
@@ -504,14 +545,26 @@ const ILLUSTS = [
   { id:"mahjong",  label:"髪いじり", src:"/images/image/card/Mahjong_in_Yu_Mind.png" },
 ];
 const PICKER_ILLUSTS = ILLUSTS.filter(it => it.id !== "yuzai" && it.id !== "muzai");
-const MAX_ILLUSTS = 4;
+const MAX_ILLUSTS = 3;   // 推しぷろふぃーるのイラスト枠は3か所
 const illustImgs = {};
-let selectedIllusts = ["dance", "pingpong", "cho_yuzai", "base"];
+let selectedIllusts = ["dance", "pingpong", "cho_yuzai"];
 ILLUSTS.forEach(it => {
   const img = new Image();
   img.onload = () => { illustImgs[it.id] = img; render(); };
   img.src = it.src;
 });
+
+// 背景画像（推しぷろふぃーる）724×1022
+const oshiBg = new Image();
+oshiBg.onload = () => render();
+oshiBg.src = "/images/satoyu_osi_profile3.png";
+
+// イラスト枠（背景で空いた3か所）
+const OSHI_ILLUST_SLOTS = [
+  { cx: 650, cy: 350, size: 108, rot: -3 },   // じこしょうかい枠の右
+  { cx:  44, cy: 550, size:  79, rot: -6 },   // 雲①④の外側
+  { cx: 680, cy: 550, size:  79, rot:  5 },   // 雲③⑥の外側
+];
 
 const canvas = document.getElementById("preview-canvas");
 const ctx    = canvas.getContext("2d");
@@ -1108,9 +1161,829 @@ function drawNotebookVerticalCute(ctx, w, getV, ico, measureOnly) {
 }
 
 // ════════════════════════════════════════════════════════
+//  プロフィール帳（Canvaデザイン再現）
+// ════════════════════════════════════════════════════════
+const PB = {
+  bg1:"#eaf5ed", bg2:"#d3e8d8",
+  cream:"#fffdf8", white:"#ffffff",
+  brown:"#4a3626", brownSoft:"#7a5f49",
+  ink:"#3a2e24",
+  red:"#df5340",
+  green:"#43a877", greenDeep:"#2f7f57",
+  accent:"#4aa07a",
+  star:"#cfe9d8", starOutline:"#a6d5ba", starBold:"#4f9d73",
+  sub:"#93a89a",
+  // 旧名（残存ヘルパー互換用）
+  greenDark:"#2f7f57", greenSoft:"#9ad3b2", greenLine:"#7cc79b", coral:"#df5340", coralDark:"#c14a3a",
+};
+
+function pbFit(ctx, text, maxW, startFs, bold, fam) {
+  let fs = startFs;
+  ctx.font = f(fs, bold, fam);
+  while (ctx.measureText(text).width > maxW && fs > 8) { fs--; ctx.font = f(fs, bold, fam); }
+  return fs;
+}
+
+function pbLines(ctx, text, font, maxW, minLines) {
+  ctx.font = font;
+  let ls = wrapText(ctx, text || "", maxW);
+  if (ls.length === 0) ls = [""];
+  while (minLines && ls.length < minLines) ls.push("");
+  return ls;
+}
+
+// 雲（スカラップ）型のパスを作る
+function pbScallopPath(ctx, x, y, w, h, r) {
+  const nx = Math.max(2, Math.round(w / (r * 2)));
+  const ny = Math.max(1, Math.round(h / (r * 2)));
+  const sx = w / nx, sy = h / ny;
+  ctx.beginPath();
+  for (let i = 0; i < nx; i++)      ctx.arc(x + sx*i + sx/2, y,             sx/2, Math.PI, 0, false);
+  for (let i = 0; i < ny; i++)      ctx.arc(x + w,           y + sy*i + sy/2, sy/2, -Math.PI/2, Math.PI/2, false);
+  for (let i = nx-1; i >= 0; i--)   ctx.arc(x + sx*i + sx/2, y + h,           sx/2, 0, Math.PI, false);
+  for (let i = ny-1; i >= 0; i--)   ctx.arc(x,               y + sy*i + sy/2, sy/2, Math.PI/2, Math.PI*1.5, false);
+  ctx.closePath();
+}
+
+function pbCloud(ctx, x, y, w, h, fill, stroke, r) {
+  r = r || 13;
+  ctx.save();
+  ctx.shadowColor = "rgba(90,150,110,0.18)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+  pbScallopPath(ctx, x, y, w, h, r);
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.restore();
+  pbScallopPath(ctx, x, y, w, h, r);
+  ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke();
+}
+
+function pbRoundBox(ctx, x, y, w, h, r, fill, stroke, lw, dash) {
+  ctx.save();
+  if (!dash) { ctx.shadowColor = "rgba(90,150,110,0.14)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3; }
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, r);
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.restore();
+  if (stroke) {
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, r);
+    ctx.strokeStyle = stroke; ctx.lineWidth = lw || 2;
+    if (dash) ctx.setLineDash(dash);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+
+function pbPill(ctx, x, y, h, text) {
+  ctx.font = f(19, true);
+  const w = ctx.measureText(text).width + 40;
+  ctx.save();
+  ctx.shadowColor = "rgba(31,122,82,0.30)"; ctx.shadowBlur = 0; ctx.shadowOffsetY = 3;
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, h/2);
+  ctx.fillStyle = PB.green; ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = f(19, true); ctx.fillText(text, x + w/2, y + h/2 + 1);
+  return w;
+}
+
+function pbTab(ctx, cx, cy, text, bg, fg) {
+  ctx.font = f(12, true);
+  const w = ctx.measureText(text).width + 24, h = 24;
+  ctx.save();
+  ctx.shadowColor = "rgba(90,150,110,0.20)"; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2;
+  ctx.beginPath(); ctx.roundRect(cx - w/2, cy - h/2, w, h, h/2);
+  ctx.fillStyle = bg; ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = fg; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(text, cx, cy + 1);
+}
+
+function pbPhoto(ctx, x, y, bw, bh, ico) {
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(x, y, bw, bh, 12);
+  if (ico) {
+    ctx.save(); ctx.clip();
+    const iw = ico.naturalWidth || ico.width, ih = ico.naturalHeight || ico.height;
+    const sc = Math.max(bw/iw, bh/ih), dw = iw*sc, dh = ih*sc;
+    ctx.drawImage(ico, x + (bw-dw)/2, y + (bh-dh)/2, dw, dh);
+    ctx.restore();
+    ctx.strokeStyle = PB.greenSoft; ctx.lineWidth = 2.5; ctx.stroke();
+  } else {
+    ctx.fillStyle = "#f3faf5"; ctx.fill();
+    ctx.strokeStyle = PB.greenSoft; ctx.lineWidth = 2; ctx.setLineDash([6,5]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = PB.greenSoft; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = f(13, false); ctx.fillText("しゃしん", x + bw/2, y + bh/2 - 8);
+    ctx.font = f(11, false); ctx.fillText("（アイコン画像）", x + bw/2, y + bh/2 + 12);
+  }
+  ctx.restore();
+}
+
+function pbDateGroup(ctx, rightX, cy, y, m, d) {
+  const vals = [y, m, d], units = ["年", "月", "日"];
+  ctx.textBaseline = "middle";
+  ctx.font = f(13, true);
+  const labelW = ctx.measureText("かいた日").width;
+  const bws = vals.map(v => { ctx.font = f(14, false, "Yomogi"); return Math.max(26, ctx.measureText(v || "").width + 14); });
+  ctx.font = f(13, false);
+  const uws = units.map(u => ctx.measureText(u).width);
+  const gap = 3, pad = 8, bh = 24;
+  let total = labelW + 8;
+  for (let i = 0; i < 3; i++) total += bws[i] + gap + uws[i] + (i < 2 ? pad : 0);
+  let x = rightX - total;
+  ctx.textAlign = "left"; ctx.font = f(13, true); ctx.fillStyle = PB.greenDark;
+  ctx.fillText("かいた日", x, cy); x += labelW + 8;
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath(); ctx.roundRect(x, cy - bh/2, bws[i], bh, 6);
+    ctx.fillStyle = "#fff"; ctx.fill();
+    ctx.strokeStyle = PB.greenSoft; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.textAlign = "center";
+    ctx.fillText(vals[i] || "", x + bws[i]/2, cy + 1);
+    x += bws[i] + gap;
+    ctx.font = f(13, false); ctx.fillStyle = PB.greenDark; ctx.textAlign = "left";
+    ctx.fillText(units[i], x, cy); x += uws[i] + pad;
+  }
+}
+
+function pbStars(ctx, w, h) {
+  const pts = [[0.06,0.30],[0.93,0.40],[0.14,0.52],[0.86,0.60],[0.50,0.16],
+               [0.30,0.74],[0.72,0.82],[0.96,0.70],[0.05,0.68],[0.62,0.46],[0.40,0.90],[0.20,0.88]];
+  pts.forEach((p, i) => {
+    drawDoodle(ctx, p[0]*w, p[1]*h, (i % 2 ? "✦" : "✧"), 11 + (i % 3)*3, PB.star, (i*23) % 40 - 20);
+  });
+}
+
+// ぷっくりアウトライン文字
+function pbOutlineText(ctx, text, x, y, fs, fill, stroke, sw, align, fam) {
+  ctx.font = f(fs, true, fam || "Zen Maru Gothic");
+  ctx.textAlign = align || "left"; ctx.textBaseline = "alphabetic";
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  if (stroke && sw) { ctx.strokeStyle = stroke; ctx.lineWidth = sw; ctx.strokeText(text, x, y); }
+  ctx.fillStyle = fill; ctx.fillText(text, x, y);
+}
+
+// 5角星
+function pbStar(ctx, cx, cy, r, rot, fill, stroke, lw) {
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate((rot || 0) * Math.PI / 180);
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = -Math.PI/2 + i * 2*Math.PI/5;
+    const a2 = a + Math.PI/5;
+    ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+    ctx.lineTo(Math.cos(a2)*r*0.44, Math.sin(a2)*r*0.44);
+  }
+  ctx.closePath();
+  if (fill)   { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 2; ctx.lineJoin = "round"; ctx.stroke(); }
+  ctx.restore();
+}
+
+// ふわふわ入道雲（円の集合・白＋影・枠なし）
+function pbFluffyCloud(ctx, x, y, w, h, fill) {
+  const circles = [
+    [0.17, 0.60, 0.30], [0.39, 0.44, 0.37], [0.61, 0.42, 0.39], [0.83, 0.58, 0.32],
+    [0.29, 0.76, 0.30], [0.51, 0.80, 0.35], [0.72, 0.76, 0.31],
+  ];
+  const path = () => {
+    ctx.beginPath();
+    for (const [rx, ry, rr] of circles) {
+      const cx = x + rx*w, cy = y + ry*h, r = rr*h;
+      ctx.moveTo(cx + r, cy); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    }
+  };
+  ctx.save();
+  ctx.shadowColor = "rgba(110,145,124,0.34)"; ctx.shadowBlur = 9; ctx.shadowOffsetY = 5;
+  ctx.fillStyle = fill; path(); ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = fill; path(); ctx.fill();
+}
+
+// もこもこ枠のボックス（すきなところ・自由記述用）
+function pbBumpyBox(ctx, x, y, w, h, r, fill, stroke, lw, dash) {
+  ctx.save();
+  ctx.shadowColor = "rgba(110,145,124,0.26)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
+  pbScallopPath(ctx, x, y, w, h, r);
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.restore();
+  pbScallopPath(ctx, x, y, w, h, r);
+  ctx.strokeStyle = stroke; ctx.lineWidth = lw || 2.5;
+  if (dash) ctx.setLineDash(dash);
+  ctx.stroke(); ctx.setLineDash([]);
+}
+
+// 方眼グリッド
+function pbGrid(ctx, x, y, w, h) {
+  ctx.save();
+  ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1.4;
+  for (let gx = x; gx <= x + w; gx += 26) { ctx.beginPath(); ctx.moveTo(gx, y); ctx.lineTo(gx, y + h); ctx.stroke(); }
+  for (let gy = y; gy <= y + h; gy += 26) { ctx.beginPath(); ctx.moveTo(x, gy); ctx.lineTo(x + w, gy); ctx.stroke(); }
+  ctx.restore();
+}
+
+// 上部の空（やわらかい白い雲）
+function pbTopClouds(ctx, w) {
+  ctx.save();
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  const blobs = [[w*0.16,34,64,26],[w*0.5,22,86,32],[w*0.85,40,68,26],[w*0.68,66,52,20],[w*0.32,68,56,22]];
+  for (const [cx, cy, rx, ry] of blobs) { ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2); ctx.fill(); }
+  ctx.restore();
+}
+
+// 星ちりばめ
+function pbStarField(ctx, w, h) {
+  const out = [[0.31,0.09,10],[0.60,0.055,9],[0.11,0.19,8],[0.90,0.13,9],
+               [0.19,0.43,11],[0.81,0.40,10],[0.95,0.55,9],[0.05,0.57,10],
+               [0.50,0.52,9],[0.35,0.62,8],[0.71,0.60,9],[0.14,0.74,10],[0.88,0.75,9],[0.50,0.85,10]];
+  for (const [rx, ry, r] of out) pbStar(ctx, rx*w, ry*h, r, ((rx+ry)*720) % 50 - 25, null, PB.starOutline, 2);
+  const fil = [[0.45,0.14,5],[0.72,0.20,5],[0.24,0.30,4],[0.84,0.30,5],[0.50,0.36,4],
+               [0.34,0.50,5],[0.66,0.48,4],[0.90,0.66,5],[0.10,0.66,4],[0.28,0.82,5],[0.78,0.87,4]];
+  for (const [rx, ry, r] of fil) pbStar(ctx, rx*w, ry*h, r, 10, PB.star, null, 0);
+  pbStar(ctx, 30, 30, 12, -8, PB.starBold, null, 0);
+  pbStar(ctx, 150, 26, 10, 12, PB.starBold, null, 0);
+  pbStar(ctx, w - 84, 24, 9, 0, PB.starBold, null, 0);
+}
+
+// かいたひ 日付ボックス
+function pbDateBoxes(ctx, rightX, cy, y, m, d) {
+  const vals = [y, m, d], units = ["ねん", "がつ", "にち"];
+  ctx.textBaseline = "middle";
+  ctx.font = f(12, true);
+  const labelW = ctx.measureText("かいたひ").width;
+  const bws = vals.map(v => { ctx.font = f(14, false, "Yomogi"); return Math.max(30, ctx.measureText(v || "").width + 16); });
+  ctx.font = f(12, true);
+  const uws = units.map(u => ctx.measureText(u).width);
+  const gap = 4, pad = 5, bh = 26;
+  let total = labelW + 8;
+  for (let i = 0; i < 3; i++) total += bws[i] + gap + uws[i] + (i < 2 ? pad : 0);
+  let x = rightX - total;
+  ctx.textAlign = "left"; ctx.font = f(12, true); ctx.fillStyle = PB.brownSoft;
+  ctx.fillText("かいたひ", x, cy); x += labelW + 8;
+  for (let i = 0; i < 3; i++) {
+    ctx.save();
+    ctx.shadowColor = "rgba(110,145,124,0.18)"; ctx.shadowBlur = 4; ctx.shadowOffsetY = 2;
+    ctx.beginPath(); ctx.roundRect(x, cy - bh/2, bws[i], bh, 7);
+    ctx.fillStyle = PB.white; ctx.fill();
+    ctx.restore();
+    ctx.beginPath(); ctx.roundRect(x, cy - bh/2, bws[i], bh, 7);
+    ctx.strokeStyle = PB.brown; ctx.lineWidth = 1.8; ctx.stroke();
+    ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.textAlign = "center";
+    ctx.fillText(vals[i] || "", x + bws[i]/2, cy + 1);
+    x += bws[i] + gap;
+    ctx.font = f(12, true); ctx.fillStyle = PB.brownSoft; ctx.textAlign = "left";
+    ctx.fillText(units[i], x, cy); x += uws[i] + pad;
+  }
+}
+
+// マステ付き傾き写真カード
+function pbPhotoCard(ctx, cx, cy, bw, bh, rot, ico) {
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot * Math.PI / 180);
+  ctx.save();
+  ctx.shadowColor = "rgba(80,70,50,0.22)"; ctx.shadowBlur = 11; ctx.shadowOffsetY = 5;
+  ctx.beginPath(); ctx.roundRect(-bw/2, -bh/2, bw, bh, 8);
+  ctx.fillStyle = PB.white; ctx.fill();
+  ctx.restore();
+  if (ico) {
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(-bw/2 + 7, -bh/2 + 7, bw - 14, bh - 14, 5); ctx.clip();
+    const iw = ico.naturalWidth || ico.width, ih = ico.naturalHeight || ico.height;
+    const sc = Math.max((bw-14)/iw, (bh-14)/ih), dw = iw*sc, dh = ih*sc;
+    ctx.drawImage(ico, -dw/2, -dh/2, dw, dh);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = PB.sub; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = f(13, false); ctx.fillText("しゃしん", 0, -5);
+    ctx.font = f(11, false); ctx.fillText("をはってね", 0, 15);
+  }
+  ctx.beginPath(); ctx.roundRect(-bw/2, -bh/2, bw, bh, 8);
+  ctx.strokeStyle = PB.brown; ctx.lineWidth = 2.5; ctx.stroke();
+  // washi tape
+  ctx.save();
+  ctx.translate(0, -bh/2); ctx.rotate(-9 * Math.PI / 180);
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = "#bfe3cf"; ctx.fillRect(-36, -11, 72, 20);
+  ctx.strokeStyle = "rgba(120,180,140,0.5)"; ctx.lineWidth = 1; ctx.strokeRect(-36, -11, 72, 20);
+  ctx.restore();
+  ctx.restore();
+}
+
+function drawProfileBook(ctx, w, getV, ico, measureOnly) {
+  const PAD = 22, innerW = w - PAD*2;
+  const fanName   = (getV("fan-name")  || "").trim();
+  const handle    = (getV("handle")    || "").trim();
+  const wy = (getV("wrote-y")||"").trim(), wm = (getV("wrote-m")||"").trim(), wd = (getV("wrote-d")||"").trim();
+  const otherOshi = (getV("other-oshi")|| "").trim();
+  const selfText  = (getV("self-intro")|| "").trim();
+  const cloudVals = [1,2,3,4,5,6].map(n => (getV("cloud-"+n) || "").trim());
+  const bestVals  = [1,2,3].map(n => (getV("best-"+n) || "").trim());
+  const freeText  = (getV("free-note") || "").trim();
+
+  // ── レイアウト計測 ──
+  const headerBaseY = 58;                       // ぷろふぃーる ベースライン
+  const nameBoxY = 80, nameBoxH = 150;          // なまえ／推し ボックス（固定高）
+  const photoBW = 152, photoBH = 118;
+  const photoCX = w - PAD - photoBW/2 - 4, photoCY = nameBoxY + 54;
+
+  const selfY = nameBoxY + nameBoxH + 26;
+  const selfPadX = 22, selfPadTop = 36, selfPadBot = 20, selfLH = Math.ceil(14*1.95);
+  const selfLines = pbLines(ctx, selfText || "（じこしょうかいを入力してね）", f(14,false,"Yomogi"), innerW - selfPadX*2, 3);
+  const selfBoxH = selfPadTop + selfLines.length*selfLH + selfPadBot;
+
+  // 雲メモ（ラベルは雲の上）
+  const cloudsY = selfY + selfBoxH + 26;        // 1段目ラベルの上端
+  const colGap = 16, rowGap = 24, cloudR = 15, labelH = 26;
+  const cloudW = Math.floor((innerW - colGap*2) / 3);
+  const cloudTextW = Math.floor(cloudW * 0.74), cloudLH = 19;
+  const cloudLineArr = cloudVals.map(v => pbLines(ctx, v, f(12,false,"Yomogi"), cloudTextW, 1));
+  const cloudHs = cloudLineArr.map(ls => Math.max(94, 30 + ls.length*cloudLH + 30));
+  const row1H = Math.max(cloudHs[0], cloudHs[1], cloudHs[2]);
+  const row2H = Math.max(cloudHs[3], cloudHs[4], cloudHs[5]);
+  const row1CloudY = cloudsY + labelH;
+  const row2LabelY = row1CloudY + row1H + rowGap;
+  const row2CloudY = row2LabelY + labelH;
+  const cloudsBottom = row2CloudY + row2H;
+
+  // 下段2ボックス
+  const botY = cloudsBottom + 30, botGap = 20;
+  const bestW = Math.round(innerW * 0.54);
+  const freeW = innerW - bestW - botGap;
+  const bestX = PAD, freeX = PAD + bestW + botGap;
+
+  const bestPadX = 22, bestHeaderH = 76, bestPadTop = 6, bestPadBot = 22, bestLH = Math.ceil(15*1.9);
+  const bestTextW = bestW - bestPadX*2;
+  const bestLineArr = bestVals.map(v => pbLines(ctx, v, f(15,false,"Yomogi"), bestTextW - 26, 1));
+  const bestContentH = bestLineArr.reduce((s, ls) => s + Math.max(1, ls.length)*bestLH + 8, 0);
+  const bestBoxH = bestHeaderH + bestPadTop + bestContentH + bestPadBot;
+
+  const freePadX = 24, freeHeaderH = 64, freePadTop = 8, freePadBot = 24, freeLH = Math.ceil(13*1.95);
+  const freeLines = pbLines(ctx, freeText || "", f(13,false,"Yomogi"), freeW - freePadX*2, 4);
+  const freeBoxH = freeHeaderH + freePadTop + freeLines.length*freeLH + freePadBot;
+
+  const bottomBlockH = Math.max(bestBoxH, freeBoxH);
+  const totalH = botY + bottomBlockH + 46;
+
+  if (measureOnly) return totalH;
+
+  // ── 背景 ──
+  const g = ctx.createLinearGradient(0, 0, 0, totalH);
+  g.addColorStop(0, PB.bg1); g.addColorStop(1, PB.bg2);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, totalH);
+  pbTopClouds(ctx, w);
+  pbGrid(ctx, 0, selfY + selfBoxH + 6, w, totalH - (selfY + selfBoxH + 6));   // 下部に方眼
+  pbStarField(ctx, w, totalH);
+
+  // ── ヘッダー ──
+  pbOutlineText(ctx, "ぷろふぃーる", PAD, headerBaseY, 34, PB.green, PB.brown, 6);
+  pbDateBoxes(ctx, w - PAD, 34, wy, wm, wd);
+
+  // ── なまえ・推し ボックス ──
+  pbRoundBox(ctx, PAD, nameBoxY, innerW, nameBoxH, 18, PB.cream, PB.brown, 2.5);
+  const colX = PAD + 22, colRight = photoCX - photoBW/2 - 14;
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.font = f(13, true); ctx.fillStyle = PB.brownSoft; ctx.fillText("なまえ", colX, nameBoxY + 34);
+  ctx.font = f(23, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.fillText(fanName || "", colX + 4, nameBoxY + 66);
+  ctx.strokeStyle = PB.brownSoft; ctx.lineWidth = 1.4; ctx.setLineDash([2, 4]);
+  ctx.beginPath(); ctx.moveTo(colX, nameBoxY + 76); ctx.lineTo(colRight, nameBoxY + 76); ctx.stroke(); ctx.setLineDash([]);
+  if (handle) { ctx.font = f(11, false, "Yomogi"); ctx.fillStyle = PB.sub; ctx.fillText(handle.startsWith("@") ? handle : "@" + handle, colX + 4, nameBoxY + 90); }
+  const oshiBase = nameBoxY + 120;
+  ctx.font = f(13, true); ctx.fillStyle = PB.brownSoft; ctx.fillText("推し", colX, oshiBase);
+  ctx.font = f(19, true, "Zen Maru Gothic"); ctx.fillStyle = PB.brown; ctx.fillText("佐藤優羽", colX + 42, oshiBase + 1);
+  const oshi2X = colX + 42 + ctx.measureText("佐藤優羽").width + 20;
+  ctx.font = f(12, true); ctx.fillStyle = PB.red; ctx.fillText("他推し", oshi2X, oshiBase);
+  ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = PB.ink; ctx.fillText(otherOshi || "", oshi2X + ctx.measureText("").width + 42, oshiBase);
+  // 写真カード（ボックス上に重ねる）
+  pbPhotoCard(ctx, photoCX, photoCY, photoBW, photoBH, 4, ico);
+  fieldZoneMap["fan-name"]   = { x1: PAD, x2: colRight, y1: nameBoxY + 20, y2: nameBoxY + 90 };
+  fieldZoneMap["other-oshi"] = { x1: oshi2X - 4, x2: colRight, y1: oshiBase - 16, y2: oshiBase + 8 };
+
+  // ── じこしょうかい ──
+  pbRoundBox(ctx, PAD, selfY, innerW, selfBoxH, 16, PB.cream, PB.brown, 2.5);
+  ctx.font = f(14, true, "Zen Maru Gothic"); ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  const jLabel = "じこしょうかい", jLabelW = ctx.measureText(jLabel).width;
+  ctx.fillStyle = PB.cream; ctx.fillRect(PAD + 14, selfY - 2, jLabelW + 14, 4);   // 枠線を隠す
+  ctx.fillStyle = PB.red; ctx.fillText(jLabel, PAD + 20, selfY);
+  ctx.strokeStyle = PB.brownSoft; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(PAD + 20 + jLabelW + 8, selfY); ctx.lineTo(PAD + innerW - 16, selfY); ctx.stroke();
+  ctx.font = f(14, false, "Yomogi"); ctx.fillStyle = selfText ? PB.ink : PB.sub;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  let sy = selfY + selfPadTop;
+  for (const ln of selfLines) { ctx.fillText(ln, PAD + selfPadX, sy); sy += selfLH; }
+  fieldZoneMap["self-intro"] = { x1: PAD, x2: PAD + innerW, y1: selfY, y2: selfY + selfBoxH };
+
+  // ── 雲メモ 6つ ──
+  for (let i = 0; i < 6; i++) {
+    const col = i % 3, row = Math.floor(i / 3);
+    const cx = PAD + col*(cloudW + colGap);
+    const labelY = row === 0 ? cloudsY : row2LabelY;
+    const cloudY = row === 0 ? row1CloudY : row2CloudY;
+    const chv = row === 0 ? row1H : row2H;
+    // ラベル（雲の上・赤太字）
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    pbFit(ctx, CLOUD_CATS[i], cloudW - 8, 14, true);
+    ctx.fillStyle = PB.red; ctx.fillText(CLOUD_CATS[i], cx + cloudW/2, labelY);
+    // 雲
+    pbFluffyCloud(ctx, cx, cloudY, cloudW, chv, PB.white);
+    // 中身
+    ctx.font = f(12, false, "Yomogi"); ctx.fillStyle = cloudVals[i] ? PB.ink : PB.sub;
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    const lines = cloudLineArr[i];
+    let ty = cloudY + (chv - lines.length*cloudLH) / 2 + 2;
+    for (const ln of lines) { ctx.fillText(ln, cx + cloudW/2, ty); ty += cloudLH; }
+    fieldZoneMap["cloud-" + (i+1)] = { x1: cx, x2: cx + cloudW, y1: labelY, y2: cloudY + chv };
+  }
+
+  // ── 佐藤優羽さんのすきなところ ベスト3 ──
+  pbBumpyBox(ctx, bestX, botY, bestW, bestBoxH, 15, PB.white, PB.brown, 2.5);
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.font = f(15, true); ctx.fillStyle = PB.brown; ctx.fillText("佐藤優羽さんの", bestX + bestPadX, botY + 30);
+  pbOutlineText(ctx, "すきな ところ", bestX + bestPadX - 2, botY + 60, 24, PB.brown, PB.cream, 3);
+  ctx.font = f(10, true); ctx.fillStyle = PB.brownSoft; ctx.textAlign = "center";
+  ctx.fillText("べすと", bestX + bestW - 44, botY + 30);
+  pbOutlineText(ctx, "3", bestX + bestW - 56, botY + 66, 52, PB.accent, PB.white, 5);
+  ctx.font = f(15, false, "Yomogi"); ctx.textAlign = "left"; ctx.textBaseline = "top";
+  let by = botY + bestHeaderH + bestPadTop;
+  for (let i = 0; i < 3; i++) {
+    ctx.font = f(17, true); ctx.fillStyle = PB.accent; ctx.textBaseline = "top";
+    ctx.fillText((i+1) + "", bestX + bestPadX, by);
+    ctx.font = f(15, false, "Yomogi"); ctx.fillStyle = bestVals[i] ? PB.ink : PB.sub;
+    const lines = bestLineArr[i];
+    let ly = by;
+    for (const ln of lines) { ctx.fillText(ln, bestX + bestPadX + 26, ly); ly += bestLH; }
+    // 点線
+    const rowBottom = by + Math.max(1, lines.length)*bestLH + 3;
+    ctx.strokeStyle = PB.brownSoft; ctx.lineWidth = 1.2; ctx.setLineDash([2, 4]);
+    ctx.beginPath(); ctx.moveTo(bestX + bestPadX + 26, rowBottom); ctx.lineTo(bestX + bestW - bestPadX, rowBottom); ctx.stroke(); ctx.setLineDash([]);
+    by = rowBottom + 8;
+  }
+  fieldZoneMap["best-1"] = { x1: bestX, x2: bestX + bestW, y1: botY + bestHeaderH, y2: botY + bestBoxH };
+
+  // ── 自由記述こーなー ──
+  pbBumpyBox(ctx, freeX, botY, freeW, bottomBlockH, 14, PB.white, PB.brown, 2.5, [1, 5]);
+  pbOutlineText(ctx, "自由記述", freeX + freePadX, botY + 40, 22, PB.brown, PB.cream, 3);
+  pbOutlineText(ctx, "こーなー", freeX + freePadX, botY + 66, 22, PB.brown, PB.cream, 3);
+  ctx.font = f(13, false, "Yomogi"); ctx.fillStyle = freeText ? PB.ink : PB.sub;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  let fy = botY + freeHeaderH + freePadTop;
+  for (const ln of freeLines) { ctx.fillText(ln, freeX + freePadX, fy); fy += freeLH; }
+  fieldZoneMap["free-note"] = { x1: freeX, x2: freeX + freeW, y1: botY, y2: botY + bottomBlockH };
+
+  // ── イラスト（マスコット位置・選んで配置） ──
+  const slots = [
+    { cx: PAD + innerW - 26,   cy: selfY + selfBoxH - 6,  size: 56, rot: -8 },
+    { cx: w - PAD - 4,         cy: row2LabelY - 6,        size: 50, rot: 12 },
+    { cx: freeX + freeW - 8,   cy: botY + 4,              size: 50, rot: 12 },
+    { cx: bestX + bestW - 10,  cy: botY + bestBoxH - 4,   size: 52, rot: 10 },
+    { cx: PAD + 20,            cy: botY + bestBoxH + 2,   size: 46, rot: -10 },
+  ];
+  drawIllustSlots(ctx, slots, getV);
+
+  // ── フッター ──
+  mmFooter(ctx, w, totalH);
+  return totalH;
+}
+
+// ════════════════════════════════════════════════════════
+//  推しぷろふぃーる（背景画像 satoyu_osi_profile.png に文字を重ねる）
+//  座標は 722×1026 の背景画像基準
+// ════════════════════════════════════════════════════════
+const OSHI_INK = "#4a3a2c";      // 手書き文字（濃い茶）
+const OSHI_INK2 = "#3a4a40";     // 雲の中の文字
+let OSHI_SHOW_GRID = false;      // ← 位置指示用のグリッド（デバッグ時だけ true に）
+
+// 位置指示用グリッド（50px毎の線＋100px毎に座標ラベル）※ダウンロード画像には出ない
+function opGrid(ctx) {
+  ctx.save();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(230,60,60,0.22)";
+  for (let gx = 0; gx <= OSHI_W; gx += 50) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, OSHI_H); ctx.stroke(); }
+  for (let gy = 0; gy <= OSHI_H; gy += 50) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(OSHI_W, gy); ctx.stroke(); }
+  ctx.strokeStyle = "rgba(40,90,220,0.35)";
+  ctx.fillStyle = "rgba(30,60,180,0.85)";
+  ctx.font = "11px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  for (let gx = 0; gx <= OSHI_W; gx += 100) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, OSHI_H); ctx.stroke(); ctx.fillText(gx, gx + 2, 2); }
+  for (let gy = 0; gy <= OSHI_H; gy += 100) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(OSHI_W, gy); ctx.stroke(); ctx.fillText(gy, 2, gy + 2); }
+  ctx.restore();
+}
+
+// ゆう罪／無罪スタンプ：指定した矩形に収めて描く（白い台紙なし・少し傾ける）
+function opStamp(ctx, img, x1, y1, x2, y2) {
+  if (!img) return;
+  const bw = x2 - x1, bh = y2 - y1;
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  const sc = Math.min(bw / iw, bh / ih);
+  const dw = iw * sc, dh = ih * sc;
+  ctx.save();
+  ctx.translate((x1 + x2) / 2, (y1 + y2) / 2);
+  ctx.rotate(-6 * Math.PI / 180);
+  ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+  ctx.restore();
+}
+
+// ボックス内に左上基準で折り返し描画
+function opBoxText(ctx, text, x, y, maxW, fs, lh, color) {
+  text = (text || "").trim(); if (!text) return;
+  ctx.font = f(fs, false, "Yomogi"); ctx.fillStyle = color || OSHI_INK;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  let yy = y;
+  for (const ln of wrapText(ctx, text, maxW)) { ctx.fillText(ln, x, yy); yy += lh; }
+}
+// 雲の項目名（見出し）：枠幅に収まるよう自動縮小・中央寄せ
+function opCloudLabel(ctx, text, cx, baseY, maxW, maxFs) {
+  const lines = Array.isArray(text) ? text : [text];
+  let fs = maxFs; ctx.font = f(fs, true, "Zen Maru Gothic");
+  const widest = () => Math.max.apply(null, lines.map(l => ctx.measureText(l).width));
+  while (widest() > maxW && fs > 8) { fs--; ctx.font = f(fs, true, "Zen Maru Gothic"); }
+  ctx.fillStyle = "#2f7a54"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const lh = Math.ceil(fs * 1.25);
+  // baseY（1行見出しのベースライン）と同じ縦中心に、行ブロック全体を合わせる
+  const cy = baseY - maxFs * 0.38;
+  let y = cy - (lines.length - 1) * lh / 2;
+  lines.forEach(ln => { ctx.fillText(ln, cx, y); y += lh; });
+}
+
+// 雲の入力文字：枠に収まるまで自動縮小＋折り返し、上下左右中央に配置
+function opCloudText(ctx, text, cx, cy, maxW, maxH, minFs, maxFs) {
+  text = (text || "").trim(); if (!text) return;
+  let fs = maxFs, lines = [], lh = 0;
+  for (; fs >= minFs; fs--) {
+    ctx.font = f(fs, false, "Yomogi");
+    lines = wrapText(ctx, text, maxW);
+    lh = Math.ceil(fs * 1.35);
+    if (lines.length * lh <= maxH) break;
+  }
+  ctx.font = f(fs, false, "Yomogi"); lh = Math.ceil(fs * 1.35);
+  lines = wrapText(ctx, text, maxW);
+  ctx.fillStyle = OSHI_INK2; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  let y = cy - (lines.length - 1) * lh / 2;   // ブロック全体を上下中央に
+  for (const ln of lines) { ctx.fillText(ln, cx, y); y += lh; }
+}
+// 1行（幅に合わせて自動縮小、収まらなければ末尾…）
+// anchor: true/"top"=yは上端 ／ "middle"=yは上下中央 ／ 省略=yはベースライン
+function opLineText(ctx, text, x, y, maxW, startFs, anchor) {
+  text = (text || "").trim(); if (!text) return;
+  let fs = startFs; ctx.font = f(fs, false, "Yomogi");
+  while (ctx.measureText(text).width > maxW && fs > 10) { fs--; ctx.font = f(fs, false, "Yomogi"); }
+  let t = text;
+  if (ctx.measureText(t).width > maxW) { while (t.length && ctx.measureText(t + "…").width > maxW) t = t.slice(0, -1); t += "…"; }
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "left";
+  ctx.textBaseline = (anchor === "middle") ? "middle" : (anchor ? "top" : "alphabetic");
+  ctx.fillText(t, x, y);
+}
+// すきなところ用：幅で折り返し、収まらなければフォントを縮小（最大3行）。
+// 文字ブロック全体の縦中心を cy（背景の数字の中心）に合わせる
+function opBestText(ctx, text, x, cy, maxW, maxH, startFs, maxLines, maxFs) {
+  text = (text || "").trim(); if (!text) return;
+  maxLines = maxLines || 3;
+  maxFs = maxFs || 24;
+
+  // 1行に収まるなら、収まる最大サイズまで拡大して1行で表示（手動改行があるときは除く）
+  for (let big = maxFs; !text.includes("\n") && big >= startFs; big--) {
+    ctx.font = f(big, false, "Yomogi");
+    if (ctx.measureText(text).width <= maxW && Math.ceil(big * 1.3) <= maxH) {
+      ctx.fillStyle = OSHI_INK; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      ctx.fillText(text, x, cy);
+      return;
+    }
+  }
+
+  // 1行に収まらない → 折り返し＋自動縮小
+  let fs = startFs, lines = [], lh = 0;
+  for (; fs >= 9; fs--) {
+    ctx.font = f(fs, false, "Yomogi");
+    lines = wrapText(ctx, text, maxW);
+    lh = Math.ceil(fs * 1.3);
+    if (lines.length <= maxLines && lines.length * lh <= maxH) break;
+  }
+  ctx.font = f(fs, false, "Yomogi");
+  lh = Math.ceil(fs * 1.3);
+  lines = wrapText(ctx, text, maxW);
+  if (lines.length > maxLines) {          // 最小サイズでも入りきらない場合は3行＋…
+    lines = lines.slice(0, maxLines);
+    let last = lines[maxLines - 1];
+    while (last.length && ctx.measureText(last + "…").width > maxW) last = last.slice(0, -1);
+    lines[maxLines - 1] = last + "…";
+  }
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  let y = cy - (lines.length - 1) * lh / 2;   // ブロック全体の中心を cy に
+  for (const ln of lines) { ctx.fillText(ln, x, y); y += lh; }
+}
+
+// じこしょうかい：入力項目から文章を組み立てる（card.html と同じ言い回し）
+function buildSelfIntroText(getV) {
+  const raw = k => getV(k);
+  const val = k => { const v = raw(k); return (v === "__OMIT__" || !v) ? "" : String(v).trim(); };
+
+  const by       = val("birth-year");
+  const bmd      = val("birth-md");
+  const genderRaw= val("gender");
+  const mbtiRaw  = val("mbti");
+  const nickname = val("nickname");
+  const history  = val("ohisama-history");
+  const free     = val("self-intro");
+
+  const birthStr = by + bmd;
+  const gender = (genderRaw && genderRaw !== "無回答") ? genderRaw : "";
+  const mbti   = (mbtiRaw && mbtiRaw !== "わからない") ? mbtiRaw : "";
+
+  const parts = [];
+  if (birthStr || gender || mbti) {
+    if (birthStr || gender) {
+      let t = "私は";
+      if (birthStr) t += birthStr + "生まれ";
+      if (gender)   t += (birthStr ? "の" : "") + gender;
+      if (mbti)     t += "で、MBTIは" + mbti;
+      parts.push(t + "。");
+    } else {
+      parts.push("MBTIは" + mbti + "。");
+    }
+  }
+  if (nickname) parts.push("みんなには" + nickname + "って呼ばれてるよ。");
+  if (history)  parts.push("おひさまになったのは" + history + "からだよ。");
+  if (free)     parts.push(free);
+  return parts.join("");
+}
+
+// じこしょうかい枠：文字数に応じて自動サイズ＋折り返し、上下中央・左そろえ
+function opSelfIntro(ctx, text, x, cy, maxW, maxH, minFs, maxFs) {
+  text = (text || "").trim(); if (!text) return;
+  let fs = maxFs, lines = [], lh = 0;
+  for (; fs >= minFs; fs--) {
+    ctx.font = f(fs, false, "Yomogi");
+    lines = wrapText(ctx, text, maxW);
+    lh = Math.ceil(fs * 1.75);
+    if (lines.length * lh <= maxH) break;
+  }
+  ctx.font = f(fs, false, "Yomogi"); lh = Math.ceil(fs * 1.75);
+  lines = wrapText(ctx, text, maxW);
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  let y = cy - (lines.length - 1) * lh / 2;   // ブロック全体を上下中央に
+  for (const ln of lines) { ctx.fillText(ln, x, y); y += lh; }
+}
+
+// 自由記述こーなー用：枠に収まる最大サイズまで拡大（少ない文字なら大きく）、
+// 折り返して左右中央・上下中央に配置する
+function opFreeText(ctx, text, x, cy, maxW, maxH, minFs, maxFs) {
+  text = (text || "").trim(); if (!text) return;
+  let fs = maxFs, lines = [], lh = 0;
+  for (; fs >= minFs; fs--) {
+    ctx.font = f(fs, false, "Yomogi");
+    lines = wrapText(ctx, text, maxW);
+    lh = Math.ceil(fs * 1.5);
+    if (lines.length * lh <= maxH) break;
+  }
+  ctx.font = f(fs, false, "Yomogi");
+  lh = Math.ceil(fs * 1.5);
+  lines = wrapText(ctx, text, maxW);
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const cx = x + maxW / 2;
+  let y = cy - (lines.length - 1) * lh / 2;   // ブロック全体を上下中央に
+  for (const ln of lines) { ctx.fillText(ln, cx, y); y += lh; }
+}
+
+// 写真カードにアイコンをはめ込む（丸型・まっすぐ・テープを避けて右下）
+function opPhoto(ctx, ico) {
+  if (!ico) return;
+  const cx = 580, cy = 197, r = 51;                // 丸型・上部のテープを避けて少し右下
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
+  const iw = ico.naturalWidth || ico.width, ih = ico.naturalHeight || ico.height;
+  const sc = Math.max((r * 2) / iw, (r * 2) / ih); // cover（円を埋める）
+  const dw = iw * sc, dh = ih * sc;
+  ctx.drawImage(ico, cx - dw / 2, cy - dh / 2, dw, dh);
+  ctx.restore();
+  // 白フチ
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,0.95)"; ctx.lineWidth = 3; ctx.stroke();
+}
+
+function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
+  const H = OSHI_H;
+  if (measureOnly) return H;
+
+  // 背景画像
+  if (oshiBg && oshiBg.complete && oshiBg.naturalWidth) ctx.drawImage(oshiBg, 0, 0, OSHI_W, H);
+  else { ctx.fillStyle = "#e9f4ec"; ctx.fillRect(0, 0, OSHI_W, H); }
+
+  // かいた日
+  ctx.fillStyle = OSHI_INK; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = f(19, false, "Yomogi"); ctx.fillText((getV("wrote-y") || "").trim(), 372, 58);
+  ctx.fillText((getV("wrote-m") || "").trim(), 507, 58);
+  ctx.fillText((getV("wrote-d") || "").trim(), 617, 58);
+
+  // なまえ ＋ X ID（なまえの下）
+  // 2行をひとつのブロックとして、背景の「なまえ」ラベル（実測 y138〜154）の
+  // 縦中心 y=146 にブロックの中心をそろえる。左端は x=125
+  {
+    const nm = (getV("fan-name") || "").trim();
+    const hdRaw = (getV("handle") || "").trim();
+    const hd = hdRaw ? "（" + (hdRaw.startsWith("@") ? hdRaw : "@" + hdRaw) + "）" : "";
+    const NX = 125, NCY = 146, MAXW = 255;   // なまえ欄 x125〜380（スタンプの手前まで）
+    let HDFS = 14;
+
+    let nfs = 24; ctx.font = f(nfs, false, "Yomogi");
+    while (nm && ctx.measureText(nm).width > MAXW && nfs > 10) { nfs--; ctx.font = f(nfs, false, "Yomogi"); }
+    let nt = nm;
+    if (ctx.measureText(nt).width > MAXW) { while (nt.length && ctx.measureText(nt + "…").width > MAXW) nt = nt.slice(0, -1); nt += "…"; }
+
+    // X ID も枠に収まるまで縮小
+    ctx.font = f(HDFS, false, "Yomogi");
+    while (hd && ctx.measureText(hd).width > MAXW && HDFS > 8) { HDFS--; ctx.font = f(HDFS, false, "Yomogi"); }
+
+    const nameH = nfs * 1.15, hdH = hd ? HDFS * 1.25 : 0;
+    const top = NCY - (nameH + hdH) / 2;
+
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillStyle = OSHI_INK;
+
+    // 文字の実インクの左端をそろえる（「（」は字面の左に余白があるぶんズレて見えるため）
+    const inkLeft = (t) => { const m = ctx.measureText(t); return m.actualBoundingBoxLeft || 0; };
+    ctx.font = f(nfs, false, "Yomogi");
+    const nameInk = nt ? inkLeft(nt) : 0;
+    if (nt) ctx.fillText(nt, NX, top + nameH / 2);
+    if (hd) {
+      ctx.font = f(HDFS, false, "Yomogi");
+      ctx.fillText(hd, NX - nameInk + inkLeft(hd), top + nameH + hdH / 2);
+    }
+  }
+
+  // 推し（固定「佐藤優羽」）＋ 他推し
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.font = f(20, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
+  ctx.fillText("推し", 57, 210);
+  const otherOshi = (getV("other-oshi") || "").trim();
+  if (otherOshi) {
+    ctx.font = f(19, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
+    ctx.fillText("佐藤優羽", 122, 210);
+    ctx.font = f(15, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
+    ctx.fillText("他推し", 247, 213);
+    ctx.font = f(17, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
+    opLineText(ctx, otherOshi, 307, 211, 140, 17, true);
+  } else {
+    // 他推しが空 → 「佐藤優羽一推し！」
+    ctx.font = f(19, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
+    ctx.fillText("佐藤優羽一推し！", 122, 210);
+  }
+
+  // 写真
+  opPhoto(ctx, ico);
+
+  // じこしょうかい（新背景の枠の実測: x37〜581 / y281〜420）
+  // 入力項目から文章を組み立て、文字数に応じて自動サイズ＋折り返し
+  opSelfIntro(ctx, buildSelfIntroText(getV), 53, 348, 512, 100, 10, 18);
+
+  // ゆう罪／無罪スタンプ（他推しの入力有無で切り替え）
+  opStamp(ctx, illustImgs[otherOshi ? "yuzai" : "muzai"], 400, 110, 470, 180);
+
+  // 選んだイラスト（3か所）
+  for (let i = 0; i < OSHI_ILLUST_SLOTS.length; i++) {
+    const id = selectedIllusts[i];
+    if (!id) continue;
+    const s = OSHI_ILLUST_SLOTS[i];
+    drawIllustSticker(ctx, illustImgs[id], s.cx, s.cy, s.size, s.rot);
+  }
+
+  // 雲メモ 6つ（項目名＋入力文字）
+  for (let i = 0; i < 6; i++) {
+    const s = CLOUD_SPECS[i];
+    opCloudLabel(ctx, CLOUD_LABEL_LINES[i + 1] || CLOUD_LABELS[i],
+      (s.lx1 + s.lx2) / 2, s.ly, s.lx2 - s.lx1, 14);
+    opCloudText(ctx, getV("cloud-" + (i + 1)),
+      (s.ix1 + s.ix2) / 2, (s.iy1 + s.iy2) / 2,
+      s.ix2 - s.ix1, s.iy2 - s.iy1, 9, 20);
+  }
+
+  // すきなところ ベスト3
+  // 背景の数字「1・2・3」の中心（実測: 782 / 864.5 / 946）にブロックの中心を合わせる
+  // 長文は自動で縮小＋折り返し（最大3行）。maxHは実測した使える高さ
+  // （見出し下端761 / 点線819 / 点線904 / 枠下端989 に当たらない範囲）
+  opBestText(ctx, getV("best-1"), 95, 782,   252, 40, 16, 3);
+  opBestText(ctx, getV("best-2"), 95, 864.5, 252, 78, 16, 3);
+  opBestText(ctx, getV("best-3"), 95, 946,   252, 80, 16, 3);
+
+  // 自由記述こーなー（x415〜647／見出し下端772〜枠内側957 の範囲で中央配置）
+  // 文字数が少なければ最大26pxまで拡大、多ければ自動縮小
+  opFreeText(ctx, getV("free-note"), 415, 867, 232, 166, 11, 26);
+
+  // クリック→入力欄ジャンプ用ゾーン
+  fieldZoneMap["fan-name"]   = { x1: 37,  x2: 452, y1: 150, y2: 235 };
+  fieldZoneMap["self-intro"] = { x1: 37,  x2: 581, y1: 285, y2: 420 };
+  for (let i = 0; i < 6; i++) {
+    const s = CLOUD_SPECS[i];
+    fieldZoneMap["cloud-" + (i + 1)] = { x1: s.lx1, x2: s.lx2, y1: s.ly - 22, y2: s.iy2 };
+  }
+  fieldZoneMap["best-1"]     = { x1: 40,  x2: 360, y1: 780, y2: 830 };
+  fieldZoneMap["best-2"]     = { x1: 40,  x2: 360, y1: 855, y2: 905 };
+  fieldZoneMap["best-3"]     = { x1: 40,  x2: 360, y1: 930, y2: 980 };
+  fieldZoneMap["free-note"]  = { x1: 390, x2: 700, y1: 700, y2: 1015 };
+
+  if (OSHI_SHOW_GRID) opGrid(ctx);
+  return H;
+}
+
+// ════════════════════════════════════════════════════════
 const DRAW_FNS = {
-  notebook:     drawNotebookCute,
-  "notebook-v": drawNotebookVerticalCute,
+  notebook:      drawNotebookCute,
+  "notebook-v":  drawNotebookVerticalCute,
+  profilebook:   drawProfileBook,
+  oshiprofile:   drawOshiProfile,
 };
 
 function render() {
@@ -1219,11 +2092,16 @@ function buildFields() {
     } else {
       const el = f.multiline ? document.createElement("textarea") : document.createElement("input");
       el.className = f.multiline ? "field-ta" : "field-input";
+      if (f.multiline && f.rows) { el.rows = f.rows; el.style.minHeight = "auto"; }
       el.placeholder = f.placeholder || "";
       el.value = getRawVal(tpl, f.id);
       if (!f.multiline) el.type = "text";
+      if (f.readonly) {
+        el.value = (f.fixed !== undefined) ? f.fixed : el.value;
+        el.readOnly = true; el.style.opacity = "0.7"; el.style.cursor = "not-allowed"; el.style.background = "#f0f0f0";
+      }
       if (omitted.has(f.id)) { el.disabled = true; block.classList.add("omitted"); }
-      el.addEventListener("input", e => { setVal(tpl, f.id, e.target.value); render(); });
+      if (!f.readonly) el.addEventListener("input", e => { setVal(tpl, f.id, e.target.value); render(); });
       block.appendChild(el);
 
       if (f.omittable) {
@@ -1303,7 +2181,7 @@ function updateIllustUI() {
 function updateIllustVisibility() {
   const sec = document.getElementById("illust-section");
   const div = document.getElementById("illust-divider");
-  const show = ["notebook", "notebook-v"].includes(TEMPLATES[tplIdx].id);
+  const show = ["notebook", "notebook-v", "profilebook", "oshiprofile"].includes(TEMPLATES[tplIdx].id);
   if (sec) sec.style.display = show ? "flex" : "none";
   if (div) div.style.display = show ? "" : "none";
 }
@@ -1317,6 +2195,33 @@ function switchTemplate(idx) {
 }
 
 // ── アイコン画像アップロード ──────────────────────────────
+// 画像を最大辺 maxDim に縮小して data URL を返す（localStorage保存用に軽量化）
+function downscaleDataUrl(img, maxDim) {
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  const sc = Math.min(1, maxDim / Math.max(iw, ih));
+  const cw = Math.max(1, Math.round(iw * sc)), ch = Math.max(1, Math.round(ih * sc));
+  const c = document.createElement("canvas"); c.width = cw; c.height = ch;
+  c.getContext("2d").drawImage(img, 0, 0, cw, ch);
+  return c.toDataURL("image/jpeg", 0.88);
+}
+
+// data URL からアイコンを設定（save=true で localStorage に保存）
+function setIconFromDataUrl(dataUrl, save) {
+  const img = new Image();
+  img.onload = function () {
+    iconImg = img;
+    const preview   = document.getElementById("icon-preview");
+    const thumbWrap = document.getElementById("icon-thumb-wrap");
+    const clearBtn  = document.getElementById("icon-clear-btn");
+    if (preview)   preview.src = dataUrl;
+    if (thumbWrap) thumbWrap.classList.add("has-icon");
+    if (clearBtn)  clearBtn.style.display = "inline-block";
+    if (save) { try { localStorage.setItem(CARD_ICON_KEY, dataUrl); } catch (e) {} }
+    render();
+  };
+  img.src = dataUrl;
+}
+
 function initIconUpload() {
   const fileInput = document.getElementById("icon-file");
   const preview   = document.getElementById("icon-preview");
@@ -1330,11 +2235,8 @@ function initIconUpload() {
     reader.onload = function (e) {
       const img = new Image();
       img.onload = function () {
-        iconImg = img;
-        preview.src = e.target.result;
-        thumbWrap.classList.add("has-icon");
-        clearBtn.style.display = "inline-block";
-        render();
+        // 縮小した data URL を作り、表示＆保存の両方に使う
+        setIconFromDataUrl(downscaleDataUrl(img, 640), true);
       };
       img.src = e.target.result;
     };
@@ -1347,8 +2249,15 @@ function initIconUpload() {
     preview.src = "";
     thumbWrap.classList.remove("has-icon");
     clearBtn.style.display = "none";
+    try { localStorage.removeItem(CARD_ICON_KEY); } catch (e) {}
     render();
   });
+
+  // 保存済みアイコンを復元
+  try {
+    const savedIcon = localStorage.getItem(CARD_ICON_KEY);
+    if (savedIcon) setIconFromDataUrl(savedIcon, false);
+  } catch (e) {}
 }
 
 // ── 高解像度 Canvas 生成 ────────────────────────────────
@@ -1369,7 +2278,9 @@ function buildHighResCanvas() {
   tc.scale(SCALE, SCALE);
   tc.fillStyle = "#ffffff";
   tc.fillRect(0, 0, tpl.w, totalH);
+  const _gridWas = OSHI_SHOW_GRID; OSHI_SHOW_GRID = false;   // ダウンロード画像にはグリッドを出さない
   draw(tc, tpl.w, getV, iconImg, false);
+  OSHI_SHOW_GRID = _gridWas;
 
   const name = (getVal(tpl, "fan-name") || "card").replace(/[\s　]/g, "_");
   return { canvas: tmp, filename: `satoyu_profile_${name}.png` };
@@ -1427,31 +2338,36 @@ async function submitCard() {
   const { canvas: hiResCanvas } = buildHighResCanvas();
   const imageBase64 = hiResCanvas.toDataURL("image/png").split(",")[1];
 
+  const clean = id => { const v = getVal(tpl, id); return v === "__OMIT__" ? "" : (v || ""); };
+
   const payload = {
     _hp:             document.getElementById("hp-card").value,
     template:        tpl.name,
     fanName,
-    handle:          getVal(tpl, "handle"),
-    birthYear:       getVal(tpl, "birth-year"),
-    birthMD:         getVal(tpl, "birth-md"),
-    gender:          getVal(tpl, "gender"),
-    mbti:            getVal(tpl, "mbti"),
-    ohishamaHistory: getVal(tpl, "ohisama-history"),
-    song:            getVal(tpl, "song"),
-    nickname:        getVal(tpl, "nickname"),
-    selfIntro:       getVal(tpl, "self-intro"),
-    otherOshi:       getVal(tpl, "other-oshi"),
-    bestLive1:       (() => { const l = getVal(tpl, "best-live-1-live").trim(); const s = getVal(tpl, "best-live-1-song").trim(); return l && s ? l + " の " + s : l || s; })(),
-    bestLive2:       (() => { const l = getVal(tpl, "best-live-2-live").trim(); const s = getVal(tpl, "best-live-2-song").trim(); return l && s ? l + " の " + s : l || s; })(),
-    bestLive3:       (() => { const l = getVal(tpl, "best-live-3-live").trim(); const s = getVal(tpl, "best-live-3-song").trim(); return l && s ? l + " の " + s : l || s; })(),
-    bestVar1:        getVal(tpl, "best-var-1"),
-    bestVar2:        getVal(tpl, "best-var-2"),
-    bestVar3:        getVal(tpl, "best-var-3"),
-    oshiName:        getVal(tpl, "oshi-name"),
-    oshiReason:      getVal(tpl, "oshi-reason"),
-    oshiLike:        getVal(tpl, "oshi-like"),
-    oshiLikeFree:    getVal(tpl, "oshi-like-free"),
-    oshiLove:        getVal(tpl, "oshi-love"),
+    handle:          clean("handle"),
+    wroteDate:       [clean("wrote-y"), clean("wrote-m"), clean("wrote-d")].map(s => s.trim()).filter(Boolean).join("/"),
+    otherOshi:       clean("other-oshi"),
+    // じこしょうかい
+    birthYear:       clean("birth-year"),
+    birthMD:         clean("birth-md"),
+    gender:          clean("gender"),
+    mbti:            clean("mbti"),
+    nickname:        clean("nickname"),
+    ohishamaHistory: clean("ohisama-history"),
+    selfIntro:       clean("self-intro"),
+    // 雲メモ（①楽曲／②MV／③ひなあい企画／④呼び方／⑤きっかけ／⑥ペア）
+    song:            clean("cloud-1"),
+    favMV:           clean("cloud-2"),
+    favHinaai:       clean("cloud-3"),
+    yuCallName:      clean("cloud-4"),
+    kikkake:         clean("cloud-5"),
+    favPair:         clean("cloud-6"),
+    // すきなところ ベスト3 ／ 自由記述
+    best1:           clean("best-1"),
+    best2:           clean("best-2"),
+    best3:           clean("best-3"),
+    freeNote:        clean("free-note"),
+    illusts:         selectedIllusts.join(", "),
     imageBase64,
   };
 
@@ -1506,6 +2422,13 @@ document.fonts.ready.then(() => {
   shareCb.addEventListener("change", () => { mobileShareCb.checked = shareCb.checked; });
   initIconUpload();
 });
+
+// ページ更新・離脱時に入力内容を即時保存（デバウンス待ちの取りこぼし防止）
+function flushDraftSave() {
+  try { localStorage.setItem(CARD_DRAFT_KEY, JSON.stringify(values)); } catch (e) {}
+}
+window.addEventListener("beforeunload", flushDraftSave);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushDraftSave(); });
 
 // ════════════════════════════════════════════════════════
 //  Canvas クリック → フォームフィールドへスクロール
