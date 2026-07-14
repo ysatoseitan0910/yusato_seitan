@@ -150,27 +150,34 @@ oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列�
 - `[data-act-modal]` 属性を持つカードにイベントデリゲーションで対応
 - **委員会Newsリスト行はDescriptionが空でもモーダル属性を付与**（actModalAttrsを使わず直接生成）
 
-## card.html（プロフィールカードジェネレーター）
+## card.html（推しぷろふぃーる）
 
 Canvas（2D）でブラウザ内描画し、PNG形式でダウンロードできるファンカードジェネレーター。
+**2026-07-15に「推しぷろふぃーる」（背景画像方式）へ全面刷新**。旧版は `card_old.html` に退避（noindex）。
+**詳細は `推しぷろふぃーる_作業メモ.md` を参照**（座標・フォーム項目・Notion連携・VPS設定）。
 
-### テンプレート一覧
-| ID | テンプレート名 | サイズ |
-|---|---|---|
-| `profile-card` | 案1〜3（縦型カード） | 600×900px |
-| `booklet` | 案4 プロフィール帳 | 600×自動 |
-| `sticker` | 案5 ステッカー帳 | 600×自動 |
-| `notebook` | 案6 ノート見開き | 900×自動 |
+- 公開状態：**準備中オーバーレイあり**。`?preview=1` を付けたときだけ中身が見える
+- テンプレートは1種類のみ：`oshiprofile`（背景 `images/satoyu_osi_profile3.png` / 724×1022px）
+- 旧テンプレート（notebook / profilebook 等）の描画関数はコードに残るが `TEMPLATES` には載せていない
 
 ### 描画の仕組み
+- **背景画像＋文字オーバーレイ**：`drawOshiProfile()` が背景を描き、座標指定で入力文字を重ねる
 - **2パスレンダリング**：`measureOnly=true` で高さ計測 → `canvas.height` 確定 → 本描画
-- **高解像度ダウンロード**：2×スケールの一時canvasを使用、PNG形式で保存（`satoyu_profile_名前.png`）
-- **白背景プリフィル**：`ctx.fillStyle="#ffffff"; ctx.fillRect(...)` で透明→黒化を防止
-- **日本語テキスト折り返し**：`wrapText(ctx, text, maxW)` で1文字ずつ `measureText()` して折り返し
+- **高解像度ダウンロード**：2×スケールの一時canvasを使用、PNG形式で保存
+- **自動サイズ調整**：各欄とも入力文字数に応じてフォントを縮小／拡大し、枠内に収める
+- **手動改行**：`wrapText` が `"\n"` を行区切りとして扱う（雲・ベスト3・自由記述は textarea）
+- **位置指示用グリッド**：`OSHI_SHOW_GRID = true` で座標グリッドを描画（通常は false）
 - **ディスパッチ**：`DRAW_FNS = { id: drawFn }` マップで `tpl.id` をキーに関数を選択
 
 ### 入力フィールド
-- アイコン画像（ファイル選択）、ファンネーム、担当カラー、推しポイント など（テンプレートごとに異なる）
+アイコン画像 / かいた日 / なまえ / X ID / 推し（固定「佐藤優羽」）/ 他推し /
+じこしょうかい（誕生年・誕生月日・性別・呼ばれ方・MBTI・おひさま歴・自由記述）/
+雲①〜⑥ / すきなところ ベスト3 / 自由記述こーなー / イラスト選択（最大3点）
+
+### 委員会への共有（Notion DB_CARDS）
+「入力した情報を委員会に共有する」にチェック → `POST /admin-api/cards` → Notion登録＋カード画像をVPSに保存。
+- カード画像：`/var/www/satoyu/uploads/cards/<uuid>.png`（Basic認証・ユーザー名 `satoyu`）
+- 他推しの有無で `yuzai.png` / `muzai.png` のスタンプが自動で切り替わる
 
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
@@ -259,7 +266,17 @@ ssh newsmind  # ローカルのSSH設定でエイリアス設定済み
 cd ~/newsmind
 docker compose up -d --force-recreate nginx  # nginx設定変更の反映
 docker compose exec nginx nginx -t           # 設定の文法チェック
+docker compose restart satoyu-admin          # admin-api/server.js を変更したとき
+docker compose up -d --force-recreate satoyu-admin  # 環境変数を足したとき（restartでは読まれない）
 ```
+
+### リポジトリ管理外だが必須のVPS設定（2026-07-15 追加）
+`~/newsmind/` 配下。コンテナや設定を作り直すときは必ず入っているか確認する。
+- **`nginx/nginx.conf`**：satoyu.info の `location /admin-api/` に `client_max_body_size 20m;`
+  無いと既定1MBで、カード画像（base64が1MB超）のPOSTが413のHTMLで返り、フロントで
+  `Unexpected token '<', "<html> <h"... is not valid JSON` になる（Express側は5MB）
+- **`docker-compose.yml`**：`satoyu-admin` の volumes に `- /var/www/satoyu/uploads:/var/www/satoyu/uploads`
+  無いとカード画像がコンテナ内部にしか書かれず、公開URLが404になる（コンテナ再作成で消失）
 
 ## CSS変数（全ページ共通）
 `_template.html` および全静的ページで統一している変数名：
