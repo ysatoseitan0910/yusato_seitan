@@ -639,6 +639,12 @@ a.schedule-row:hover { background: var(--butter); }
 .x-more-btn { background: none; border: 2px solid var(--border); border-radius: 99px; padding: 8px 28px; font-family: 'Zen Maru Gothic', serif; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
 .x-more-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); background: var(--emerald-pale); }
 
+/* ── Instagram埋め込みグリッド ── */
+.ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; align-items: start; }
+.ig-card { min-width: 0; animation: fadeUp 0.4s ease both; }
+.ig-card .instagram-media { min-width: 0 !important; width: 100% !important; margin: 0 auto !important; }
+.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; }
+
 /* ── もっと見るボタン（共通） ── */
 .load-more-wrap { text-align: center; padding: 32px 16px 16px; }
 .load-more-btn { background: var(--emerald); color: #fff; border: 2px solid var(--emerald-dark); border-radius: 99px; padding: 12px 32px; font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; }
@@ -930,6 +936,7 @@ footer .heart { color: var(--pink); }
       <div class="nav-dropdown">
         <a href="x.html" {{ACTIVE_X}}>X</a>
         <a href="tiktok.html" {{ACTIVE_TIKTOK}}>TikTok</a>
+        <a href="instagram.html" {{ACTIVE_INSTAGRAM}}>Instagram</a>
       </div>
     </div>
     <div class="nav-group">

@@ -44,6 +44,7 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `interview.html`：インタビュー・雑誌掲載集
 - `x.html`：Xまとめ
 - `tiktok.html`：TikTokギャラリー
+- `instagram.html`：Instagramまとめ（blockquote＋embed.js・アカウント別ラベル・もっと見る）
 - `youtube.html`：YouTubeまとめ
 - `lemino.html`：Leminoまとめ
 
@@ -67,6 +68,7 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - DB_MEMBER_BLOG：他メンバーブログ（佐藤優羽さんが登場するブログ）。ID: `33e28fd03f5380f6a868d3d1aa3f7755`。Memberプロパティ（multi_select）にブログ執筆メンバー名
 - DB_INTERVIEW：インタビュー・雑誌掲載集
 - DB_TIKTOK：TikTokまとめ
+- DB_INSTAGRAM：Instagramまとめ（Name・Date・URL・Account〈select〉・Published）。embed.jsで埋め込むため公開投稿URLのみ。oEmbed非対応（トークン必須）なのでサムネ・キャプション自動取得はしない
 - DB_X：Xまとめ
 - DB_YOUTUBE：YouTubeまとめ（Channelプロパティあり）
 - DB_LEMINO：Leminoまとめ
@@ -215,6 +217,7 @@ Canvas（2D）でブラウザ内描画し、PNG形式でダウンロードでき
 | activities | タイトル、日付、URL、ステータス、説明、画像URL |
 | x | タイトル、日付、URL、タグ（カンマ区切り） |
 | tiktok | URL（必須）、日付、タイトル（任意・oEmbedで自動補完） |
+| instagram | URL（必須）、日付、アカウント（任意・select）、タイトル（任意） |
 | youtube | タイトル、日付、URL、チャンネル（select） |
 | lemino | タイトル、日付、URL、説明 |
 
@@ -277,6 +280,8 @@ docker compose up -d --force-recreate satoyu-admin  # 環境変数を足した�
   `Unexpected token '<', "<html> <h"... is not valid JSON` になる（Express側は5MB）
 - **`docker-compose.yml`**：`satoyu-admin` の volumes に `- /var/www/satoyu/uploads:/var/www/satoyu/uploads`
   無いとカード画像がコンテナ内部にしか書かれず、公開URLが404になる（コンテナ再作成で消失）
+- **`nginx/nginx.conf` のCSP**（2026-07-19 追加・instagram.html用）：`script-src` に `https://www.instagram.com https://static.cdninstagram.com`、`frame-src` に `https://www.instagram.com` を追加。
+  無いと Instagram の `embed.js` がCSPでブロックされ、埋め込みが表示されない（blockquoteのリンクだけ残る）
 
 ## CSS変数（全ページ共通）
 `_template.html` および全静的ページで統一している変数名：

@@ -13,6 +13,7 @@ const DB = {
   blog:          process.env.DB_BLOG,
   interview:     process.env.DB_INTERVIEW,
   tiktok:        process.env.DB_TIKTOK,
+  instagram:     process.env.DB_INSTAGRAM,
   x:             process.env.DB_X,
   youtube:       process.env.DB_YOUTUBE,
   lemino:        process.env.DB_LEMINO,
@@ -111,7 +112,7 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","YOUTUBE","LEMINO","QUIZ","ABOUT","SITE_INFO","TERMS","JOIN","CARD","MESSAGE","HISTORY","WEEKLY"];
+  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","INSTAGRAM","YOUTUBE","LEMINO","QUIZ","ABOUT","SITE_INFO","TERMS","JOIN","CARD","MESSAGE","HISTORY","WEEKLY"];
   pages.forEach(p => {
     t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
   });
@@ -322,6 +323,23 @@ function xCard(page, embedHtml) {
   <div class="x-card" style="animation-delay:${Math.random()*0.3}s">
     ${embedHtml || fallback}
     ${title ? `<p class="x-card-label">${title}</p>` : ""}
+  </div>`;
+}
+
+function instagramCard(page) {
+  const url     = getUrl(page);
+  const title   = getText(page, "Name");
+  const account = getSelect(page, "Account") || getText(page, "Account") || "";
+  const date    = fmtDate(getDate(page));
+  const permalink = (url || "").split("?")[0];
+  const meta = [account, date].filter(Boolean).join(" ・ ");
+  const label = (meta || title)
+    ? `<p class="ig-card-label">${meta}${meta && title ? "<br>" : ""}${title ? escAttr(title) : ""}</p>`
+    : "";
+  return `
+  <div class="ig-card" style="animation-delay:${Math.random()*0.3}s">
+    <blockquote class="instagram-media" data-instgrm-permalink="${escAttr(permalink)}" data-instgrm-version="14" style="margin:0;width:100%;min-width:0;"><a href="${escAttr(url)}" target="_blank" rel="noopener">Instagramで見る →</a></blockquote>
+    ${label}
   </div>`;
 }
 
@@ -1122,6 +1140,58 @@ async function buildTiktok(tpl) {
   })();
   <\/script>`;
   return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>まとめ</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
+}
+
+async function buildInstagram(tpl) {
+  const pages = DB.instagram ? await queryDB(DB.instagram) : [];
+  const cards = pages.map(p => instagramCard(p)).join("\n");
+  const body = `<div class="ig-embed-grid" id="ig-grid">
+    <!-- GALLERY_START -->
+    ${cards}
+    <!-- GALLERY_END -->
+  </div>
+  <div class="load-more-wrap" id="ig-more-wrap">
+    <p class="load-more-count" id="ig-more-count"></p>
+    <button class="load-more-btn" id="ig-more-btn">もっと見る</button>
+  </div>
+  <script>
+  (function(){
+    var embedLoaded=false, embedLoading=false;
+    function processEmbeds(){ if(window.instgrm&&window.instgrm.Embeds) window.instgrm.Embeds.process(); }
+    function loadEmbed(){
+      if(embedLoaded||embedLoading)return;
+      embedLoading=true;
+      var s=document.createElement('script');
+      s.src='https://www.instagram.com/embed.js';
+      s.async=true;
+      s.onload=function(){embedLoaded=true;processEmbeds();};
+      document.body.appendChild(s);
+    }
+    var mobile=window.innerWidth<768;
+    var BATCH=mobile?4:6;
+    var grid=document.getElementById('ig-grid');
+    var btn=document.getElementById('ig-more-btn');
+    var countEl=document.getElementById('ig-more-count');
+    var wrap=document.getElementById('ig-more-wrap');
+    var all=Array.from(grid.querySelectorAll('.ig-card'));
+    var total=all.length;
+    var shown=0;
+    if(total===0){wrap.style.display='none';return;}
+    all.forEach(function(c){c.style.display='none';});
+    function showMore(){
+      var next=Math.min(shown+BATCH,total);
+      for(var i=shown;i<next;i++) all[i].style.display='';
+      shown=next;
+      countEl.textContent=shown+' / '+total+' 件表示中';
+      if(shown>=total) wrap.style.display='none';
+      else btn.textContent='もっと見る（残り'+(total-shown)+'件）';
+      if(embedLoaded)processEmbeds();else loadEmbed();
+    }
+    btn.addEventListener('click',showMore);
+    showMore();
+  })();
+  <\/script>`;
+  return buildPage(tpl, "Instagramまとめ", "INSTAGRAM", "Instagram <em>まとめ</em>", "佐藤優羽さん関連のInstagram投稿をまとめています", body, "instagram.html");
 }
 
 async function buildYoutube(tpl) {
@@ -2143,6 +2213,7 @@ const PAGE_ALIASES = {
   interview:  ["interview.html"],
   x:          ["x.html"],
   tiktok:     ["tiktok.html"],
+  instagram:  ["instagram.html"],
   youtube:    ["youtube.html"],
   lemino:     ["lemino.html"],
   history:    ["history.html"],
@@ -2179,6 +2250,7 @@ async function main() {
     "interview.html":   { fn: buildInterview,  active: "INTERVIEW" },
     "x.html":          { fn: buildX,         active: "X" },
     "tiktok.html":     { fn: buildTiktok,    active: "TIKTOK" },
+    "instagram.html":  { fn: buildInstagram, active: "INSTAGRAM" },
     "youtube.html":    { fn: buildYoutube,   active: "YOUTUBE" },
     "lemino.html":     { fn: buildLemino,    active: "LEMINO" },
     "history.html":   { fn: buildHistory,   active: "HISTORY" },

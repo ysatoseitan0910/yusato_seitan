@@ -57,6 +57,7 @@ jobs:
           DB_MEMBER_BLOG:      ${{ secrets.DB_MEMBER_BLOG }}
           DB_INTERVIEW:        ${{ secrets.DB_INTERVIEW }}
           DB_TIKTOK:           ${{ secrets.DB_TIKTOK }}
+          DB_INSTAGRAM:        ${{ secrets.DB_INSTAGRAM }}
           DB_X:                ${{ secrets.DB_X }}
           DB_YOUTUBE:          ${{ secrets.DB_YOUTUBE }}
           DB_LEMINO:           ${{ secrets.DB_LEMINO }}

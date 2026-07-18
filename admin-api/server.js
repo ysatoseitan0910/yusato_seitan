@@ -62,6 +62,7 @@ const DB = {
   activities: process.env.DB_ACTIVITIES,
   x:          process.env.DB_X,
   tiktok:     process.env.DB_TIKTOK,
+  instagram:  process.env.DB_INSTAGRAM,
   youtube:    process.env.DB_YOUTUBE,
   lemino:     process.env.DB_LEMINO,
   messages:   process.env.DB_MESSAGES,
@@ -191,6 +192,23 @@ app.post("/add/tiktok", auth, async (req, res) => {
     if (date) props.Date = { date: { start: date } };
     props.URL = { url };
     await notion.pages.create({ parent: { database_id: DB.tiktok }, properties: props });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Instagram
+app.post("/add/instagram", auth, async (req, res) => {
+  const { name, date, url, account } = req.body;
+  if (!url) return res.status(400).json({ error: "URLは必須です" });
+  try {
+    const props = { Name: { title: t(name || url) }, Published: { checkbox: true } };
+    if (date)    props.Date    = { date: { start: date } };
+    props.URL = { url };
+    if (account) props.Account = { select: { name: account } };
+    await notion.pages.create({ parent: { database_id: DB.instagram }, properties: props });
     res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
