@@ -414,6 +414,7 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" onclick="switchDB('activities')">🌿 活動報告</button>
     <button class="db-btn" onclick="switchDB('x')">𝕏 X</button>
     <button class="db-btn" onclick="switchDB('tiktok')">🎵 TikTok</button>
+    <button class="db-btn" onclick="switchDB('instagram')">📷 Instagram</button>
     <button class="db-btn" onclick="switchDB('youtube')">▶ YouTube</button>
     <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
     <button class="db-btn" onclick="switchDB('memberblog')">📔 他メンバーブログ</button>
@@ -644,6 +645,34 @@ header span { font-size: 13px; color: var(--text-muted); }
       <div class="submit-row">
         <button class="btn submit-btn" onclick="submit('tiktok')">追加する</button>
         <span class="status" id="status-tiktok"></span>
+      </div>
+    </div>
+
+    <!-- Instagram -->
+    <div class="form-panel" id="panel-instagram">
+      <h2>📷 Instagramを追加</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">公開投稿のURLを入力してください（例：https://www.instagram.com/p/... や /reel/...）。</p>
+      <div class="form-grid">
+        <div class="field full">
+          <label>URL <span style="color:#c00">*</span></label>
+          <input type="url" id="instagram-url" placeholder="https://www.instagram.com/p/...">
+        </div>
+        <div class="field">
+          <label>日付</label>
+          <input type="date" id="instagram-date">
+        </div>
+        <div class="field">
+          <label>アカウント（任意）</label>
+          <input type="text" id="instagram-account" placeholder="例：日向坂46公式">
+        </div>
+        <div class="field full">
+          <label>タイトル（任意）</label>
+          <input type="text" id="instagram-name" placeholder="省略可（一覧の見出し）">
+        </div>
+      </div>
+      <div class="submit-row">
+        <button class="btn submit-btn" onclick="submit('instagram')">追加する</button>
+        <span class="status" id="status-instagram"></span>
       </div>
     </div>
 
@@ -1300,7 +1329,7 @@ function reloadList() { loadList(_currentDB); }
 
 const DB_LABELS = {
   quiz: '📝 クイズ', committee: '📢 委員会News', activities: '🌿 活動報告',
-  x: '𝕏 X', tiktok: '🎵 TikTok', youtube: '▶ YouTube', lemino: '🎬 Lemino',
+  x: '𝕏 X', tiktok: '🎵 TikTok', instagram: '📷 Instagram', youtube: '▶ YouTube', lemino: '🎬 Lemino',
   memberblog: '📔 他メンバーブログ',
 };
 
@@ -1444,6 +1473,7 @@ function getPayload(db) {
     return { name: val("x-name"), date: val("x-date"), url: val("x-url"), tags };
   }
   if (db === "tiktok") return { name: val("tiktok-name"), date: val("tiktok-date"), url: val("tiktok-url") };
+  if (db === "instagram") return { name: val("instagram-name"), date: val("instagram-date"), url: val("instagram-url"), account: val("instagram-account") };
   if (db === "youtube") return { name: val("youtube-name"), date: val("youtube-date"), url: val("youtube-url"), channel: val("youtube-channel") };
   if (db === "lemino") return { name: val("lemino-name"), date: val("lemino-date"), url: val("lemino-url"), description: val("lemino-description"), program: val("lemino-program"), expiryDate: val("lemino-expiry") };
   if (db === "memberblog") {
