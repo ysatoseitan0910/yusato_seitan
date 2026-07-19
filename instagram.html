@@ -640,10 +640,13 @@ a.schedule-row:hover { background: var(--butter); }
 .x-more-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); background: var(--emerald-pale); }
 
 /* ── Instagram埋め込みグリッド ── */
-.ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; align-items: start; }
-.ig-card { min-width: 0; animation: fadeUp 0.4s ease both; }
-.ig-card .instagram-media { min-width: 0 !important; width: 100% !important; margin: 0 auto !important; }
-.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; }
+/* 幅はInstagram本来のサイズ（min-width:326px / max-width:540px）に任せる。
+   強制的に縮めると動画投稿でキャプション帯が重なるため上書きしない */
+.ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(326px, 1fr)); gap: 18px; align-items: start; justify-items: center; }
+.ig-card { width: 100%; max-width: 540px; animation: fadeUp 0.4s ease both; }
+.ig-card .instagram-media { margin: 0 auto !important; }
+.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; text-align: center; }
+@media (max-width: 360px) { .ig-embed-grid { grid-template-columns: 1fr; } }
 
 /* ── もっと見るボタン（共通） ── */
 .load-more-wrap { text-align: center; padding: 32px 16px 16px; }
@@ -975,22 +978,22 @@ footer .heart { color: var(--pink); }
       <div class="content"><div class="ig-embed-grid" id="ig-grid">
     <!-- GALLERY_START -->
     
-  <div class="ig-card" style="animation-delay:0.23616920336936065s">
+  <div class="ig-card" style="animation-delay:0.2511130285326056s">
     <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/Da5NkgfD1GZ/" data-instgrm-version="14" style="margin:0;width:100%;min-width:0;"><a href="https://www.instagram.com/p/Da5NkgfD1GZ/?img_index=1" target="_blank" rel="noopener">Instagramで見る →</a></blockquote>
     <p class="ig-card-label">日向坂46公式 ・ 2026.07.17<br>五期生LIVE</p>
   </div>
 
-  <div class="ig-card" style="animation-delay:0.11442523130874091s">
+  <div class="ig-card" style="animation-delay:0.2460177673721155s">
     <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/Da5NaPjjy02/" data-instgrm-version="14" style="margin:0;width:100%;min-width:0;"><a href="https://www.instagram.com/p/Da5NaPjjy02/?img_index=1" target="_blank" rel="noopener">Instagramで見る →</a></blockquote>
     <p class="ig-card-label">日向坂46公式 ・ 2026.07.17<br>五期生LIVE</p>
   </div>
 
-  <div class="ig-card" style="animation-delay:0.0031785488012665342s">
+  <div class="ig-card" style="animation-delay:0.2087946191733827s">
     <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/Da5DmLlj2Mh/" data-instgrm-version="14" style="margin:0;width:100%;min-width:0;"><a href="https://www.instagram.com/p/Da5DmLlj2Mh/?img_index=1" target="_blank" rel="noopener">Instagramで見る →</a></blockquote>
     <p class="ig-card-label">日向坂46公式 ・ 2026.07.17<br>五期生LIVE</p>
   </div>
 
-  <div class="ig-card" style="animation-delay:0.24877534089930087s">
+  <div class="ig-card" style="animation-delay:0.18773720617868347s">
     <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/Da2o1IIPg1D/" data-instgrm-version="14" style="margin:0;width:100%;min-width:0;"><a href="https://www.instagram.com/p/Da2o1IIPg1D/" target="_blank" rel="noopener">Instagramで見る →</a></blockquote>
     <p class="ig-card-label">日向坂46公式 ・ 2026.07.16<br>五期生LIVE</p>
   </div>
@@ -1159,7 +1162,7 @@ footer .heart { color: var(--pink); }
 
 <footer>
   <div class="foot-mark">Thank you for being here.</div>
-  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/7/19 11:50:50</p>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/7/19 12:05:17</p>
 </footer>
 
 <script>
