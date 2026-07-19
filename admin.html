@@ -827,6 +827,23 @@ header span { font-size: 13px; color: var(--text-muted); }
             </div>
           </div>
           <p class="weekly-note">この本文がHPの「今週のさとうゆ」ページにリンク付きで表示されます。編集して「保存」すると次回ビルドで反映されます（各項目のURL行がハイパーリンクになります）。</p>
+
+          <div class="weekly-ogp-block" style="margin-top:18px;border-top:1px dashed var(--border);padding-top:16px;">
+            <label style="font-weight:700;">🖼 OGP画像の文章（自分で指定）</label>
+            <p class="weekly-note" style="margin:4px 0 8px;">この文章が weekly.html の OGP画像（SNSシェア画像）に描画されます。<b>▼</b>で始まる行は見出し（緑のピル）、それ以外の行は本文になります。<b>空欄のままボタンを押さなければ OGP画像は自動更新されません。</b></p>
+            <textarea id="weekly-ogp-text" class="weekly-textarea" spellcheck="false" placeholder="例：
+▼できごと（3件）
+7/8 「密着！五期生ひなたぼっこ日記」スタート
+7/12 日向坂で会いましょう #371
+7/12 まだまだ！日向坂で会いましょう #371
+▼他メンバーブログ登場（1件）
+7/7 ポカ"></textarea>
+            <div class="weekly-result-actions">
+              <span class="status" id="weekly-ogp-status"></span>
+              <button class="btn submit-btn" onclick="updateWeeklyOgp()">🖼 OGP画像を作成・更新</button>
+            </div>
+            <img id="weekly-ogp-preview" alt="OGPプレビュー" style="display:none;width:100%;max-width:600px;border:1px solid var(--border);border-radius:12px;margin-top:10px;">
+          </div>
         </div>
       </div>
 
@@ -977,9 +994,8 @@ async function generateWeekly() {
     document.getElementById('weekly-result-title').textContent = d.title;
     document.getElementById('weekly-result-body').value = d.body;
     document.getElementById('weekly-save-status').textContent = '';
+    resetWeeklyOgpUI();
     await loadTopNews();
-    const ogpOk = await updateWeeklyOgp();
-    if (ogpOk) status.textContent += '／OGP画像も更新しました🖼';
   } catch (e) {
     status.className = 'status err';
     status.textContent = '❌ ' + e.message;
@@ -1009,7 +1025,6 @@ async function saveWeeklyBody() {
     st.className = 'status ok';
     st.textContent = '✅ 保存しました（次回ビルドで反映）';
     await loadTopNews();
-    await updateWeeklyOgp();
   } catch (e) {
     st.className = 'status err';
     st.textContent = '❌ ' + e.message;
@@ -1025,6 +1040,7 @@ function editTopNews(i) {
   document.getElementById('weekly-result-title').textContent = item.name || '';
   document.getElementById('weekly-result-body').value = item.body || '';
   document.getElementById('weekly-save-status').textContent = '';
+  resetWeeklyOgpUI();
   document.getElementById('weekly-result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -1169,35 +1185,136 @@ function drawWeeklyOgp(range, sections, megane) {
   return c.toDataURL('image/png');
 }
 
-// OGPの右に載せるイラスト（透過PNG）
-var _meganeImg = null;
-function loadMeganeImg() {
+// 手動指定テキストでOGP画像を描画（▼行＝見出しピル／その他＝本文行）
+function drawWeeklyOgpManual(range, text, illust) {
+  const W = 1200, H = 630, FAM = "'Zen Maru Gothic','Noto Sans JP',sans-serif";
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#eaf7ef'); g.addColorStop(1, '#d2ecdc');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#3DAA78'; x.fillRect(0, 0, 18, H);
+  x.fillStyle = 'rgba(154,211,178,0.5)';
+  [[1090,88,30],[1140,175,18],[70,560,22],[1135,545,26]].forEach(function(s){
+    x.beginPath();
+    for (var i=0;i<5;i++){var a=-Math.PI/2+i*2*Math.PI/5;x.lineTo(s[0]+Math.cos(a)*s[2],s[1]+Math.sin(a)*s[2]);var a2=a+Math.PI/5;x.lineTo(s[0]+Math.cos(a2)*s[2]*0.45,s[1]+Math.sin(a2)*s[2]*0.45);}
+    x.closePath(); x.fill();
+  });
+  // 右にイラスト（アスペクト比を保ってボックスに収める）
+  let textRight = W - 70;
+  if (illust && illust.naturalWidth) {
+    const BOX_W = 380, BOX_H = 470, ratio = illust.naturalWidth / illust.naturalHeight;
+    let iw = BOX_W, ih = Math.round(BOX_W / ratio);
+    if (ih > BOX_H) { ih = BOX_H; iw = Math.round(BOX_H * ratio); }
+    const IMG_X = W - 40 - iw, IMG_Y = Math.round((H - ih) / 2);
+    x.drawImage(illust, IMG_X, IMG_Y, iw, ih);
+    textRight = IMG_X - 24;
+  }
+  // タイトル
+  x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+  x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('今週のさとうゆ', 70, 120);
+  if (range) { x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168); }
+  x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(textRight, 192); x.stroke();
+
+  const LX = 74, IX = 84, maxItemW = textRight - IX, maxY = 600, TOP = 240;
+  const rows = [];
+  for (const raw of String(text || '').split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (line.startsWith('▼')) rows.push({ head: true, text: line.replace(/^▼/, '').trim() });
+    else rows.push({ head: false, text: line });
+  }
+
+  // 収まるよう本文フォントを自動調整（見出しピルは固定27px）
+  let FS = 30, LH = 40;
+  for (; FS >= 16; FS--) {
+    LH = Math.round(FS * 1.34);
+    x.font = "400 " + FS + "px " + FAM;
+    let h = 0;
+    for (const r of rows) {
+      if (r.head) h += 46;
+      else h += _wrapCanvas(x, r.text, maxItemW).length * LH;
+      h += 6;
+    }
+    if (TOP + h <= maxY) break;
+  }
+
+  let yy = TOP;
+  for (const r of rows) {
+    if (yy > maxY) break;
+    if (r.head) {
+      x.font = "700 27px " + FAM;
+      const lw = x.measureText(r.text).width;
+      x.fillStyle = '#3DAA78';
+      if (x.roundRect) { x.beginPath(); x.roundRect(LX, yy - 29, lw + 28, 40, 20); x.fill(); }
+      else x.fillRect(LX, yy - 29, lw + 28, 40);
+      x.fillStyle = '#fff'; x.fillText(r.text, LX + 14, yy);
+      yy += 46 + 6;
+    } else {
+      x.font = "400 " + FS + "px " + FAM; x.fillStyle = '#33463c';
+      for (const ln of _wrapCanvas(x, r.text, maxItemW)) {
+        if (yy > maxY) break;
+        x.fillText(ln, IX, yy); yy += LH;
+      }
+      yy += 6;
+    }
+  }
+  // フッター
+  x.fillStyle = '#6d887a'; x.font = "500 26px " + FAM;
+  x.textAlign = 'right'; x.fillText('さとうゆほーむ ♥ satoyu.info', W - 70, H - 34);
+  return c.toDataURL('image/png');
+}
+
+// OGPの右に載せるイラスト（kuruma.png）
+var _ogpIllust = null;
+function loadOgpIllust() {
   return new Promise(function (resolve) {
-    if (_meganeImg) return resolve(_meganeImg);
+    if (_ogpIllust) return resolve(_ogpIllust);
     const img = new Image();
-    img.onload = function () { _meganeImg = img; resolve(img); };
+    img.onload = function () { _ogpIllust = img; resolve(img); };
     img.onerror = function () { resolve(null); };
-    img.src = '/images/megane_tp.png';
+    img.src = '/images/image/card/kuruma.png';
   });
 }
 
+function resetWeeklyOgpUI() {
+  const ta = document.getElementById('weekly-ogp-text');
+  if (ta) ta.value = '';
+  const pv = document.getElementById('weekly-ogp-preview');
+  if (pv) { pv.style.display = 'none'; pv.removeAttribute('src'); }
+  const st = document.getElementById('weekly-ogp-status');
+  if (st) { st.className = 'status'; st.textContent = ''; }
+}
+
+// 手動指定した文章でOGP画像を作成・アップロード
 async function updateWeeklyOgp() {
+  const st = document.getElementById('weekly-ogp-status');
+  const text = (document.getElementById('weekly-ogp-text').value || '').trim();
+  if (!text) {
+    if (st) { st.className = 'status err'; st.textContent = '❌ OGP画像の文章を入力してください'; }
+    return false;
+  }
+  const range = ((document.getElementById('weekly-result-title').textContent || '').match(/（(.+?)）/) || [])[1] || '';
+  if (st) { st.className = 'status'; st.textContent = '⏳ 作成中...'; }
   try {
-    const weekly = _topnewsCache.filter(x => (x.name || '').startsWith('今週のさとうゆ') && x.body);
-    weekly.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    const newest = weekly[0];
-    if (!newest) return false;
-    const range = ((newest.name || '').match(/（(.+?)）/) || [])[1] || '';
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
-    const megane = await loadMeganeImg();
-    const dataUrl = drawWeeklyOgp(range, parseWeeklyBody(newest.body), megane);
+    const illust = await loadOgpIllust();
+    const dataUrl = drawWeeklyOgpManual(range, text, illust);
+    const pv = document.getElementById('weekly-ogp-preview');
+    if (pv) { pv.src = dataUrl; pv.style.display = ''; }
     const res = await fetch(`${API_BASE}/ogp/weekly`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getPassword()}` },
       body: JSON.stringify({ imageBase64: dataUrl.split(',')[1] }),
     });
-    return res.ok;
-  } catch (e) { return false; }
+    if (res.status === 401) { logout(); return false; }
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'アップロード失敗');
+    if (st) { st.className = 'status ok'; st.textContent = '✅ OGP画像を更新しました（SNSキャッシュ反映には時間がかかる場合があります）'; }
+    return true;
+  } catch (e) {
+    if (st) { st.className = 'status err'; st.textContent = '❌ ' + e.message; }
+    return false;
+  }
 }
 
 async function loadTopNews() {
