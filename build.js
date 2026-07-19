@@ -1145,7 +1145,8 @@ async function buildTiktok(tpl) {
 async function buildInstagram(tpl) {
   const pages = DB.instagram ? await queryDB(DB.instagram) : [];
   const cards = pages.map(p => instagramCard(p)).join("\n");
-  const body = `<div class="ig-embed-grid" id="ig-grid">
+  const body = `<p style="font-size:13px;color:var(--text-muted);background:var(--emerald-pale);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:24px;line-height:1.7;">💡 TikTokと同じ内容の動画は <a href="tiktok.html" style="color:var(--emerald-dark);font-weight:700;">TikTokまとめ</a> ページに掲載しています。</p>
+  <div class="ig-embed-grid" id="ig-grid">
     <!-- GALLERY_START -->
     ${cards}
     <!-- GALLERY_END -->
