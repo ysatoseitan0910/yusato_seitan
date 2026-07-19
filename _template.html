@@ -640,10 +640,13 @@ a.schedule-row:hover { background: var(--butter); }
 .x-more-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); background: var(--emerald-pale); }
 
 /* ── Instagram埋め込みグリッド ── */
-.ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; align-items: start; }
-.ig-card { min-width: 0; animation: fadeUp 0.4s ease both; }
-.ig-card .instagram-media { min-width: 0 !important; width: 100% !important; margin: 0 auto !important; }
-.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; }
+/* 幅はInstagram本来のサイズ（min-width:326px / max-width:540px）に任せる。
+   強制的に縮めると動画投稿でキャプション帯が重なるため上書きしない */
+.ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(326px, 1fr)); gap: 18px; align-items: start; justify-items: center; }
+.ig-card { width: 100%; max-width: 540px; animation: fadeUp 0.4s ease both; }
+.ig-card .instagram-media { margin: 0 auto !important; }
+.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; text-align: center; }
+@media (max-width: 360px) { .ig-embed-grid { grid-template-columns: 1fr; } }
 
 /* ── もっと見るボタン（共通） ── */
 .load-more-wrap { text-align: center; padding: 32px 16px 16px; }
