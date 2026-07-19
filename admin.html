@@ -1200,13 +1200,13 @@ function drawWeeklyOgpManual(range, text, illust) {
     for (var i=0;i<5;i++){var a=-Math.PI/2+i*2*Math.PI/5;x.lineTo(s[0]+Math.cos(a)*s[2],s[1]+Math.sin(a)*s[2]);var a2=a+Math.PI/5;x.lineTo(s[0]+Math.cos(a2)*s[2]*0.45,s[1]+Math.sin(a2)*s[2]*0.45);}
     x.closePath(); x.fill();
   });
-  // 右にイラスト（アスペクト比を保ってボックスに収める）
+  // 右にイラスト（アスペクト比を保ってボックスに収める・小さめ）
   let textRight = W - 70;
   if (illust && illust.naturalWidth) {
-    const BOX_W = 380, BOX_H = 470, ratio = illust.naturalWidth / illust.naturalHeight;
+    const BOX_W = 250, BOX_H = 320, ratio = illust.naturalWidth / illust.naturalHeight;
     let iw = BOX_W, ih = Math.round(BOX_W / ratio);
     if (ih > BOX_H) { ih = BOX_H; iw = Math.round(BOX_H * ratio); }
-    const IMG_X = W - 40 - iw, IMG_Y = Math.round((H - ih) / 2);
+    const IMG_X = W - 48 - iw, IMG_Y = Math.round((H - ih) / 2);
     x.drawImage(illust, IMG_X, IMG_Y, iw, ih);
     textRight = IMG_X - 24;
   }
@@ -1232,7 +1232,7 @@ function drawWeeklyOgpManual(range, text, illust) {
     x.font = "400 " + FS + "px " + FAM;
     let h = 0;
     for (const r of rows) {
-      if (r.head) h += 46;
+      if (r.head) h += Math.round(FS * 1.7);
       else h += _wrapCanvas(x, r.text, maxItemW).length * LH;
       h += 6;
     }
@@ -1243,13 +1243,15 @@ function drawWeeklyOgpManual(range, text, illust) {
   for (const r of rows) {
     if (yy > maxY) break;
     if (r.head) {
-      x.font = "700 27px " + FAM;
+      // 見出しピルの文字サイズは本文（小項目）と同じ FS・太字
+      x.font = "700 " + FS + "px " + FAM;
       const lw = x.measureText(r.text).width;
+      const padX = Math.round(FS * 0.52), pillH = Math.round(FS * 1.48), pillTop = yy - Math.round(FS * 1.07);
       x.fillStyle = '#3DAA78';
-      if (x.roundRect) { x.beginPath(); x.roundRect(LX, yy - 29, lw + 28, 40, 20); x.fill(); }
-      else x.fillRect(LX, yy - 29, lw + 28, 40);
-      x.fillStyle = '#fff'; x.fillText(r.text, LX + 14, yy);
-      yy += 46 + 6;
+      if (x.roundRect) { x.beginPath(); x.roundRect(LX, pillTop, lw + padX * 2, pillH, pillH / 2); x.fill(); }
+      else x.fillRect(LX, pillTop, lw + padX * 2, pillH);
+      x.fillStyle = '#fff'; x.fillText(r.text, LX + padX, yy);
+      yy += Math.round(FS * 1.7) + 6;
     } else {
       x.font = "400 " + FS + "px " + FAM; x.fillStyle = '#33463c';
       for (const ln of _wrapCanvas(x, r.text, maxItemW)) {
