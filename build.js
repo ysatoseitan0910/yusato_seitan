@@ -91,6 +91,27 @@ async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
 }
 
 // syncToYuNews専用: 全件のURLをページネーションで取得（Published問わず重複チェック用）
+// Published を問わず全件取得（今週のさとうゆは非公開でも weekly.html に表示するため）
+async function queryDBAll(dbId, sorts=[{property:"Date",direction:"descending"}]) {
+  if (!dbId) return [];
+  try {
+    const all = [];
+    let cursor;
+    do {
+      const query = { database_id: dbId, page_size: 100, start_cursor: cursor };
+      if (sorts.length > 0) query.sorts = sorts;
+      const res = await notion.databases.query(query);
+      all.push(...res.results);
+      cursor = res.has_more ? res.next_cursor : undefined;
+    } while (cursor);
+    console.log(`  DB(${dbId.slice(0,8)}...): ${all.length}件取得（Published問わず）`);
+    return all;
+  } catch(e) {
+    console.error(`DB query error (${dbId}):`, e.message);
+    return [];
+  }
+}
+
 async function queryAllUrls(dbId) {
   const urls = new Set();
   let cursor;
@@ -1578,7 +1599,8 @@ function renderWeeklyBody(text) {
 }
 
 async function buildWeekly(tpl) {
-  const all = await queryDB(DB.news, [{ property: "Date", direction: "descending" }]);
+  // 今週のさとうゆは DB_TOP_NEWS で非公開にしていても weekly.html には表示する
+  const all = await queryDBAll(DB.news, [{ property: "Date", direction: "descending" }]);
   const weeks = all.filter(p => getText(p, "Name").startsWith("今週のさとうゆ"));
 
   const style = `
