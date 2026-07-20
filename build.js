@@ -112,6 +112,33 @@ async function queryDBAll(dbId, sorts=[{property:"Date",direction:"descending"}]
   }
 }
 
+// 年表の重複判定キーを全件取得（URL＋日付 と 名前＋日付 の2種類）
+// ・Leminoは番組ページURLが全話共通のことがあり、URLだけだと2話目以降が重複扱いで取り込まれない
+// ・元DB側でURLを直すと既存の年表レコードと結び付かなくなるため、名前＋日付でも照合する
+async function queryHistoryKeys(dbId) {
+  const keys = new Set();
+  let cursor;
+  do {
+    const res = await notion.databases.query({
+      database_id: dbId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+    for (const p of res.results) {
+      const u = getUrl(p), d = getDate(p), n = getText(p, "Name");
+      if (u) keys.add(`u:${u} ${d}`);
+      if (n) keys.add(`n:${normHistoryName(n)} ${d}`);
+    }
+    cursor = res.has_more ? res.next_cursor : undefined;
+  } while (cursor);
+  return keys;
+}
+
+// Notionでページを複製すると付く「 (1)」や、改行・連続空白を無視して比較するための正規化
+function normHistoryName(s) {
+  return String(s || "").replace(/\s*[（(]\d+[)）]\s*$/, "").replace(/\s+/g, " ").trim();
+}
+
 async function queryAllUrls(dbId) {
   const urls = new Set();
   let cursor;
@@ -2166,8 +2193,8 @@ async function syncToHistory() {
     { db: DB.lemino,    kind: "lemino" },
     { db: DB.youtube,   kind: "youtube" },
   ];
-  const existingUrls = await queryAllUrls(DB.history);
-  console.log(`  年表 既存URL: ${existingUrls.size}件`);
+  const existingKeys = await queryHistoryKeys(DB.history);
+  console.log(`  年表 既存キー(URL+日付 / 名前+日付): ${existingKeys.size}件`);
 
   for (const { db, kind } of sources) {
     if (!db) continue;
@@ -2177,9 +2204,13 @@ async function syncToHistory() {
       const name = getText(page, "Name") || getText(page, "Title");
       let date   = getDate(page);
       if (!date && kind === "interview") date = getDate(page, "発売日");
-      if (!url || existingUrls.has(url)) continue;
+      if (!url) continue;
       if (!name) continue;
       if (!date || date < SYNC_HISTORY_SINCE) continue;   // 今後の分だけ
+      // URL＋日付 と 名前＋日付 のどちらかが既存なら取り込み済みとみなす
+      const kUrl  = `u:${url} ${date}`;
+      const kName = `n:${normHistoryName(name)} ${date}`;
+      if (existingKeys.has(kUrl) || existingKeys.has(kName)) continue;
       const type = historyType(kind, page, name);
       const [Y, M, D] = date.split("-");
       const props = {
@@ -2194,7 +2225,7 @@ async function syncToHistory() {
       };
       try {
         await notion.pages.create({ parent: { database_id: DB.history }, properties: props });
-        existingUrls.add(url);
+        existingKeys.add(kUrl); existingKeys.add(kName);
         console.log(`  ✅ 年表に追加: [${type}] ${name}`);
       } catch (e) {
         console.error(`  ❌ 年表追加失敗: ${name}`, e.message);
