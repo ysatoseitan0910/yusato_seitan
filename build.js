@@ -1589,6 +1589,24 @@ details[open] .tl-month-label::before { transform: rotate(90deg); }
   return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
 }
 
+// OGP画像の ?v= を画像ファイルの Last-Modified から作る（取得できなければ fallback）
+async function fetchOgpVersion(imageUrl, fallback) {
+  try {
+    const res = await fetch(imageUrl, { method: "HEAD", signal: AbortSignal.timeout(8000) });
+    const lm = res.headers.get("last-modified");
+    if (lm) {
+      const t = new Date(lm);
+      if (!isNaN(t.getTime())) {
+        const p = n => String(n).padStart(2, "0");
+        return `${t.getUTCFullYear()}${p(t.getUTCMonth() + 1)}${p(t.getUTCDate())}${p(t.getUTCHours())}${p(t.getUTCMinutes())}${p(t.getUTCSeconds())}`;
+      }
+    }
+  } catch (e) {
+    console.log(`  OGP画像の更新時刻取得に失敗（fallback使用）: ${e.message}`);
+  }
+  return fallback;
+}
+
 // ── 今週のさとうゆ ──
 // DB_TOP_NEWS の「今週のさとうゆ（…）」レコードのBodyをパースしてリンク付きで表示
 function renderWeeklyBody(text) {
@@ -1659,7 +1677,10 @@ async function buildWeekly(tpl) {
   // URLが変わらず SNS/OGPツールが古い画像をキャッシュし続けるため。
   const latestEnd = getDate(weeks[0]) || "";
   const latestLabel = (getText(weeks[0], "Name").match(/（(.+?)）/) || [])[1] || "";
-  const ogpVer = String(weeks[0].last_edited_time || latestEnd).replace(/\D/g, "").slice(0, 14);
+  const fallbackVer = String(weeks[0].last_edited_time || latestEnd).replace(/\D/g, "").slice(0, 14);
+  // 画像ファイル自体の更新時刻を優先する。管理画面でOGP画像だけ作り直して本文を保存しなかった場合、
+  // レコードの更新時刻では ?v= が変わらず X などが古い画像をキャッシュし続けるため。
+  const ogpVer = await fetchOgpVersion(`${SITE_URL}/ogp/weekly.png`, fallbackVer);
   const ogpImage = latestEnd ? `${SITE_URL}/ogp/weekly.png?v=${ogpVer}` : "";
   const ogpDesc = latestLabel ? `今週のさとうゆ（${latestLabel}）｜出来事・ブログ・TikTok・他メンバーブログ登場まとめ` : "";
 
