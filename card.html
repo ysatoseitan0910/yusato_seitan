@@ -2270,12 +2270,47 @@ function buildHighResCanvas() {
   return { canvas: tmp, filename: `satoyu_profile_${name}.png` };
 }
 
+// Canvas を PNG 保存する堅牢版
+// ・toBlob＋ObjectURL（巨大 data URL を避ける。モバイル/大きな画像で失敗しにくい）
+// ・<a> は DOM に追加してから click（Firefox・一部モバイル対策）
+// ・iOS Safari は download 属性を無視するので Web Share にフォールバック
+function saveCanvasPng(canvas, filename) {
+  const finish = (blob) => {
+    if (!blob) { fallbackDataUrl(); return; }
+    // iOSなど download 非対応環境では共有シートを試す
+    const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+    const canShareFile = navigator.canShare && (() => {
+      try { return navigator.canShare({ files: [new File([blob], filename, { type: "image/png" })] }); }
+      catch (e) { return false; }
+    })();
+    if (isIOS && canShareFile) {
+      navigator.share({ files: [new File([blob], filename, { type: "image/png" })] })
+        .catch(() => saveViaAnchor(URL.createObjectURL(blob)));
+      return;
+    }
+    saveViaAnchor(URL.createObjectURL(blob), true);
+  };
+  const saveViaAnchor = (url, revoke) => {
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    a.rel = "noopener"; a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { a.remove(); if (revoke) URL.revokeObjectURL(url); }, 1500);
+  };
+  const fallbackDataUrl = () => {
+    try { saveViaAnchor(canvas.toDataURL("image/png")); }
+    catch (e) { alert("画像の生成に失敗しました。お手数ですが、カードを長押し（右クリック）して保存してください。"); }
+  };
+  try {
+    if (canvas.toBlob) canvas.toBlob(finish, "image/png");
+    else fallbackDataUrl();
+  } catch (e) { fallbackDataUrl(); }
+}
+
 function download() {
   const { canvas, filename } = buildHighResCanvas();
-  const a = document.createElement("a");
-  a.download = filename;
-  a.href = canvas.toDataURL("image/png");
-  a.click();
+  saveCanvasPng(canvas, filename);
 }
 
 const TWEET_TEXT = "#さとうゆ一推しプロフィール\nhttps://satoyu.info";
@@ -2300,10 +2335,7 @@ async function shareToX() {
       }
     }
 
-    const a = document.createElement("a");
-    a.download = filename;
-    a.href = canvas.toDataURL("image/png");
-    a.click();
+    saveCanvasPng(canvas, filename);
     const xUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(TWEET_TEXT);
     setTimeout(() => window.open(xUrl, "_blank", "width=600,height=500,noopener"), 600);
   } finally {
