@@ -236,11 +236,12 @@ app.post("/add/youtube", auth, async (req, res) => {
 // 他メンバーブログ
 app.post("/add/memberblog", auth, async (req, res) => {
   const { name, date, url, members, description } = req.body;
-  if (!name) return res.status(400).json({ error: "タイトルは必須です" });
+  // URLだけあれば登録可。タイトル/日付/メンバーは未入力ならビルド時に自動補完される
+  if (!url) return res.status(400).json({ error: "URLは必須です（タイトル・日付・メンバーは自動補完されます）" });
   try {
-    const props = { Name: { title: t(name) }, Published: { checkbox: true } };
+    const props = { Published: { checkbox: true }, URL: { url } };
+    if (name) props.Name = { title: t(name) };
     if (date) props.Date = { date: { start: date } };
-    if (url)  props.URL  = { url };
     if (members) {
       const memberList = members.split(",").map(s => s.trim()).filter(Boolean);
       if (memberList.length) props.Member = { multi_select: memberList.map(n => ({ name: n })) };

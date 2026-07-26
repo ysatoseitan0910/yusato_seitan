@@ -194,6 +194,15 @@ Canvas（2D）でブラウザ内描画し、PNG形式でダウンロードでき
 - **DB_MEMBER_BLOG**：他メンバーブログ（`DB_MEMBER_BLOG` 環境変数で追加）
 - 両DBを `processDB(dbId, label)` 関数で共通処理
 
+## update_member_blog_meta.js の仕組み
+- **DB_MEMBER_BLOG に URL だけ登録すると、Name（タイトル）/ Date（日付）/ Member（メンバー名）を自動補完**
+- 日向坂46公式の記事ページ（`diary/detail/{id}`）から抽出：タイトル=`c-blog-article__title`／日付=`c-blog-article__date`内の`<time>YYYY.M.D`／メンバー名=`<title>`の「◯◯公式ブログ」（空白除去）
+- **未設定のプロパティだけ埋める**（手動入力済みの値は上書きしない）
+- メンバー名は既存の Member 選択肢に「空白除去＋NFC正規化」で寄せてダブり防止（髙/嶌 等の表記ゆれ対策）
+- deploy.yml で add_blog_posts の後・update_blog_thumbnails の前に実行（補完→サムネ付与を同一実行で）
+- `DRY_RUN=1` で書き込みせず抽出結果だけ確認可能
+- 管理ページの「他メンバーブログ」フォームも **URLのみ必須**に変更（`/add/memberblog`）
+
 ## add_blog_posts.js の仕組み
 - スクレイピング対象：`https://www.hinatazaka46.com/s/official/diary/member/list?ima=0000&ct=42`
 - 抽出クラス：`c-blog-article__title`、`c-blog-article__date`

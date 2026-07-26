@@ -750,18 +750,19 @@ header span { font-size: 13px; color: var(--text-muted); }
     <!-- 他メンバーブログ -->
     <div class="form-panel" id="panel-memberblog">
       <h2>📔 他メンバーブログを追加</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">URLだけ入力すればOKです。タイトル・日付・メンバーは次回ビルド時に日向坂46公式ページから自動補完されます（手動入力した項目は上書きしません）。</p>
       <div class="form-grid">
         <div class="field full">
-          <label>タイトル <span style="color:#c00">*</span></label>
-          <input type="text" id="memberblog-name" placeholder="ブログタイトル">
+          <label>URL <span style="color:#c00">*</span></label>
+          <input type="url" id="memberblog-url" placeholder="https://www.hinatazaka46.com/s/official/diary/detail/...">
+        </div>
+        <div class="field full">
+          <label>タイトル（任意・自動補完）</label>
+          <input type="text" id="memberblog-name" placeholder="省略可">
         </div>
         <div class="field">
-          <label>日付</label>
+          <label>日付（任意・自動補完）</label>
           <input type="date" id="memberblog-date">
-        </div>
-        <div class="field">
-          <label>URL</label>
-          <input type="url" id="memberblog-url" placeholder="https://www.hinatazaka46.com/...">
         </div>
         <div class="field full">
           <label>メンバー（複数選択可）</label>

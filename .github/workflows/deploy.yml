@@ -30,6 +30,12 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:      ${{ secrets.DB_BLOG }}
 
+      - name: Fill member blog meta (Name/Date/Member from URL)
+        run: node update_member_blog_meta.js
+        env:
+          NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
+          DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
+
       - name: Update blog thumbnails
         run: node update_blog_thumbnails.js
         env:
