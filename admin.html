@@ -831,17 +831,32 @@ header span { font-size: 13px; color: var(--text-muted); }
 
           <div class="weekly-ogp-block" style="margin-top:18px;border-top:1px dashed var(--border);padding-top:16px;">
             <label style="font-weight:700;">🖼 OGP画像の文章（自分で指定）</label>
-            <p class="weekly-note" style="margin:4px 0 8px;">この文章が weekly.html の OGP画像（SNSシェア画像）に描画されます。<b>▼</b>で始まる行は見出し（緑のピル）、それ以外の行は本文になります。<b>空欄のままボタンを押さなければ OGP画像は自動更新されません。</b></p>
-            <textarea id="weekly-ogp-text" class="weekly-textarea" spellcheck="false" placeholder="例：
+            <p class="weekly-note" style="margin:4px 0 8px;">この文章が weekly.html の OGP画像（SNSシェア画像）に描画されます。<b>▼</b>で始まる行は見出し（緑のピル）、それ以外の行は本文になります。<b>「プレビューを作成」で確認 →「このOGP画像を設定」で反映</b>の順です。</p>
+            <textarea id="weekly-ogp-text" class="weekly-textarea" spellcheck="false" oninput="_ogpDirty()" placeholder="例：
 ▼できごと（3件）
 7/8 「密着！五期生ひなたぼっこ日記」スタート
 7/12 日向坂で会いましょう #371
 7/12 まだまだ！日向坂で会いましょう #371
 ▼他メンバーブログ登場（1件）
 7/7 ポカ"></textarea>
-            <div class="weekly-result-actions">
+
+            <!-- 右に載せるイラスト -->
+            <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+              <span style="font-size:13px;color:var(--text-muted);">イラスト：</span>
+              <img id="weekly-ogp-illust-thumb" src="/images/image/card/kuruma.png" alt="" style="width:48px;height:48px;object-fit:contain;border:1px solid var(--border);border-radius:8px;background:#fff;">
+              <label class="list-refresh-btn" style="cursor:pointer;">画像を選択
+                <input type="file" id="weekly-ogp-illust-file" accept="image/*" style="display:none;" onchange="onOgpIllustFile(this)">
+              </label>
+              <button class="list-refresh-btn" type="button" onclick="resetOgpIllust()">デフォルト(kuruma)に戻す</button>
+              <span id="weekly-ogp-illust-name" style="font-size:12px;color:var(--text-light);">デフォルト画像</span>
+            </div>
+
+            <div class="weekly-result-actions" style="margin-top:12px;">
               <span class="status" id="weekly-ogp-status"></span>
-              <button class="btn submit-btn" onclick="updateWeeklyOgp()">🖼 OGP画像を作成・更新</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn" type="button" onclick="previewWeeklyOgp()">🖼 プレビューを作成</button>
+                <button class="btn submit-btn" id="weekly-ogp-apply-btn" type="button" onclick="applyWeeklyOgp()" disabled>✅ このOGP画像を設定</button>
+              </div>
             </div>
             <img id="weekly-ogp-preview" alt="OGPプレビュー" style="display:none;width:100%;max-width:600px;border:1px solid var(--border);border-radius:12px;margin-top:10px;">
           </div>
@@ -1268,16 +1283,58 @@ function drawWeeklyOgpManual(range, text, illust) {
   return c.toDataURL('image/png');
 }
 
-// OGPの右に載せるイラスト（kuruma.png）
-var _ogpIllust = null;
-function loadOgpIllust() {
+// OGPの右に載せるイラスト（デフォルト kuruma.png・アップロードで差し替え）
+var _ogpIllust = null;          // 現在使用するイラスト Image（読み込み失敗なら null＝イラストなし）
+var _ogpIllustReady = null;     // 読み込み完了 Promise
+var _weeklyOgpDataUrl = null;   // 直近プレビューの dataURL（「設定」で使う）
+
+function _loadImage(src) {
   return new Promise(function (resolve) {
-    if (_ogpIllust) return resolve(_ogpIllust);
     const img = new Image();
-    img.onload = function () { _ogpIllust = img; resolve(img); };
+    img.onload = function () { resolve(img); };
     img.onerror = function () { resolve(null); };
-    img.src = '/images/image/card/kuruma.png';
+    img.src = src;
   });
+}
+function loadDefaultOgpIllust() {
+  _ogpIllustReady = _loadImage('/images/image/card/kuruma.png').then(function (img) { _ogpIllust = img; return img; });
+  return _ogpIllustReady;
+}
+
+// 文章やイラストを変えたらプレビューを無効化（古い画像を設定させない）
+function _ogpDirty() {
+  _weeklyOgpDataUrl = null;
+  const b = document.getElementById('weekly-ogp-apply-btn');
+  if (b) b.disabled = true;
+}
+
+function onOgpIllustFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    _ogpIllustReady = _loadImage(reader.result).then(function (img) {
+      _ogpIllust = img;
+      const thumb = document.getElementById('weekly-ogp-illust-thumb');
+      if (thumb) thumb.src = reader.result;
+      const nm = document.getElementById('weekly-ogp-illust-name');
+      if (nm) nm.textContent = file.name;
+      return img;
+    });
+    _ogpDirty();
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetOgpIllust() {
+  const thumb = document.getElementById('weekly-ogp-illust-thumb');
+  if (thumb) thumb.src = '/images/image/card/kuruma.png';
+  const nm = document.getElementById('weekly-ogp-illust-name');
+  if (nm) nm.textContent = 'デフォルト画像';
+  const file = document.getElementById('weekly-ogp-illust-file');
+  if (file) file.value = '';
+  loadDefaultOgpIllust();
+  _ogpDirty();
 }
 
 function resetWeeklyOgpUI() {
@@ -1287,36 +1344,50 @@ function resetWeeklyOgpUI() {
   if (pv) { pv.style.display = 'none'; pv.removeAttribute('src'); }
   const st = document.getElementById('weekly-ogp-status');
   if (st) { st.className = 'status'; st.textContent = ''; }
+  resetOgpIllust();   // イラストをデフォルトに戻し、プレビューも無効化
 }
 
-// 手動指定した文章でOGP画像を作成・アップロード
-async function updateWeeklyOgp() {
+// ① プレビューを作成（アップロードはしない）
+async function previewWeeklyOgp() {
   const st = document.getElementById('weekly-ogp-status');
   const text = (document.getElementById('weekly-ogp-text').value || '').trim();
-  if (!text) {
-    if (st) { st.className = 'status err'; st.textContent = '❌ OGP画像の文章を入力してください'; }
-    return false;
-  }
+  if (!text) { if (st) { st.className = 'status err'; st.textContent = '❌ OGP画像の文章を入力してください'; } return; }
   const range = ((document.getElementById('weekly-result-title').textContent || '').match(/（(.+?)）/) || [])[1] || '';
-  if (st) { st.className = 'status'; st.textContent = '⏳ 作成中...'; }
+  if (st) { st.className = 'status'; st.textContent = '⏳ プレビュー作成中...'; }
   try {
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
-    const illust = await loadOgpIllust();
-    const dataUrl = drawWeeklyOgpManual(range, text, illust);
+    if (!_ogpIllustReady) loadDefaultOgpIllust();
+    const illust = await _ogpIllustReady;
+    _weeklyOgpDataUrl = drawWeeklyOgpManual(range, text, illust);
     const pv = document.getElementById('weekly-ogp-preview');
-    if (pv) { pv.src = dataUrl; pv.style.display = ''; }
+    if (pv) { pv.src = _weeklyOgpDataUrl; pv.style.display = ''; }
+    const b = document.getElementById('weekly-ogp-apply-btn');
+    if (b) b.disabled = false;
+    if (st) { st.className = 'status ok'; st.textContent = '✅ プレビューを作成しました。内容を確認して「このOGP画像を設定」を押してください'; }
+  } catch (e) {
+    if (st) { st.className = 'status err'; st.textContent = '❌ ' + e.message; }
+  }
+}
+
+// ② プレビュー済みの画像を OGP として設定（アップロード）
+async function applyWeeklyOgp() {
+  const st = document.getElementById('weekly-ogp-status');
+  if (!_weeklyOgpDataUrl) { if (st) { st.className = 'status err'; st.textContent = '❌ 先に「プレビューを作成」を押してください'; } return; }
+  const btn = document.getElementById('weekly-ogp-apply-btn');
+  if (btn) btn.disabled = true;
+  if (st) { st.className = 'status'; st.textContent = '⏳ 設定中...'; }
+  try {
     const res = await fetch(`${API_BASE}/ogp/weekly`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getPassword()}` },
-      body: JSON.stringify({ imageBase64: dataUrl.split(',')[1] }),
+      body: JSON.stringify({ imageBase64: _weeklyOgpDataUrl.split(',')[1] }),
     });
-    if (res.status === 401) { logout(); return false; }
+    if (res.status === 401) { logout(); return; }
     if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'アップロード失敗');
-    if (st) { st.className = 'status ok'; st.textContent = '✅ OGP画像を更新しました（SNSキャッシュ反映には時間がかかる場合があります）'; }
-    return true;
+    if (st) { st.className = 'status ok'; st.textContent = '✅ OGP画像を設定しました（SNSキャッシュ反映には時間がかかる場合があります）'; }
   } catch (e) {
     if (st) { st.className = 'status err'; st.textContent = '❌ ' + e.message; }
-    return false;
+    if (btn) btn.disabled = false;
   }
 }
 
