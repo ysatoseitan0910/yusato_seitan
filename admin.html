@@ -1384,7 +1384,13 @@ async function applyWeeklyOgp() {
     });
     if (res.status === 401) { logout(); return; }
     if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'アップロード失敗');
-    if (st) { st.className = 'status ok'; st.textContent = '✅ OGP画像を設定しました（SNSキャッシュ反映には時間がかかる場合があります）'; }
+    // og:image の ?v= を更新するため、続けて自動でクイックデプロイ（再ビルド）を実行
+    if (getGhToken()) {
+      if (st) { st.className = 'status ok'; st.textContent = '✅ OGP画像を設定しました。続けて再ビルドを開始します（数分後に og:image が更新されます。画面上部にデプロイ進捗が出ます）'; }
+      triggerDeploy('deploy-quick.yml');
+    } else {
+      if (st) { st.className = 'status ok'; st.textContent = '✅ OGP画像を設定しました。反映（og:imageの更新）には再ビルドが必要です。画面上部の「⚡ クイックデプロイ」を押すか、GitHubトークンを設定すると次回から自動で再ビルドします（定期ビルドでも最大30分で自動反映）。'; }
+    }
   } catch (e) {
     if (st) { st.className = 'status err'; st.textContent = '❌ ' + e.message; }
     if (btn) btn.disabled = false;
