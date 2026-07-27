@@ -183,12 +183,14 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .illust-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .illust-count { font-size: 11px; font-weight: 600; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 99px; padding: 2px 9px; }
 .illust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.illust-cell { position: relative; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; overflow: visible; transition: all 0.15s; display: flex; align-items: center; justify-content: center; padding: 4px; }
+.illust-cell { position: relative; border: 2px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; overflow: hidden; transition: all 0.15s; }
+/* aspect-ratio に依存せず padding-top で正方形を作る（全ブラウザ対応・はみ出し防止） */
+.illust-cell::before { content: ""; display: block; padding-top: 100%; }
 .illust-cell:hover { border-color: var(--emerald); }
-.illust-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.illust-cell img { position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; width: calc(100% - 8px); height: calc(100% - 8px); object-fit: contain; display: block; }
 .illust-cell.selected { border-color: var(--emerald); box-shadow: 0 0 0 2px var(--emerald-light); }
 .illust-cell.disabled { opacity: 0.38; cursor: not-allowed; }
-.illust-badge { position: absolute; top: -7px; right: -7px; width: 18px; height: 18px; border-radius: 50%; background: var(--emerald); color: #fff; font-size: 11px; line-height: 1; display: none; align-items: center; justify-content: center; }
+.illust-badge { position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--emerald); color: #fff; font-size: 11px; line-height: 1; display: none; align-items: center; justify-content: center; z-index: 1; }
 .illust-cell.selected .illust-badge { display: flex; }
 .illust-hint { font-size: 11px; color: var(--text-light); }
 
