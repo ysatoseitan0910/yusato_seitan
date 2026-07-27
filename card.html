@@ -1947,6 +1947,11 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   opFreeText(ctx, getV("free-note"), 555, 1200, 390, 250, 15, 36);
 
   // クリック→入力欄ジャンプ用ゾーン
+  // かいた日（かいたひラベル＋年/月/日の各ボックス）。ゾーンが無いと上半分クリックが
+  // なまえ欄に吸われるため、年・月・日それぞれに割り当てる
+  fieldZoneMap["wrote-y"]    = { x1: 340, x2: 635, y1: 85,  y2: 165 };
+  fieldZoneMap["wrote-m"]    = { x1: 640, x2: 795, y1: 85,  y2: 165 };
+  fieldZoneMap["wrote-d"]    = { x1: 800, x2: 965, y1: 85,  y2: 165 };
   fieldZoneMap["fan-name"]   = { x1: 60,  x2: 660, y1: 185, y2: 330 };
   fieldZoneMap["self-intro"] = { x1: 60,  x2: 830, y1: 429, y2: 621 };
   for (let i = 0; i < 6; i++) {
