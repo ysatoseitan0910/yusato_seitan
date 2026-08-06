@@ -50,15 +50,32 @@ async function queryAll(dbId) {
   return results;
 }
 
+// Notionのプロパティ名は大文字小文字を区別し、DBによって "Media"/"media" が混在するため
+// スキーマから実際の名前を引く（固定名だと全件を「未設定」と誤判定して毎回書き込みに失敗する）
+async function resolveMediaProp(dbId) {
+  try {
+    const db = await notion.databases.retrieve({ database_id: dbId });
+    const hit = Object.entries(db.properties)
+      .find(([k, v]) => k.toLowerCase() === "media" && v.type === "files");
+    return hit ? hit[0] : null;
+  } catch (e) {
+    console.error(`  スキーマ取得失敗: ${e.message}`);
+    return null;
+  }
+}
+
 async function processDB(dbId, label) {
   if (!dbId) { console.log(`  ${label}: DB未設定 → スキップ`); return; }
+
+  const mediaProp = await resolveMediaProp(dbId);
+  if (!mediaProp) { console.log(`  ${label}: media(files)プロパティなし → スキップ`); return; }
 
   console.log(`📋 ${label}を取得中...`);
   const pages = await queryAll(dbId);
   console.log(`  ${pages.length}件取得`);
 
   const targets = pages.filter(p => {
-    const files = p.properties["Media"]?.files || [];
+    const files = p.properties[mediaProp]?.files || [];
     return files.length === 0;
   });
   console.log(`  うちMedia未設定: ${targets.length}件\n`);
@@ -82,7 +99,7 @@ async function processDB(dbId, label) {
       await notion.pages.update({
         page_id: page.id,
         properties: {
-          Media: {
+          [mediaProp]: {
             files: [{ name: "thumbnail", type: "external", external: { url: imgUrl } }],
           },
         },
@@ -106,4 +123,6 @@ async function main() {
   await processDB(DB_MEMBER_BLOG, "他メンバーブログDB");
 }
 
-main().catch(console.error);
+// エラー時は必ず異常終了する。exit 0 のままだとデプロイが「成功」と誤判定され、
+// 直後の rsync --delete が生成されなかったHTMLを本番から削除してしまう（過去に403障害）
+main().catch(e => { console.error(e); process.exit(1); });

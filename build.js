@@ -47,11 +47,39 @@ function getTags(page, key) {
   if (p?.select?.name) return [p.select.name];
   return [];
 }
+// Notionのプロパティ名は大文字小文字を区別する。DBによって "Media" と "media" が
+// 混在しているため（委員会/活動報告=Media、YouTube/Lemino/TikTok=media）、
+// 完全一致で見つからなければ大小無視で探す。固定 "Media" だと後者のサムネイルが
+// すべて取得できず、無駄な再取得・書き込み失敗が発生していた
 function getMedia(page, key="Media") {
-  const files = prop(page,key)?.files || [];
+  let p = prop(page, key);
+  if (!p) {
+    const hit = Object.entries(page.properties || {})
+      .find(([k, v]) => k.toLowerCase() === key.toLowerCase() && v.type === "files");
+    if (hit) p = hit[1];
+  }
+  const files = p?.files || [];
   if (!files.length) return "";
   const f = files[0];
   return f.type === "external" ? f.external.url : f.file?.url || "";
+}
+
+// 書き込み用：対象DBの media プロパティの実際の名前を1回だけ解決してキャッシュ
+const _mediaPropCache = new Map();
+async function resolveMediaProp(dbId) {
+  if (!dbId) return null;
+  if (_mediaPropCache.has(dbId)) return _mediaPropCache.get(dbId);
+  let name = null;
+  try {
+    const db = await notion.databases.retrieve({ database_id: dbId });
+    const hit = Object.entries(db.properties)
+      .find(([k, v]) => k.toLowerCase() === "media" && v.type === "files");
+    if (hit) name = hit[0];
+  } catch (e) {
+    console.error(`  mediaプロパティ解決失敗 (${String(dbId).slice(0,8)}…): ${e.message}`);
+  }
+  _mediaPropCache.set(dbId, name);
+  return name;
 }
 function isPublished(page) {
   const p = prop(page, "Published");
@@ -160,10 +188,11 @@ async function queryAllUrls(dbId) {
 // ── テンプレート読み込み ──
 function loadTemplate(active) {
   let t = fs.readFileSync("_template.html","utf-8");
-  const pages = ["INDEX","YU","COMMITTEE","ACTIVITIES","YUNEWS","BLOG","MEMBER_BLOG","INTERVIEW","X","TIKTOK","INSTAGRAM","YOUTUBE","LEMINO","QUIZ","ABOUT","SITE_INFO","TERMS","JOIN","CARD","MESSAGE","HISTORY","WEEKLY"];
-  pages.forEach(p => {
-    t = t.replace(`{{ACTIVE_${p}}}`, p === active ? 'class="active"' : '');
-  });
+  // 現在ページのナビだけ active に。残りは一括で除去する。
+  // 以前はページ名の配列を手で持っていたため、ナビ項目を追加すると配列への追記漏れで
+  // {{ACTIVE_LINKS}} のようなプレースホルダがHTMLにそのまま出力されていた
+  if (active) t = t.replaceAll(`{{ACTIVE_${active}}}`, 'class="active"');
+  t = t.replace(/\{\{ACTIVE_[A-Z_]+\}\}/g, "");
   return t;
 }
 
@@ -184,7 +213,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
     .replace("{{PAGE_TITLE}}", title)
     .replaceAll("{{OGP_TITLE}}", ogpTitle)
     .replaceAll("{{OGP_DESC}}", effectiveOgpDesc)
-    .replace("{{OGP_URL}}", ogpUrl)
+    .replaceAll("{{OGP_URL}}", ogpUrl)   // og:url と canonical の2箇所にあるため replaceAll
     .replaceAll("{{OGP_IMAGE}}", ogpImg)
     .replace("{{BODY}}", `
       ${heroBlock}
@@ -2063,9 +2092,23 @@ async function syncToYuNews() {
     { db: DB.web,       platform: "Web" },
   ];
 
-  // 既存のYu NewsのURLを全件取得（ページネーション対応・Published問わず）
+  // DB_YU_NEWS の media プロパティ名（Media / media）を解決しておく
+  const yuMediaProp = await resolveMediaProp(DB.yuNews);
+
+  // 既存のYu Newsを全件取得し、URL→ページ の索引を1回だけ作る（Published問わず）。
+  // 以前は URL集合だけを持ち、Media同期のたびに databases.query を1件ずつ投げていたため、
+  // 毎ビルドで数百回の無駄なAPI呼び出しが発生していた（N+1問題）
   console.log("  既存URLを全件確認中...");
-  const existingUrls = await queryAllUrls(DB.yuNews);
+  const yuPages = await queryDBAll(DB.yuNews, []);
+  const existingUrls = new Set();
+  const yuByUrl = new Map();
+  for (const p of yuPages) {
+    const u = getUrl(p);
+    if (!u) continue;
+    existingUrls.add(u);
+    if (!yuByUrl.has(u)) yuByUrl.set(u, []);
+    yuByUrl.get(u).push(p);
+  }
   console.log(`  既存URL: ${existingUrls.size}件`);
 
   // ── 既存レコードのDescription更新（YouTube/TikTok） ──
@@ -2079,11 +2122,8 @@ async function syncToYuNews() {
       const desc = getText(page, "Description");
       if (!url) continue;
       try {
-        const res = await notion.databases.query({
-          database_id: DB.yuNews,
-          filter: { property: "URL", url: { equals: url } },
-        });
-        for (const yuPage of res.results) {
+        for (const yuPage of (yuByUrl.get(url) || [])) {   // 索引から引く（APIクエリ不要）
+          if (getText(yuPage, "Description") === desc) continue; // 同じ内容なら書き込まない
           await notion.pages.update({
             page_id: yuPage.id,
             properties: { Description: { rich_text: [{ text: { content: desc } }] } },
@@ -2112,16 +2152,13 @@ async function syncToYuNews() {
       const url   = getUrl(page);
       const media = getMedia(page);
       if (!url || !media) continue;
+      if (!yuMediaProp) break;                           // mediaプロパティが無いDBなら諦める
       try {
-        const res = await notion.databases.query({
-          database_id: DB.yuNews,
-          filter: { property: "URL", url: { equals: url } },
-        });
-        for (const yuPage of res.results) {
-          if (getMedia(yuPage)) continue; // 既にMediaあり → スキップ
+        for (const yuPage of (yuByUrl.get(url) || [])) { // 索引から引く（APIクエリ不要）
+          if (getMedia(yuPage)) continue;                // 既にMediaあり → スキップ
           await notion.pages.update({
             page_id: yuPage.id,
-            properties: { Media: { files: [{ name: "thumbnail", type: "external", external: { url: media } }] } },
+            properties: { [yuMediaProp]: { files: [{ name: "thumbnail", type: "external", external: { url: media } }] } },
           });
           console.log(`  ✅ Media更新: [${platform}] ${getText(page,"Name")}`);
           await new Promise(r => setTimeout(r, 400));
@@ -2158,15 +2195,15 @@ async function syncToYuNews() {
         Platform:    { multi_select: [{ name: platform }] },
         Published:   { checkbox: true },
       };
-      if (media) baseProps.Media = { files: [{ name: "thumbnail", type: "external", external: { url: media } }] };
+      if (media && yuMediaProp) baseProps[yuMediaProp] = { files: [{ name: "thumbnail", type: "external", external: { url: media } }] };
       try {
         await notion.pages.create({ parent: { database_id: DB.yuNews }, properties: baseProps });
         existingUrls.add(url);
         console.log(`  ✅ Yu Newsに追加: [${platform}] ${name}`);
       } catch(e) {
-        if (media && e.code === "validation_error" && e.message.includes("Media")) {
-          // DB_YU_NEWSにMediaプロパティがない場合はMediaなしで再試行
-          delete baseProps.Media;
+        if (media && yuMediaProp && e.code === "validation_error" && e.message.toLowerCase().includes("media")) {
+          // DB_YU_NEWSにmediaプロパティがない場合はMediaなしで再試行
+          delete baseProps[yuMediaProp];
           try {
             await notion.pages.create({ parent: { database_id: DB.yuNews }, properties: baseProps });
             existingUrls.add(url);
@@ -2344,4 +2381,6 @@ async function main() {
   console.log(isPartial ? "✅ 部分ビルド完了！" : "🎉 全ページ生成完了！");
 }
 
-main().catch(console.error);
+// エラー時は必ず異常終了する。exit 0 のままだとデプロイが「成功」と誤判定され、
+// 直後の rsync --delete が生成されなかったHTMLを本番から削除してしまう（過去に403障害）
+main().catch(e => { console.error(e); process.exit(1); });

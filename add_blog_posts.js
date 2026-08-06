@@ -220,4 +220,6 @@ async function main() {
   console.log(`\n完了: 追加 ${success}件 / 失敗 ${fail}件`);
 }
 
-main().catch(console.error);
+// エラー時は必ず異常終了する。exit 0 のままだとデプロイが「成功」と誤判定され、
+// 直後の rsync --delete が生成されなかったHTMLを本番から削除してしまう（過去に403障害）
+main().catch(e => { console.error(e); process.exit(1); });

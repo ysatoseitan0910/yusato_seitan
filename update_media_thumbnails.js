@@ -72,8 +72,30 @@ function getPlatforms(page) {
   return [];
 }
 
-function hasMedia(page) {
-  return (page.properties["Media"]?.files || []).length > 0;
+// Notionのプロパティ名は大文字小文字を区別する。DBによって "Media" と "media" が
+// 混在しているため（例: 委員会/活動報告=Media、YouTube/Lemino/TikTok=media）、
+// DBスキーマから実際の名前を1回だけ引いてキャッシュする。
+// これを固定 "Media" にしていたせいで、全件が「未設定」と誤判定され、
+// 毎回すべてのエントリに書き込みを試みては validation_error で失敗していた（1回あたり約3分半の浪費）。
+const mediaPropCache = new Map();
+async function getMediaProp(dbId) {
+  if (mediaPropCache.has(dbId)) return mediaPropCache.get(dbId);
+  let name = null;
+  try {
+    const db = await notion.databases.retrieve({ database_id: dbId });
+    const hit = Object.entries(db.properties)
+      .find(([k, v]) => k.toLowerCase() === "media" && v.type === "files");
+    if (hit) name = hit[0];
+    else console.warn(`  ⚠️  media(files)プロパティが見つかりません: ${dbId.slice(0, 8)}… → サムネイル更新をスキップ`);
+  } catch (e) {
+    console.error(`  スキーマ取得失敗 (${dbId.slice(0, 8)}…): ${e.message}`);
+  }
+  mediaPropCache.set(dbId, name);
+  return name;
+}
+
+function hasMedia(page, prop) {
+  return (page.properties[prop]?.files || []).length > 0;
 }
 
 function hasName(page) {
@@ -105,14 +127,14 @@ async function updateNameProp(page, title, label) {
   }
 }
 
-async function updateMedia(page, imgUrl, label) {
+async function updateMedia(page, imgUrl, label, prop) {
   const name = getName(page);
   process.stdout.write(`  ${label} ${name.slice(0, 40)} ... `);
   try {
     await notion.pages.update({
       page_id: page.id,
       properties: {
-        Media: { files: [{ name: "thumbnail", type: "external", external: { url: imgUrl } }] },
+        [prop]: { files: [{ name: "thumbnail", type: "external", external: { url: imgUrl } }] },
       },
     });
     console.log(`✅ ${imgUrl.split("/").pop().slice(0, 60)}`);
@@ -128,9 +150,11 @@ async function updateMedia(page, imgUrl, label) {
 async function processYoutubeDB(dbId) {
   if (!dbId) return;
   console.log("\n📺 DB_YOUTUBE を処理中...");
+  const mediaProp = await getMediaProp(dbId);
+  if (!mediaProp) return;
   const pages = await queryAll(dbId);
-  const targets = pages.filter(p => !hasMedia(p));
-  console.log(`  ${pages.length}件中 Media未設定: ${targets.length}件`);
+  const targets = pages.filter(p => !hasMedia(p, mediaProp));
+  console.log(`  ${pages.length}件中 ${mediaProp}未設定: ${targets.length}件`);
 
   let success = 0, skip = 0, fail = 0;
   for (const page of targets) {
@@ -138,7 +162,7 @@ async function processYoutubeDB(dbId) {
     if (!url) { console.log(`  ⚠️  URLなし: ${getName(page)}`); skip++; continue; }
     const imgUrl = getYoutubeThumbnail(url);
     if (!imgUrl) { console.log(`  ⚠️  動画ID取得失敗: ${url}`); skip++; continue; }
-    const ok = await updateMedia(page, imgUrl, "[YouTube]");
+    const ok = await updateMedia(page, imgUrl, "[YouTube]", mediaProp);
     ok ? success++ : fail++;
     await new Promise(r => setTimeout(r, 400));
   }
@@ -148,9 +172,11 @@ async function processYoutubeDB(dbId) {
 async function processLeminoDB(dbId) {
   if (!dbId) return;
   console.log("\n🎬 DB_LEMINO を処理中...");
+  const mediaProp = await getMediaProp(dbId);
+  if (!mediaProp) return;
   const pages = await queryAll(dbId);
-  const targets = pages.filter(p => !hasMedia(p));
-  console.log(`  ${pages.length}件中 Media未設定: ${targets.length}件`);
+  const targets = pages.filter(p => !hasMedia(p, mediaProp));
+  console.log(`  ${pages.length}件中 ${mediaProp}未設定: ${targets.length}件`);
 
   let success = 0, skip = 0, fail = 0;
   for (const page of targets) {
@@ -158,7 +184,7 @@ async function processLeminoDB(dbId) {
     if (!url) { console.log(`  ⚠️  URLなし: ${getName(page)}`); skip++; continue; }
     const imgUrl = await getLeminoThumbnail(url);
     if (!imgUrl) { console.log(`  ⚠️  サムネイルなし: ${getName(page).slice(0, 40)}`); skip++; continue; }
-    const ok = await updateMedia(page, imgUrl, "[Lemino]");
+    const ok = await updateMedia(page, imgUrl, "[Lemino]", mediaProp);
     ok ? success++ : fail++;
     await new Promise(r => setTimeout(r, 400));
   }
@@ -168,12 +194,14 @@ async function processLeminoDB(dbId) {
 async function processYuNewsDB(dbId) {
   if (!dbId) return;
   console.log("\n📋 DB_YU_NEWS (YouTube/Lemino) を処理中...");
+  const mediaProp = await getMediaProp(dbId);
+  if (!mediaProp) return;
   const pages = await queryAll(dbId);
   const targets = pages.filter(p => {
     const platforms = getPlatforms(p).map(s => s.toLowerCase());
-    return !hasMedia(p) && (platforms.includes("youtube") || platforms.includes("lemino"));
+    return !hasMedia(p, mediaProp) && (platforms.includes("youtube") || platforms.includes("lemino"));
   });
-  console.log(`  ${pages.length}件中 YouTube/LeminoでMedia未設定: ${targets.length}件`);
+  console.log(`  ${pages.length}件中 YouTube/Leminoで${mediaProp}未設定: ${targets.length}件`);
 
   let success = 0, skip = 0, fail = 0;
   for (const page of targets) {
@@ -191,7 +219,7 @@ async function processYuNewsDB(dbId) {
     }
 
     const label = platforms.includes("youtube") ? "[YouTube]" : "[Lemino]";
-    const ok = await updateMedia(page, imgUrl, label);
+    const ok = await updateMedia(page, imgUrl, label, mediaProp);
     ok ? success++ : fail++;
     await new Promise(r => setTimeout(r, 400));
   }
@@ -202,8 +230,10 @@ async function processTiktokDB(dbId) {
   if (!dbId) return;
   console.log("\n🎵 DB_TIKTOK を処理中...");
   const pages = await queryAll(dbId);
-  const targets = pages.filter(p => !!p.properties["URL"]?.url);
-  console.log(`  ${pages.length}件中 URL設定済み: ${targets.length}件`);
+  // Name が空のものだけ処理する。以前は URL があれば全件に oEmbed を叩いて
+  // 毎回 Name を上書きしていたため、実行のたびに数分を浪費していた
+  const targets = pages.filter(p => !!p.properties["URL"]?.url && !hasName(p));
+  console.log(`  ${pages.length}件中 Name未設定: ${targets.length}件`);
   if (targets.length === 0) return;
 
   let success = 0, skip = 0, fail = 0;
@@ -234,4 +264,6 @@ async function main() {
   await processTiktokDB(process.env.DB_TIKTOK);
 }
 
-main().catch(console.error);
+// エラー時は必ず異常終了する。exit 0 のままだとデプロイが「成功」と誤判定され、
+// 直後の rsync --delete が生成されなかったHTMLを本番から削除してしまう（過去に403障害）
+main().catch(e => { console.error(e); process.exit(1); });
