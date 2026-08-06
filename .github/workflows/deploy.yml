@@ -26,18 +26,21 @@ jobs:
 
       - name: Add new blog posts
         run: node add_blog_posts.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:      ${{ secrets.DB_BLOG }}
 
       - name: Fill member blog meta (Name/Date/Member from URL)
         run: node update_member_blog_meta.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
         env:
           NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
           DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
 
       - name: Update blog thumbnails
         run: node update_blog_thumbnails.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
         env:
           NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:         ${{ secrets.DB_BLOG }}
@@ -45,6 +48,7 @@ jobs:
 
       - name: Update YouTube/Lemino thumbnails & TikTok captions
         run: node update_media_thumbnails.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_YOUTUBE:   ${{ secrets.DB_YOUTUBE }}
@@ -75,12 +79,35 @@ jobs:
 
       - name: Update thumbnails for newly synced YU_NEWS entries
         run: node update_media_thumbnails.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_YOUTUBE:   ${{ secrets.DB_YOUTUBE }}
           DB_LEMINO:    ${{ secrets.DB_LEMINO }}
           DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
           DB_TIKTOK:    ${{ secrets.DB_TIKTOK }}
+
+      # ★安全装置★ rsync は --delete 付きなので、ビルドが失敗して成果物が無い状態で
+      # 実行すると本番サイトのHTMLを全削除してしまう（実際に403障害が発生した）。
+      # 転送前に必須ページの存在とサイズを検証し、少しでも欠けていたらデプロイを中止する。
+      - name: Verify build output (safety guard before rsync)
+        run: |
+          set -uo pipefail
+          required="index.html top.html committee.html activities.html yunews.html blog.html member-blog.html interview.html x.html tiktok.html instagram.html youtube.html lemino.html history.html weekly.html quiz.html"
+          missing=""
+          count=0
+          for f in $required; do
+            if [ ! -f "$f" ]; then missing="$missing $f(なし)"; continue; fi
+            size=$(wc -c < "$f")
+            if [ "$size" -lt 2000 ]; then missing="$missing $f(${size}B)"; continue; fi
+            count=$((count+1))
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::ビルド成果物が不足しています:$missing"
+            echo "::error::本番サイトを破壊しないためデプロイを中止します"
+            exit 1
+          fi
+          echo "✅ 必須HTML ${count} 件を確認しました。デプロイを続行します"
 
       - name: Setup SSH
         run: |
@@ -123,9 +150,8 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
             'cd ~/newsmind && docker compose restart satoyu-admin 2>/dev/null || docker compose up -d satoyu-admin'
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          exclude_assets: '.github,node_modules,admin-api,build.js,add_blog_posts.js,update_blog_thumbnails.js,update_media_thumbnails.js,download_media.js,update_notion_media.js,generate_quiz.js,reset_tiktok_yunews.js,deduplicate_yu_news.js,restore_tiktok.js,fetch.js,fix_member_names.js,scrape_member_mentions.js,_template.html,package.json,package-lock.json'
+      # GitHub Pages への公開は廃止（2026-08-07）
+      # 公開サイト satoyu.info は上の rsync で VPS(nginx) から配信しており、Pages は独自ドメイン無しの
+      # 重複ミラーだった。gh-pages への push が GitHub 側の "pages build and deployment" を毎回誘発し、
+      # それがタイムアウトして全デプロイが失敗表示になっていた（1回あたり約10分の無駄）。
+      # 復活させたい場合はこのコメントを peaceiris/actions-gh-pages@v3 のステップに戻す。

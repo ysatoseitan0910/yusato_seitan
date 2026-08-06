@@ -43,6 +43,27 @@ jobs:
           DB_HISTORY:          ${{ secrets.DB_HISTORY }}
           DB_TOP_NEWS:         ${{ secrets.DB_TOP_NEWS }}
 
+      # ★安全装置★ rsync は --delete 付きなので、ビルド失敗で成果物が無い状態のまま
+      # 実行すると本番サイトのHTMLを全削除してしまう（実際に403障害が発生した）
+      - name: Verify build output (safety guard before rsync)
+        run: |
+          set -uo pipefail
+          required="index.html top.html committee.html activities.html yunews.html blog.html member-blog.html interview.html x.html tiktok.html instagram.html youtube.html lemino.html history.html weekly.html quiz.html"
+          missing=""
+          count=0
+          for f in $required; do
+            if [ ! -f "$f" ]; then missing="$missing $f(なし)"; continue; fi
+            size=$(wc -c < "$f")
+            if [ "$size" -lt 2000 ]; then missing="$missing $f(${size}B)"; continue; fi
+            count=$((count+1))
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::ビルド成果物が不足しています:$missing"
+            echo "::error::本番サイトを破壊しないためデプロイを中止します"
+            exit 1
+          fi
+          echo "✅ 必須HTML ${count} 件を確認しました。デプロイを続行します"
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -84,9 +105,4 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
             'cd ~/newsmind && docker compose restart satoyu-admin 2>/dev/null || docker compose up -d satoyu-admin'
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          exclude_assets: '.github,node_modules,admin-api,build.js,add_blog_posts.js,update_blog_thumbnails.js,update_media_thumbnails.js,download_media.js,update_notion_media.js,generate_quiz.js,reset_tiktok_yunews.js,deduplicate_yu_news.js,restore_tiktok.js,fetch.js,fix_member_names.js,scrape_member_mentions.js,_template.html,package.json,package-lock.json'
+      # GitHub Pages への公開は廃止（2026-08-07）。理由は deploy.yml のコメント参照
