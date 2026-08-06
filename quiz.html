@@ -1,0 +1,1442 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/images/favicon.png">
+<link rel="apple-touch-icon" href="/images/favicon.png">
+<title>さとうゆクイズ | さとうゆほーむ</title>
+<meta name="description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="さとうゆほーむ">
+<meta property="og:title" content="さとうゆクイズ | さとうゆほーむ">
+<meta property="og:description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
+<meta property="og:url" content="https://satoyu.info/quiz.html">
+<meta property="og:image" content="https://satoyu.info/images/ogp.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="さとうゆクイズ | さとうゆほーむ">
+<meta name="twitter:description" content="佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう">
+<meta name="twitter:image" content="https://satoyu.info/images/ogp.png">
+<link rel="canonical" href="{{OGP_URL}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* B 案 デザイントークン */
+  --emerald: #3DAA78;
+  --emerald-light: #d4ecde;
+  --emerald-pale: #ecf7f0;
+  --emerald-dark: #1f7a52;
+  --pink: #f7b6c8;
+  --pink-pale: #fde7ed;
+  --butter: #fff3c4;
+  --sky: #d4ecf5;
+  --cream: #fffaf0;
+  --gold: #c9a96e;
+  --gold-light: #f5ead8;
+
+  /* 既存 build.js 互換 alias */
+  --text: #1a2a22;
+  --text-muted: #516259;
+  --text-light: #9aaca3;
+  --white: #ffffff;
+  --bg: #fdfcf7;
+  --border: #e3eee6;
+  --ink: #1a2a22;
+  --nav-h: 60px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: clip; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.75;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at 8% 4%,var(--pink-pale) 0,transparent 2.5%),
+    radial-gradient(circle at 95% 16%,var(--butter) 0,transparent 3%),
+    radial-gradient(circle at 14% 92%,var(--emerald-light) 0,transparent 3%);
+  background-attachment: fixed;
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(253,252,247,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px dotted var(--emerald-light);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-mark {
+  width: 36px; height: 36px; border-radius: 50%;
+  object-fit: cover; display: block;
+  box-shadow: 0 3px 0 var(--emerald-dark);
+  transform: rotate(-4deg);
+  flex-shrink: 0;
+}
+.nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
+.nav-logo-main {
+  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex; gap: 0; align-items: center;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.nav-links a {
+  text-decoration: none;
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; color: var(--text-muted);
+  padding: 6px 12px; border-radius: 99px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--pink-pale); color: var(--emerald-dark);
+}
+.nav-sep { display: inline-flex; width: 1px; height: 14px; background: var(--border); margin: 0 6px; align-self: center; flex-shrink: 0; }
+.nav-committee-label { display: none; }
+
+/* ── Dropdown nav groups ── */
+.nav-group { position: relative; }
+.nav-group-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  color: var(--text-muted);
+  padding: 6px 12px; border-radius: 99px;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 3px;
+}
+.nav-group-btn:hover,
+.nav-group:has(.active) .nav-group-btn {
+  background: var(--pink-pale); color: var(--emerald-dark);
+}
+.nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.nav-group.open .nav-arrow { transform: rotate(180deg); }
+.nav-dropdown {
+  display: none; position: absolute;
+  top: calc(100% + 4px); left: 0;
+  background: #fff;
+  border: 2px solid var(--emerald-light);
+  border-radius: 14px; padding: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 300; min-width: 170px;
+  flex-direction: column; gap: 2px;
+}
+.nav-group.open .nav-dropdown { display: flex; }
+.nav-dropdown a { border-radius: 10px; padding: 8px 14px; }
+.hamburger {
+  display: none; background: none; border: none; cursor: pointer;
+  font-size: 22px; color: var(--emerald-dark);
+  padding: 4px 8px; line-height: 1; border-radius: 6px;
+}
+.hamburger:hover { background: var(--pink-pale); }
+
+/* ── Page hero（build.js が page-hero クラスで挿入） ── */
+.page-hero {
+  padding: calc(var(--nav-h) + 36px) 28px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+  position: relative;
+}
+.page-hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--pink); color: #fff;
+  padding: 6px 14px; border-radius: 99px;
+  font-family: 'Zen Maru Gothic',serif; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.06em;
+  transform: rotate(-2deg);
+  margin-bottom: 14px;
+}
+.page-hero-tag::before { content: "🌿"; }
+.page-hero h1 {
+  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-size: 38px; line-height: 1.25; color: var(--text);
+  margin-bottom: 6px;
+}
+.page-hero h1 em {
+  color: var(--emerald-dark); font-style: normal;
+  background: linear-gradient(transparent 60%, var(--butter) 60%);
+  padding: 0 4px;
+}
+.page-hero p {
+  font-size: 13px; color: var(--text-muted); letter-spacing: 0.04em;
+}
+.last-updated {
+  font-family: 'Caveat',cursive; font-size: 14px;
+  color: var(--text-light); margin-top: 6px; letter-spacing: 0.04em;
+}
+/* ── トップページ hero グリッドレイアウト（PC） ── */
+.page-hero--index {
+  display: grid;
+  grid-template-columns: 1fr clamp(180px, 24%, 300px);
+  row-gap: 20px;
+  padding: calc(var(--nav-h) + 36px) 28px 28px;
+  overflow: hidden;
+}
+/* wrapperを透過してchildrenを直接グリッドアイテムにする */
+.page-hero--index .page-hero-left { display: contents; }
+.page-hero--index .page-hero-tag  { grid-column: 1; justify-self: start; }
+.page-hero--index h1               { grid-column: 1; }
+.page-hero--index .top-intro       { grid-column: 1; width: 100%; }
+.page-hero--index .top-news        { grid-column: 1; width: 100%; }
+/* イラスト：h1行〜ニュース行にまたがる（行2〜4）、縦中央揃え */
+.top-hero-img-wrap {
+  grid-column: 2;
+  grid-row: 2 / 5;
+  padding: 0 0 0 24px;
+  align-self: center;
+}
+.top-hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+.top-intro-mobile    { display: none; }
+.top-news-mobile-only { display: none; }
+
+/* ── PC専用ヒーロー（案A：サイド分割） ── */
+.hero-mobile-wrap { display: none; }
+.hero-pc-wrap { display: block; }
+.hero-pc {
+  max-width: 1180px; margin: 0 auto;
+  padding: calc(var(--nav-h) + 44px) 28px 30px;
+  display: flex; align-items: center; gap: 44px;
+  position: relative;
+}
+.hero-pc-dot { position: absolute; border-radius: 50%; pointer-events: none; }
+.hero-pc-text { flex: 1; min-width: 0; }
+.hero-pc-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--pink); color: #fff;
+  font-family: 'Zen Maru Gothic', serif; font-weight: 600;
+  font-size: 15px; letter-spacing: 0.1em;
+  padding: 9px 20px; border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(247,182,200,0.5);
+  transform: rotate(-2deg);
+  margin-bottom: 26px;
+}
+.hero-pc-badge::before { content: "🌿"; }
+.hero-pc-title {
+  font-family: 'Zen Maru Gothic', serif; font-weight: 700;
+  font-size: 64px; line-height: 1.08; color: var(--emerald-dark);
+  letter-spacing: 0.01em; margin-bottom: 26px;
+}
+.hero-pc-title em {
+  color: var(--emerald); font-style: normal;
+  background: linear-gradient(transparent 58%, var(--butter) 58%, var(--butter) 92%, transparent 92%);
+  padding: 0 4px;
+}
+.hero-pc-box {
+  background: var(--emerald-pale); border: 1px solid var(--emerald-light);
+  border-radius: 14px; padding: 18px 24px;
+  font-size: 14px; line-height: 1.85; color: var(--text-muted);
+}
+.hero-pc-box p { margin-bottom: 6px; }
+.hero-pc-box p:last-child { margin-bottom: 0; }
+.hero-pc-box strong { color: var(--emerald-dark); font-weight: 700; }
+.hero-pc-box a { color: var(--emerald-dark); font-weight: 600; text-decoration: none; }
+.hero-pc-box a:hover { text-decoration: underline; }
+.hero-pc-box-link { margin-left: 26px; }
+.hero-pc-imgwrap { flex: none; width: 330px; position: relative; }
+.hero-pc-imgwrap::before {
+  content: ""; position: absolute;
+  top: -16px; right: -16px; left: 16px; bottom: 16px;
+  border: 3px dashed var(--emerald-light); border-radius: 28px; z-index: 0;
+}
+.hero-pc-img {
+  position: relative; z-index: 1;
+  width: 100%; height: auto; display: block;
+  border-radius: 26px; border: 6px solid #fff;
+  background: var(--emerald-pale);
+  box-shadow: 0 16px 38px rgba(31,122,82,0.18);
+}
+/* PC専用ヒーロー内ニュース（情報ボックスの直下） */
+.hero-pc-news { margin: 16px 0 0; }
+
+/* ── Content area ── */
+.content {
+  max-width: 1180px; margin: 0 auto;
+  padding: 0 28px 64px;
+}
+
+/* ── Top layout（トップページ専用） ── */
+.mobile-tile-nav { display: none; }
+.top-news {
+  border-left: 4px solid var(--emerald);
+  background: #fff;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.top-news-label {
+  font-family: 'Zen Maru Gothic', serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--emerald-dark);
+}
+.top-news-items { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+.top-news-item { display: flex; align-items: baseline; gap: 10px; }
+.top-news-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.top-news-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+a.top-news-text { text-decoration: none; }
+a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; }
+.top-intro {
+  background: var(--emerald-pale);
+  border: 1px solid var(--emerald-light);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+.top-intro-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.top-intro-text strong { color: var(--emerald-dark); }
+.top-intro-text a { color: var(--emerald-dark); text-decoration: none; font-weight: 600; }
+.top-intro-text a:hover { text-decoration: underline; }
+.top-intro-more { margin-left: 8px; }
+.top-layout {
+  display: grid; grid-template-columns: minmax(0,1fr) 300px;
+  gap: 28px; align-items: start;
+}
+.top-main { display: flex; flex-direction: column; gap: 36px; }
+.top-section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.top-section-header h2 {
+  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-size: 20px; color: var(--text); letter-spacing: 0.02em;
+}
+.top-section-header a {
+  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  color: var(--emerald-dark); text-decoration: none;
+}
+.top-section-header a:hover { color: var(--pink); }
+
+/* 委員会News リスト（ステッカー風） */
+.committee-list {
+  background: transparent;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.committee-list-row {
+  background: #fff; border: 2px solid var(--ink); border-radius: 14px;
+  padding: 10px 14px;
+  display: grid; grid-template-columns: 48px 78px 1fr auto; gap: 10px;
+  align-items: center; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 3px 3px 0 var(--emerald-light);
+}
+.committee-row-thumb {
+  width: 48px; height: 48px; border-radius: 8px; overflow: hidden; flex-shrink: 0;
+}
+.committee-row-thumb-img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.committee-row-thumb-empty {
+  width: 100%; height: 100%; background: var(--emerald-pale);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  color: var(--emerald-light); font-size: 18px;
+}
+.committee-list-row:nth-child(2n) { box-shadow: 3px 3px 0 var(--pink-pale); }
+.committee-list-row:nth-child(3n) { box-shadow: 3px 3px 0 var(--butter); }
+.committee-list-row:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--emerald-light); }
+.committee-list-row:nth-child(2n):hover { box-shadow: 5px 5px 0 var(--pink-pale); }
+.committee-list-row:nth-child(3n):hover { box-shadow: 5px 5px 0 var(--butter); }
+.committee-row-date {
+  font-family: 'Caveat',cursive; font-weight: 700;
+  font-size: 18px; color: var(--emerald-dark);
+  white-space: nowrap; line-height: 1;
+}
+.committee-row-title {
+  flex: 1; font-size: 13px; color: var(--text);
+  line-height: 1.5; font-family: 'Zen Maru Gothic',serif;
+}
+.committee-row-meta {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
+.deadline-badge {
+  display: inline-block; font-size: 13px; font-weight: 700;
+  padding: 2px 10px; border-radius: 99px; letter-spacing: 0.04em;
+  text-align: center; line-height: 1.6;
+}
+.deadline-normal { background: #eef6fb; color: #1a5a8a; border: 1px solid #b8d8f0; }
+.deadline-soon   { background: #fff8e0; color: #8a5a00; border: 1px solid #f0d880; }
+.deadline-urgent { background: #fff0e0; color: #b04000; border: 1px solid #f0b080; }
+.deadline-today  { background: #ffe0e0; color: #c00000; border: 1px solid #f08080; animation: deadline-pulse 1s ease-in-out infinite alternate; }
+.deadline-past   { background: #f0f0f0; color: #888; border: 1px solid #ccc; }
+@keyframes deadline-pulse { from { opacity: 0.8; } to { opacity: 1; } }
+.announce-date { font-size: 14px; color: var(--text-muted); font-family: 'Zen Maru Gothic',serif; }
+.media-date-small { font-size: 13px; color: var(--text-light); font-family: 'Caveat',cursive; }
+
+/* 活動報告サムネイル（ポラロイド風） */
+.act-thumb-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.act-thumb-card {
+  background: #fff; border: 2px solid var(--ink); border-radius: 8px;
+  padding: 8px 8px 12px; cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.act-thumb-card:nth-child(2n) { transform: rotate(0.8deg); }
+.act-thumb-card:nth-child(3n) { transform: rotate(-0.8deg); }
+.act-thumb-card:hover { transform: translateY(-3px) rotate(0); }
+.act-thumb-img {
+  width: 100%; aspect-ratio: 1/1; object-fit: cover;
+  border-radius: 4px; display: block;
+}
+.act-thumb-no-img {
+  width: 100%; aspect-ratio: 1/1; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--emerald-light) 0%, var(--butter) 100%);
+  color: var(--emerald-dark);
+  font-family: 'Zen Maru Gothic',serif; font-weight: 600; font-size: 13px;
+}
+.act-thumb-body { padding: 10px 4px 0; }
+.act-thumb-title {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; line-height: 1.55; color: var(--text);
+  margin-bottom: 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.act-thumb-date {
+  font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light);
+}
+
+/* 佐藤優羽さんNews（バブルカード） */
+.yunews-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+a.yunews-card { display: block; text-decoration: none; color: inherit; }
+.yunews-card {
+  background: #fff; border: 2px solid var(--ink); border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--emerald);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.yunews-card:nth-child(2n) { box-shadow: 3px 3px 0 var(--pink); }
+.yunews-card:nth-child(3n) { box-shadow: 3px 3px 0 var(--butter); }
+.yunews-card:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--emerald); }
+.yunews-card:nth-child(2n):hover { box-shadow: 5px 5px 0 var(--pink); }
+.yunews-card:nth-child(3n):hover { box-shadow: 5px 5px 0 var(--butter); }
+.yunews-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+.yunews-no-img {
+  width: 100%; aspect-ratio: 4/3;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, var(--pink-pale) 0%, var(--emerald-light) 100%);
+  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  color: #fff; font-size: 36px; text-shadow: 2px 2px 0 var(--ink);
+}
+.yunews-no-img::before { content: "Yu"; }
+.yunews-body { padding: 12px 14px 14px; }
+.yunews-title {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; line-height: 1.55; color: var(--text);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.yunews-meta { display: flex; align-items: center; margin-top: 4px; }
+.yunews-date { font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light); }
+
+/* サイドバー */
+.top-sidebar { display: flex; flex-direction: column; gap: 14px; }
+.sidebar-widget {
+  background: #fff; border: 2px solid var(--ink); border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--emerald-dark);
+}
+.sidebar-widget:nth-of-type(2) { box-shadow: 4px 4px 0 var(--pink); }
+.sidebar-widget:nth-of-type(3) { box-shadow: 4px 4px 0 var(--butter); }
+.sidebar-widget-inner { padding: 8px; }
+.sidebar-links {
+  background: #fff; border: 2px solid var(--ink); border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--emerald);
+}
+.sidebar-links a {
+  display: flex; align-items: center; padding: 11px 16px;
+  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  color: var(--text-muted); text-decoration: none;
+  border-bottom: 1px dashed var(--border);
+  transition: background 0.15s;
+}
+.sidebar-links a:last-child { border-bottom: none; }
+.sidebar-links a:hover { background: var(--pink-pale); color: var(--emerald-dark); }
+.sidebar-links a::before {
+  content: "🌿"; margin-right: 8px; font-size: 13px;
+}
+
+/* スケジュール */
+.schedule-list { background: #fff; padding: 4px 0; }
+.schedule-row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 8px 14px; border-bottom: 1px dashed var(--border);
+  text-decoration: none; color: inherit;
+  transition: background 0.15s;
+}
+.schedule-row:last-child { border-bottom: none; }
+a.schedule-row:hover { background: var(--butter); }
+.schedule-date {
+  font-family: 'Caveat',cursive; font-weight: 700;
+  font-size: 18px; color: var(--emerald-dark);
+  white-space: nowrap; min-width: 52px; line-height: 1;
+}
+.schedule-date--past { color: var(--text-light); opacity: 0.6; }
+.schedule-title {
+  flex: 1; font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; color: var(--text); line-height: 1.5;
+}
+.schedule-title--past { color: var(--text-muted); opacity: 0.6; }
+
+/* ── Card base ── */
+.card {
+  background: #fff; border: 2px solid var(--ink); border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--emerald);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.card:nth-child(2n) { box-shadow: 3px 3px 0 var(--pink); }
+.card:nth-child(3n) { box-shadow: 3px 3px 0 var(--butter); }
+.card:hover { transform: translate(-2px,-2px); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Grid ── */
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+/* ── Lemino Program グループ見出し ── */
+.program-heading {
+  font-family: 'Zen Maru Gothic', serif; font-size: 18px; font-weight: 700;
+  color: var(--emerald-dark); margin: 28px 0 12px;
+  padding: 8px 16px; background: var(--emerald-pale);
+  border-left: 4px solid var(--emerald); border-radius: 0 8px 8px 0;
+}
+.lemino-programs > .program-heading:first-child { margin-top: 0; }
+.program-grid { margin-bottom: 8px; }
+@media (max-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(2,1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-block;
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; letter-spacing: 0.08em;
+  padding: 3px 10px; border-radius: 99px; font-weight: 600;
+}
+.badge-open { background: var(--emerald); color: #fff; }
+.badge-closed { background: #ebebeb; color: #888; }
+.badge-blog { background: var(--emerald-light); color: var(--emerald-dark); }
+.badge-x { background: var(--sky); color: #1a56db; }
+.badge-tiktok { background: #e8e8e8; color: #555; }
+.badge-youtube { background: #ffe0e0; color: #c00000; }
+.badge-lemino { background: #f3e5f5; color: #6a1b9a; }
+.badge-interview { background: var(--gold-light); color: #7d5a00; }
+.badge-web { background: #e0f7fa; color: #006064; }
+.badge-member { background: var(--pink); color: #7a1535; }
+
+/* ── News card（card 内） ── */
+.news-card { padding: 18px 22px; display: flex; gap: 18px; align-items: flex-start; }
+.news-card--img { padding: 0; flex-direction: column; }
+.news-card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+.news-card-img-body { padding: 16px 20px 18px; width: 100%; }
+.news-card-date {
+  font-family: 'Caveat',cursive; font-weight: 700;
+  font-size: 14px; color: var(--emerald-dark);
+  white-space: nowrap; padding-top: 2px; min-width: 76px;
+}
+.news-card-body { flex: 1; }
+.news-card-title {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; font-weight: 600; color: var(--text);
+  margin-bottom: 6px; line-height: 1.55;
+}
+.news-card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.85; margin-bottom: 8px; }
+.news-card-link {
+  font-family: 'Zen Maru Gothic',serif; font-size: 13px;
+  color: var(--emerald-dark); text-decoration: none; font-weight: 600;
+}
+.news-card-link:hover { color: var(--pink); }
+
+/* ── Media card ── */
+.media-card .media-img {
+  width: 100%; aspect-ratio: 16/9; object-fit: cover;
+  background: linear-gradient(135deg, var(--emerald-light) 0%, var(--pink-pale) 100%);
+  display: block;
+}
+.media-card .media-body { padding: 16px 18px; }
+.media-card .media-title {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  margin-bottom: 6px; line-height: 1.55;
+}
+.media-card .media-desc { font-size: 13px; color: var(--text-muted); line-height: 1.8; margin-bottom: 10px; }
+.media-card .media-meta { display: flex; align-items: center; justify-content: space-between; }
+.media-card .media-date { font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light); }
+
+/* ── Embed card ── */
+.embed-card .embed-header {
+  padding: 12px 14px 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+/* YouTube: チャンネル名が1行/2行でも高さを揃え、動画の縦位置をそろえる */
+.embed-card .embed-header-ch { align-items: flex-start; gap: 8px; min-height: 75px; }
+/* 1行のチャンネル名でもバッジ枠を2行分の高さにし文字を上下中央に（枠の上下位置を揃える） */
+.embed-card .embed-header-ch .badge { min-height: 55px; display: inline-flex; align-items: center; }
+.embed-card .embed-wrap {
+  background: var(--emerald-pale);
+  min-height: 300px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px;
+}
+.embed-card .embed-footer { padding: 10px 16px 14px; }
+.embed-card .embed-title {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 14px; color: var(--text); margin-bottom: 4px; line-height: 1.55;
+}
+.embed-card .embed-link {
+  font-family: 'Zen Maru Gothic',serif; font-size: 13px;
+  color: var(--emerald-dark); text-decoration: none; font-weight: 600;
+}
+
+/* ── X embed grid ── */
+.x-embed-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.x-card {
+  min-width: 0;
+  background: #fff; border: 2px solid var(--ink); border-radius: 16px;
+  padding: 12px;
+  box-shadow: 3px 3px 0 var(--sky);
+  animation: fadeUp 0.4s ease both;
+}
+.x-card:nth-child(2n) { box-shadow: 3px 3px 0 var(--pink); }
+.x-card:nth-child(3n) { box-shadow: 3px 3px 0 var(--butter); }
+.x-card .twitter-tweet { margin: 0 auto !important; }
+.x-card-label {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55;
+}
+@media (max-width: 900px) { .x-embed-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px) { .x-embed-grid { grid-template-columns: 1fr; } .x-card--third { display: none; } }
+.x-more-wrap { text-align: center; margin-top: 16px; padding-bottom: 4px; }
+.x-more-btn { background: none; border: 2px solid var(--border); border-radius: 99px; padding: 8px 28px; font-family: 'Zen Maru Gothic', serif; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+.x-more-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); background: var(--emerald-pale); }
+
+/* ── Instagram埋め込みグリッド ── */
+/* 幅はInstagram本来のサイズ（min-width:326px / max-width:540px）に任せる。
+   強制的に縮めると動画投稿でキャプション帯が重なるため上書きしない */
+.ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(326px, 1fr)); gap: 18px; align-items: start; justify-items: center; }
+.ig-card { width: 100%; max-width: 540px; animation: fadeUp 0.4s ease both; }
+.ig-card .instagram-media { margin: 0 auto !important; }
+.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; text-align: center; }
+@media (max-width: 360px) { .ig-embed-grid { grid-template-columns: 1fr; } }
+
+/* ── もっと見るボタン（共通） ── */
+.load-more-wrap { text-align: center; padding: 32px 16px 16px; }
+.load-more-btn { background: var(--emerald); color: #fff; border: 2px solid var(--emerald-dark); border-radius: 99px; padding: 12px 32px; font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; }
+.load-more-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
+.load-more-count { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-family: 'Zen Maru Gothic',serif; }
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+/* ── Footer ── */
+footer {
+  background: var(--cream);
+  border-top: 2px dotted var(--emerald-light);
+  padding: 36px 28px;
+  text-align: center;
+}
+footer .foot-mark {
+  display: inline-block;
+  font-family: 'Caveat',cursive; font-weight: 700;
+  font-size: 22px; color: var(--emerald-dark); margin-bottom: 6px;
+}
+footer p {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 13px; letter-spacing: 0.06em; color: var(--text-light);
+}
+footer .heart { color: var(--pink); }
+
+/* ── Activity Modal ── */
+.act-modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(26,42,34,0.55); z-index: 400;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.act-modal-overlay.open { display: flex; }
+.act-modal-box {
+  background: #fff; border: 2px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 6px 6px 0 var(--emerald-dark);
+  max-width: 580px; width: 100%; max-height: 85vh;
+  overflow-y: auto; padding: 32px 36px;
+  position: relative;
+}
+.act-modal-close {
+  position: absolute; top: 14px; right: 18px;
+  background: var(--pink-pale); border: 2px solid var(--ink); border-radius: 50%;
+  width: 32px; height: 32px;
+  font-size: 14px; cursor: pointer; color: var(--text);
+  line-height: 1;
+}
+.act-modal-close:hover { background: var(--pink); color: #fff; }
+.act-modal-img {
+  width: 100%; aspect-ratio: 16/9; object-fit: cover;
+  border: 2px solid var(--ink); border-radius: 10px;
+  margin-bottom: 18px; display: block;
+}
+.act-modal-title {
+  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-size: 20px; line-height: 1.55; margin-bottom: 10px; color: var(--text);
+}
+.act-modal-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+.act-modal-desc {
+  font-family: 'Zen Maru Gothic',serif;
+  font-size: 13px; color: var(--text-muted); line-height: 2;
+}
+.act-modal-link {
+  display: inline-block; margin-top: 18px;
+  font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 600;
+  color: var(--emerald-dark); text-decoration: none; letter-spacing: 0.04em;
+}
+.act-modal-link:hover { color: var(--pink); }
+[data-act-modal] { cursor: pointer; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  /* PCヒーロー↔モバイルヒーロー切り替え */
+  .hero-pc-wrap { display: none; }
+  .hero-mobile-wrap { display: block; }
+  nav { padding: 0 16px; }
+  .hamburger { display: block; }
+  .nav-links {
+    display: none; flex-direction: column; align-items: stretch;
+    position: absolute; top: var(--nav-h); left: 0; right: 0;
+    transform: none;
+    background: rgba(253,252,247,0.98);
+    border-bottom: 2px dotted var(--emerald-light);
+    padding: 8px 16px 16px; gap: 2px; z-index: 199;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 10px 14px; font-size: 13px; border-radius: 8px; }
+  .nav-sep { display: none; }
+  .nav-group { width: 100%; }
+  .nav-group-btn {
+    width: 100%; justify-content: space-between;
+    padding: 10px 14px; font-size: 13px; border-radius: 8px;
+  }
+  .nav-dropdown {
+    position: static; border: none; box-shadow: none;
+    background: transparent; border-radius: 0;
+    padding: 0 0 4px 16px; min-width: unset;
+    display: none;
+  }
+  .nav-group:hover .nav-dropdown { display: none; }
+  .nav-group.open .nav-dropdown { display: flex; }
+  .nav-group.open .nav-arrow { transform: rotate(180deg); }
+  .page-hero { padding: calc(var(--nav-h) + 24px) 16px 20px; }
+  .page-hero h1 { font-size: 28px; }
+  .content { padding: 0 16px 48px; }
+  footer { padding: 24px 16px; }
+  .top-layout { display: flex; flex-direction: column; gap: 28px; }
+  .top-main { display: contents; }
+  .top-sidebar { display: contents; }
+  .top-sec-yunews { order: 1; }
+  .top-sidebar-schedule { order: 2; }
+  .top-sidebar-yt { order: 3; }
+  .top-sec-committee { order: 4; }
+  .top-sec-activities { order: 5; }
+  .top-sidebar-x { order: 6; }
+  .top-sidebar-links { order: 7; width: 100%; }
+  .act-thumb-grid { grid-template-columns: repeat(2,1fr); }
+  .yunews-grid { grid-template-columns: repeat(2,1fr); }
+  .act-modal-box { padding: 24px 22px; }
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .news-card { padding: 14px 16px; gap: 12px; }
+  .news-card-img-body { padding: 12px 14px 14px; }
+  .news-card-date { font-size: 14px; min-width: 60px; }
+  .news-card-title { font-size: 13px; }
+  .news-card-desc { font-size: 13px; }
+  .media-card .media-body { padding: 12px; }
+  .media-card .media-title { font-size: 14px; }
+  .embed-card .embed-wrap { min-height: 200px; }
+  .committee-list-row {
+    grid-template-columns: 48px 1fr;
+    grid-template-areas:
+      "thumb date"
+      "thumb title"
+      "thumb meta";
+    align-items: start;
+    gap: 4px 10px;
+  }
+  .committee-row-thumb { grid-area: thumb; align-self: start; }
+  .committee-row-date  { grid-area: date; font-size: 15px; }
+  .committee-row-title { grid-area: title; }
+  .committee-row-meta  { grid-area: meta; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
+
+  /* 紹介文の出し分け */
+  .top-intro-pc { display: none; }
+  .top-intro-mobile { display: block; }
+
+  /* トップページ専用: モバイルはflexコンパクト2カラム */
+  .page-hero--index {
+    display: flex;
+    overflow: visible;
+    padding: 0;
+  }
+  .page-hero--index .page-hero-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
+    padding: calc(var(--nav-h) + 14px) 16px 14px;
+    gap: 10px;
+  }
+  .page-hero--index .page-hero-tag { grid-column: unset; }
+  .page-hero--index h1 { grid-column: unset; font-size: 24px; }
+  .page-hero--index .top-intro { width: 100%; }
+  .page-hero--index .top-news { display: none; }
+  .top-hero-img-wrap {
+    grid-column: unset;
+    grid-row: unset;
+    width: 38%;
+    padding: calc(var(--nav-h) + 14px) 12px 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+  .top-hero-img { height: auto; object-fit: initial; border-radius: 8px; }
+  .top-news-mobile-only { display: block; }
+
+  /* ── モバイルタイルナビ ── */
+  .mobile-tile-nav {
+    display: block;
+    margin-bottom: 16px;
+  }
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .tile-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--emerald-pale);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 6px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.3;
+    word-break: keep-all;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    transition: all 0.12s;
+  }
+  .tile-item.active {
+    border-color: var(--emerald-dark);
+    color: var(--emerald-dark);
+    background: var(--emerald-light);
+    box-shadow: 2px 2px 0 var(--emerald-dark);
+  }
+  .tile-item:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.08);
+  }
+  /* サブメニューパネル */
+  .tile-submenu {
+    display: none;
+    flex-direction: column;
+    margin-top: 8px;
+    background: #fff;
+    border: 2px solid var(--emerald);
+    border-radius: 14px;
+    padding: 4px 10px;
+  }
+  .tile-submenu.open { display: flex; }
+  .tile-submenu a {
+    display: block;
+    padding: 10px 6px;
+    font-family: 'Zen Maru Gothic', serif;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--border);
+    transition: background 0.12s;
+  }
+  .tile-submenu a:last-child { border-bottom: none; }
+  .tile-submenu a:active { background: var(--emerald-pale); border-radius: 8px; }
+}
+
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-F1LS5L1Y7B');
+</script>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="/images/favicon.png" class="nav-logo-mark" alt="さとうゆほーむ ロゴ">
+    <span class="nav-logo-text">
+      <span class="nav-logo-main">さとうゆほーむ</span>
+    </span>
+  </a>
+  <div class="nav-links">
+    <a href="top.html" >トップ</a>
+    <div class="nav-group">
+      <button class="nav-group-btn">佐藤優羽さん情報 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="yu.html" >佐藤優羽さんについて</a>
+        <a href="yunews.html" >News</a>
+        <a href="history.html" >ヒストリー</a>
+        <a href="weekly.html" >今週のさとうゆ</a>
+        <a href="quiz.html" class="active">クイズ</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">ブログ等 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="blog.html" >ブログ</a>
+        <a href="member-blog.html" >他メンバーブログ</a>
+        <a href="interview.html" >インタビュー</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">SNS <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="x.html" >X</a>
+        <a href="tiktok.html" >TikTok</a>
+        <a href="instagram.html" >Instagram</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">動画 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="youtube.html" >YouTube</a>
+        <a href="lemino.html" >Lemino</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">カード作成 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="card.html" >プロフィールカード作成</a>
+        <a href="message.html" >お誕生日メッセージカード</a>
+      </div>
+    </div>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <div class="nav-group">
+      <button class="nav-group-btn">委員会 <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown">
+        <a href="committee.html" >委員会News</a>
+        <a href="activities.html" >活動報告</a>
+        <a href="about.html" >委員会について</a>
+        <a href="site-info.html" >このサイトについて</a>
+        <a href="terms.html" >規約</a>
+        <a href="join.html" >入会</a>
+        <a href="links.html" {{ACTIVE_LINKS}}>リンク集</a>
+      </div>
+    </div>
+  </div>
+  <button class="hamburger" id="nav-hamburger" aria-label="メニューを開く">☰</button>
+</nav>
+
+
+      <div class="page-hero"><div class="page-hero-tag">SATOYU QUIZ</div><h1>さとうゆ <em>クイズ</em></h1><p>佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全10問からランダム5問に挑戦しよう</p></div>
+      <div class="content">
+<style>
+.quiz-wrap { max-width: 680px; margin: 0 auto; }
+.quiz-screen { display: none; }
+.quiz-screen.active { display: block; }
+.quiz-start-box {
+  text-align: center; padding: 48px 24px;
+  background: #fff; border: 2px solid var(--ink); border-radius: 24px;
+  box-shadow: 6px 6px 0 var(--pink);
+}
+.quiz-start-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
+.quiz-start-box h2 {
+  font-family: 'Zen Maru Gothic',serif; font-size: 22px; font-weight: 600;
+  color: var(--emerald-dark); margin-bottom: 12px;
+}
+.quiz-start-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+.quiz-btn {
+  display: inline-block; padding: 14px 36px;
+  background: var(--emerald); color: #fff;
+  font-family: 'Zen Maru Gothic',serif; font-size: 16px; font-weight: 600;
+  border: 2px solid var(--emerald-dark); border-radius: 50px;
+  box-shadow: 3px 3px 0 var(--emerald-dark); cursor: pointer;
+  text-decoration: none; transition: transform 0.1s,box-shadow 0.1s;
+}
+.quiz-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
+.quiz-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
+.quiz-btn.pink { background: var(--pink); border-color: #c8456e; box-shadow: 3px 3px 0 #c8456e; color: #fff; }
+.quiz-btn.pink:hover { box-shadow: 4px 4px 0 #c8456e; }
+
+.quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.quiz-counter { font-family: 'Caveat',cursive; font-size: 18px; color: var(--text-muted); white-space: nowrap; }
+.quiz-bar-wrap { flex: 1; height: 8px; background: var(--emerald-light); border-radius: 4px; overflow: hidden; }
+.quiz-bar { height: 100%; background: var(--emerald); border-radius: 4px; transition: width 0.4s ease; }
+.quiz-score-live { font-family: 'Caveat',cursive; font-size: 16px; color: var(--emerald-dark); white-space: nowrap; }
+
+.quiz-q-box {
+  background: #fff; border: 2px solid var(--ink); border-radius: 20px;
+  box-shadow: 5px 5px 0 var(--butter); padding: 28px 24px; margin-bottom: 20px;
+}
+.quiz-q-text { font-family: 'Zen Maru Gothic',serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
+
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.quiz-opt-btn {
+  width: 100%; padding: 14px 18px; text-align: left;
+  background: #fff; border: 2px solid var(--border); border-radius: 14px;
+  font-family: 'Zen Maru Gothic',serif; font-size: 14px; color: var(--text);
+  cursor: pointer; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  line-height: 1.6;
+}
+.quiz-opt-btn:hover:not(:disabled) {
+  border-color: var(--emerald); background: var(--emerald-pale);
+  box-shadow: 2px 2px 0 var(--emerald-light);
+}
+.quiz-opt-btn.correct {
+  border-color: var(--emerald-dark); background: var(--emerald-pale);
+  box-shadow: 3px 3px 0 var(--emerald-dark); font-weight: 600;
+}
+.quiz-opt-btn.wrong {
+  border-color: #c8456e; background: var(--pink-pale);
+  box-shadow: 3px 3px 0 #c8456e;
+}
+.quiz-opt-btn:disabled { cursor: default; }
+
+.quiz-result-box {
+  background: var(--cream); border: 2px dashed var(--emerald);
+  border-radius: 16px; padding: 20px 22px; margin-bottom: 20px;
+  animation: fadeUp 0.3s ease;
+}
+.quiz-result-label { font-size: 22px; margin-bottom: 8px; }
+.quiz-result-exp { font-size: 13px; color: var(--text-muted); line-height: 1.85; margin-bottom: 14px; }
+.quiz-source-link {
+  display: inline-block; font-family: 'Zen Maru Gothic',serif; font-size: 12px;
+  color: var(--emerald-dark); text-decoration: none; border-bottom: 1px solid var(--emerald-light);
+  margin-bottom: 16px;
+}
+.quiz-source-link:hover { color: var(--pink); border-color: var(--pink); }
+.quiz-next-wrap { text-align: right; }
+
+.quiz-final-box {
+  text-align: center; padding: 48px 24px;
+  background: #fff; border: 2px solid var(--ink); border-radius: 24px;
+  box-shadow: 6px 6px 0 var(--emerald-light);
+}
+.quiz-score-circle {
+  width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 24px;
+  background: var(--emerald); border: 4px solid var(--emerald-dark);
+  box-shadow: 4px 4px 0 var(--emerald-dark);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.quiz-score-circle .score-num {
+  font-family: 'Caveat',cursive; font-size: 48px; font-weight: 700;
+  color: #fff; line-height: 1;
+}
+.quiz-score-circle .score-den {
+  font-family: 'Caveat',cursive; font-size: 16px; color: rgba(255,255,255,0.8);
+}
+.quiz-final-msg { font-family: 'Zen Maru Gothic',serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.quiz-final-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+.quiz-final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .quiz-q-text { font-size: 15px; }
+  .quiz-opt-btn { font-size: 13px; padding: 12px 14px; }
+}
+</style>
+
+<div class="quiz-wrap">
+
+  <!-- ── スタート画面 ── -->
+  <div id="quiz-start" class="quiz-screen active">
+    <div class="quiz-start-box">
+      <div class="quiz-start-icon">✨</div>
+      <h2>さとうゆクイズ</h2>
+      <p>
+        佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！<br>
+        全10問からランダム5問に挑戦しよう♪
+      </p>
+      <button class="quiz-btn" onclick="startQuiz()">スタート！</button>
+    </div>
+  </div>
+
+  <!-- ── 問題画面 ── -->
+  <div id="quiz-question" class="quiz-screen">
+    <div class="quiz-header">
+      <span class="quiz-counter">問 <span id="q-num">1</span> / <span id="q-total">10</span></span>
+      <div class="quiz-bar-wrap">
+        <div class="quiz-bar" id="q-bar" style="width:10%"></div>
+      </div>
+      <span class="quiz-score-live">正解 <span id="q-score">0</span></span>
+    </div>
+
+    <div class="quiz-q-box">
+      <p class="quiz-q-text" id="q-text"></p>
+    </div>
+
+    <div class="quiz-options" id="q-options"></div>
+
+    <div id="q-result" class="quiz-result-box" style="display:none">
+      <div class="quiz-result-label" id="q-label"></div>
+      <p class="quiz-result-exp" id="q-exp"></p>
+      <a class="quiz-source-link" id="q-source" href="#" target="_blank" rel="noopener"></a>
+      <div class="quiz-next-wrap">
+        <button class="quiz-btn" id="q-next-btn" onclick="nextQuestion()">次の問題 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 結果画面 ── -->
+  <div id="quiz-final" class="quiz-screen">
+    <div class="quiz-final-box">
+      <div class="quiz-score-circle">
+        <span class="score-num" id="r-score">0</span>
+        <span class="score-den">/ <span id="r-total">10</span></span>
+      </div>
+      <p class="quiz-final-msg" id="r-msg"></p>
+      <p class="quiz-final-sub" id="r-sub"></p>
+      <div class="quiz-final-actions">
+        <button class="quiz-btn pink" onclick="startQuiz()">もう一度挑戦！</button>
+        <a class="quiz-btn" href="blog.html">ブログを読む</a>
+        <a class="quiz-btn" href="youtube.html">YouTube動画を見る</a>
+        <a class="quiz-btn" href="tiktok.html">TikTok動画を見る</a>
+        <a class="quiz-btn" href="lemino.html">Lemino動画を見る</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var ALL_QUESTIONS = [{"q":"佐藤優羽さんの誕生日は？","options":["2006/9/10","2007/2/14","2006/8/7","2002/9/10"],"answer":"A","explanation":"佐藤優羽さんの誕生日は2006年9月10日！2026年9月10日は20歳のお誕生日です。\nB、Cは同級生にあたる正源司陽子さん、藤嶌果歩さんのお誕生日。佐藤優羽さんの誕生日に正源司さんが「今同い年だもんね」と言った際、佐藤さんが「違います、年上です」と返答したエピソードも有名です。\n2025.09.20　ポカ公式ブログ「ダブルなしあわせ」\nhttps://www.hinatazaka46.com/s/official/diary/detail/65669\nDは同じ誕生日の金村美玖さんのお誕生日。佐藤優羽さんがひなあい初登場回で自己紹介をした際、時間が足りずに「金村美玖さんと・・・」で終わってしまっていました。","sourceUrl":"https://www.hinatazaka46.com/s/official/artist/42?ima=0000","sourceTitle":"日向坂46公式プロフィール"},{"q":"日向坂46 BRAND NEW LIVE 2025「OVER THE RAINBOW」で佐藤優羽さんが参加したユニット曲は次のうちどれ？","options":["シーラカンス","You're in my way","パクチー　ピーマン　グリーンピース","どうする？どうする？どうする？"],"answer":"C","explanation":"佐藤優羽さんは「パクチー　ピーマン　グリーンピース」を披露しました！\n櫻澤46、日向坂46のリズムゲーム「ユニゾンエアー」にも収録されていますので、気になる方は是非チェック✨\nＤの「どうする？どうする？どうする？」はMONSTER GROOVEツアーで披露したユニット曲です。","sourceUrl":"https://x.com/kh_unisonair/status/2041727743378030848","sourceTitle":"ユニゾンエアー公式X"},{"q":"日向坂で会いましょう #309-310\n【行くぞ!!五期生ga HAPPYプロフィール紹介】\nからの問題です。\n佐藤優羽さんが薙刀の型を披露しながら自己紹介をした際、流れていた曲は次のうちどれ？","options":["僕に続け","月と星が踊るMidnight","ソンナコトナイヨ","君しか勝たん"],"answer":"B","explanation":"答えはBの「月と星が踊るMidnight」！\n佐藤優羽さんは好きな日向坂46の楽曲として「月と星が躍るMidnight」や「ソンナコトナイヨ」を挙げていて、自己紹介の際には「月と星が躍るMidnight」に合わせて薙刀の型を披露しました！","sourceUrl":"","sourceTitle":"日向坂で会いましょう #310\n【行くぞ!!五期生ga HAPPYプロフィール紹介】"},{"q":"日向坂で会いましょう＃320-321\n【新入生も入ってきたし学力テストでもやっておこう！】\nからの問題です。\n自身のサイリウムカラーを英語で書きなさい、という問題に対する佐藤優羽さんの回答は次のうちどれ？","options":["write × write","white × emerald green","Emerald gleen × Emerald green","Emelald green × Emerald green"],"answer":"D","explanation":"答えはD！佐藤優羽さんのサイリウムカラーはエメラルドグリーン×エメラルドグリーンです。\n英語が少し苦手な佐藤さんは「エメラルド」の綴りを2種類書いて、部分点を取りに行った、と言われていました。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNmeWY=?pit_git_type=PIT","sourceTitle":"日向坂で会いましょう＃321\n【新入生も入ってきたし学力テストでもやっておこう！】"},{"q":"日向坂で会いましょう＃325-326\n【チーム対抗！！３分リレークッキング２０２５】\nで五期生が提案したメニューのうち、佐藤優羽さんが提案したものは次のうちどれ？","options":["ネギたっぷりたこ焼き","みんな涼しくなぁ〜れ☆きゅうりの一本漬け","本格あんかけうどん","トロピカルラーメン"],"answer":"B","explanation":"答えはBのきゅうりの一本漬け！\n佐藤優羽さんといえばたこ焼きのイメージもありますが、MONSTER GROOVEツアーのケータリング以降特にたこ焼きにハマったとのこと。\nCのあんかけうどんは蔵盛さんの提案で実際に調理されました。Dのトロピカルラーメンは大野さんの提案。どんな味を想定していたのか気になります。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNpc3E=?pit_git_type=PIT","sourceTitle":"日向坂で会いましょう＃325【チーム対抗！！３分リレークッキング２０２５】"},{"q":"日向坂になりましょう 五期生成長バラエティ ＃2\n【初回だよ！全員集合 五期生の魅力を届けましょう！！後半戦】\nからの問題です。\n佐藤優羽さんが自己紹介で特技として披露したのは次のうちどれ？","options":["博多弁で早口言葉","麻雀の得点計算","鉱石クイズ","百人一首暗誦"],"answer":"A","explanation":"答えはAの博多弁で早口言葉！\n麻雀の得点計算は勉強中とのことでした。\n佐藤優羽さんは鉱物も好きですが、鉱石クイズは高井さんが特技としてチャレンジしました。百人一首の暗誦は、佐藤優羽さんがオーディションで披露した特技の一つです。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL2dyb3VwL2IxMDM5NWI=?pit_git_type=PIT","sourceTitle":"日向坂になりましょう 五期生成長バラエティ ＃2\n【初回だよ！全員集合 五期生の魅力を届けましょう！！後半戦】"},{"q":"日向坂で会いましょう＃328-329\n【日向坂46 五期生　運動能力チェック隊！】\nからの問題です。\n佐藤優羽さんが運動経験として挙げたスポーツの組み合わせは次のうちどれ？","options":["なぎなた、水泳、体操","なぎなた、トランポリン、スケート","なぎなた、テニス、バレエ","なぎなた、剣道、アーティスティックスイミング"],"answer":"B","explanation":"答えはBの「なぎなた、トランポリン、スケート」！\nなぎなた以外の二つはあまり語られたことがないので意外でしたね。\nDのアーティスティックスイミングは三期生の森本さんがスポーツ経験として挙げていました。","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNsNDY=?pit_git_type=PIT","sourceTitle":"日向坂で会いましょう＃328 【日向坂46 五期生　運動能力チェック隊！】"},{"q":"日向坂になりましょう 五期生成長バラエティ　#22 番外編\n【ワンフレーズを極めよう！】\nからの問題です。\n佐藤優羽さんが選択した楽曲は次のうちどれ？","options":["米津玄師「IRIS OUT」","CHICO with HoneyWorks「決戦スピリット」","L'arc~en~Ciel「HONEY」","宇多田ヒカル「First Love」"],"answer":"A","explanation":"答えはAの米津玄師「IRIS OUT」！\n#22の本編で習った「エッジボイス」を駆使して力強い歌声を披露し、一番上手く歌えたメンバーとして優勝を勝ち取りました！おしらさんに「伸び幅がえぐかった」と言われるくらい成長した佐藤さんの歌声に今後も注目です✨","sourceUrl":"https://lemino.docomo.ne.jp/contents/Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdvdXI=?pit_git_type=PIT","sourceTitle":"日向坂になりましょう 五期生成長バラエティ　#22 番外編　【ワンフレーズを極めよう！】"},{"q":"日向坂46五期生「新参者二〇二五 in TOKYO KABUKICHO TOWER」で佐藤優羽さんがセンターポジションを務めた楽曲は次のうちどれ？","options":["僕なんか","孤独たちよ","月と星が躍るMidnight","ガラス窓が汚れてる"],"answer":"D","explanation":"答えはDの「ガラス窓が汚れてる」！\n新参者開催記念坂道キャプテン対談生配信では、佐藤優羽さんが「オリジナルの振り付けしっかりやりたい」という意思を先輩メンバーに伝え、ダンスの動画を送ったりミーグリの合間にメモを持って質問に行ったりしていたことがキャプテン高橋未来虹さんの代打として登壇した松田好花さんから語られました✨\n","sourceUrl":"https://www.youtube.com/live/3rD4PQn_i9A?si=1lHYpFDFxLeiJayS&t=4777","sourceTitle":"【アーカイブ】『新参者 二〇二五 LIVE』開催記念 \"参\"坂道キャプテン対談生配信！【\"参\"坂道chコラボ】"},{"q":"2025年5月27日に開催された「日向坂46五期生おもてなし会」で、佐藤優羽さんが登場した後に思わず涙してしまった理由とは？","options":["会場がペンライトカラーのエメラルドグリーンに染まっていく会場を見て気持ちが高まった。","練習した通りのパフォーマンスが成功して安心した。","会場で家族の姿を見つけて安堵した。","極度の緊張でセリフを忘れてしまった。"],"answer":"A","explanation":"答えはA！\nおもてなし会では佐藤優羽さんは薙刀の演技を披露しました?\n当日の様子はYoutubeのドキュメンタリーや15thシングル『お願いバッハ！』TYPE-B収録特典映像「ひなたの裏側～the other side of HINATA～＜五期生 おもてなし会編＞」で観ることが出来るので、気になる方はぜひチェックしてみてください！","sourceUrl":"https://youtu.be/CiA5Qv2qYsA?si=T5WZPNmh4eXuw1qx&t=1949","sourceTitle":"\n日向坂46「五期生ドキュメンタリー」?おもてなし会への道のり?"}];
+  var QUIZ_SIZE = Math.min(5, ALL_QUESTIONS.length);
+
+  var state = { questions: [], idx: 0, score: 0 };
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function showScreen(id) {
+    ['quiz-start','quiz-question','quiz-final'].forEach(function(s){
+      var el = document.getElementById(s);
+      if (el) { el.classList.remove('active'); }
+    });
+    var target = document.getElementById(id);
+    if (target) target.classList.add('active');
+  }
+
+  window.startQuiz = function() {
+    state.questions = shuffle(ALL_QUESTIONS).slice(0, QUIZ_SIZE);
+    state.idx = 0;
+    state.score = 0;
+    showScreen('quiz-question');
+    renderQuestion();
+  };
+
+  function renderQuestion() {
+    var q = state.questions[state.idx];
+    var num = state.idx + 1;
+    var total = state.questions.length;
+
+    document.getElementById('q-num').textContent = num;
+    document.getElementById('q-total').textContent = total;
+    document.getElementById('q-score').textContent = state.score;
+    document.getElementById('q-bar').style.width = (num / total * 100) + '%';
+    document.getElementById('q-text').textContent = q.q;
+
+    var optDiv = document.getElementById('q-options');
+    optDiv.innerHTML = '';
+    q.options.forEach(function(opt, i) {
+      var btn = document.createElement('button');
+      btn.className = 'quiz-opt-btn';
+      btn.textContent = opt;
+      btn.dataset.idx = i;
+      btn.onclick = function() { selectAnswer(i, q); };
+      optDiv.appendChild(btn);
+    });
+
+    var resBox = document.getElementById('q-result');
+    resBox.style.display = 'none';
+  }
+
+  function selectAnswer(choiceIdx, q) {
+    var opts = document.querySelectorAll('.quiz-opt-btn');
+    opts.forEach(function(b) { b.disabled = true; });
+
+    var labels = ['A','B','C','D'];
+    var chosen = labels[choiceIdx];
+    var correct = (q.answer || '').toUpperCase();
+    var isCorrect = chosen === correct;
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'quiz_answer', {
+        question_no: state.idx + 1,
+        question: q.q.slice(0, 100),
+        correct: isCorrect ? 1 : 0
+      });
+    }
+
+    if (isCorrect) {
+      state.score++;
+      opts[choiceIdx].classList.add('correct');
+    } else {
+      opts[choiceIdx].classList.add('wrong');
+      var correctIdx = labels.indexOf(correct);
+      if (correctIdx >= 0 && opts[correctIdx]) opts[correctIdx].classList.add('correct');
+    }
+
+    document.getElementById('q-score').textContent = state.score;
+    document.getElementById('q-label').textContent = isCorrect ? '⭕ 正解！' : '❌ 不正解';
+    document.getElementById('q-exp').textContent = q.explanation || '';
+
+    var srcEl = document.getElementById('q-source');
+    if (q.sourceUrl) {
+      var isBlog = q.sourceUrl.indexOf('hinatazaka46.com') >= 0;
+      var verb = isBlog ? 'を読む →' : 'を見る →';
+      srcEl.href = q.sourceUrl;
+      srcEl.textContent = (q.sourceTitle ? '「' + q.sourceTitle + '」' : '出典') + verb;
+      srcEl.style.display = '';
+    } else {
+      srcEl.style.display = 'none';
+    }
+
+    var nextBtn = document.getElementById('q-next-btn');
+    var isLast = state.idx >= state.questions.length - 1;
+    nextBtn.textContent = isLast ? '結果を見る ✨' : '次の問題 →';
+
+    document.getElementById('q-result').style.display = '';
+  }
+
+  window.nextQuestion = function() {
+    state.idx++;
+    if (state.idx >= state.questions.length) {
+      showFinal();
+    } else {
+      renderQuestion();
+    }
+  };
+
+  function showFinal() {
+    var s = state.score;
+    var t = state.questions.length;
+    document.getElementById('r-score').textContent = s;
+    document.getElementById('r-total').textContent = t;
+
+    var msgs = [
+      [t,       '🌟 全問正解！さとうゆクイズマスター！',   'さとうゆのことを知り尽くしてる…！すごい！'],
+      [t * 0.8, '✨ すばらしい！',                         'さとうゆのことをよく知ってるんですね♪'],
+      [t * 0.6, '💪 なかなか良い！',                       'もっとさとうゆを知ればパーフェクトも夢じゃない！'],
+      [t * 0.4, '🌱 もう少し！',                           'さとうゆのことをもっと知って再挑戦しよう！'],
+      [0,       '📖 さとうゆのことを知って再挑戦しよう！', '出演番組やブログでさとうゆのことを知ろう♪'],
+    ];
+    var msg = msgs[msgs.length - 1];
+    for (var i = 0; i < msgs.length; i++) {
+      if (s >= msgs[i][0]) { msg = msgs[i]; break; }
+    }
+    document.getElementById('r-msg').textContent = msg[1];
+    document.getElementById('r-sub').textContent = msg[2];
+    if (typeof gtag === 'function') {
+      gtag('event', 'quiz_complete', { score: s, total: t });
+    }
+    showScreen('quiz-final');
+  }
+})();
+</script></div>
+    
+
+<!-- Activity Modal -->
+<div id="act-modal" class="act-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="act-modal-title">
+  <div class="act-modal-box">
+    <button class="act-modal-close" aria-label="閉じる">×</button>
+    <div id="act-modal-inner"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function makeDeadlineBadge(deadlineStr) {
+    if (!deadlineStr) return '';
+    var dl = new Date(deadlineStr + 'T00:00:00');
+    var today = new Date(); today.setHours(0,0,0,0);
+    var days = Math.round((dl - today) / 86400000);
+    var dlFmt = deadlineStr.slice(0,10).replace(/-/g,'.');
+    var cls, label;
+    if (days < 0)       { cls = 'deadline-past';   label = '締切済 ' + dlFmt; }
+    else if (days === 0){ cls = 'deadline-today';  label = '⏰ 本日締切！'; }
+    else if (days <= 3) { cls = 'deadline-urgent'; label = '⏰ 締切 ' + dlFmt + '（あと' + days + '日）'; }
+    else if (days <= 7) { cls = 'deadline-soon';   label = '締切 ' + dlFmt + '（あと' + days + '日）'; }
+    else                { cls = 'deadline-normal';  label = '締切 ' + dlFmt; }
+    return '<span class="deadline-badge ' + cls + '">' + label + '</span>';
+  }
+  function openModal(data) {
+    var inner = document.getElementById('act-modal-inner');
+    var badgeHtml = data.status
+      ? '<span class="badge ' + (data.status.includes('募集中') ? 'badge-open' : 'badge-closed') + '">' + data.status + '</span>'
+      : '';
+    var deadlineHtml = data.deadline ? makeDeadlineBadge(data.deadline) : '';
+    var imgHtml = data.img ? '<img class="act-modal-img" src="' + data.img + '" alt="">' : '';
+    inner.innerHTML = imgHtml +
+      '<p class="act-modal-title"></p>' +
+      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-family:\'Caveat\',cursive;font-size:14px;color:var(--text-light)"></span>' + deadlineHtml + '</div>' +
+      '<p class="act-modal-desc"></p>' +
+      (data.url ? '<a href="' + data.url + '" class="act-modal-link" target="_blank" rel="noopener">詳しく見る →</a>' : '');
+    inner.querySelector('.act-modal-title').textContent = data.title || '';
+    inner.querySelector('.act-modal-meta span').textContent = data.date || '';
+    var descEl = inner.querySelector('.act-modal-desc');
+    (data.desc || '').split('\n').forEach(function(line, i, arr) {
+      descEl.appendChild(document.createTextNode(line));
+      if (i < arr.length - 1) descEl.appendChild(document.createElement('br'));
+    });
+    var modal = document.getElementById('act-modal');
+    modal.classList.add('open');
+    modal.querySelector('.act-modal-close').focus();
+  }
+  function closeModal() {
+    document.getElementById('act-modal').classList.remove('open');
+  }
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('[data-act-modal]');
+    var modal = document.getElementById('act-modal');
+    if (card) { openModal(card.dataset); return; }
+    if (modal && (e.target === modal || e.target.closest('.act-modal-close'))) {
+      closeModal();
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    var modal = document.getElementById('act-modal');
+    if (!modal || !modal.classList.contains('open')) return;
+    if (e.key === 'Escape') { closeModal(); return; }
+    if (e.key === 'Tab') {
+      var focusable = modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var btn=document.getElementById('nav-hamburger');
+  var links=document.querySelector('.nav-links');
+  if(!btn||!links)return;
+  btn.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    btn.textContent=open?'✕':'☰';
+    btn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      btn.textContent='☰';
+      btn.setAttribute('aria-label','メニューを開く');
+    });
+  });
+  // モバイル：グループボタンタップで子メニュー開閉
+  links.querySelectorAll('.nav-group-btn').forEach(function(gb){
+    gb.addEventListener('click',function(){
+      if(window.innerWidth>768)return;
+      gb.closest('.nav-group').classList.toggle('open');
+    });
+  });
+  // デスクトップ：マウスオーバーでドロップダウン表示、他クリックで閉じる
+  if(window.innerWidth>768){
+    var groups=Array.from(links.querySelectorAll('.nav-group'));
+    groups.forEach(function(g){
+      g.addEventListener('mouseenter',function(){
+        groups.forEach(function(o){o.classList.remove('open');});
+        g.classList.add('open');
+      });
+    });
+    document.addEventListener('click',function(e){
+      if(!links.contains(e.target)){
+        groups.forEach(function(g){g.classList.remove('open');});
+      }
+    });
+  }
+})();
+</script>
+
+<footer>
+  <div class="foot-mark">Thank you for being here.</div>
+  <p>さとうゆほーむ <span class="heart">♥</span> 運営：佐藤優羽生誕祭実行委員会｜最終更新：2026/8/7 0:02:46</p>
+</footer>
+
+<script>
+(function(){
+  // YouTube lite-embed: クリックでiframeに差し替え
+  document.addEventListener('click',function(e){
+    var lite=e.target.closest('.yt-lite');
+    if(!lite)return;
+    var id=lite.dataset.id;
+    var iframe=document.createElement('iframe');
+    iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
+    iframe.allow='accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share';
+    iframe.setAttribute('allowfullscreen','');
+    iframe.style.cssText='width:100%;aspect-ratio:16/9;border:none;border-radius:8px;display:block;';
+    lite.replaceWith(iframe);
+  });
+  // TikTok lite-embed: クリックでiframeに差し替え
+  document.addEventListener('click',function(e){
+    var lite=e.target.closest('.tiktok-lite');
+    if(!lite)return;
+    var id=lite.dataset.id;
+    var iframe=document.createElement('iframe');
+    iframe.src='https://www.tiktok.com/embed/v2/'+id;
+    iframe.style.cssText='width:100%;aspect-ratio:9/16;border:none;display:block;';
+    lite.replaceWith(iframe);
+  });
+})();
+</script>
+
+
+</body>
+</html>
