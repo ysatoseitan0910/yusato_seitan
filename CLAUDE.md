@@ -304,6 +304,18 @@ docker compose up -d --force-recreate satoyu-admin  # 環境変数を足した�
 スマホ縦表示では `display: contents` でサイドバーを解体し、`order` で並び順を制御。
 - `.top-sidebar-links`（クイックリンク）には `width: 100%` が必要（flex stretch が自動で効かないため）
 
+## セキュリティ上の要注意点（2026-08-07 全体点検で判明・対処済み）
+- **rsync は `.git` を除外する**。除外し忘れて `/var/www/satoyu/.git` が配信され、`https://satoyu.info/.git/` から全ソースと履歴が取得できる状態だった。**`--exclude` を足しても既存分は消えない**ので、事故時は `rm -rf /var/www/satoyu/.git` が別途必要
+- **未認証エンドポイント（`POST /messages` `/cards`）は型チェックを try の外でやらない**。文字列以外が来ると `.trim()` が TypeError になり、Express 4 は async の reject を拾わないため**プロセスごと落ちる**
+- **画像アップロードは PNG マジックバイトとサイズを検証する**（`isValidPng`）。検証が無いと未認証で任意ファイルを自ドメインにホスティングされる
+- **未認証入力を Notion の select / multi_select にそのまま渡さない**。Notion は未知の選択肢を自動作成するため、DBのセレクト定義を無限に汚染できる（`pickAllowed` で許可リスト化）
+- **未認証エンドポイントで `e.message` をそのまま返さない**。Notion のエラー文には DB ID やプロパティ名が含まれる
+- 管理API の `auth` は IP単位で失敗回数を制限し、`crypto.timingSafeEqual` で比較する
+
+## 日付の扱い
+GitHub Actions は **UTC** で動くため、`new Date()` や `toISOString()` をそのまま使うと JST の 0〜9時に日付が1日ずれる。
+**日付判定は必ず `todayJst()` を使う**（締切バッジ・スケジュールの過去判定・Lemino の配信終了判定で実際にずれていた）。
+
 ## デプロイの安全設計（2026-08-07 改修）
 2026-08-06 に「ビルド失敗が成功扱いになり、`rsync --delete` が本番の全HTMLを削除して403」という障害が発生した。その再発防止として以下を入れている。**変更するときは必ず理由を理解してから**。
 
