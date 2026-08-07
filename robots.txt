@@ -1,5 +1,8 @@
 User-agent: *
 Disallow: /admin.html
 Disallow: /admin-api/
+Disallow: /preview_top.html
+Disallow: /card_old.html
+Disallow: /.git/
 
 Sitemap: https://satoyu.info/sitemap.xml

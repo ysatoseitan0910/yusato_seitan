@@ -84,17 +84,66 @@ app.use((req, res, next) => {
   next();
 });
 
+// 公開エンドポイントで受け取る選択値の許可リスト（未認証入力をそのままNotionに入れない）
+const ALLOWED_FONTS = ["Zen Maru Gothic", "Noto Sans JP", "Yomogi", "Caveat"];
+const ALLOWED_SIZES = ["small", "medium", "large"];
+function pickAllowed(value, allowed, fallback) {
+  const v = String(value || "").replace(/['"]/g, "").split(",")[0].trim();
+  return allowed.includes(v) ? v : fallback;
+}
+
 // 認証ミドルウェア
+// ADMIN_PASSWORD への総当たりを抑止するため、IP単位で失敗回数を制限する。
+// 管理画面のログインは「/add/quiz に空ボディを投げて401か否か」で判定しており、
+// 副作用のない判定オラクルが公開されているため、無制限だと試行し放題だった。
+const authFailMap = new Map();
+const AUTH_MAX_FAILS = 10;              // この回数を超えたら
+const AUTH_LOCK_MS   = 10 * 60 * 1000;  // 10分ロックする
+
+function authFailState(ip) {
+  const now = Date.now();
+  for (const [k, v] of authFailMap) if (now > v.resetAt) authFailMap.delete(k);
+  return authFailMap.get(ip);
+}
+
 function auth(req, res, next) {
-  const token = (req.headers.authorization || "").replace("Bearer ", "");
-  if (!ADMIN_PASSWORD || token !== ADMIN_PASSWORD) {
+  const ip = req.ip;
+  const st = authFailState(ip);
+  if (st && st.count >= AUTH_MAX_FAILS) {
+    return res.status(429).json({ error: "試行回数が多すぎます。しばらく時間をおいてください。" });
+  }
+  const token = (req.headers.authorization || "").replace(/^Bearer\s+/, "");
+  // タイミング差を減らすため長さを揃えてから定数時間比較する
+  let ok = false;
+  if (ADMIN_PASSWORD) {
+    const a = Buffer.from(String(token));
+    const b = Buffer.from(String(ADMIN_PASSWORD));
+    ok = a.length === b.length && crypto.timingSafeEqual(a, b);
+  }
+  if (!ok) {
+    const now = Date.now();
+    const cur = st || { count: 0, resetAt: now + AUTH_LOCK_MS };
+    cur.count++; cur.resetAt = now + AUTH_LOCK_MS;
+    authFailMap.set(ip, cur);
     return res.status(401).json({ error: "認証エラー" });
   }
+  authFailMap.delete(ip);   // 成功したら失敗カウントを消す
   next();
 }
 
 function t(content) {
   return content ? [{ text: { content: String(content) } }] : [];
+}
+
+// base64がPNGとして妥当かを検証し、問題なければBufferを返す（不正ならnull）
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+function isValidPng(base64) {
+  if (typeof base64 !== "string" || base64.length === 0) return null;
+  let buf;
+  try { buf = Buffer.from(base64, "base64"); } catch { return null; }
+  if (buf.length < 8 || buf.length > MAX_IMAGE_BYTES) return null;
+  return buf.subarray(0, 8).equals(PNG_MAGIC) ? buf : null;
 }
 
 // クイズ
@@ -423,8 +472,10 @@ app.post("/messages", async (req, res) => {
     return res.status(429).json({ error: "送信が多すぎます。しばらく時間をおいてから再度お試しください。" });
   }
 
-  if (!message || !message.trim()) return res.status(400).json({ error: "メッセージは必須です" });
-  if (!name    || !name.trim())    return res.status(400).json({ error: "お名前は必須です" });
+  // 型チェックを必ず先に行う。文字列以外（数値・オブジェクト等）が来ると
+  // .trim() が TypeError になり、try の外なので unhandled rejection でプロセスが落ちる
+  if (typeof message !== "string" || !message.trim()) return res.status(400).json({ error: "メッセージは必須です" });
+  if (typeof name    !== "string" || !name.trim())    return res.status(400).json({ error: "お名前は必須です" });
   if (message.trim().length > 200) return res.status(400).json({ error: "メッセージは200文字以内です" });
   if (name.trim().length > 30)     return res.status(400).json({ error: "お名前は30文字以内です" });
   if (!DB.messages) return res.status(503).json({ error: "メッセージDBが未設定です（DB_MESSAGES環境変数を設定してください）" });
@@ -435,10 +486,13 @@ app.post("/messages", async (req, res) => {
       properties: {
         Name:      { title: t(name.trim()) },
         Message:   { rich_text: t(message.trim()) },
-        Font:      { multi_select: [{ name: (font || "'Klee One', serif").replace(/'/g, "").split(",")[0].trim() }] },
-        Size:      { multi_select: [{ name: size || "medium" }] },
-        Color:     { rich_text: t(color || "#1a1a1a") },
-        X:         { rich_text: t(xid || "") },
+        // 未認証で送られる値なので許可リストに丸める。
+        // 以前は任意文字列がそのまま multi_select のオプション名になり、
+        // Notion が未知の値を自動追加するためDBのセレクト定義を無限に汚染できた
+        Font:      { multi_select: [{ name: pickAllowed(font, ALLOWED_FONTS, "Zen Maru Gothic") }] },
+        Size:      { multi_select: [{ name: pickAllowed(size, ALLOWED_SIZES, "medium") }] },
+        Color:     { rich_text: t(/^#[0-9a-fA-F]{3,8}$/.test(String(color || "")) ? color : "#1a1a1a") },
+        X:         { rich_text: t(String(xid || "").slice(0, 100)) },
         Date:      { date: { start: new Date().toISOString().slice(0, 10) } },
         Published: { checkbox: false },
       },
@@ -446,7 +500,8 @@ app.post("/messages", async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ error: e.message });
+    // 未認証エンドポイントなのでNotionの内部エラー文（DB IDやプロパティ名を含む）は返さない
+    res.status(500).json({ error: "送信に失敗しました。時間をおいて再度お試しください。" });
   }
 });
 
@@ -465,7 +520,8 @@ app.post("/cards", async (req, res) => {
   if (!checkCardRateLimit(req.ip)) {
     return res.status(429).json({ error: "送信が多すぎます。しばらく時間をおいてから再度お試しください。" });
   }
-  if (!fanName || !fanName.trim()) return res.status(400).json({ error: "ファン名は必須です" });
+  // 文字列以外が来ると .trim() が TypeError → try の外なのでプロセスが落ちる
+  if (typeof fanName !== "string" || !fanName.trim()) return res.status(400).json({ error: "ファン名は必須です" });
   if (!DB.cards) return res.status(503).json({ error: "カードDBが未設定です（DB_CARDS環境変数を設定してください）" });
 
   try {
@@ -473,11 +529,19 @@ app.post("/cards", async (req, res) => {
     let cardImageUrl = null;
     if (imageBase64) {
       try {
-        fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-        const filename = `${crypto.randomUUID()}.png`;
-        const filepath = path.join(UPLOADS_DIR, filename);
-        fs.writeFileSync(filepath, Buffer.from(imageBase64, "base64"));
-        cardImageUrl = `https://satoyu.info/uploads/cards/${filename}`;
+        // 未認証で保存されるファイルなので、本当にPNGかを検証してから書く。
+        // 以前は任意のバイト列が .png として公開ディレクトリに置けたため、
+        // 自ドメインを任意ファイルのホスティングに使われる恐れがあった
+        const buf = isValidPng(imageBase64);
+        if (!buf) {
+          console.warn("画像を拒否: PNGではない、またはサイズ超過");
+        } else {
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+          const filename = `${crypto.randomUUID()}.png`;
+          const filepath = path.join(UPLOADS_DIR, filename);
+          fs.writeFileSync(filepath, buf);
+          cardImageUrl = `https://satoyu.info/uploads/cards/${filename}`;
+        }
       } catch (imgErr) {
         console.error("画像保存エラー:", imgErr.message);
       }
@@ -539,7 +603,8 @@ app.post("/cards", async (req, res) => {
     res.json({ ok: true, cardImageUrl });
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ error: e.message });
+    // 未認証エンドポイントなのでNotionの内部エラー文（DB IDやプロパティ名を含む）は返さない
+    res.status(500).json({ error: "送信に失敗しました。時間をおいて再度お試しください。" });
   }
 });
 
@@ -757,9 +822,11 @@ const OGP_DIR = "/var/www/satoyu/ogp";
 app.post("/ogp/weekly", auth, async (req, res) => {
   const { imageBase64 } = req.body || {};
   if (!imageBase64) return res.status(400).json({ error: "画像がありません" });
+  const pngBuf = isValidPng(imageBase64);
+  if (!pngBuf) return res.status(400).json({ error: "PNG画像として不正です（または5MB超）" });
   try {
     fs.mkdirSync(OGP_DIR, { recursive: true });
-    fs.writeFileSync(path.join(OGP_DIR, "weekly.png"), Buffer.from(imageBase64, "base64"));
+    fs.writeFileSync(path.join(OGP_DIR, "weekly.png"), pngBuf);
     res.json({ ok: true, url: "https://satoyu.info/ogp/weekly.png" });
   } catch (e) {
     console.error(e.message);

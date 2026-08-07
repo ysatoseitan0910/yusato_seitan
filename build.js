@@ -97,47 +97,39 @@ function badgeClass(platform) {
   return "badge badge-" + (map[platform.toLowerCase()] || "blog");
 }
 
-async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
-  if (!dbId) return [];
-  try {
-    const all = [];
-    let cursor;
-    do {
-      const query = { database_id: dbId, page_size: 100, start_cursor: cursor };
-      if (sorts.length > 0) query.sorts = sorts;
-      const res = await notion.databases.query(query);
-      all.push(...res.results);
-      cursor = res.has_more ? res.next_cursor : undefined;
-    } while (cursor);
-    const published = all.filter(isPublished);
-    console.log(`  DB(${dbId.slice(0,8)}...): ${all.length}件取得, ${published.length}件公開`);
-    return published;
-  } catch(e) {
-    console.error(`DB query error (${dbId}):`, e.message);
-    return [];
-  }
+// Notion DB を全件取得する共通処理。
+// ★エラーを握り潰して [] を返してはいけない★
+// 以前は catch して [] を返していたため、APIの一時エラーやプロパティ名変更で
+// 「カード0件のページ」が正常生成扱いになり、そのまま本番へ公開されて
+// ページの中身が消えていた（ログにも1行しか出ないため気づけない）。
+// 現在は例外を投げてビルドを失敗させ、デプロイを中止して既存サイトを守る。
+async function queryDBRaw(dbId, sorts) {
+  const all = [];
+  let cursor;
+  do {
+    const query = { database_id: dbId, page_size: 100, start_cursor: cursor };
+    if (sorts.length > 0) query.sorts = sorts;
+    const res = await notion.databases.query(query);
+    all.push(...res.results);
+    cursor = res.has_more ? res.next_cursor : undefined;
+  } while (cursor);
+  return all;
 }
 
-// syncToYuNews専用: 全件のURLをページネーションで取得（Published問わず重複チェック用）
+async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
+  if (!dbId) return [];
+  const all = await queryDBRaw(dbId, sorts);
+  const published = all.filter(isPublished);
+  console.log(`  DB(${dbId.slice(0,8)}...): ${all.length}件取得, ${published.length}件公開`);
+  return published;
+}
+
 // Published を問わず全件取得（今週のさとうゆは非公開でも weekly.html に表示するため）
 async function queryDBAll(dbId, sorts=[{property:"Date",direction:"descending"}]) {
   if (!dbId) return [];
-  try {
-    const all = [];
-    let cursor;
-    do {
-      const query = { database_id: dbId, page_size: 100, start_cursor: cursor };
-      if (sorts.length > 0) query.sorts = sorts;
-      const res = await notion.databases.query(query);
-      all.push(...res.results);
-      cursor = res.has_more ? res.next_cursor : undefined;
-    } while (cursor);
-    console.log(`  DB(${dbId.slice(0,8)}...): ${all.length}件取得（Published問わず）`);
-    return all;
-  } catch(e) {
-    console.error(`DB query error (${dbId}):`, e.message);
-    return [];
-  }
+  const all = await queryDBRaw(dbId, sorts);
+  console.log(`  DB(${dbId.slice(0,8)}...): ${all.length}件取得（Published問わず）`);
+  return all;
 }
 
 // 年表の重複判定キーを全件取得（URL＋日付 と 名前＋日付 の2種類）
@@ -426,10 +418,19 @@ function statusBadge(status) {
   return `<span class="badge ${cls}">${status}</span>`;
 }
 
+// 「今日」は必ずJSTで判定する。GitHub Actions は UTC で動くため、
+// ローカル時刻や toISOString() をそのまま使うと日本時間の 0〜9時に日付が1日ずれ、
+// 締切バッジやLeminoの配信終了判定が誤る
+function todayJst() {
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
 function deadlineBadge(deadlineStr) {
   if (!deadlineStr) return "";
-  const dl = new Date(deadlineStr + "T00:00:00");
-  const today = new Date(); today.setHours(0, 0, 0, 0);
+  // Notionの日付に時刻が含まれる場合があるので日付部分だけ取り出す
+  const dl = new Date(String(deadlineStr).slice(0, 10) + "T00:00:00Z");
+  const today = new Date(todayJst() + "T00:00:00Z");
+  if (isNaN(dl.getTime())) return "";
   const days = Math.round((dl - today) / 86400000);
   const dlFmt = fmtDate(deadlineStr);
   let cls, label;
@@ -568,7 +569,7 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   // ── サイドバー: スケジュール ──
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayJst();   // UTCではなくJSTで「過去の予定」を判定する
   const scheduleRows = schedule.map(p => {
     const title  = getText(p, "Name");
     const date   = getDate(p);
@@ -1378,7 +1379,7 @@ async function buildYuNews(tpl) {
 }
 
 async function buildLemino(tpl) {
-  const today = new Date().toISOString().split('T')[0];
+  const today = todayJst();   // UTCではなくJSTで配信終了を判定する
 
   // 配信終了予定が過ぎた「日向坂で会いましょう」エントリを自動非公開化
   // queryDB は Published=true のみ返すため、期限切れを事前にチェックする
@@ -2309,6 +2310,12 @@ async function buildQuizJson() {
     sourceUrl:   p.properties["SourceUrl"]?.url || "",
     sourceTitle: getText(p, "SourceTitle"),
   }));
+  // 0問のときは書き込まない。queryDB は API エラー時に [] を返すため、
+  // そのまま上書きすると既存のクイズデータを消してしまう
+  if (questions.length === 0) {
+    console.warn("  ⚠️ クイズが0問（API失敗の可能性）→ quiz_questions.json は更新しない");
+    return;
+  }
   fs.writeFileSync("quiz_questions.json", JSON.stringify(questions, null, 2), "utf-8");
   console.log(`  ✅ quiz_questions.json 生成完了（${questions.length}問）`);
 }
@@ -2342,12 +2349,21 @@ async function main() {
   if (isPartial) {
     console.log(`📄 部分ビルド: ${[...targetFiles].join(", ")}`);
   } else {
-    console.log("🔄 Yu Newsへ自動集約中...");
-    await syncToYuNews();
-    console.log("🗓️  年表へ自動集約中...");
-    await syncToHistory();
-    console.log("📝 クイズデータ生成中...");
-    await buildQuizJson();
+    // Notionへの集約処理は「あると嬉しい」もので、HTML生成の前提ではない。
+    // ここで例外が出るとページが1枚も作られずデプロイが丸ごと止まるため、個別に隔離する
+    const syncSteps = [
+      ["🔄 Yu Newsへ自動集約中...",  syncToYuNews],
+      ["🗓️  年表へ自動集約中...",    syncToHistory],
+      ["📝 クイズデータ生成中...",   buildQuizJson],
+    ];
+    for (const [label, fn] of syncSteps) {
+      console.log(label);
+      try {
+        await fn();
+      } catch (e) {
+        console.error(`  ⚠️ ${label.replace(/\.\.\.$/, "")}に失敗（HTML生成は続行）: ${e.message}`);
+      }
+    }
   }
 
   console.log("🏗️  HTMLビルド開始...");
