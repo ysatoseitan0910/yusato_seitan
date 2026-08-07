@@ -262,6 +262,48 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
 .log-warn{color:#c06040;font-weight:700;}
 
 /* ── Debug bar ── */
+/* ゲーム開始前は空の枠を出さない（空箱が並んで寂しかったため） */
+body:not(.game-started) .play-only{display:none;}
+
+/* ── さとうゆマスコット（状況に応じてリアクション） ── */
+.buddy{
+  display:flex;align-items:flex-end;gap:10px;margin:0 0 12px;
+}
+.buddy-img{
+  width:84px;height:84px;flex-shrink:0;object-fit:contain;
+  filter:drop-shadow(0 3px 5px rgba(0,0,0,.12));
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  animation:buddy-float 3.2s ease-in-out infinite;
+}
+@keyframes buddy-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.buddy-img.pop{animation:buddy-pop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes buddy-pop{0%{transform:scale(.8) rotate(-6deg)}60%{transform:scale(1.12) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.buddy-bubble{
+  position:relative;background:#fff;border:2px solid var(--ink);border-radius:14px;
+  padding:10px 14px;box-shadow:3px 3px 0 var(--pink);
+  font-size:.86rem;font-weight:700;color:var(--text);line-height:1.5;
+  flex:1;min-width:0;
+}
+.buddy-bubble::before,.buddy-bubble::after{
+  content:"";position:absolute;left:-9px;bottom:16px;
+  border:7px solid transparent;border-right-color:var(--ink);
+}
+.buddy-bubble::after{left:-6px;border-right-color:#fff;}
+.buddy-bubble .buddy-sub{display:block;font-size:.72rem;font-weight:500;color:var(--text-muted);margin-top:3px;}
+@media(max-width:520px){
+  .buddy-img{width:64px;height:64px;}
+  .buddy-bubble{font-size:.8rem;padding:8px 11px;}
+}
+/* オーバーレイのイラスト（従来の絵文字アイコンの代わり） */
+.ov-illust{width:120px;height:120px;object-fit:contain;margin:0 auto 4px;display:block;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));animation:buddy-pop .6s cubic-bezier(.34,1.56,.64,1);}
+/* イラストを出すので絵文字は隠す（JSが参照しているので要素自体は残す） */
+.ov-box .ov-icon{display:none;}
+
+/* 収集状況の進捗バー */
+.kokushi-progress{height:9px;background:var(--emerald-pale);border-radius:99px;overflow:hidden;margin:8px 0 10px;border:1px solid var(--border);}
+.kokushi-progress-fill{height:100%;background:linear-gradient(90deg,var(--emerald),var(--pink));border-radius:99px;width:0;transition:width .45s cubic-bezier(.34,1.56,.64,1);}
+
 .debug-bar{display:flex;align-items:center;gap:10px;background:var(--gold-light);border:1.5px solid var(--gold);border-radius:10px;padding:8px 14px;margin-bottom:10px;font-size:0.78rem;color:#6a4000;}
 .debug-bar label{display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:600;user-select:none;}
 .debug-bar input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--gold);}
@@ -472,6 +514,15 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
     <span class="sub">🪽 KOKUSHI MUSOU — 十三面待ちを目指そう！</span>
   </header>
 
+  <!-- さとうゆが状況に合わせて実況してくれる -->
+  <div class="buddy">
+    <img class="buddy-img" id="buddy-img" src="/images/image/card/Mahjong_in_Yu_Mind.png" alt="さとうゆ">
+    <div class="buddy-bubble" id="buddy-bubble">
+      いっしょに国士無双、目指してみない？
+      <span class="buddy-sub">「ゲーム開始」を押すと配牌が配られるよ</span>
+    </div>
+  </div>
+
   <!-- 情報 -->
   <div class="info-grid">
     <div class="info-card"><div class="lbl">局</div><div class="val" id="kyoku">東1局</div></div>
@@ -480,21 +531,21 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   </div>
 
   <!-- 牌山バー -->
-  <div class="wall-bar">
+  <div class="wall-bar play-only">
     <span style="color:var(--text-muted);font-size:.68rem;">牌山</span>
     <div class="wall-track"><div class="wall-fill" id="wall-fill" style="width:100%"></div></div>
     <div class="wall-pct" id="wall-pct">—</div>
   </div>
 
   <!-- 他家捨て牌 -->
-  <div class="opp-grid">
+  <div class="opp-grid play-only">
     <div class="opp-panel"><h4>上家（左）</h4><div class="opp-tiles" id="opp-0"></div></div>
     <div class="opp-panel"><h4>対面</h4><div class="opp-tiles" id="opp-1"></div></div>
     <div class="opp-panel"><h4>下家（右）</h4><div class="opp-tiles" id="opp-2"></div></div>
   </div>
 
   <!-- 自分の捨て牌 -->
-  <div class="my-discards-panel">
+  <div class="my-discards-panel play-only">
     <h4>自分の捨て牌</h4>
     <div class="my-discards-tiles" id="my-discards"></div>
   </div>
@@ -502,6 +553,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   <!-- 国士収集 -->
   <div class="card kokushi-card">
     <div class="card-title" id="kokushi-title">国士無双 収集状況 (0/13)</div>
+    <div class="kokushi-progress"><div class="kokushi-progress-fill" id="kokushi-progress-fill"></div></div>
     <div class="kokushi-slots" id="kokushi-slots"></div>
   </div>
 
@@ -530,7 +582,8 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
   </div>
 
   <!-- デバッグモード -->
-  <div class="debug-bar" id="debug-bar">
+  <!-- 開発用の検証機能。一般公開時は隠し、?debug=1 を付けたときだけ表示する -->
+  <div class="debug-bar" id="debug-bar" style="display:none;">
     <label>
       <input type="checkbox" id="debug-mode-chk" onchange="onDebugToggle()">
       🐛 九種九牌スタート
@@ -601,6 +654,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 
 <div class="overlay" id="win-ov">
   <div class="ov-box" id="win-box">
+    <img class="ov-illust" src="/images/image/card/dance.png" alt="">
     <div class="ov-icon">🀄</div>
     <h2 id="win-h2">国士無双！</h2>
     <p id="win-p">役満おめでとうございます！</p>
@@ -611,6 +665,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 
 <div class="overlay" id="lose-ov">
   <div class="ov-box">
+    <img class="ov-illust" src="/images/image/card/udetate.png" alt="">
     <div class="ov-icon">🎴</div>
     <h2 style="color:var(--text-muted)">流局</h2>
     <p>牌山が尽きてしまいました。</p>
@@ -857,6 +912,7 @@ function debugTsumo(tileId) {
 // ゲーム開始
 // ================================================================
 function startGame() {
+  document.body.classList.add('game-started');   // 牌山・捨て牌などの表示を解禁
   const debugMode = document.getElementById('debug-mode-chk').checked;
 
   let full, hand, attempts = 0;
@@ -1212,6 +1268,8 @@ function showWin(h14, isFuriten, winType, is13men){
   const elapsed=Math.round((Date.now()-G.startTime)/1000);
   const waitCount=getWaitTiles(G.hand.length===13?G.hand:h14.slice(0,13)).length;
   const is13=waitCount===13||is13men;
+  G.phase='ended';
+  setBuddy('win', is13 ? '十三面待ちで和了！！すごい！！' : '国士無双、和了だ〜！！', 'おめでとう🎉 記念にスクショどうぞ！');
 
   const box=document.getElementById('win-box');
   box.className='ov-box';
@@ -1289,6 +1347,7 @@ function endGame(){
   }
   const cnt=kokushiCount(G.hand);
   const elapsed=Math.round((Date.now()-G.startTime)/1000);
+  setBuddy('lose', `流局…！ ${cnt}/13 まで集まったよ`, 'もう一回チャレンジしてみよう🪽');
   document.getElementById('lose-stats').innerHTML=`
     <div>巡目：<span>${G.turn}</span></div>
     <div>収集パーツ：<span>${cnt}/13</span></div>
@@ -1407,6 +1466,59 @@ function renderKokushi(){
     cont.appendChild(s);
   });
   document.getElementById('kokushi-title').textContent=`国士無双 収集状況 (${have}/13)`;
+  const bar=document.getElementById('kokushi-progress-fill');
+  if(bar) bar.style.width = `${Math.round(have/13*100)}%`;
+  updateBuddy(have, waitTiles.size);
+}
+
+// ================================================================
+// さとうゆの実況（状況に応じて表情とセリフが変わる）
+// ================================================================
+const BUDDY_IMG = {
+  idle:   '/images/image/card/Mahjong_in_Yu_Mind.png',
+  play:   '/images/image/card/Mahjong_in_Yu_Mind.png',
+  close:  '/images/image/card/pingpong.png',
+  tenpai: '/images/image/card/dance2.png',
+  win:    '/images/image/card/dance.png',
+  lose:   '/images/image/card/udetate.png',
+};
+let _buddyMood = null;
+
+function setBuddy(mood, text, sub){
+  const img=document.getElementById('buddy-img');
+  const bubble=document.getElementById('buddy-bubble');
+  if(!img||!bubble) return;
+  const src=BUDDY_IMG[mood]||BUDDY_IMG.idle;
+  if(_buddyMood!==mood){
+    _buddyMood=mood;
+    img.src=src;
+    img.classList.remove('pop');
+    void img.offsetWidth;          // アニメーションを再生し直す
+    img.classList.add('pop');
+  }
+  bubble.innerHTML = text + (sub ? `<span class="buddy-sub">${sub}</span>` : '');
+}
+
+// 収集数と待ち枚数からセリフを決める
+function updateBuddy(have, waitCount){
+  if(!G || !G.hand){
+    setBuddy('idle','いっしょに国士無双、目指してみない？','「ゲーム開始」を押すと配牌が配られるよ');
+    return;
+  }
+  if(G.phase==='ended') return;    // 終了時は専用メッセージを維持
+
+  const left = 13 - have;
+  if(waitCount>=13){
+    setBuddy('tenpai','十三面待ち！！どれでも和了れるよ！','ここまで来たらツモるだけ🀄');
+  } else if(waitCount>0){
+    setBuddy('tenpai',`テンパイ！あと <b>${waitCount}</b>種類のどれかで和了！`,'がんばれ〜！');
+  } else if(have>=11){
+    setBuddy('close',`あと <b>${left}</b>種類！もうすぐだよ`,'ここが正念場…！');
+  } else if(have>=8){
+    setBuddy('close',`${have}種類そろったよ！`,'いい感じ、この調子！');
+  } else {
+    setBuddy('play',`${have}/13 そろったよ`,'いらない牌はどんどん切っていこう');
+  }
 }
 
 function renderOpponents(){
@@ -1645,6 +1757,14 @@ function addLog(msg,type=''){
     s.innerHTML=`<span style="font-size:1.8rem;opacity:0.22;">${tileChar(t)}</span>`;
     cont.appendChild(s);
   });
+})();
+
+// 開発用の検証機能（九種九牌スタート／ツモ指定／自動試行）は ?debug=1 のときだけ出す
+(function(){
+  if(new URLSearchParams(location.search).get('debug')==='1'){
+    const bar=document.getElementById('debug-bar');
+    if(bar) bar.style.display='';
+  }
 })();
 
 // ================================================================
