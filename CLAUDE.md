@@ -304,7 +304,18 @@ docker compose up -d --force-recreate satoyu-admin  # 環境変数を足した�
 スマホ縦表示では `display: contents` でサイドバーを解体し、`order` で並び順を制御。
 - `.top-sidebar-links`（クイックリンク）には `width: 100%` が必要（flex stretch が自動で効かないため）
 
+## デプロイの安全設計（2026-08-07 改修）
+2026-08-06 に「ビルド失敗が成功扱いになり、`rsync --delete` が本番の全HTMLを削除して403」という障害が発生した。その再発防止として以下を入れている。**変更するときは必ず理由を理解してから**。
+
+- **全スクリプトは失敗時に `process.exit(1)`**：`main().catch(console.error)` だと終了コード0になり、生成物が無いまま次のステップへ進んでしまう
+- **rsync 直前の検証ステップ**（`Verify build output`）：必須HTML16件の存在と最低サイズを確認し、欠けていればデプロイを中止する
+- **収集系ステップは `continue-on-error: true`、ビルドのみ致命的**：収集の一時失敗ではサイト更新を止めず、壊れた成果物は転送しない
+- **GitHub Pages への公開は廃止**：satoyu.info はVPS(nginx)配信で、Pagesは独自ドメイン無しの重複ミラーだった。gh-pages への push が毎回 `pages build and deployment` を誘発してタイムアウトし、全デプロイが失敗表示になっていた
+
+**所要時間**：改修により約10分26秒 → **約1分23秒**（別途動いていた失敗する Pages ビルド約10分も消滅）
+
 ## 注意事項
+- **Notionのプロパティ名は大文字小文字を区別する**。mediaプロパティはDBにより名前が違う（`Media`=委員会News/活動報告/カード/他メンバーブログ、`media`=TikTok/YouTube/Lemino/メッセージ）。コードは固定名を使わず、スキーマから大小無視で解決する実装になっている（固定 "Media" にしていた頃は全書き込みが validation_error で失敗し、1実行あたり約3分半を浪費していた）
 - 佐藤優羽の読み方は「さとうゆう」。ローマ字表記はYu（芸名読み）を使う
 - APIキー等の秘密情報はGitHub Secretsで管理、.envファイルはない
 - GitHub Actionsのconcurrencyグループ（`group: deploy`）で同時実行を防止
