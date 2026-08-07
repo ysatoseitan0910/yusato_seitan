@@ -105,7 +105,7 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 **右（サイドバー）**：
 1. スケジュール：DB_SCHEDULEを日付昇順で表示。過去日付はグレーアウト。URLありはリンク
 2. YouTube動画：`https://www.youtube.com/watch?v=QXQUKkvSrCQ` で**固定**（lite-embed）
-3. Xツイート：`https://x.com/ysatoseitan/status/2040992766583550402` で**固定**（oEmbed取得・遅延読み込み）
+3. Xツイート：`https://x.com/ysatoseitan/status/2083432538823860368` で**固定**（oEmbed取得・遅延読み込み）。差し替えは `build.js` の `buildIndex` 内 `fetchTwitterOembed(...)` のURLを変更する
 4. クイックリンク：生誕委員規約・当委員会について・入会の流れ
 
 ### lite-embed（YouTube・TikTok）

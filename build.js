@@ -596,7 +596,7 @@ async function buildIndex(tpl) {
   </div>`;
 
   // ── サイドバー: X（固定ツイート・oEmbed） ──
-  const xEmbedHtml = await fetchTwitterOembed("https://x.com/ysatoseitan/status/2040992766583550402?s=20");
+  const xEmbedHtml = await fetchTwitterOembed("https://x.com/ysatoseitan/status/2083432538823860368?s=20");
 
   const tileGroups = [
     { id: "satoyu",    label: "さとうゆ情報",  emoji: "💚", bg: "var(--emerald-light)",
