@@ -609,7 +609,7 @@ async function buildIndex(tpl) {
     { id: "video",     label: "動画",           emoji: "▶️",  bg: "var(--sky)",
       links: [{href:"youtube.html",text:"YouTube"},{href:"lemino.html",text:"Lemino"}] },
     { id: "card",      label: "カード作成",     emoji: "🎴", bg: "var(--emerald-pale)",
-      links: [{href:"card.html",text:"プロフィールカード"},{href:"message.html",text:"お誕生日メッセージ"}] },
+      links: [{href:"card.html",text:"さとうゆ推しぷろふぃーる"},{href:"message.html",text:"お誕生日メッセージ"}] },
     { id: "committee", label: "委員会",         emoji: "🌿", bg: "var(--cream)",
       links: [{href:"committee.html",text:"委員会News"},{href:"activities.html",text:"活動報告"},{href:"about.html",text:"委員会について"},{href:"site-info.html",text:"このサイトについて"},{href:"terms.html",text:"規約"},{href:"join.html",text:"入会"}] },
   ];
