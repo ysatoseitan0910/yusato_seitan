@@ -1012,7 +1012,7 @@ footer .heart { color: var(--pink); }
     var imgHtml = data.img ? '<img class="act-modal-img" src="' + data.img + '" alt="">' : '';
     inner.innerHTML = imgHtml +
       '<p class="act-modal-title"></p>' +
-      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-family:\'Caveat\',cursive;font-size:14px;color:var(--text-light)"></span>' + deadlineHtml + '</div>' +
+      '<div class="act-modal-meta">' + badgeHtml + '<span style="font-family:\'Caveat\',var(--jp);font-size:14px;color:var(--text-light)"></span>' + deadlineHtml + '</div>' +
       '<p class="act-modal-desc"></p>' +
       (data.url ? '<a href="' + data.url + '" class="act-modal-link" target="_blank" rel="noopener">詳しく見る →</a>' : '');
     inner.querySelector('.act-modal-title').textContent = data.title || '';
