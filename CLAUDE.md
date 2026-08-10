@@ -176,6 +176,16 @@ Canvas（2D）でブラウザ内描画し、PNG形式でダウンロードでき
 じこしょうかい（誕生年・誕生月日・性別・呼ばれ方・MBTI・おひさま歴・自由記述）/
 雲①〜⑥ / すきなところ ベスト3 / 自由記述こーなー / イラスト選択（最大3点）
 
+### Xに投稿するボタン（2026-08-10 修正）
+PCで投稿画面が開かない不具合が2つ同時にあった。**この2点は触らないこと**。
+- **`window.open` は `await` より前・クリックと同じタスクで呼ぶ**。await をはさむと user activation が切れ、
+  ポップアップとしてブロックされて何も起きない。`setTimeout` に逃がすのも同じ理由で不可だった
+  （旧コードは `setTimeout(() => window.open(...), 600)` で必ずブロックされていた）
+- **PCで `navigator.share` を使わない**。PCの共有シートはOSのもので、Xの投稿画面ではない。
+  `isMobileDevice()` が true のときだけネイティブ共有（画像添付つき）を使う
+- 空タブを `window.open("", "_blank")` で開いて `opener = null` にしてから `location.replace(xUrl)` する。
+  `noopener` を features に渡すと戻り値が null になり、ブロックされたのか判別できなくなる
+
 ### 委員会への共有（Notion DB_CARDS）
 「入力した情報を委員会に共有する」にチェック → `POST /admin-api/cards` → Notion登録＋カード画像をVPSに保存。
 - カード画像：`/var/www/satoyu/uploads/cards/<uuid>.png`（Basic認証・ユーザー名 `satoyu`）

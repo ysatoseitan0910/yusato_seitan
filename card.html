@@ -2392,15 +2392,37 @@ async function download() {
 
 const TWEET_TEXT = "#さとうゆ一推しプロフィール\nhttps://satoyu.info";
 
+// スマホ判定。PCの navigator.share は「Windowsの共有シート」であってXの投稿画面ではない。
+// 画像を直接添付して共有できるスマホでだけネイティブ共有を使う。
+function isMobileDevice() {
+  return /Android|iPhone|iPod|iPad/i.test(navigator.userAgent) ||
+         (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));   // iPadOS
+}
+
 async function shareToX() {
-  const btn = document.getElementById("share-x-btn");
+  const btn  = document.getElementById("share-x-btn");
+  const xUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(TWEET_TEXT);
+  const useNativeShare = isMobileDevice() && !!navigator.canShare;
+
+  // PCではXのタブを「クリック直後・await より前」に開く。
+  // await をはさむと user activation が切れ、ブラウザにポップアップとして
+  // ブロックされて投稿画面が開かない（setTimeout も同じ理由で開かない）。
+  let win = null;
+  if (!useNativeShare) {
+    win = window.open("", "_blank");            // まず同一オリジンの空タブを開く
+    if (win) {
+      try { win.opener = null; } catch (e) {}   // 逆タブナビング対策
+      win.location.replace(xUrl);
+    }
+  }
+
   btn.disabled = true;
   btn.textContent = "⏳ 準備中...";
   try {
     await glyphsReady();
     const { canvas, filename } = buildHighResCanvas();
 
-    if (navigator.canShare) {
+    if (useNativeShare) {
       const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
       const file = new File([blob], filename, { type: "image/png" });
       if (navigator.canShare({ files: [file] })) {
@@ -2411,11 +2433,17 @@ async function shareToX() {
           if (e.name === "AbortError") return;
         }
       }
+      // 共有シートが使えなかった端末はPCと同じ流れにする
+      saveCanvasPng(canvas, filename);
+      window.open(xUrl, "_blank", "noopener");
+      return;
     }
 
+    // Xの投稿画面には画像を自動添付できないので、保存して手で添付してもらう
     saveCanvasPng(canvas, filename);
-    const xUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(TWEET_TEXT);
-    setTimeout(() => window.open(xUrl, "_blank", "width=600,height=500,noopener"), 600);
+    if (!win) {
+      showCardResult("err", "ポップアップがブロックされました。ブラウザでこのサイトのポップアップを許可するか、保存された画像をXに手動で添付してください。");
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = "𝕏 Xに投稿する";
