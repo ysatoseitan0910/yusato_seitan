@@ -154,6 +154,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
+.reset-btn { width: 100%; margin-top: 4px; padding: 10px; background: none; color: var(--text-muted); border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 13px; cursor: pointer; transition: all 0.15s; }
+.reset-btn:hover { border-color: #e0a0a0; color: #c05555; background: #fdf5f5; }
 .mobile-action-bar { display: none; }
 .download-note { font-size: 11px; color: var(--text-light); text-align: center; }
 .submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Zen Maru Gothic', var(--jp); font-size: 14px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
@@ -377,6 +379,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
         <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
         <div class="card-result" id="card-result" role="alert"></div>
         <p class="download-note" style="margin-top:10px;line-height:1.8;">共有いただいたプロフィールカードはメッセージカードと合わせて本人にお届けする予定です。また、入力された情報をもとに「さとうゆの好きなところ１００」を作成し、こちらもメッセージカードと合わせてお届けする予定です。</p>
+        <button class="reset-btn" id="reset-btn">🗑 入力内容をリセットする</button>
         <p class="download-note" style="margin-top:6px;line-height:1.7;">入力した情報は生誕企画の運営にのみ使用します。詳しくは<a href="privacy.html" style="color:inherit;text-decoration:underline;">プライバシーポリシー</a>をご確認ください。</p>
       </div>
     </div>
@@ -451,13 +454,18 @@ const OSHI_W = 1051, OSHI_H = 1500;
 
 // 雲6つの枠（背景 satoyu_osi_profile4.png / 1051×1500 基準）
 // ly=ラベルの縦中心の基準／入力枠は ix1..ix2, iy1..iy2
+//
+// ix/iy は背景画像を実測して決めた「雲の白い部分に完全に収まる矩形」。
+// 雲はもこもこで左右端が細いため、幅を160より広げると上下の行が雲からはみ出す
+// （実測：幅160なら高さ86〜90取れるが、幅170にすると高さ47まで落ちる）。
+// 座標を変えるときは必ず背景画像を測り直すこと。
 const CLOUD_SPECS = [
-  { lx1: 110, lx2: 355, ly: 660, ix1: 140, ix2: 345, iy1: 665, iy2: 770 },
-  { lx1: 415, lx2: 665, ly: 660, ix1: 440, ix2: 640, iy1: 665, iy2: 770 },
-  { lx1: 700, lx2: 945, ly: 660, ix1: 720, ix2: 925, iy1: 665, iy2: 770 },
-  { lx1: 110, lx2: 355, ly: 828, ix1: 140, ix2: 345, iy1: 845, iy2: 945 },
-  { lx1: 415, lx2: 665, ly: 828, ix1: 440, ix2: 640, iy1: 845, iy2: 945 },
-  { lx1: 700, lx2: 945, ly: 828, ix1: 720, ix2: 925, iy1: 845, iy2: 945 },
+  { lx1: 110, lx2: 355, ly: 660, ix1: 162, ix2: 322, iy1: 668, iy2: 754 },
+  { lx1: 415, lx2: 665, ly: 660, ix1: 460, ix2: 620, iy1: 668, iy2: 754 },
+  { lx1: 700, lx2: 945, ly: 660, ix1: 742, ix2: 902, iy1: 668, iy2: 754 },
+  { lx1: 110, lx2: 355, ly: 828, ix1: 162, ix2: 322, iy1: 842, iy2: 932 },
+  { lx1: 415, lx2: 665, ly: 828, ix1: 460, ix2: 620, iy1: 842, iy2: 932 },
+  { lx1: 700, lx2: 945, ly: 828, ix1: 742, ix2: 902, iy1: 842, iy2: 932 },
 ];
 
 const MBTI_OPTIONS = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
@@ -498,7 +506,7 @@ const SHARED_FIELDS = [
   { id: "fan-name",   label: "なまえ",           placeholder: "例：さとうゆ推し",            required: true },
   { id: "handle",     label: "X ID（任意）",     placeholder: "例：@satoyu_donguri_funfun" },
   { id: "oshi-name",  label: "推し（固定）",     readonly: true, fixed: "佐藤優羽さん" },
-  { id: "other-oshi", label: "他推し（さとうゆ一推しなら空欄）", placeholder: "例：松田好花" },
+  { id: "other-oshi", label: "他推し（さとうゆ一推しなら空欄）", placeholder: "例：金村美玖さん" },
   // じこしょうかい（card.html と同じ構成：誕生年〜おひさま歴 ＋ 自由に自己紹介）
   { id: "birth-year",      label: "誕生年（省略可）",   placeholder: "例：2006年",  omittable: true, sectionStart: "じこしょうかい" },
   { id: "birth-md",        label: "誕生月日（省略可）", placeholder: "例：9月10日", omittable: true },
@@ -510,8 +518,8 @@ const SHARED_FIELDS = [
   // 雲メモ（6つ）※カード上の見出しは CLOUD_LABELS と共通
   // ※ 雲・ベスト3は改行を自分で入れられるように複数行入力にしている
   { id: "cloud-1", rows: 2, label: CLOUD_LABELS[0], placeholder: "例：円周率",            multiline: true, sectionStart: "雲メモ（6つ）" },
-  { id: "cloud-2", rows: 2, label: CLOUD_LABELS[1], placeholder: "例：ひなたフェス2026",  multiline: true },
-  { id: "cloud-3", rows: 2, label: CLOUD_LABELS[2], placeholder: "例：推しメンTシャツ",   multiline: true },
+  { id: "cloud-2", rows: 2, label: CLOUD_LABELS[1], placeholder: "例：五期生LIVE",  multiline: true },
+  { id: "cloud-3", rows: 2, label: CLOUD_LABELS[2], placeholder: "例：推しメンタオル",   multiline: true },
   { id: "cloud-4", rows: 2, label: CLOUD_LABELS[3], placeholder: "例：ゆうちゃん",        multiline: true },
   { id: "cloud-5", rows: 2, label: CLOUD_LABELS[4], placeholder: "例：16thひなた坂LIVE",  multiline: true },
   { id: "cloud-6", rows: 2, label: CLOUD_LABELS[5], placeholder: "例：一緒に麻雀してほしい", multiline: true },
@@ -568,7 +576,33 @@ const ILLUSTS = [
 const PICKER_ILLUSTS = ILLUSTS.filter(it => it.id !== "yuzai" && it.id !== "muzai");
 const MAX_ILLUSTS = 3;   // 推しぷろふぃーるのイラスト枠は3か所
 const illustImgs = {};
-let selectedIllusts = ["dance", "pingpong", "cho_yuzai"];
+const CARD_ILLUST_SEL_KEY = "satoyu_card_illusts_v1";
+
+// 初回アクセスはイラスト3点をランダムに選ぶ（毎回同じ組み合わせだと画一的になるため）。
+// 2回目以降は前回選んだ組み合わせを復元する
+function pickRandomIllusts() {
+  const pool = PICKER_ILLUSTS.map(it => it.id);
+  for (let i = pool.length - 1; i > 0; i--) {          // Fisher-Yates
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, MAX_ILLUSTS);
+}
+function loadSelectedIllusts() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CARD_ILLUST_SEL_KEY));
+    if (Array.isArray(saved)) {
+      const ok = saved.filter(id => PICKER_ILLUSTS.some(it => it.id === id)).slice(0, MAX_ILLUSTS);
+      if (ok.length) return ok;
+    }
+  } catch (e) {}
+  return pickRandomIllusts();
+}
+function saveSelectedIllusts() {
+  try { localStorage.setItem(CARD_ILLUST_SEL_KEY, JSON.stringify(selectedIllusts)); } catch (e) {}
+}
+let selectedIllusts = loadSelectedIllusts();
+saveSelectedIllusts();   // 初回に抽選した組み合わせを保存し、次に開いても同じ絵柄にする
 ILLUSTS.forEach(it => {
   const img = new Image();
   img.onload = () => { illustImgs[it.id] = img; render(); };
@@ -610,17 +644,65 @@ function setVal(tpl, id, v) {
 }
 
 // ── テキスト折り返し ─────────────────────────────────────
+// 行頭に来てはいけない文字（閉じ括弧・句読点・長音・小書きかな・々 など）
+const NO_LINE_START = "、。，．・：；？！ー〜～)]}）］｝」』】〉》’”ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ々゛゜?!,.:;";
+// 行末に来てはいけない文字（開き括弧）
+const NO_LINE_END = "([{（［｛「『【〈《‘“";
+
+// 英数字（と @ . _ - などのつなぎ文字）の連なりは1かたまりとして扱い、途中で改行しない。
+// これが無いと「2026」→「20/26」、「LIVE」→「LI/VE」のように単語が分断される。
+function tokenizeForWrap(s) {
+  const out = []; let buf = "";
+  for (const ch of s) {
+    if (/[0-9A-Za-z@#&._\-']/.test(ch)) { buf += ch; continue; }
+    if (buf) { out.push(buf); buf = ""; }
+    out.push(ch);
+  }
+  if (buf) out.push(buf);
+  return out;
+}
+
 function wrapText(ctx, text, maxW) {
   const lines = [];
   for (const raw of (text || "").split("\n")) {
     if (!raw) { lines.push(""); continue; }
-    let line = "";
-    for (const ch of raw) {
-      if (ctx.measureText(line + ch).width > maxW && line.length > 0) {
-        lines.push(line); line = ch;
-      } else { line += ch; }
+    const toks = tokenizeForWrap(raw);
+    let cur = [];
+    const width = a => ctx.measureText(a.join("")).width;
+    const flush = () => { if (cur.length) { lines.push(cur.join("")); cur = []; } };
+
+    for (const t of toks) {
+      // 1かたまりで幅を超える長い英数字は、やむを得ず文字単位で分割する
+      if (!cur.length && ctx.measureText(t).width > maxW && t.length > 1) {
+        let part = "";
+        for (const ch of t) {
+          if (part && ctx.measureText(part + ch).width > maxW) { lines.push(part); part = ch; }
+          else part += ch;
+        }
+        cur = [part];
+        continue;
+      }
+      if (!cur.length) { cur = [t]; continue; }
+      if (width(cur.concat(t)) <= maxW) { cur.push(t); continue; }
+
+      // ここで改行する。禁則にかかるときは折り返し位置を1つずらす
+      if (NO_LINE_START.includes(t)) {
+        // 追い出し：次の行の先頭が「行頭に来られない文字」でなくなるまで手前も一緒に送る。
+        // 1文字だけ送ると「…デュ|ー…」→「…デ|ュー…」のように禁則が解消しないので繰り返す
+        const moved = [t];
+        while (cur.length > 1 && NO_LINE_START.includes(moved[0])) moved.unshift(cur.pop());
+        if (NO_LINE_START.includes(moved[0])) { cur = cur.concat(moved); flush(); }  // 送りきれない→ぶら下げ
+        else { flush(); cur = moved; }
+        continue;
+      }
+      const lastTok = cur[cur.length - 1];
+      if (NO_LINE_END.includes(lastTok) && cur.length > 1) {
+        cur.pop(); flush(); cur = [lastTok, t];
+        continue;
+      }
+      flush(); cur = [t];
     }
-    if (line) lines.push(line);
+    flush();
   }
   return lines;
 }
@@ -1941,19 +2023,43 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
     // 長い名前＋X IDでもスタンプに重ならないよう、ここを広げるときは STAMP_X1 も見直すこと
     const NX = 210, NCY = 240, MAXW = 375;   // 背景「なまえ」ラベルの縦位置に合わせる
     const HDFS = 20, gap = hd ? 8 : 0;
+    const NAME_MIN_FS = 24;                  // これより小さくなるなら X ID を下の行に送る
+
+    // 名前が読めなくなるほど縮む／末尾が「…」で切れるのを避けるため、
+    // 1行に無理なく入るときだけ「なまえ（@id）」を横並びにする。
+    // 入らないときは、なまえを上の行いっぱいに大きく出して X ID を下の行に置く
+    // （なまえ枠の内側は y200〜292・点線が y296 なので2行入る）
+    const fitFs = (t, maxw, from, to) => {
+      let s = from; ctx.font = f(s, false, "Yomogi");
+      while (s > to && ctx.measureText(t).width > maxw) { s--; ctx.font = f(s, false, "Yomogi"); }
+      return s;
+    };
 
     ctx.font = f(HDFS, false, "Yomogi");
     const hw = hd ? ctx.measureText(hd).width : 0;
-    const nameMax = MAXW - hw - gap;
-    let nfs = 34; ctx.font = f(nfs, false, "Yomogi");
-    while (nm && ctx.measureText(nm).width > nameMax && nfs > 16) { nfs--; ctx.font = f(nfs, false, "Yomogi"); }
-    let nt = nm;
-    if (ctx.measureText(nt).width > nameMax) { while (nt.length && ctx.measureText(nt + "…").width > nameMax) nt = nt.slice(0, -1); nt += "…"; }
+    const oneLineFs = nm ? fitFs(nm, MAXW - hw - gap, 34, 8) : 34;
+    const twoLine   = !!hd && !!nm && oneLineFs < NAME_MIN_FS;
 
     ctx.fillStyle = OSHI_INK; ctx.textAlign = "left"; ctx.textBaseline = "middle";
-    if (nt) ctx.fillText(nt, NX, NCY);
-    const nw = nt ? ctx.measureText(nt).width : 0;
-    if (hd) { ctx.font = f(HDFS, false, "Yomogi"); ctx.fillText(hd, NX + nw + gap, NCY); }
+
+    if (twoLine) {
+      const nfs2 = fitFs(nm, MAXW, 34, 14);
+      ctx.font = f(nfs2, false, "Yomogi");
+      ctx.fillText(nm, NX, 226);
+      const hfs2 = fitFs(hd, MAXW, HDFS, 12);
+      ctx.font = f(hfs2, false, "Yomogi");
+      ctx.fillText(hd, NX, 270);
+      ctx.font = f(HDFS, false, "Yomogi");   // 以降の描画に影響させない
+    } else {
+      const nameMax = MAXW - hw - gap;
+      ctx.font = f(oneLineFs, false, "Yomogi");
+      let nt = nm;
+      if (ctx.measureText(nt).width > nameMax) { while (nt.length && ctx.measureText(nt + "…").width > nameMax) nt = nt.slice(0, -1); nt += "…"; }
+
+      if (nt) ctx.fillText(nt, NX, NCY);
+      const nw = nt ? ctx.measureText(nt).width : 0;
+      if (hd) { ctx.font = f(HDFS, false, "Yomogi"); ctx.fillText(hd, NX + nw + gap, NCY); }
+    }
   }
 
   // 推し（固定「佐藤優羽さん」）＋ 他推し（なまえ枠の点線の下 y≈345）
@@ -1999,17 +2105,20 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
     const s = CLOUD_SPECS[i];
     opCloudLabel(ctx, CLOUD_LABEL_LINES[i + 1] || CLOUD_LABELS[i],
       (s.lx1 + s.lx2) / 2, s.ly, s.lx2 - s.lx1, 20);
+    // 雲メモは短い入力が大半なので、収まるなら32pxまで拡大して読みやすくする
     opCloudText(ctx, getV("cloud-" + (i + 1)),
       (s.ix1 + s.ix2) / 2, (s.iy1 + s.iy2) / 2,
-      s.ix2 - s.ix1, s.iy2 - s.iy1, 13, 28);
+      s.ix2 - s.ix1, s.iy2 - s.iy1, 13, 32);
   }
 
   // すきなところ ベスト3
-  // 背景の数字「1・2・3」の中心（実測: 1125 / 1240 / 1353）にブロックの中心を合わせる
-  // 長文は自動で縮小＋折り返し（最大3行）。maxHは点線・枠に当たらない範囲
-  opBestText(ctx, getV("best-1"), 160, 1125, 350, 85,  23, 3);
-  opBestText(ctx, getV("best-2"), 160, 1240, 350, 95,  23, 3);
-  opBestText(ctx, getV("best-3"), 160, 1353, 350, 120, 23, 3);
+  // 背景の数字「1・2・3」の中心（実測: 1125 / 1240 / 1353）にブロックの中心を合わせる。
+  // maxH は「数字の中心から、上下の仕切り（点線 y=1179 / y=1298）と見出し下端 y=1090・
+  // 枠内側下端 y=1414 までの短いほう×2」。maxW は枠の内側右端 x=506 に収まる 340。
+  // 最後の引数 maxFs=30：1行に収まる短い項目は30pxまで拡大して読みやすくする
+  opBestText(ctx, getV("best-1"), 160, 1125, 340,  70, 23, 3, 30);
+  opBestText(ctx, getV("best-2"), 160, 1240, 340, 112, 23, 3, 30);
+  opBestText(ctx, getV("best-3"), 160, 1353, 340, 106, 23, 3, 30);
 
   // 自由記述こーなー
   // 背景画像の見出し「こーなー」の下端が y=1122、雲の内側下端が y≒1395。
@@ -2225,6 +2334,7 @@ function toggleIllust(id) {
     if (selectedIllusts.length >= MAX_ILLUSTS) return;
     selectedIllusts.push(id);
   }
+  saveSelectedIllusts();
   updateIllustUI();
   render();
 }
@@ -2268,6 +2378,36 @@ function downscaleDataUrl(img, maxDim) {
   const c = document.createElement("canvas"); c.width = cw; c.height = ch;
   c.getContext("2d").drawImage(img, 0, 0, cw, ch);
   return c.toDataURL("image/jpeg", 0.88);
+}
+
+// 入力内容をすべて消して初期状態に戻す（保存済みの下書き・アイコンも消す）
+function resetCard() {
+  if (!confirm("入力した内容をすべて消して、最初の状態に戻します。よろしいですか？")) return;
+
+  Object.keys(values).forEach(k => { delete values[k]; });
+  omitted.clear();
+  try {
+    localStorage.removeItem(CARD_DRAFT_KEY);
+    localStorage.removeItem(CARD_ICON_KEY);
+    localStorage.removeItem(CARD_ILLUST_SEL_KEY);
+  } catch (e) {}
+
+  // アイコンを消す
+  iconImg = null;
+  const preview   = document.getElementById("icon-preview");
+  const thumbWrap = document.getElementById("icon-thumb-wrap");
+  const iconClear = document.getElementById("icon-clear-btn");
+  if (preview)   preview.src = "";
+  if (thumbWrap) thumbWrap.classList.remove("has-icon");
+  if (iconClear) iconClear.style.display = "none";
+
+  // イラストは初回アクセスと同じくランダムに選び直す
+  selectedIllusts = pickRandomIllusts();
+  saveSelectedIllusts();
+  updateIllustUI();
+
+  switchTemplate(tplIdx);   // フォームを作り直して再描画
+  showCardResult("ok", "入力内容をリセットしました。");
 }
 
 // data URL からアイコンを設定（save=true で localStorage に保存）
@@ -2549,6 +2689,8 @@ document.fonts.ready.then(() => {
   mobileShareCb.addEventListener("change", () => { shareCb.checked = mobileShareCb.checked; });
   shareCb.addEventListener("change", () => { mobileShareCb.checked = shareCb.checked; });
   initIconUpload();
+  const resetBtn = document.getElementById("reset-btn");
+  if (resetBtn) resetBtn.addEventListener("click", resetCard);
 });
 
 // ページ更新・離脱時に入力内容を即時保存（デバウンス待ちの取りこぼし防止）
