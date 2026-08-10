@@ -167,6 +167,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .card-result.ok { background:var(--emerald-pale); color:var(--emerald-dark); border:1px solid var(--emerald-light); }
 .card-result.err { background:#fef0f0; color:#b00; border:1px solid #fcc; }
 .share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Zen Maru Gothic', var(--jp); font-size: 13px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
+.share-cb-note { font-size: 11px; line-height: 1.6; color: var(--text-light); margin: -4px 0 0 24px; }
 .share-cb-label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--emerald); cursor:pointer; flex-shrink:0; }
 .omit-btn { margin-top: 4px; padding: 4px 14px; border: 1.5px solid var(--border); border-radius: 99px; background: none; color: var(--text-muted); font-family: 'Zen Maru Gothic', var(--jp); font-size: 12px; cursor: pointer; transition: all 0.15s; }
 .omit-btn:hover { border-color: var(--text-muted); }
@@ -226,7 +227,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .nav-group:hover .nav-dropdown { display: none; }
   .nav-group.open .nav-dropdown { display: flex; }
   .nav-group.open .nav-arrow { transform: rotate(180deg); }
-  .editor-page { padding: 12px 14px 120px; }
+  .editor-page { padding: 12px 14px 160px; }   /* 下部の固定バー（実測124px）に隠れないだけの余白 */
   .tpl-tabs { gap: 6px; margin-bottom: 14px; }
   .tpl-tab { padding: 6px 14px; font-size: 13px; }
   .editor-body { display: block; }
@@ -241,7 +242,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .mobile-action-bar { display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; z-index: 150; backdrop-filter: blur(8px); }
   .mobile-action-btns { display: flex; gap: 8px; }
   .mobile-action-bar .download-btn, .mobile-action-bar .share-x-btn { flex: 1; padding: 11px; font-size: 13px; }
-  .mobile-action-bar .share-cb-label { font-size: 12px; padding: 4px 0; }
+  .mobile-action-bar .share-cb-label { font-size: 12px; padding: 4px 0 0; }
+  .mobile-action-bar .share-cb-note { font-size: 10px; margin: 2px 0 6px 24px; }
 }
 </style>
 </head>
@@ -380,8 +382,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
       <div class="download-section">
         <label class="share-cb-label">
           <input type="checkbox" id="share-card-cb">
-          入力した情報を委員会に共有する
+          プロフィールカードのメセカアルバムへの同梱を希望する
         </label>
+        <p class="share-cb-note">アルバムへの同梱を希望する場合、入力された情報は委員会に共有されます。</p>
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
         <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
         <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
@@ -402,8 +405,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 <div class="mobile-action-bar">
   <label class="share-cb-label">
     <input type="checkbox" id="mobile-share-card-cb">
-    入力した情報を委員会に共有する
+    プロフィールカードのメセカアルバムへの同梱を希望する
   </label>
+  <p class="share-cb-note">同梱を希望する場合、入力された情報は委員会に共有されます。</p>
   <div class="mobile-action-btns">
     <button class="preview-scroll-btn" id="preview-scroll-btn">👁 プレビュー確認</button>
     <button class="download-btn" id="mobile-download-btn">⬇ PNG保存</button>
