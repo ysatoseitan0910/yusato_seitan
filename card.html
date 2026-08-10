@@ -424,14 +424,15 @@ const CLOUD_CATS = [
 const CLOUD_LABELS = [
   "好きな日向坂46の楽曲",
   "好きな日向坂46のMV",
-  "好きなひなあいの企画",
+  "思い出に残っている日向坂46のライブ",
   "佐藤優羽さんの呼び方",
   "佐藤優羽さんを好きになったきっかけ",
-  "好きなペア",
+  "好きな佐藤優羽さんとのペア",
 ];
 
 // カード上の見出しだけ改行させたいもの（入力フォームのラベルは1行のまま）
 const CLOUD_LABEL_LINES = {
+  3: ["思い出に残っている", "日向坂46のライブ"],       // 雲③（cloud-3）
   5: ["佐藤優羽さんを", "好きになったきっかけ"],   // 雲⑤（cloud-5）
 };
 
@@ -458,7 +459,7 @@ const FIELD_DEFAULTS = {
   "wrote-y":    "",
   "wrote-m":    "",
   "wrote-d":    "",
-  "oshi-name":  "佐藤優羽",
+  "oshi-name":  "佐藤優羽さん",
   "other-oshi": "",
   "birth-year":      "",
   "birth-md":        "",
@@ -486,7 +487,7 @@ const SHARED_FIELDS = [
   { id: "wrote-d",    label: "かいた日：日", placeholder: "例：5" },
   { id: "fan-name",   label: "なまえ",           placeholder: "例：さとうゆ推し",            required: true },
   { id: "handle",     label: "X ID（任意）",     placeholder: "例：@satoyu_donguri_funfun" },
-  { id: "oshi-name",  label: "推し（固定）",     readonly: true, fixed: "佐藤優羽" },
+  { id: "oshi-name",  label: "推し（固定）",     readonly: true, fixed: "佐藤優羽さん" },
   { id: "other-oshi", label: "他推し（さとうゆ一推しなら空欄）", placeholder: "例：松田好花" },
   // じこしょうかい（card.html と同じ構成：誕生年〜おひさま歴 ＋ 自由に自己紹介）
   { id: "birth-year",      label: "誕生年（省略可）",   placeholder: "例：2006年",  omittable: true, sectionStart: "じこしょうかい" },
@@ -545,6 +546,14 @@ const ILLUSTS = [
   { id:"udetate",  label:"指さし",   src:"/images/image/card/udetate.png" },
   { id:"kuruma",   label:"ごろ寝",   src:"/images/image/card/kuruma.png" },
   { id:"mahjong",  label:"髪いじり", src:"/images/image/card/Mahjong_in_Yu_Mind.png" },
+  { id:"hello",       label:"ごあいさつ", src:"/images/image/card/hello.png" },
+  { id:"fan_service", label:"ファンサ",   src:"/images/image/card/fan_service.png" },
+  { id:"funfun",      label:"ふんふん",   src:"/images/image/card/funfun.png" },
+  { id:"yukata",      label:"浴衣",       src:"/images/image/card/yukata.png" },
+  { id:"inori",       label:"おいのり",   src:"/images/image/card/inori.png" },
+  { id:"yammy",       label:"もぐもぐ",   src:"/images/image/card/yammy.png" },
+  { id:"donut",       label:"ドーナツ",   src:"/images/image/card/donut.png" },
+  { id:"dai",         label:"大",         src:"/images/image/card/dai.png" },
 ];
 const PICKER_ILLUSTS = ILLUSTS.filter(it => it.id !== "yuzai" && it.id !== "muzai");
 const MAX_ILLUSTS = 3;   // 推しぷろふぃーるのイラスト枠は3か所
@@ -1875,7 +1884,9 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
     const nm = (getV("fan-name") || "").trim();
     const hdRaw = (getV("handle") || "").trim();
     const hd = hdRaw ? "（" + (hdRaw.startsWith("@") ? hdRaw : "@" + hdRaw) + "）" : "";
-    const NX = 210, NCY = 240, MAXW = 450;   // 背景「なまえ」ラベルの縦位置に合わせる
+    // MAXW は「スタンプ（x600〜690）に届かない幅」にしてある。
+    // 長い名前＋X IDでもスタンプに重ならないよう、ここを広げるときは STAMP_X1 も見直すこと
+    const NX = 210, NCY = 240, MAXW = 375;   // 背景「なまえ」ラベルの縦位置に合わせる
     const HDFS = 20, gap = hd ? 8 : 0;
 
     ctx.font = f(HDFS, false, "Yomogi");
@@ -1892,22 +1903,22 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
     if (hd) { ctx.font = f(HDFS, false, "Yomogi"); ctx.fillText(hd, NX + nw + gap, NCY); }
   }
 
-  // 推し（固定「佐藤優羽」）＋ 他推し（なまえ枠の点線の下 y≈345）
+  // 推し（固定「佐藤優羽さん」）＋ 他推し（なまえ枠の点線の下 y≈345）
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.font = f(29, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
   ctx.fillText("推し", 83, 340);
   const otherOshi = (getV("other-oshi") || "").trim();
   if (otherOshi) {
     ctx.font = f(28, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
-    ctx.fillText("佐藤優羽", 177, 341);
+    ctx.fillText("佐藤優羽さん", 177, 341);
     ctx.font = f(22, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
     ctx.fillText("他推し", 358, 345);
     ctx.font = f(25, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
     opLineText(ctx, otherOshi, 445, 342, 200, 25, true);
   } else {
-    // 他推しが空 → 「佐藤優羽一推し！」
+    // 他推しが空 → 「佐藤優羽さん一推し！」
     ctx.font = f(28, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
-    ctx.fillText("佐藤優羽一推し！", 177, 341);
+    ctx.fillText("佐藤優羽さん一推し！", 177, 341);
   }
 
   // 写真
@@ -1918,7 +1929,9 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   opSelfIntro(ctx, buildSelfIntroText(getV), 85, 523, 720, 140, 14, 26);
 
   // ゆう罪／無罪スタンプ（他推しの入力有無で切り替え）
-  opStamp(ctx, illustImgs[otherOshi ? "yuzai" : "muzai"], 648, 322, 738, 412);
+  // X ID の右側・なまえと上下中心（y=240）を揃えた固定位置に置く。
+  // 入力の長短で動かないよう座標は固定（なまえ欄は MAXW でここまで届かないようにしてある）
+  opStamp(ctx, illustImgs[otherOshi ? "yuzai" : "muzai"], 600, 195, 690, 285);
 
   // 選んだイラスト（3か所）
   for (let i = 0; i < OSHI_ILLUST_SLOTS.length; i++) {
