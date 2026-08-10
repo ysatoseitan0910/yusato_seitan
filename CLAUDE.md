@@ -197,6 +197,20 @@ Canvas（2D）でブラウザ内描画し、PNG形式でダウンロードでき
 - 折り返しは `wrapText`。英数字の連なりを1かたまりとして扱い（「2026」→「20/26」を防ぐ）、
   行頭禁則は**繰り返し追い出す**（1文字だけ送ると「デュ|ー」→「デ|ュー」で解消しない）
 
+### OGPのメタタグ（2026-08-10 判明）
+**`twitter:title` / `twitter:description` が無いと、Xでカードが組み立てられず画像が出ない。**
+`og:` だけでは不十分。実際に card.html はこの2つが欠けていて、Twitterbot がページも画像も
+200 で取得できているのに（nginxログで確認済み）カードが表示されなかった。
+表示できていた weekly.html は `twitter:title` / `twitter:description` を持っていた。
+新規ページを作るときは以下をセットで書くこと。
+```
+og:type / og:site_name / og:title / og:description / og:url / og:image / og:locale
+twitter:card=summary_large_image / twitter:title / twitter:description / twitter:image
+```
+**切り分け方**：`ssh newsmind` → `docker compose logs nginx | grep Twitterbot` で、
+Xが実際に何を取りに来て何を返したかが分かる。200が返っていればサーバー側は無実で、
+原因はメタタグかXのキャッシュ。
+
 ### OGP画像（images/ogp-card.png・2026-08-10 作成）
 card.html 専用のOGP。**空のプロフィールカード**を1200×630に組んだもの。作り方：
 1. ローカルHTTPで card.html を配信し（`python -m http.server` / `file://` だと背景が
