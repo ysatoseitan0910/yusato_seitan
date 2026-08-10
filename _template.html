@@ -24,6 +24,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
+  /* 日本語の最終フォールバック。素の serif / sans-serif / cursive で終わらせると、
+     Webフォントに無い字（々〆ヶ 等）が中国語フォントの字形で表示される */
+  --jp: 'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif;
+  --jp-serif: 'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif;
   /* B 案 デザイントークン */
   --emerald: #3DAA78;
   --emerald-light: #d4ecde;
@@ -52,7 +56,7 @@ html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-weight: 400;
   font-size: 14px;
   line-height: 1.75;
@@ -85,7 +89,7 @@ nav {
 }
 .nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
 .nav-logo-main {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em;
   white-space: nowrap;
 }
@@ -95,7 +99,7 @@ nav {
 }
 .nav-links a {
   text-decoration: none;
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; color: var(--text-muted);
   padding: 6px 12px; border-radius: 99px;
   transition: all 0.15s;
@@ -111,7 +115,7 @@ nav {
 .nav-group { position: relative; }
 .nav-group-btn {
   background: none; border: none; cursor: pointer;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px;
   color: var(--text-muted);
   padding: 6px 12px; border-radius: 99px;
   transition: all 0.15s; white-space: nowrap;
@@ -153,14 +157,14 @@ nav {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--pink); color: #fff;
   padding: 6px 14px; border-radius: 99px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 13px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 13px; font-weight: 600;
   letter-spacing: 0.06em;
   transform: rotate(-2deg);
   margin-bottom: 14px;
 }
 .page-hero-tag::before { content: "🌿"; }
 .page-hero h1 {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   font-size: 38px; line-height: 1.25; color: var(--text);
   margin-bottom: 6px;
 }
@@ -173,7 +177,7 @@ nav {
   font-size: 13px; color: var(--text-muted); letter-spacing: 0.04em;
 }
 .last-updated {
-  font-family: 'Caveat',cursive; font-size: 14px;
+  font-family: 'Caveat',var(--jp); font-size: 14px;
   color: var(--text-light); margin-top: 6px; letter-spacing: 0.04em;
 }
 /* ── トップページ hero グリッドレイアウト（PC） ── */
@@ -220,7 +224,7 @@ nav {
 .hero-pc-badge {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--pink); color: #fff;
-  font-family: 'Zen Maru Gothic', serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic', var(--jp); font-weight: 600;
   font-size: 15px; letter-spacing: 0.1em;
   padding: 9px 20px; border-radius: 999px;
   box-shadow: 0 4px 12px rgba(247,182,200,0.5);
@@ -229,7 +233,7 @@ nav {
 }
 .hero-pc-badge::before { content: "🌿"; }
 .hero-pc-title {
-  font-family: 'Zen Maru Gothic', serif; font-weight: 700;
+  font-family: 'Zen Maru Gothic', var(--jp); font-weight: 700;
   font-size: 64px; line-height: 1.08; color: var(--emerald-dark);
   letter-spacing: 0.01em; margin-bottom: 26px;
 }
@@ -284,7 +288,7 @@ nav {
   gap: 8px;
 }
 .top-news-label {
-  font-family: 'Zen Maru Gothic', serif;
+  font-family: 'Zen Maru Gothic', var(--jp);
   font-size: 12px;
   font-weight: 700;
   color: var(--emerald-dark);
@@ -321,11 +325,11 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
   margin-bottom: 14px;
 }
 .top-section-header h2 {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   font-size: 20px; color: var(--text); letter-spacing: 0.02em;
 }
 .top-section-header a {
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px;
   color: var(--emerald-dark); text-decoration: none;
 }
 .top-section-header a:hover { color: var(--pink); }
@@ -360,13 +364,13 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
 .committee-list-row:nth-child(2n):hover { box-shadow: 5px 5px 0 var(--pink-pale); }
 .committee-list-row:nth-child(3n):hover { box-shadow: 5px 5px 0 var(--butter); }
 .committee-row-date {
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 18px; color: var(--emerald-dark);
   white-space: nowrap; line-height: 1;
 }
 .committee-row-title {
   flex: 1; font-size: 13px; color: var(--text);
-  line-height: 1.5; font-family: 'Zen Maru Gothic',serif;
+  line-height: 1.5; font-family: 'Zen Maru Gothic',var(--jp);
 }
 .committee-row-meta {
   display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
@@ -382,8 +386,8 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
 .deadline-today  { background: #ffe0e0; color: #c00000; border: 1px solid #f08080; animation: deadline-pulse 1s ease-in-out infinite alternate; }
 .deadline-past   { background: #f0f0f0; color: #888; border: 1px solid #ccc; }
 @keyframes deadline-pulse { from { opacity: 0.8; } to { opacity: 1; } }
-.announce-date { font-size: 14px; color: var(--text-muted); font-family: 'Zen Maru Gothic',serif; }
-.media-date-small { font-size: 13px; color: var(--text-light); font-family: 'Caveat',cursive; }
+.announce-date { font-size: 14px; color: var(--text-muted); font-family: 'Zen Maru Gothic',var(--jp); }
+.media-date-small { font-size: 13px; color: var(--text-light); font-family: 'Caveat',var(--jp); }
 
 /* 活動報告サムネイル（ポラロイド風） */
 .act-thumb-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
@@ -406,17 +410,17 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, var(--emerald-light) 0%, var(--butter) 100%);
   color: var(--emerald-dark);
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600; font-size: 13px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600; font-size: 13px;
 }
 .act-thumb-body { padding: 10px 4px 0; }
 .act-thumb-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; line-height: 1.55; color: var(--text);
   margin-bottom: 4px;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .act-thumb-date {
-  font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light);
+  font-family: 'Caveat',var(--jp); font-size: 14px; color: var(--text-light);
 }
 
 /* 佐藤優羽さんNews（バブルカード） */
@@ -439,18 +443,18 @@ a.yunews-card { display: block; text-decoration: none; color: inherit; }
   width: 100%; aspect-ratio: 4/3;
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(160deg, var(--pink-pale) 0%, var(--emerald-light) 100%);
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   color: #fff; font-size: 36px; text-shadow: 2px 2px 0 var(--ink);
 }
 .yunews-no-img::before { content: "Yu"; }
 .yunews-body { padding: 12px 14px 14px; }
 .yunews-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; line-height: 1.55; color: var(--text);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .yunews-meta { display: flex; align-items: center; margin-top: 4px; }
-.yunews-date { font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light); }
+.yunews-date { font-family: 'Caveat',var(--jp); font-size: 14px; color: var(--text-light); }
 
 /* サイドバー */
 .top-sidebar { display: flex; flex-direction: column; gap: 14px; }
@@ -469,7 +473,7 @@ a.yunews-card { display: block; text-decoration: none; color: inherit; }
 }
 .sidebar-links a {
   display: flex; align-items: center; padding: 11px 16px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px;
   color: var(--text-muted); text-decoration: none;
   border-bottom: 1px dashed var(--border);
   transition: background 0.15s;
@@ -491,13 +495,13 @@ a.yunews-card { display: block; text-decoration: none; color: inherit; }
 .schedule-row:last-child { border-bottom: none; }
 a.schedule-row:hover { background: var(--butter); }
 .schedule-date {
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 18px; color: var(--emerald-dark);
   white-space: nowrap; min-width: 52px; line-height: 1;
 }
 .schedule-date--past { color: var(--text-light); opacity: 0.6; }
 .schedule-title {
-  flex: 1; font-family: 'Zen Maru Gothic',serif;
+  flex: 1; font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; color: var(--text); line-height: 1.5;
 }
 .schedule-title--past { color: var(--text-muted); opacity: 0.6; }
@@ -520,7 +524,7 @@ a.schedule-row:hover { background: var(--butter); }
 .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
 /* ── Lemino Program グループ見出し ── */
 .program-heading {
-  font-family: 'Zen Maru Gothic', serif; font-size: 18px; font-weight: 700;
+  font-family: 'Zen Maru Gothic', var(--jp); font-size: 18px; font-weight: 700;
   color: var(--emerald-dark); margin: 28px 0 12px;
   padding: 8px 16px; background: var(--emerald-pale);
   border-left: 4px solid var(--emerald); border-radius: 0 8px 8px 0;
@@ -538,7 +542,7 @@ a.schedule-row:hover { background: var(--butter); }
 /* ── Badge ── */
 .badge {
   display: inline-block;
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; letter-spacing: 0.08em;
   padding: 3px 10px; border-radius: 99px; font-weight: 600;
 }
@@ -559,19 +563,19 @@ a.schedule-row:hover { background: var(--butter); }
 .news-card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
 .news-card-img-body { padding: 16px 20px 18px; width: 100%; }
 .news-card-date {
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 14px; color: var(--emerald-dark);
   white-space: nowrap; padding-top: 2px; min-width: 76px;
 }
 .news-card-body { flex: 1; }
 .news-card-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; font-weight: 600; color: var(--text);
   margin-bottom: 6px; line-height: 1.55;
 }
 .news-card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.85; margin-bottom: 8px; }
 .news-card-link {
-  font-family: 'Zen Maru Gothic',serif; font-size: 13px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 13px;
   color: var(--emerald-dark); text-decoration: none; font-weight: 600;
 }
 .news-card-link:hover { color: var(--pink); }
@@ -584,13 +588,13 @@ a.schedule-row:hover { background: var(--butter); }
 }
 .media-card .media-body { padding: 16px 18px; }
 .media-card .media-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 13px; font-weight: 600; color: var(--text);
   margin-bottom: 6px; line-height: 1.55;
 }
 .media-card .media-desc { font-size: 13px; color: var(--text-muted); line-height: 1.8; margin-bottom: 10px; }
 .media-card .media-meta { display: flex; align-items: center; justify-content: space-between; }
-.media-card .media-date { font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light); }
+.media-card .media-date { font-family: 'Caveat',var(--jp); font-size: 14px; color: var(--text-light); }
 
 /* ── Embed card ── */
 .embed-card .embed-header {
@@ -609,11 +613,11 @@ a.schedule-row:hover { background: var(--butter); }
 }
 .embed-card .embed-footer { padding: 10px 16px 14px; }
 .embed-card .embed-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; color: var(--text); margin-bottom: 4px; line-height: 1.55;
 }
 .embed-card .embed-link {
-  font-family: 'Zen Maru Gothic',serif; font-size: 13px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 13px;
   color: var(--emerald-dark); text-decoration: none; font-weight: 600;
 }
 
@@ -630,13 +634,13 @@ a.schedule-row:hover { background: var(--butter); }
 .x-card:nth-child(3n) { box-shadow: 3px 3px 0 var(--butter); }
 .x-card .twitter-tweet { margin: 0 auto !important; }
 .x-card-label {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55;
 }
 @media (max-width: 900px) { .x-embed-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 600px) { .x-embed-grid { grid-template-columns: 1fr; } .x-card--third { display: none; } }
 .x-more-wrap { text-align: center; margin-top: 16px; padding-bottom: 4px; }
-.x-more-btn { background: none; border: 2px solid var(--border); border-radius: 99px; padding: 8px 28px; font-family: 'Zen Maru Gothic', serif; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+.x-more-btn { background: none; border: 2px solid var(--border); border-radius: 99px; padding: 8px 28px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
 .x-more-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); background: var(--emerald-pale); }
 
 /* ── Instagram埋め込みグリッド ── */
@@ -645,14 +649,14 @@ a.schedule-row:hover { background: var(--butter); }
 .ig-embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(326px, 1fr)); gap: 18px; align-items: start; justify-items: center; }
 .ig-card { width: 100%; max-width: 540px; animation: fadeUp 0.4s ease both; }
 .ig-card .instagram-media { margin: 0 auto !important; }
-.ig-card-label { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; text-align: center; }
+.ig-card-label { font-family: 'Zen Maru Gothic',var(--jp); font-size: 13px; color: var(--text-muted); padding: 6px 2px 2px; line-height: 1.55; text-align: center; }
 @media (max-width: 360px) { .ig-embed-grid { grid-template-columns: 1fr; } }
 
 /* ── もっと見るボタン（共通） ── */
 .load-more-wrap { text-align: center; padding: 32px 16px 16px; }
-.load-more-btn { background: var(--emerald); color: #fff; border: 2px solid var(--emerald-dark); border-radius: 99px; padding: 12px 32px; font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; }
+.load-more-btn { background: var(--emerald); color: #fff; border: 2px solid var(--emerald-dark); border-radius: 99px; padding: 12px 32px; font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; }
 .load-more-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
-.load-more-count { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-family: 'Zen Maru Gothic',serif; }
+.load-more-count { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-family: 'Zen Maru Gothic',var(--jp); }
 
 /* ── Divider ── */
 .divider { height: 1px; background: var(--border); margin: 32px 0; }
@@ -666,11 +670,11 @@ footer {
 }
 footer .foot-mark {
   display: inline-block;
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 22px; color: var(--emerald-dark); margin-bottom: 6px;
 }
 footer p {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 13px; letter-spacing: 0.06em; color: var(--text-light);
 }
 footer .heart { color: var(--pink); }
@@ -704,17 +708,17 @@ footer .heart { color: var(--pink); }
   margin-bottom: 18px; display: block;
 }
 .act-modal-title {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   font-size: 20px; line-height: 1.55; margin-bottom: 10px; color: var(--text);
 }
 .act-modal-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
 .act-modal-desc {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 13px; color: var(--text-muted); line-height: 2;
 }
 .act-modal-link {
   display: inline-block; margin-top: 18px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px; font-weight: 600;
   color: var(--emerald-dark); text-decoration: none; letter-spacing: 0.04em;
 }
 .act-modal-link:hover { color: var(--pink); }
@@ -850,7 +854,7 @@ footer .heart { color: var(--pink); }
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     width: 100%;
-    font-family: 'Zen Maru Gothic', serif;
+    font-family: 'Zen Maru Gothic', var(--jp);
     font-size: 13px;
     font-weight: 700;
     color: var(--text-muted);
@@ -884,7 +888,7 @@ footer .heart { color: var(--pink); }
   .tile-submenu a {
     display: block;
     padding: 10px 6px;
-    font-family: 'Zen Maru Gothic', serif;
+    font-family: 'Zen Maru Gothic', var(--jp);
     font-size: 13px;
     color: var(--text);
     text-decoration: none;

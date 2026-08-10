@@ -12,6 +12,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
+  /* 日本語の最終フォールバック。素の serif / sans-serif / cursive で終わらせると、
+     Webフォントに無い字（々〆ヶ 等）が中国語フォントの字形で表示される */
+  --jp: 'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif;
+  --jp-serif: 'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif;
   --emerald: #3DAA78;
   --emerald-light: #d4ecde;
   --emerald-pale: #ecf7f0;
@@ -37,7 +41,7 @@ html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-weight: 400;
   font-size: 14px;
   line-height: 1.75;
@@ -73,7 +77,7 @@ nav {
 }
 .nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
 .nav-logo-main {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   color: var(--emerald-dark); font-size: 15px; letter-spacing: 0.04em;
 }
 .nav-links {
@@ -82,7 +86,7 @@ nav {
 }
 .nav-links a {
   text-decoration: none;
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; color: var(--text-muted);
   padding: 6px 12px; border-radius: 99px;
   transition: all 0.15s;
@@ -95,7 +99,7 @@ nav {
 .nav-group { position: relative; }
 .nav-group-btn {
   background: none; border: none; cursor: pointer;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px;
   color: var(--text-muted);
   padding: 6px 12px; border-radius: 99px;
   transition: all 0.15s; white-space: nowrap;
@@ -128,14 +132,14 @@ nav {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--pink); color: #fff;
   padding: 6px 14px; border-radius: 99px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 13px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 13px; font-weight: 600;
   letter-spacing: 0.06em;
   transform: rotate(-2deg);
   margin-bottom: 14px;
 }
 .page-hero-tag::before { content: "🌿"; }
 .page-hero h1 {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   font-size: 38px; line-height: 1.25; color: var(--text);
   margin-bottom: 6px;
 }
@@ -160,7 +164,7 @@ nav {
 .hero-pc-badge {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--pink); color: #fff;
-  font-family: 'Zen Maru Gothic', serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic', var(--jp); font-weight: 600;
   font-size: 15px; letter-spacing: 0.1em;
   padding: 9px 20px; border-radius: 999px;
   box-shadow: 0 4px 12px rgba(247,182,200,0.5);
@@ -169,7 +173,7 @@ nav {
 }
 .hero-pc-badge::before { content: "🌿"; }
 .hero-pc-title {
-  font-family: 'Zen Maru Gothic', serif; font-weight: 700;
+  font-family: 'Zen Maru Gothic', var(--jp); font-weight: 700;
   font-size: 64px; line-height: 1.08; color: var(--emerald-dark);
   letter-spacing: 0.01em; margin-bottom: 26px;
 }
@@ -240,7 +244,7 @@ nav {
   gap: 8px;
 }
 .top-news-label {
-  font-family: 'Zen Maru Gothic', serif;
+  font-family: 'Zen Maru Gothic', var(--jp);
   font-size: 12px; font-weight: 700; color: var(--emerald-dark);
 }
 .top-news-items { display: flex; flex-direction: column; gap: 5px; }
@@ -270,11 +274,11 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
   margin-bottom: 14px;
 }
 .top-section-header h2 {
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   font-size: 20px; color: var(--text);
 }
 .top-section-header a {
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px;
   color: var(--emerald-dark); text-decoration: none;
 }
 
@@ -295,13 +299,13 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
   color: var(--emerald-light); font-size: 18px;
 }
 .committee-row-date {
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 18px; color: var(--emerald-dark);
   white-space: nowrap; line-height: 1;
 }
 .committee-row-title {
   flex: 1; font-size: 13px; color: var(--text);
-  line-height: 1.5; font-family: 'Zen Maru Gothic',serif;
+  line-height: 1.5; font-family: 'Zen Maru Gothic',var(--jp);
 }
 .committee-row-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .deadline-badge {
@@ -325,14 +329,14 @@ a.top-news-text:hover { color: var(--emerald-dark); text-decoration: underline; 
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, var(--emerald-light) 0%, var(--butter) 100%);
   color: var(--emerald-dark);
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600; font-size: 13px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600; font-size: 13px;
 }
 .act-thumb-body { padding: 10px 4px 0; }
 .act-thumb-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; line-height: 1.55; color: var(--text); margin-bottom: 4px;
 }
-.act-thumb-date { font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light); }
+.act-thumb-date { font-family: 'Caveat',var(--jp); font-size: 14px; color: var(--text-light); }
 
 /* 佐藤優羽さんNews */
 .yunews-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
@@ -348,16 +352,16 @@ a.yunews-card { display: block; text-decoration: none; color: inherit; }
   width: 100%; aspect-ratio: 4/3;
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(160deg, var(--pink-pale) 0%, var(--emerald-light) 100%);
-  font-family: 'Zen Maru Gothic',serif; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-weight: 600;
   color: #fff; font-size: 36px; text-shadow: 2px 2px 0 var(--ink);
 }
 .yunews-no-img::before { content: "Yu"; }
 .yunews-body { padding: 12px 14px 14px; }
 .yunews-title {
-  font-family: 'Zen Maru Gothic',serif;
+  font-family: 'Zen Maru Gothic',var(--jp);
   font-size: 14px; line-height: 1.55; color: var(--text);
 }
-.yunews-date { font-family: 'Caveat',cursive; font-size: 14px; color: var(--text-light); margin-top: 4px; }
+.yunews-date { font-family: 'Caveat',var(--jp); font-size: 14px; color: var(--text-light); margin-top: 4px; }
 
 /* サイドバー */
 .top-sidebar { display: flex; flex-direction: column; gap: 14px; }
@@ -373,7 +377,7 @@ a.yunews-card { display: block; text-decoration: none; color: inherit; }
 }
 .sidebar-links a {
   display: flex; align-items: center; padding: 11px 16px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px;
   color: var(--text-muted); text-decoration: none;
   border-bottom: 1px dashed var(--border);
 }
@@ -386,12 +390,12 @@ a.yunews-card { display: block; text-decoration: none; color: inherit; }
 }
 .schedule-row:last-child { border-bottom: none; }
 .schedule-date {
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 18px; color: var(--emerald-dark);
   white-space: nowrap; min-width: 52px; line-height: 1;
 }
-.schedule-title { flex: 1; font-family: 'Zen Maru Gothic',serif; font-size: 14px; }
-.badge { display: inline-block; font-family: 'Zen Maru Gothic',serif; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+.schedule-title { flex: 1; font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px; }
+.badge { display: inline-block; font-family: 'Zen Maru Gothic',var(--jp); font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
 .badge-open { background: var(--emerald); color: #fff; }
 
 /* フッター */
@@ -403,10 +407,10 @@ footer {
 }
 footer .foot-mark {
   display: inline-block;
-  font-family: 'Caveat',cursive; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-weight: 700;
   font-size: 22px; color: var(--emerald-dark); margin-bottom: 6px;
 }
-footer p { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--text-light); }
+footer p { font-family: 'Zen Maru Gothic',var(--jp); font-size: 13px; color: var(--text-light); }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -461,7 +465,7 @@ footer p { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--t
     display: flex; align-items: center; justify-content: center; gap: 6px;
     width: 100%; background: var(--emerald-pale);
     border: 2px solid var(--emerald-light); border-radius: 12px;
-    padding: 10px; font-family: 'Zen Maru Gothic', serif;
+    padding: 10px; font-family: 'Zen Maru Gothic', var(--jp);
     font-size: 14px; font-weight: 700; color: var(--emerald-dark); cursor: pointer;
   }
   .tile-body { display: none; margin-top: 8px; }
@@ -471,7 +475,7 @@ footer p { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--t
     display: flex; align-items: center; justify-content: center;
     background: var(--emerald-pale); border: 2px solid var(--border);
     border-radius: 12px; padding: 13px 6px;
-    font-family: 'Zen Maru Gothic', serif; font-size: 13px; font-weight: 700;
+    font-family: 'Zen Maru Gothic', var(--jp); font-size: 13px; font-weight: 700;
     color: var(--text-muted); text-align: center; line-height: 1.3;
   }
   .content { padding: 0 16px 48px; }
@@ -748,7 +752,7 @@ footer p { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--t
     <!-- サイドバー -->
     <aside class="top-sidebar">
       <div class="sidebar-widget top-sidebar-schedule">
-        <div style="padding:10px 14px 6px;font-family:'Zen Maru Gothic',serif;font-size:13px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border);">スケジュール</div>
+        <div style="padding:10px 14px 6px;font-family:'Zen Maru Gothic',var(--jp);font-size:13px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border);">スケジュール</div>
         <div class="schedule-list">
           <div class="schedule-row">
             <div class="schedule-date">7/15</div>
@@ -765,7 +769,7 @@ footer p { font-family: 'Zen Maru Gothic',serif; font-size: 13px; color: var(--t
         </div>
       </div>
 
-      <div class="sidebar-widget top-sidebar-yt" style="padding:12px;font-family:'Zen Maru Gothic',serif;font-size:13px;color:var(--text-muted);text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;">
+      <div class="sidebar-widget top-sidebar-yt" style="padding:12px;font-family:'Zen Maru Gothic',var(--jp);font-size:13px;color:var(--text-muted);text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;">
         ▶ YouTube 動画ウィジェット
       </div>
 

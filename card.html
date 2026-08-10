@@ -27,6 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&family=Yomogi&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
+  --jp-serif: 'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif;
   --emerald: #3DAA78;
   --emerald-dark: #1f7a52;
   --emerald-light: #d4ecde;
@@ -40,9 +41,12 @@
   --bg: #fdfcf7;
   --white: #fff;
   --nav-h: 60px;
+  /* 日本語の最終フォールバック。素の serif / sans-serif で終わらせると
+     Webフォントに無い字（々〆ヶ 等）が中国語フォントの字形で表示される */
+  --jp: 'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Zen Maru Gothic','Noto Sans JP',sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; padding-top: var(--nav-h); }
+body { font-family: 'Zen Maru Gothic', var(--jp); background: var(--bg); color: var(--ink); min-height: 100vh; padding-top: var(--nav-h); }
 
 /* ── Nav ── */
 nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(253,252,247,0.95); backdrop-filter: blur(10px); border-bottom: 2px dotted var(--emerald-light); z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; }
@@ -50,10 +54,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .nav-logo-mark { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block; box-shadow: 0 3px 0 var(--emerald-dark); transform: rotate(-4deg); flex-shrink: 0; }
 .nav-logo-main { font-weight: 600; color: var(--emerald-dark); font-size: 13px; letter-spacing: 0.04em; white-space: nowrap; }
 .nav-links { display: flex; gap: 0; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
-.nav-links a { text-decoration: none; font-family: 'Zen Maru Gothic',serif; font-size: 14px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; }
+.nav-links a { text-decoration: none; font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; }
 .nav-links a:hover, .nav-links a.active { background: var(--pink-pale); color: var(--emerald-dark); }
 .nav-group { position: relative; }
-.nav-group-btn { background: none; border: none; cursor: pointer; font-family: 'Zen Maru Gothic',serif; font-size: 14px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+.nav-group-btn { background: none; border: none; cursor: pointer; font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; color: var(--text-muted); padding: 6px 12px; border-radius: 99px; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
 .nav-group-btn:hover, .nav-group:has(.active) .nav-group-btn { background: var(--pink-pale); color: var(--emerald-dark); }
 .nav-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
 .nav-group.open .nav-arrow { transform: rotate(180deg); }
@@ -73,7 +77,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 
 /* Template tabs */
 .tpl-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.tpl-tab { padding: 8px 20px; border: 2px solid var(--border); border-radius: 99px; background: var(--white); font-family: 'Zen Maru Gothic',serif; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+.tpl-tab { padding: 8px 20px; border: 2px solid var(--border); border-radius: 99px; background: var(--white); font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
 .tpl-tab:hover { border-color: var(--emerald); color: var(--emerald-dark); }
 .tpl-tab.active { border-color: var(--emerald); background: var(--emerald); color: #fff; box-shadow: 2px 2px 0 var(--emerald-dark); }
 
@@ -100,7 +104,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .field-input, .field-ta, .field-select {
   width: 100%; padding: 9px 12px;
   border: 2px solid var(--border); border-radius: 10px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px;
+  font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px;
   background: var(--bg); color: var(--ink);
   transition: border-color 0.15s;
 }
@@ -132,31 +136,31 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .icon-thumb-empty { width: 68px; height: 68px; border-radius: 50%; border: 2px dashed var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-light); }
 .icon-btns { display: flex; flex-direction: column; gap: 6px; }
 #icon-file { display: none; }
-.icon-select-btn { padding: 7px 14px; border: 2px solid var(--emerald); border-radius: 8px; background: var(--emerald-pale); color: var(--emerald-dark); font-family: 'Zen Maru Gothic',serif; font-size: 13px; cursor: pointer; transition: all 0.15s; text-align: center; display: inline-block; white-space: nowrap; }
+.icon-select-btn { padding: 7px 14px; border: 2px solid var(--emerald); border-radius: 8px; background: var(--emerald-pale); color: var(--emerald-dark); font-family: 'Zen Maru Gothic', var(--jp); font-size: 13px; cursor: pointer; transition: all 0.15s; text-align: center; display: inline-block; white-space: nowrap; }
 .icon-select-btn:hover { background: var(--emerald-light); }
-.icon-clear-btn { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: none; color: var(--text-muted); font-family: 'Zen Maru Gothic',serif; font-size: 12px; cursor: pointer; transition: all 0.15s; display: none; }
+.icon-clear-btn { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: none; color: var(--text-muted); font-family: 'Zen Maru Gothic', var(--jp); font-size: 12px; cursor: pointer; transition: all 0.15s; display: none; }
 .icon-clear-btn:hover { border-color: #e88; color: #c44; }
 
 /* Download / Share */
 .download-section { padding-top: 4px; display: flex; flex-direction: column; gap: 10px; }
-.download-btn { width: 100%; padding: 13px; background: var(--emerald); color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.download-btn { width: 100%; padding: 13px; background: var(--emerald); color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 var(--emerald-dark); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .download-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--emerald-dark); }
 .download-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--emerald-dark); }
-.share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic',serif; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
 .mobile-action-bar { display: none; }
 .download-note { font-size: 11px; color: var(--text-light); text-align: center; }
-.submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Zen Maru Gothic',serif; font-size: 14px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.submit-card-btn { width:100%; padding:13px; background:#d64d7a; color:#fff; border:2px solid var(--ink); border-radius:12px; font-family:'Zen Maru Gothic', var(--jp); font-size: 14px; font-weight:600; cursor:pointer; box-shadow:3px 3px 0 #8b2050; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
 .submit-card-btn:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 #8b2050; }
 .submit-card-btn:active { transform:translate(2px,2px); box-shadow:1px 1px 0 #8b2050; }
 .submit-card-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:3px 3px 0 #8b2050; }
-.card-result { display:none; padding:10px 14px; border-radius:10px; font-size: 13px; line-height:1.6; font-family:'Zen Maru Gothic',serif; text-align:center; }
+.card-result { display:none; padding:10px 14px; border-radius:10px; font-size: 13px; line-height:1.6; font-family:'Zen Maru Gothic', var(--jp); text-align:center; }
 .card-result.ok { background:var(--emerald-pale); color:var(--emerald-dark); border:1px solid var(--emerald-light); }
 .card-result.err { background:#fef0f0; color:#b00; border:1px solid #fcc; }
-.share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Zen Maru Gothic',serif; font-size: 13px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
+.share-cb-label { display:flex; align-items:center; gap:8px; font-family:'Zen Maru Gothic', var(--jp); font-size: 13px; color:var(--text-muted); cursor:pointer; padding:8px 4px; }
 .share-cb-label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--emerald); cursor:pointer; flex-shrink:0; }
-.omit-btn { margin-top: 4px; padding: 4px 14px; border: 1.5px solid var(--border); border-radius: 99px; background: none; color: var(--text-muted); font-family: 'Zen Maru Gothic',serif; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.omit-btn { margin-top: 4px; padding: 4px 14px; border: 1.5px solid var(--border); border-radius: 99px; background: none; color: var(--text-muted); font-family: 'Zen Maru Gothic', var(--jp); font-size: 12px; cursor: pointer; transition: all 0.15s; }
 .omit-btn:hover { border-color: var(--text-muted); }
 .omit-btn.active { border-color: var(--text-muted); background: var(--text-muted); color: #fff; }
 .field-block.omitted .field-input, .field-block.omitted .field-ta { opacity: 0.4; }
@@ -222,7 +226,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
   .canvas-size-note { display: none; }
   .canvas-click-hint { display: none; }
   .controls { padding: 16px; border-radius: 12px; }
-  .preview-scroll-btn { flex: 1; padding: 11px 4px; background: var(--emerald-pale); color: var(--emerald-dark); border: 2px solid var(--emerald); border-radius: 10px; font-family: 'Zen Maru Gothic', serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .preview-scroll-btn { flex: 1; padding: 11px 4px; background: var(--emerald-pale); color: var(--emerald-dark); border: 2px solid var(--emerald); border-radius: 10px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 12px; font-weight: 700; cursor: pointer; }
   .download-section { display: none; }
   .mobile-action-bar { display: flex; flex-direction: column; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,252,247,0.97); border-top: 2px dotted var(--emerald-light); padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; z-index: 150; backdrop-filter: blur(8px); }
   .mobile-action-btns { display: flex; gap: 8px; }
@@ -234,7 +238,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 <body>
 
 <!-- 準備中オーバーレイ（公開時に削除）／?preview=1 で非表示 -->
-<div id="coming-soon-overlay" style="position:fixed;inset:0;z-index:400;background:#f4faf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',serif;">
+<div id="coming-soon-overlay" style="position:fixed;inset:0;z-index:400;background:#f4faf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Zen Maru Gothic', var(--jp);">
   <div style="text-align:center;padding:40px 24px;max-width:420px;">
     <div style="font-size:48px;margin-bottom:20px;">🌿</div>
     <h1 style="font-size:28px;font-weight:700;color:#1f7a52;margin-bottom:16px;">準備中</h1>
@@ -629,7 +633,7 @@ function drawIconCircle(ctx, img, cx, cy, r, borderColor, borderW) {
   } else {
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
     ctx.fillStyle = "#ecf7f0"; ctx.fill();
-    ctx.font = `${Math.round(r*0.55)}px 'Zen Maru Gothic',serif`;
+    ctx.font = f(Math.round(r*0.55));
     ctx.fillStyle = "#3DAA78"; ctx.textAlign="center"; ctx.textBaseline="middle";
     ctx.fillText("ゆ", cx, cy);
   }
@@ -770,8 +774,51 @@ function buildOshiMainSegments(getV) {
 // ════════════════════════════════════════════════════════
 //  共通描画ヘルパー
 // ════════════════════════════════════════════════════════
+// ── Webフォントのサブセット取り寄せ ──────────────────────
+// Google Fonts の日本語は unicode-range で百数十個に分割配信され、ブラウザは
+// 「DOMに現れた文字」のサブセットしか取得しない。canvas にしか描かない文字
+// （例：々）はWebフォントが読み込まれないまま描画され、別フォントに落ちる。
+// そこで描いた文字を自ら集め、document.fonts.load() でサブセットを取り寄せて描き直す。
+const GLYPH_FONT_SPECS = [
+  "400 16px 'Zen Maru Gothic'",
+  "700 16px 'Zen Maru Gothic'",
+  "400 16px 'Noto Sans JP'",
+  "400 16px 'Yomogi'",
+];
+const _drawnChars  = new Set();
+const _loadedChars = new Set();
+["fillText", "strokeText"].forEach(fn => {
+  const orig = CanvasRenderingContext2D.prototype[fn];
+  CanvasRenderingContext2D.prototype[fn] = function (t) {
+    if (typeof t === "string") for (const ch of t) _drawnChars.add(ch);
+    return orig.apply(this, arguments);
+  };
+});
+// 未取得の文字があればサブセットを読み込み、完了後に onLoaded（＝再描画）を呼ぶ
+let _glyphPending = Promise.resolve();
+function syncGlyphs(onLoaded) {
+  let fresh = "";
+  for (const ch of _drawnChars) {
+    if (_loadedChars.has(ch)) continue;
+    _loadedChars.add(ch);
+    if (!/\s/.test(ch)) fresh += ch;
+  }
+  if (!fresh || !document.fonts || !document.fonts.load) return;
+  _glyphPending = Promise.all(
+    GLYPH_FONT_SPECS.map(sp => document.fonts.load(sp, fresh).catch(() => {}))
+  ).then(() => { try { onLoaded(); } catch (e) {} });
+}
+// 書き出し前に、取り寄せ中のサブセットを待つ（待たないと保存画像だけ字形が崩れる）
+function glyphsReady() { return _glyphPending; }
+
+// 日本語フォントの最終フォールバック。
+// 末尾を素の sans-serif / serif にすると、Webフォントに無い字（々〆ヶ 等）が
+// Windows のフォントリンクで中国語フォント（MS YaHei / SimSun）に落ち、
+// 日本語として不自然な字形になる。必ず日本語フォントで受け止める。
+const JP_FALLBACK = "'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif";
+
 function f(sz, bold, fam) {
-  return `${bold ? "600 " : ""}${sz}px '${fam || "Zen Maru Gothic"}','Noto Sans JP',sans-serif`;
+  return `${bold ? "600 " : ""}${sz}px '${fam || "Zen Maru Gothic"}',${JP_FALLBACK}`;
 }
 
 function measureBlock(ctx, text, maxW, fs, lhM) {
@@ -1669,7 +1716,7 @@ function opGrid(ctx) {
   for (let gy = 0; gy <= OSHI_H; gy += 50) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(OSHI_W, gy); ctx.stroke(); }
   ctx.strokeStyle = "rgba(40,90,220,0.35)";
   ctx.fillStyle = "rgba(30,60,180,0.85)";
-  ctx.font = "11px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.font = f(11); ctx.textAlign = "left"; ctx.textBaseline = "top";
   for (let gx = 0; gx <= OSHI_W; gx += 100) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, OSHI_H); ctx.stroke(); ctx.fillText(gx, gx + 2, 2); }
   for (let gy = 0; gy <= OSHI_H; gy += 100) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(OSHI_W, gy); ctx.stroke(); ctx.fillText(gy, 2, gy + 2); }
   ctx.restore();
@@ -1959,9 +2006,13 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   opBestText(ctx, getV("best-2"), 160, 1240, 350, 95,  23, 3);
   opBestText(ctx, getV("best-3"), 160, 1353, 350, 120, 23, 3);
 
-  // 自由記述こーなー（もこもこ枠 x555〜1027／見出し下〜枠内で中央配置）
+  // 自由記述こーなー
+  // 背景画像の見出し「こーなー」の下端が y=1122、雲の内側下端が y≒1395。
+  // 描画域を y1140〜1390 に限定（中心 1265・高さ 250）して見出しへの重なりを防ぐ。
+  // 横は背景の見出し「自由記述」の中心 x=756 に合わせ、雲が狭くなる下部でも
+  // 輪郭に当たらない幅 350px にする（x 581〜931）。
   // 文字数が少なければ最大36pxまで拡大、多ければ自動縮小
-  opFreeText(ctx, getV("free-note"), 555, 1200, 390, 250, 15, 36);
+  opFreeText(ctx, getV("free-note"), 581, 1262, 350, 244, 15, 36);
 
   // クリック→入力欄ジャンプ用ゾーン
   // かいた日（かいたひラベル＋年/月/日の各ボックス）。ゾーンが無いと上半分クリックが
@@ -2004,6 +2055,9 @@ function render() {
   ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, tpl.w, totalH);
   draw(ctx, tpl.w, id => getVal(tpl, id), iconImg, false);
   document.getElementById("canvas-size-note").textContent = `出力サイズ: ${tpl.w} × ${totalH} px`;
+  // 今回描いた文字にWebフォント未取得のものがあれば、取り寄せてから描き直す
+  // （2回目以降は未取得の文字が無いので再帰しない）
+  syncGlyphs(render);
 }
 
 // ════════════════════════════════════════════════════════
@@ -2330,7 +2384,8 @@ function saveCanvasPng(canvas, filename) {
   } catch (e) { fallbackDataUrl(); }
 }
 
-function download() {
+async function download() {
+  await glyphsReady();
   const { canvas, filename } = buildHighResCanvas();
   saveCanvasPng(canvas, filename);
 }
@@ -2342,6 +2397,7 @@ async function shareToX() {
   btn.disabled = true;
   btn.textContent = "⏳ 準備中...";
   try {
+    await glyphsReady();
     const { canvas, filename } = buildHighResCanvas();
 
     if (navigator.canShare) {
@@ -2373,6 +2429,7 @@ async function submitCard() {
   if (!fanName) { showCardResult("err", "ファン名を入力してください"); return; }
 
   // 高解像度カード画像をbase64で取得
+  await glyphsReady();
   const { canvas: hiResCanvas } = buildHighResCanvas();
   const imageBase64 = hiResCanvas.toDataURL("image/png").split(",")[1];
 

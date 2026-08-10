@@ -734,7 +734,7 @@ async function buildIndex(tpl) {
 
       ${scheduleRows ? `
       <div class="sidebar-widget top-sidebar-schedule">
-        <div style="padding:10px 14px 6px;font-family:'Shippori Mincho',serif;font-size:13px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border);">スケジュール</div>
+        <div style="padding:10px 14px 6px;font-family:'Shippori Mincho',var(--jp-serif);font-size:13px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border);">スケジュール</div>
         <div class="schedule-list">${scheduleRows}</div>
       </div>` : ""}
 
@@ -960,7 +960,7 @@ async function buildMemberBlog(tpl) {
 .mbf-wrap { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
 .mbf-btn {
   padding:6px 16px; border:2px solid var(--border); border-radius:99px;
-  background:var(--white); font-family:'Zen Maru Gothic',serif; font-size:13px;
+  background:var(--white); font-family:'Zen Maru Gothic',var(--jp); font-size:13px;
   color:var(--text-muted); cursor:pointer; transition:all 0.15s; line-height:1.4;
 }
 .mbf-btn:hover { border-color:var(--pink); color:#7a1535; }
@@ -1076,7 +1076,7 @@ async function buildX(tpl) {
     }
   }
 
-  const H2_STYLE = "font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);";
+  const H2_STYLE = "font-family:'Shippori Mincho',var(--jp-serif);font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);";
   const xSection = (tag, ps) => {
     const initial  = ps.slice(0, 3);
     const deferred = ps.slice(3);
@@ -1300,7 +1300,7 @@ async function buildYoutube(tpl) {
     }).join("\n");
     return `
     <section style="margin-bottom:48px;">
-      <h2 style="font-family:'Shippori Mincho',serif;font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">${type}</h2>
+      <h2 style="font-family:'Shippori Mincho',var(--jp-serif);font-size:18px;font-weight:500;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);">${type}</h2>
       <div class="grid-3">${cards}</div>
     </section>`;
   }).join("\n");
@@ -1561,7 +1561,7 @@ async function buildHistory(tpl) {
 .tl-wrap { max-width: 780px; margin: 0 auto; }
 .tl-year-block { margin-bottom: 32px; }
 .tl-year-label {
-  font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700;
+  font-family: 'Caveat', var(--jp); font-size: 30px; font-weight: 700;
   color: var(--emerald-dark); padding-left: 18px;
   border-left: 5px solid var(--emerald); margin-bottom: 10px;
 }
@@ -1596,7 +1596,7 @@ details[open] .tl-month-label::before { transform: rotate(90deg); }
   box-shadow: 0 0 0 2px var(--emerald);
 }
 .tl-date {
-  font-family: 'Caveat', cursive; font-size: 13px;
+  font-family: 'Caveat', var(--jp); font-size: 13px;
   color: var(--text-light); white-space: nowrap; flex-shrink: 0;
 }
 .tl-type {
@@ -1687,11 +1687,11 @@ async function buildWeekly(tpl) {
 <style>
 .wk-wrap { max-width: 760px; margin: 0 auto; }
 .wk-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-.wk-tab { padding: 7px 16px; border: 2px solid var(--emerald-light); border-radius: 99px; background: #fff; font-family: 'Zen Maru Gothic', serif; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all .15s; }
+.wk-tab { padding: 7px 16px; border: 2px solid var(--emerald-light); border-radius: 99px; background: #fff; font-family: 'Zen Maru Gothic', var(--jp); font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all .15s; }
 .wk-tab:hover { border-color: var(--emerald); color: var(--emerald-dark); }
 .wk-tab.active { background: var(--emerald); color: #fff; border-color: var(--emerald); box-shadow: 2px 2px 0 var(--emerald-dark); }
 .wk-week { background: var(--white, #fff); border: 2px solid var(--emerald-light); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px; box-shadow: 0 3px 14px rgba(31,122,82,0.06); scroll-margin-top: 80px; }
-.wk-week-title { font-family: 'Zen Maru Gothic', serif; font-size: 20px; font-weight: 700; color: var(--emerald-dark); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 2px dashed var(--emerald-light); }
+.wk-week-title { font-family: 'Zen Maru Gothic', var(--jp); font-size: 20px; font-weight: 700; color: var(--emerald-dark); padding-bottom: 10px; margin-bottom: 12px; border-bottom: 2px dashed var(--emerald-light); }
 .wk-sec { font-size: 14px; font-weight: 700; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 8px; padding: 5px 12px; display: inline-block; margin: 14px 0 8px; }
 .wk-list { list-style: none; padding: 0 0 0 4px; margin: 0; display: flex; flex-direction: column; gap: 7px; }
 .wk-item { font-size: 14px; line-height: 1.6; padding-left: 16px; position: relative; }
@@ -1783,14 +1783,14 @@ async function buildQuiz(tpl) {
 }
 .quiz-start-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
 .quiz-start-box h2 {
-  font-family: 'Zen Maru Gothic',serif; font-size: 22px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 22px; font-weight: 600;
   color: var(--emerald-dark); margin-bottom: 12px;
 }
 .quiz-start-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
 .quiz-btn {
   display: inline-block; padding: 14px 36px;
   background: var(--emerald); color: #fff;
-  font-family: 'Zen Maru Gothic',serif; font-size: 16px; font-weight: 600;
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 16px; font-weight: 600;
   border: 2px solid var(--emerald-dark); border-radius: 50px;
   box-shadow: 3px 3px 0 var(--emerald-dark); cursor: pointer;
   text-decoration: none; transition: transform 0.1s,box-shadow 0.1s;
@@ -1801,22 +1801,22 @@ async function buildQuiz(tpl) {
 .quiz-btn.pink:hover { box-shadow: 4px 4px 0 #c8456e; }
 
 .quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-.quiz-counter { font-family: 'Caveat',cursive; font-size: 18px; color: var(--text-muted); white-space: nowrap; }
+.quiz-counter { font-family: 'Caveat',var(--jp); font-size: 18px; color: var(--text-muted); white-space: nowrap; }
 .quiz-bar-wrap { flex: 1; height: 8px; background: var(--emerald-light); border-radius: 4px; overflow: hidden; }
 .quiz-bar { height: 100%; background: var(--emerald); border-radius: 4px; transition: width 0.4s ease; }
-.quiz-score-live { font-family: 'Caveat',cursive; font-size: 16px; color: var(--emerald-dark); white-space: nowrap; }
+.quiz-score-live { font-family: 'Caveat',var(--jp); font-size: 16px; color: var(--emerald-dark); white-space: nowrap; }
 
 .quiz-q-box {
   background: #fff; border: 2px solid var(--ink); border-radius: 20px;
   box-shadow: 5px 5px 0 var(--butter); padding: 28px 24px; margin-bottom: 20px;
 }
-.quiz-q-text { font-family: 'Zen Maru Gothic',serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
+.quiz-q-text { font-family: 'Zen Maru Gothic',var(--jp); font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.7; }
 
 .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 .quiz-opt-btn {
   width: 100%; padding: 14px 18px; text-align: left;
   background: #fff; border: 2px solid var(--border); border-radius: 14px;
-  font-family: 'Zen Maru Gothic',serif; font-size: 14px; color: var(--text);
+  font-family: 'Zen Maru Gothic',var(--jp); font-size: 14px; color: var(--text);
   cursor: pointer; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
   line-height: 1.6;
 }
@@ -1842,7 +1842,7 @@ async function buildQuiz(tpl) {
 .quiz-result-label { font-size: 22px; margin-bottom: 8px; }
 .quiz-result-exp { font-size: 13px; color: var(--text-muted); line-height: 1.85; margin-bottom: 14px; }
 .quiz-source-link {
-  display: inline-block; font-family: 'Zen Maru Gothic',serif; font-size: 12px;
+  display: inline-block; font-family: 'Zen Maru Gothic',var(--jp); font-size: 12px;
   color: var(--emerald-dark); text-decoration: none; border-bottom: 1px solid var(--emerald-light);
   margin-bottom: 16px;
 }
@@ -1861,13 +1861,13 @@ async function buildQuiz(tpl) {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 .quiz-score-circle .score-num {
-  font-family: 'Caveat',cursive; font-size: 48px; font-weight: 700;
+  font-family: 'Caveat',var(--jp); font-size: 48px; font-weight: 700;
   color: #fff; line-height: 1;
 }
 .quiz-score-circle .score-den {
-  font-family: 'Caveat',cursive; font-size: 16px; color: rgba(255,255,255,0.8);
+  font-family: 'Caveat',var(--jp); font-size: 16px; color: rgba(255,255,255,0.8);
 }
-.quiz-final-msg { font-family: 'Zen Maru Gothic',serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.quiz-final-msg { font-family: 'Zen Maru Gothic',var(--jp); font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
 .quiz-final-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
 .quiz-final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 

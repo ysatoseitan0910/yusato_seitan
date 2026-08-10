@@ -10,6 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
+  /* 日本語の最終フォールバック。素の serif / sans-serif / cursive で終わらせると、
+     Webフォントに無い字（々〆ヶ 等）が中国語フォントの字形で表示される */
+  --jp: 'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif;
+  --jp-serif: 'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif;
   --emerald: #3DAA78;
   --emerald-dark: #1f7a52;
   --emerald-light: #d4ecde;
@@ -21,7 +25,7 @@
   --white: #fff;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+body { font-family: 'Noto Sans JP', var(--jp); background: var(--bg); color: var(--ink); min-height: 100vh; }
 
 header {
   background: var(--white); border-bottom: 3px solid var(--emerald);
@@ -31,10 +35,10 @@ header {
 .header-mark {
   width: 36px; height: 36px; border-radius: 50%; background: var(--emerald);
   color: #fff; display: flex; align-items: center; justify-content: center;
-  font-family: 'Klee One', serif; font-size: 20px; font-weight: 600;
+  font-family: 'Klee One', var(--jp); font-size: 20px; font-weight: 600;
   box-shadow: 0 3px 0 var(--emerald-dark);
 }
-header h1 { font-family: 'Klee One', serif; font-size: 18px; color: var(--emerald-dark); }
+header h1 { font-family: 'Klee One', var(--jp); font-size: 18px; color: var(--emerald-dark); }
 header span { font-size: 13px; color: var(--text-muted); }
 
 .login-wrap {
@@ -44,7 +48,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
   padding: 32px; box-shadow: 4px 4px 0 var(--emerald);
 }
-.card h2 { font-family: 'Klee One', serif; font-size: 20px; margin-bottom: 20px; }
+.card h2 { font-family: 'Klee One', var(--jp); font-size: 20px; margin-bottom: 20px; }
 .field { margin-bottom: 16px; }
 .field label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
 .field input, .field textarea, .field select {
@@ -59,7 +63,7 @@ header span { font-size: 13px; color: var(--text-muted); }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 10px 20px; border-radius: 10px; border: 2px solid var(--ink);
-  font-family: 'Klee One', serif; font-size: 16px; font-weight: 600;
+  font-family: 'Klee One', var(--jp); font-size: 16px; font-weight: 600;
   cursor: pointer; transition: all 0.15s; background: var(--emerald); color: #fff;
   box-shadow: 3px 3px 0 var(--emerald-dark); width: 100%;
 }
@@ -77,7 +81,7 @@ header span { font-size: 13px; color: var(--text-muted); }
 .db-btn {
   display: block; width: 100%; text-align: left; padding: 10px 14px;
   border: none; background: transparent; cursor: pointer;
-  font-family: 'Klee One', serif; font-size: 15px; color: var(--text-muted);
+  font-family: 'Klee One', var(--jp); font-size: 15px; color: var(--text-muted);
   border-radius: 10px; transition: all 0.15s; margin-bottom: 2px;
 }
 .db-btn:hover { background: var(--emerald-pale); color: var(--emerald-dark); }
@@ -101,7 +105,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   display: block; width: 100%; padding: 10px 14px;
   border: 2px solid var(--ink); border-radius: 10px;
   background: var(--emerald); color: #fff;
-  font-family: 'Klee One', serif; font-size: 15px; font-weight: 600;
+  font-family: 'Klee One', var(--jp); font-size: 15px; font-weight: 600;
   cursor: pointer; text-align: center;
   box-shadow: 3px 3px 0 var(--emerald-dark);
   transition: all 0.15s;
@@ -146,7 +150,7 @@ header span { font-size: 13px; color: var(--text-muted); }
 .token-save-btn {
   width: 100%; padding: 7px; border: 2px solid var(--emerald); border-radius: 8px;
   background: var(--emerald-pale); color: var(--emerald-dark);
-  font-family: 'Klee One', serif; font-size: 13px; font-weight: 600;
+  font-family: 'Klee One', var(--jp); font-size: 13px; font-weight: 600;
   cursor: pointer;
 }
 .token-save-btn:hover { background: var(--emerald-light); }
@@ -158,7 +162,7 @@ header span { font-size: 13px; color: var(--text-muted); }
 .form-panel { display: none; }
 .form-panel.active { display: block; }
 .form-panel h2 {
-  font-family: 'Klee One', serif; font-size: 22px; margin-bottom: 20px;
+  font-family: 'Klee One', var(--jp); font-size: 22px; margin-bottom: 20px;
   padding-bottom: 10px; border-bottom: 2px dashed var(--border);
 }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -211,7 +215,7 @@ header span { font-size: 13px; color: var(--text-muted); }
 }
 .panel-tab {
   padding: 9px 22px; border: none; background: transparent;
-  font-family: 'Klee One', serif; font-size: 15px; color: var(--text-muted);
+  font-family: 'Klee One', var(--jp); font-size: 15px; color: var(--text-muted);
   cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px;
   transition: all 0.15s; border-radius: 6px 6px 0 0;
 }
@@ -223,7 +227,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 16px;
 }
-.list-title { font-family: 'Klee One', serif; font-size: 20px; }
+.list-title { font-family: 'Klee One', var(--jp); font-size: 20px; }
 .list-count { font-size: 13px; color: var(--text-muted); margin-left: 8px; }
 .list-refresh-btn {
   padding: 6px 14px; border: 2px solid var(--border); border-radius: 8px;
@@ -299,7 +303,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   padding: 14px 20px; border-bottom: 2px solid var(--border); flex-shrink: 0;
 }
 .detail-modal-title {
-  font-family: 'Klee One', serif; font-size: 15px; font-weight: 600;
+  font-family: 'Klee One', var(--jp); font-size: 15px; font-weight: 600;
   color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   max-width: calc(100% - 48px);
 }
@@ -364,7 +368,7 @@ header span { font-size: 13px; color: var(--text-muted); }
 .tag-add-btn {
   padding: 9px 14px; border: 2px solid var(--emerald); border-radius: 9px;
   background: var(--emerald-pale); color: var(--emerald-dark);
-  font-family: 'Klee One', serif; font-size: 14px; font-weight: 600;
+  font-family: 'Klee One', var(--jp); font-size: 14px; font-weight: 600;
   cursor: pointer; white-space: nowrap; transition: all 0.12s;
 }
 .tag-add-btn:hover { background: var(--emerald-light); }
@@ -1107,7 +1111,7 @@ function _ogpMemberText(s) {
 }
 
 function drawWeeklyOgp(range, sections, megane) {
-  const W = 1200, H = 630, FAM = "'Zen Maru Gothic','Noto Sans JP',sans-serif";
+  const W = 1200, H = 630, FAM = "'Zen Maru Gothic',var(--jp)";
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, W, H);
@@ -1203,7 +1207,7 @@ function drawWeeklyOgp(range, sections, megane) {
 
 // 手動指定テキストでOGP画像を描画（▼行＝見出しピル／その他＝本文行）
 function drawWeeklyOgpManual(range, text, illust) {
-  const W = 1200, H = 630, FAM = "'Zen Maru Gothic','Noto Sans JP',sans-serif";
+  const W = 1200, H = 630, FAM = "'Zen Maru Gothic',var(--jp)";
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, W, H);

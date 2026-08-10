@@ -312,6 +312,36 @@ docker compose up -d --force-recreate satoyu-admin  # 環境変数を足した�
 - **未認証エンドポイントで `e.message` をそのまま返さない**。Notion のエラー文には DB ID やプロパティ名が含まれる
 - 管理API の `auth` は IP単位で失敗回数を制限し、`crypto.timingSafeEqual` で比較する
 
+## フォント（中国語フォント混入の防止）
+日本語サイトで字形が中国語フォントになる事故が2経路ある。**新規CSS・新規canvas描画では必ず両方守ること**。
+
+### 1. フォント指定を素の `serif` / `sans-serif` / `cursive` で終わらせない
+Windows では generic フォントに CJK 字形が無く、フォントリンクで中国語フォント（SimSun / Microsoft YaHei）に落ちる。
+全ページの `:root` に定義済みの変数で受け止める：
+```css
+--jp: 'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif;
+--jp-serif: 'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif;
+```
+```css
+font-family: 'Zen Maru Gothic', var(--jp);   /* ○ */
+font-family: 'Zen Maru Gothic', serif;       /* × 中国語フォントに落ちる */
+```
+canvas 側（card.html）は `f(size, bold, family)` が `JP_FALLBACK` を自動で付けるので、`ctx.font` を直書きせず必ず `f()` を使う。
+
+### 2. canvas は Google Fonts のサブセットが読まれない（2026-08-10 実測）
+Google Fonts の日本語は `unicode-range` で百数十個に分割配信され、ブラウザは**DOMに現れた文字**のサブセットしか取得しない。
+canvas にしか描かない文字はWebフォントが無いまま描画され、別フォントに落ちる。`々`（U+3005）が典型。
+
+実測（headless Chrome）：
+```
+document.fonts.ready 完了後
+  document.fonts.check("40px 'Zen Maru Gothic'", "々")  → false   ← 未取得
+  document.fonts.load(...) 実行後                        → true
+```
+**`document.fonts.ready` を待つだけでは不十分**。card.html では `fillText`/`strokeText` をラップして描画文字を集め、
+`syncGlyphs()` が `document.fonts.load(spec, 文字列)` でサブセットを取り寄せてから再描画する。
+書き出し（download / shareToX / submitCard）は `await glyphsReady()` で取り寄せ完了を待つ（待たないと保存画像だけ字形が崩れる）。
+
 ## 日付の扱い
 GitHub Actions は **UTC** で動くため、`new Date()` や `toISOString()` をそのまま使うと JST の 0〜9時に日付が1日ずれる。
 **日付判定は必ず `todayJst()` を使う**（締切バッジ・スケジュールの過去判定・Lemino の配信終了判定で実際にずれていた）。

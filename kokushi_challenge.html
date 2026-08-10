@@ -31,6 +31,10 @@
 </script>
 <style>
 :root {
+  /* 日本語の最終フォールバック。素の serif / sans-serif / cursive で終わらせると、
+     Webフォントに無い字（々〆ヶ 等）が中国語フォントの字形で表示される */
+  --jp: 'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif;
+  --jp-serif: 'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif;
   --nav-h: 60px;
   --emerald: #3DAA78;
   --emerald-dark: #1f7a52;
@@ -54,7 +58,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-family:'Zen Maru Gothic',var(--jp);
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
@@ -70,21 +74,21 @@ body{
 /* ── Page header ── */
 header{text-align:center;padding:24px 0 20px;margin-bottom:16px;border-bottom:2px dashed var(--border);}
 .page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--emerald);color:#fff;padding:4px 14px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:0.06em;margin-bottom:10px;}
-header h1{font-family:'Zen Maru Gothic',serif;font-size:clamp(1.3rem,5vw,1.9rem);color:var(--text);line-height:1.3;letter-spacing:0.04em;}
+header h1{font-family:'Zen Maru Gothic',var(--jp);font-size:clamp(1.3rem,5vw,1.9rem);color:var(--text);line-height:1.3;letter-spacing:0.04em;}
 header h1 span{color:var(--emerald-dark);}
-header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);margin-top:6px;letter-spacing:0.06em;display:block;}
+header .sub{font-family:'Caveat',var(--jp);font-size:1rem;color:var(--text-muted);margin-top:6px;letter-spacing:0.06em;display:block;}
 
 /* ── Info grid ── */
 .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
 .info-card{background:#fff;border:2px solid var(--ink);border-radius:12px;padding:10px 8px;text-align:center;box-shadow:3px 3px 0 var(--emerald-light);}
 .info-card .lbl{font-size:0.62rem;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:2px;}
-.info-card .val{font-family:'Caveat',cursive;font-size:1.4rem;font-weight:700;color:var(--emerald-dark);}
+.info-card .val{font-family:'Caveat',var(--jp);font-size:1.4rem;font-weight:700;color:var(--emerald-dark);}
 
 /* ── Wall bar ── */
 .wall-bar{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:0.72rem;}
 .wall-track{flex:1;height:6px;background:var(--emerald-light);border-radius:4px;overflow:hidden;}
 .wall-fill{height:100%;background:linear-gradient(90deg,var(--emerald-dark),var(--emerald));border-radius:4px;transition:width .3s;}
-.wall-pct{font-family:'Caveat',cursive;font-weight:700;color:var(--emerald-dark);min-width:36px;text-align:right;font-size:1rem;}
+.wall-pct{font-family:'Caveat',var(--jp);font-weight:700;color:var(--emerald-dark);min-width:36px;text-align:right;font-size:1rem;}
 
 /* ── Opponent panels ── */
 .opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
@@ -99,7 +103,7 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
   box-shadow:0 1px 2px rgba(0,0,0,0.08);
   display:inline-flex;align-items:center;justify-content:center;
   font-size:1.1rem;line-height:1;
-  font-family:'Noto Serif JP','Noto Emoji',sans-serif;
+  font-family:'Noto Serif JP','Noto Emoji',var(--jp-serif);
   color:var(--text);cursor:default;
   transition:transform .15s;position:relative;
 }
@@ -124,7 +128,7 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
   background:var(--bg);
   display:inline-flex;align-items:center;justify-content:center;
   font-size:1.8rem;line-height:1;
-  font-family:'Noto Serif JP','Noto Emoji',sans-serif;
+  font-family:'Noto Serif JP','Noto Emoji',var(--jp-serif);
   color:var(--text-muted);
   position:relative;transition:all .2s;
 }
@@ -175,7 +179,7 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
   transition:transform .12s,box-shadow .12s;
   user-select:none;
   font-size:2rem;line-height:1;
-  font-family:'Noto Serif JP','Noto Emoji',sans-serif;
+  font-family:'Noto Serif JP','Noto Emoji',var(--jp-serif);
 }
 .tile:hover{transform:translateY(-5px);box-shadow:0 8px 0 #b0a888,0 10px 12px rgba(0,0,0,0.16),inset 0 1px 0 rgba(255,255,255,0.9);}
 .tile.kokushi-hi{border-color:var(--emerald);box-shadow:0 3px 0 var(--emerald-dark),0 4px 8px rgba(0,0,0,0.13),inset 0 1px 0 rgba(255,255,255,0.9),0 0 6px rgba(61,170,120,0.18);}
@@ -191,7 +195,7 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
 .btn{
   padding:9px 18px;border-radius:99px;border:2px solid var(--ink);cursor:pointer;
-  font-family:'Zen Maru Gothic',serif;font-size:0.85rem;
+  font-family:'Zen Maru Gothic',var(--jp);font-size:0.85rem;
   font-weight:600;letter-spacing:.04em;transition:all .15s;white-space:nowrap;
 }
 .btn-start{background:var(--emerald);color:#fff;box-shadow:3px 3px 0 var(--emerald-dark);}
@@ -225,7 +229,7 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
 #action-bar.show{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0);}
 .fab{
   padding:10px 22px;border-radius:99px;border:2px solid var(--ink);cursor:pointer;
-  font-family:'Zen Maru Gothic',serif;font-size:0.95rem;font-weight:600;letter-spacing:.04em;
+  font-family:'Zen Maru Gothic',var(--jp);font-size:0.95rem;font-weight:600;letter-spacing:.04em;
   transition:all .15s;white-space:nowrap;
 }
 .fab:hover{transform:translateY(-2px);}
@@ -248,13 +252,13 @@ header .sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);
 .sim-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
 .sim-stat{background:var(--emerald-pale);border-radius:8px;padding:8px 6px;text-align:center;}
 .sim-stat .s-lbl{font-size:0.6rem;color:var(--text-muted);margin-bottom:2px;}
-.sim-stat .s-val{font-family:'Caveat',cursive;font-size:1.2rem;font-weight:700;color:var(--emerald-dark);}
+.sim-stat .s-val{font-family:'Caveat',var(--jp);font-size:1.2rem;font-weight:700;color:var(--emerald-dark);}
 .sim-hist{font-size:0.68rem;color:var(--text-muted);border-top:1px dashed var(--border);padding-top:8px;max-height:72px;overflow-y:auto;line-height:1.8;}
 .sim-hist span{margin-right:8px;}
 .sim-hist .win13{color:var(--emerald-dark);font-weight:700;}
 .sim-hist .winki{color:var(--gold);}
 .sim-hist .ryu{color:var(--text-muted);}
-.sim-btn-stop{padding:5px 14px;border-radius:99px;border:2px solid var(--pink);cursor:pointer;font-family:'Zen Maru Gothic',serif;font-size:0.75rem;font-weight:700;background:var(--pink-pale);color:#c00040;}
+.sim-btn-stop{padding:5px 14px;border-radius:99px;border:2px solid var(--pink);cursor:pointer;font-family:'Zen Maru Gothic',var(--jp);font-size:0.75rem;font-weight:700;background:var(--pink-pale);color:#c00040;}
 
 /* ── Log ── */
 .log-area{background:var(--emerald-pale);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-size:0.72rem;color:var(--text-muted);max-height:90px;overflow-y:auto;line-height:1.9;}
@@ -331,11 +335,11 @@ body:not(.game-started) .play-only{display:none;}
 #acq-banner.b-lg{animation:b-lg 1.6s cubic-bezier(.175,.885,.32,1.275) forwards;}
 #acq-banner.b-xl{animation:b-xl 2s cubic-bezier(.175,.885,.32,1.275) forwards;}
 #acq-banner.b-13men{animation:b-xl 2.4s cubic-bezier(.175,.885,.32,1.275) forwards;}
-.b-tile{font-size:3rem;display:block;line-height:1.1;font-family:'Noto Emoji',sans-serif;filter:drop-shadow(0 0 8px rgba(61,170,120,.5));}
-.b-text{font-family:'Zen Maru Gothic',serif;display:block;color:var(--emerald-dark);text-shadow:0 0 14px rgba(61,170,120,.4),0 2px 4px rgba(0,0,0,.18);letter-spacing:.06em;word-break:auto-phrase;overflow-wrap:break-word;line-height:1.3;}
-.b-sub{font-family:'Caveat',cursive;font-size:.9rem;color:var(--text-muted);display:block;letter-spacing:.04em;}
-.b-text-13men{font-family:'Zen Maru Gothic',serif;display:block;font-size:2.2rem;color:var(--emerald-dark);text-shadow:0 0 18px rgba(201,169,110,.55),0 2px 4px rgba(0,0,0,.18);letter-spacing:.1em;filter:drop-shadow(0 2px 6px rgba(201,169,110,.35));}
-.b-sub-13men{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--gold);display:block;text-shadow:0 0 10px rgba(201,169,110,.5);letter-spacing:.1em;font-weight:700;animation:sub13-pulse 1.1s ease-in-out infinite alternate;}
+.b-tile{font-size:3rem;display:block;line-height:1.1;font-family:'Noto Emoji',var(--jp);filter:drop-shadow(0 0 8px rgba(61,170,120,.5));}
+.b-text{font-family:'Zen Maru Gothic',var(--jp);display:block;color:var(--emerald-dark);text-shadow:0 0 14px rgba(61,170,120,.4),0 2px 4px rgba(0,0,0,.18);letter-spacing:.06em;word-break:auto-phrase;overflow-wrap:break-word;line-height:1.3;}
+.b-sub{font-family:'Caveat',var(--jp);font-size:.9rem;color:var(--text-muted);display:block;letter-spacing:.04em;}
+.b-text-13men{font-family:'Zen Maru Gothic',var(--jp);display:block;font-size:2.2rem;color:var(--emerald-dark);text-shadow:0 0 18px rgba(201,169,110,.55),0 2px 4px rgba(0,0,0,.18);letter-spacing:.1em;filter:drop-shadow(0 2px 6px rgba(201,169,110,.35));}
+.b-sub-13men{font-family:'Caveat',var(--jp);font-size:1.1rem;color:var(--gold);display:block;text-shadow:0 0 10px rgba(201,169,110,.5);letter-spacing:.1em;font-weight:700;animation:sub13-pulse 1.1s ease-in-out infinite alternate;}
 @keyframes sub13-pulse{from{text-shadow:0 0 8px rgba(201,169,110,.5);}to{text-shadow:0 0 18px rgba(201,169,110,.8);}}
 @keyframes b-sm{0%{opacity:0;transform:translate(-50%,-50%) scale(.5);}20%{opacity:1;transform:translate(-50%,-50%) scale(1);}70%{opacity:1;transform:translate(-50%,-55%) scale(1);}100%{opacity:0;transform:translate(-50%,-65%) scale(.9);}}
 @keyframes b-md{0%{opacity:0;transform:translate(-50%,-50%) scale(.4);}15%{opacity:1;transform:translate(-50%,-50%) scale(1.04);}25%{transform:translate(-50%,-50%) scale(1);}70%{opacity:1;transform:translate(-50%,-55%) scale(1);}100%{opacity:0;transform:translate(-50%,-68%) scale(.9);}}
@@ -348,7 +352,7 @@ body:not(.game-started) .play-only{display:none;}
 /* ── 13men win ── */
 .overlay.show-13men{background:rgba(10,26,18,.78)!important;}
 .ov-box.ov-13men{background:#fff!important;border:2px solid var(--ink)!important;box-shadow:6px 6px 0 var(--emerald-dark)!important;border-radius:20px;}
-.win-13men-title{font-family:'Zen Maru Gothic',serif;font-size:1.9rem;color:var(--emerald-dark);filter:drop-shadow(0 0 8px rgba(201,169,110,.45));letter-spacing:.1em;}
+.win-13men-title{font-family:'Zen Maru Gothic',var(--jp);font-size:1.9rem;color:var(--emerald-dark);filter:drop-shadow(0 0 8px rgba(201,169,110,.45));letter-spacing:.1em;}
 .win-tiles-row{font-size:1.4rem;letter-spacing:.05em;margin:10px 0;line-height:1.3;word-break:break-all;}
 .particle-win{position:fixed;pointer-events:none;z-index:400;animation:p-fly var(--dur,1.4s) ease-out forwards;}
 
@@ -356,8 +360,8 @@ body:not(.game-started) .play-only{display:none;}
 #win-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:410;pointer-events:none;text-align:center;opacity:0;}
 #win-banner.show{animation:win-banner-in 2.2s cubic-bezier(.175,.885,.32,1.275) forwards;}
 @keyframes win-banner-in{0%{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(-4deg);}12%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(1.5deg);}22%{transform:translate(-50%,-50%) scale(.96) rotate(0);}35%{transform:translate(-50%,-50%) scale(1);}68%{opacity:1;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-62%) scale(.88);}}
-.wb-main{font-family:'Zen Maru Gothic',serif;font-size:clamp(1.9rem,6.5vw,3rem);display:block;color:var(--emerald-dark);text-shadow:0 0 14px rgba(201,169,110,.55),0 2px 4px rgba(0,0,0,.18);filter:drop-shadow(0 0 10px rgba(201,169,110,.45));letter-spacing:.14em;line-height:1.15;}
-.wb-sub{font-family:'Caveat',cursive;font-size:clamp(.9rem,2.8vw,1.3rem);display:block;color:var(--gold);text-shadow:0 0 12px rgba(201,169,110,.5);letter-spacing:.2em;margin-top:6px;animation:sub13-pulse .9s ease-in-out infinite alternate;}
+.wb-main{font-family:'Zen Maru Gothic',var(--jp);font-size:clamp(1.9rem,6.5vw,3rem);display:block;color:var(--emerald-dark);text-shadow:0 0 14px rgba(201,169,110,.55),0 2px 4px rgba(0,0,0,.18);filter:drop-shadow(0 0 10px rgba(201,169,110,.45));letter-spacing:.14em;line-height:1.15;}
+.wb-sub{font-family:'Caveat',var(--jp);font-size:clamp(.9rem,2.8vw,1.3rem);display:block;color:var(--gold);text-shadow:0 0 12px rgba(201,169,110,.5);letter-spacing:.2em;margin-top:6px;animation:sub13-pulse .9s ease-in-out infinite alternate;}
 .wb-tiles{font-size:clamp(1.1rem,3vw,1.6rem);display:block;margin-top:8px;line-height:1.4;filter:drop-shadow(0 0 5px rgba(201,169,110,.35));}
 
 /* ── Overlay ── */
@@ -366,7 +370,7 @@ body:not(.game-started) .play-only{display:none;}
 .ov-box{background:#fff;border:2px solid var(--ink);border-radius:20px;padding:36px 40px;text-align:center;max-width:420px;width:92%;box-shadow:6px 6px 0 var(--emerald-dark);animation:ov-pop .35s cubic-bezier(.175,.885,.32,1.275);}
 @keyframes ov-pop{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
 .ov-icon{font-size:3rem;margin-bottom:12px;}
-.ov-box h2{font-family:'Zen Maru Gothic',serif;font-size:1.6rem;margin-bottom:6px;}
+.ov-box h2{font-family:'Zen Maru Gothic',var(--jp);font-size:1.6rem;margin-bottom:6px;}
 .ov-box p{font-size:.85rem;color:var(--text-muted);margin-bottom:4px;line-height:1.7;}
 .ov-stats{background:var(--emerald-pale);border-radius:10px;padding:12px;margin:14px 0;font-size:.82rem;color:var(--text-muted);text-align:left;}
 .ov-stats div{margin-bottom:3px;}
@@ -377,13 +381,13 @@ body:not(.game-started) .play-only{display:none;}
 .choice-ov.show{opacity:1;pointer-events:all;}
 .choice-box{background:#fff;border:2px solid var(--ink);border-radius:20px;padding:32px 28px;text-align:center;max-width:420px;width:92%;border-top:4px solid var(--gold);box-shadow:6px 6px 0 var(--emerald-dark);animation:ov-pop .35s cubic-bezier(.175,.885,.32,1.275);}
 .choice-box .c-icon{font-size:3rem;margin-bottom:4px;}
-.choice-win-title{font-family:'Zen Maru Gothic',serif;font-size:1.7rem;margin-bottom:4px;color:var(--emerald-dark);letter-spacing:.06em;}
+.choice-win-title{font-family:'Zen Maru Gothic',var(--jp);font-size:1.7rem;margin-bottom:4px;color:var(--emerald-dark);letter-spacing:.06em;}
 .choice-tsumo-tile{font-size:2.2rem;display:block;margin:6px 0;line-height:1;filter:drop-shadow(0 0 4px rgba(201,169,110,.45));}
 .choice-box p{font-size:.82rem;color:var(--text-muted);margin-bottom:18px;line-height:1.7;}
 .choice-btns{display:flex;flex-direction:column;gap:10px;}
-.btn-agari{background:var(--emerald);color:#fff;font-weight:600;border:2px solid var(--ink);padding:11px 20px;border-radius:99px;font-size:.9rem;cursor:pointer;font-family:'Zen Maru Gothic',serif;box-shadow:3px 3px 0 var(--emerald-dark);transition:all .15s;}
+.btn-agari{background:var(--emerald);color:#fff;font-weight:600;border:2px solid var(--ink);padding:11px 20px;border-radius:99px;font-size:.9rem;cursor:pointer;font-family:'Zen Maru Gothic',var(--jp);box-shadow:3px 3px 0 var(--emerald-dark);transition:all .15s;}
 .btn-agari:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--emerald-dark);}
-.btn-continue{background:var(--gold-light);color:#5a3800;font-weight:600;border:2px solid var(--ink);padding:11px 20px;border-radius:99px;font-size:.9rem;cursor:pointer;font-family:'Zen Maru Gothic',serif;box-shadow:3px 3px 0 var(--gold);transition:all .15s;}
+.btn-continue{background:var(--gold-light);color:#5a3800;font-weight:600;border:2px solid var(--ink);padding:11px 20px;border-radius:99px;font-size:.9rem;cursor:pointer;font-family:'Zen Maru Gothic',var(--jp);box-shadow:3px 3px 0 var(--gold);transition:all .15s;}
 .btn-continue:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--gold);}
 .choice-note{font-size:.7rem;color:var(--text-light);margin-top:12px;}
 
@@ -396,12 +400,12 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .nav-logo-mark{width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 3px 0 var(--emerald-dark);transform:rotate(-4deg);flex-shrink:0;}
 .nav-logo-text{display:flex;flex-direction:column;line-height:1.1;}
-.nav-logo-main{font-family:'Zen Maru Gothic',serif;font-weight:600;color:var(--emerald-dark);font-size: 13px;letter-spacing:0.04em;white-space:nowrap;}
+.nav-logo-main{font-family:'Zen Maru Gothic',var(--jp);font-weight:600;color:var(--emerald-dark);font-size: 13px;letter-spacing:0.04em;white-space:nowrap;}
 .nav-links{display:flex;gap:0;align-items:center;position:absolute;left:50%;transform:translateX(-50%);}
-.nav-links a{text-decoration:none;font-family:'Zen Maru Gothic',serif;font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;}
+.nav-links a{text-decoration:none;font-family:'Zen Maru Gothic',var(--jp);font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;}
 .nav-links a:hover,.nav-links a.active{background:var(--pink-pale);color:var(--emerald-dark);}
 .nav-group{position:relative;}
-.nav-group-btn{background:none;border:none;cursor:pointer;font-family:'Zen Maru Gothic',serif;font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:3px;}
+.nav-group-btn{background:none;border:none;cursor:pointer;font-family:'Zen Maru Gothic',var(--jp);font-size: 14px;color:var(--text-muted);padding:6px 12px;border-radius:99px;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:3px;}
 .nav-group-btn:hover,.nav-group:has(.active) .nav-group-btn{background:var(--pink-pale);color:var(--emerald-dark);}
 .nav-arrow{font-size:10px;transition:transform 0.2s;display:inline-block;}
 .nav-group.open .nav-arrow{transform:rotate(180deg);}
@@ -414,8 +418,8 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(253,
 .hamburger:hover{background:var(--pink-pale);}
 /* ── Footer ── */
 .site-footer{background:var(--cream);border-top:2px dotted var(--emerald-light);padding:28px;text-align:center;position:relative;z-index:1;}
-.site-footer .foot-mark{display:inline-block;font-family:'Caveat',cursive;font-weight:700;font-size:22px;color:var(--emerald-dark);margin-bottom:6px;}
-.site-footer p{font-family:'Zen Maru Gothic',serif;font-size:11px;letter-spacing:0.06em;color:var(--text-light);}
+.site-footer .foot-mark{display:inline-block;font-family:'Caveat',var(--jp);font-weight:700;font-size:22px;color:var(--emerald-dark);margin-bottom:6px;}
+.site-footer p{font-family:'Zen Maru Gothic',var(--jp);font-size:11px;letter-spacing:0.06em;color:var(--text-light);}
 .site-footer .heart{color:var(--pink);}
 @media(max-width:768px){
   nav{padding:0 16px;}
