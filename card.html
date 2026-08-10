@@ -570,7 +570,7 @@ let currentCanvasH = 0;
 const ILLUSTS = [
   { id:"yuzai",    label:"ゆう罪",   src:"/images/image/card/yuzai.png" },
   { id:"cho_yuzai",label:"超ゆう罪", src:"/images/image/card/cho_yuzai.png" },
-  { id:"muzai",    label:"鍵盤",     src:"/images/image/card/muzai.png" },
+  { id:"muzai",    label:"無罪",     src:"/images/image/card/muzai.png" },
   { id:"dance",    label:"ピース",   src:"/images/image/card/dance.png" },
   { id:"dance2",   label:"ダンス",   src:"/images/image/card/dance2.png" },
   { id:"base",     label:"ベース",   src:"/images/image/card/base.png" },
@@ -587,7 +587,9 @@ const ILLUSTS = [
   { id:"donut",       label:"ドーナツ",   src:"/images/image/card/donut.png" },
   { id:"dai",         label:"大",         src:"/images/image/card/dai.png" },
 ];
-const PICKER_ILLUSTS = ILLUSTS.filter(it => it.id !== "yuzai" && it.id !== "muzai");
+// 選択肢は全種類。yuzai / muzai / cho_yuzai はスタンプにも使われるので、
+// 他推しの入力数によっては同じ絵がスタンプとイラストの両方に出ることがある
+const PICKER_ILLUSTS = ILLUSTS;
 const MAX_ILLUSTS = 3;   // 推しぷろふぃーるのイラスト枠は3か所
 const illustImgs = {};
 const CARD_ILLUST_SEL_KEY = "satoyu_card_illusts_v1";
@@ -2086,19 +2088,20 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   }
 
   // 推し（なまえ枠の点線の下 y≈345）
-  // ・他推しが両方とも空 → 「<佐藤優羽さんの呼び方>一推し！」（呼び方が未入力なら「佐藤優羽さん」）
-  // ・他推しに入力あり → 「佐藤優羽さん、○○、△△」と「、」でつなぐ（「他推し」の見出しは出さない）
+  // 佐藤優羽さんの呼び名は、雲④「佐藤優羽さんの呼び方」の入力を使う（未入力なら「佐藤優羽さん」）
+  // ・他推しが両方とも空 → 「<呼び方>一推し！」
+  // ・他推しに入力あり → 「<呼び方>、○○、△△」と「、」でつなぐ（「他推し」の見出しは出さない）
   // 白地は x69〜662 なので、本文の幅は x177 から 470 まで
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.font = f(29, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
   ctx.fillText("推し", 83, 340);
   const otherOshiList = getOtherOshiList(getV);
+  const callName = oshiCallName(getV);
   ctx.fillStyle = OSHI_INK;
-  if (otherOshiList.length) {
-    opLineText(ctx, ["佐藤優羽さん"].concat(otherOshiList).join("、"), 177, 341, 470, 28, true);
-  } else {
-    opLineText(ctx, oshiCallName(getV) + "一推し！", 177, 341, 470, 28, true);
-  }
+  const oshiLine = otherOshiList.length
+    ? [callName].concat(otherOshiList).join("、")
+    : callName + "一推し！";
+  opLineText(ctx, oshiLine, 177, 341, 470, 28, true);
 
   // 写真
   opPhoto(ctx, ico);
