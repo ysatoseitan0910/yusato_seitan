@@ -190,6 +190,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .field-block.highlight-flash { animation: fieldFlash 1.4s ease forwards; border-radius: 8px; }
 
 /* Illustration picker */
+.icon-illust-panel { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1.5px dashed var(--emerald); border-radius: 12px; background: var(--emerald-pale); }
+.icon-illust-panel[hidden] { display: none; }
 .illust-section { display: flex; flex-direction: column; gap: 8px; }
 .illust-section-label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .illust-count { font-size: 11px; font-weight: 600; color: var(--emerald-dark); background: var(--emerald-pale); border-radius: 99px; padding: 2px 9px; }
@@ -343,7 +345,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
     <div class="controls">
       <div class="controls-title">入力フォーム</div>
 
-      <div class="icon-section">
+      <div class="icon-section" id="icon-section">
         <div class="icon-section-label">アイコン画像（任意）</div>
         <div class="icon-row">
           <div class="icon-thumb-wrap" id="icon-thumb-wrap">
@@ -353,8 +355,13 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
           <div class="icon-btns">
             <label for="icon-file" class="icon-select-btn">画像を選択</label>
             <input type="file" id="icon-file" accept="image/*">
+            <button type="button" class="icon-select-btn" id="icon-illust-btn" aria-expanded="false">イラストから選ぶ</button>
             <button class="icon-clear-btn" id="icon-clear-btn">削除</button>
           </div>
+        </div>
+        <div class="icon-illust-panel" id="icon-illust-panel" hidden>
+          <div class="illust-hint">写真の代わりにイラストをアイコンにできます。タップで決定。</div>
+          <div class="illust-grid" id="icon-illust-grid"></div>
         </div>
       </div>
       <hr class="field-divider">
@@ -578,31 +585,21 @@ const MAX_ILLUSTS = 3;   // 推しぷろふぃーるのイラスト枠は3か所
 const illustImgs = {};
 const CARD_ILLUST_SEL_KEY = "satoyu_card_illusts_v1";
 
-// 初回アクセスはイラスト3点をランダムに選ぶ（毎回同じ組み合わせだと画一的になるため）。
+// イラスト3点は初期状態では未選択（自分で選んでもらう）。
 // 2回目以降は前回選んだ組み合わせを復元する
-function pickRandomIllusts() {
-  const pool = PICKER_ILLUSTS.map(it => it.id);
-  for (let i = pool.length - 1; i > 0; i--) {          // Fisher-Yates
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool.slice(0, MAX_ILLUSTS);
-}
 function loadSelectedIllusts() {
   try {
     const saved = JSON.parse(localStorage.getItem(CARD_ILLUST_SEL_KEY));
     if (Array.isArray(saved)) {
-      const ok = saved.filter(id => PICKER_ILLUSTS.some(it => it.id === id)).slice(0, MAX_ILLUSTS);
-      if (ok.length) return ok;
+      return saved.filter(id => PICKER_ILLUSTS.some(it => it.id === id)).slice(0, MAX_ILLUSTS);
     }
   } catch (e) {}
-  return pickRandomIllusts();
+  return [];
 }
 function saveSelectedIllusts() {
   try { localStorage.setItem(CARD_ILLUST_SEL_KEY, JSON.stringify(selectedIllusts)); } catch (e) {}
 }
 let selectedIllusts = loadSelectedIllusts();
-saveSelectedIllusts();   // 初回に抽選した組み合わせを保存し、次に開いても同じ絵柄にする
 ILLUSTS.forEach(it => {
   const img = new Image();
   img.onload = () => { illustImgs[it.id] = img; render(); };
@@ -2131,6 +2128,8 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   // クリック→入力欄ジャンプ用ゾーン
   // かいた日（かいたひラベル＋年/月/日の各ボックス）。ゾーンが無いと上半分クリックが
   // なまえ欄に吸われるため、年・月・日それぞれに割り当てる
+  // 写真枠（実測 x645〜975 / y175〜415）。タップでアイコン設定欄へ飛ばす
+  fieldZoneMap["__icon"]     = { x1: 660, x2: 965, y1: 185, y2: 410 };
   fieldZoneMap["wrote-y"]    = { x1: 340, x2: 635, y1: 85,  y2: 165 };
   fieldZoneMap["wrote-m"]    = { x1: 640, x2: 795, y1: 85,  y2: 165 };
   fieldZoneMap["wrote-d"]    = { x1: 800, x2: 965, y1: 85,  y2: 165 };
@@ -2380,6 +2379,57 @@ function downscaleDataUrl(img, maxDim) {
   return c.toDataURL("image/jpeg", 0.88);
 }
 
+// ── アイコンにイラストを使う ────────────────────────────
+// 写真を持っていない人向け。イラストを正方形の画像に焼き直してから
+// 通常のアイコンと同じ経路（setIconFromDataUrl）に流すので、保存・削除の扱いは同じ。
+// ・イラストは透過PNGなので下地を敷く（敷かないと丸窓から背景が透けてしまう）
+// ・縦長の絵が多いため cover ではなく contain で収める（顔が切れないように）
+function useIllustAsIcon(id) {
+  const img = illustImgs[id];
+  if (!img) return;
+  const S = 512, PAD = 0.10;
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const g = c.getContext("2d");
+  g.fillStyle = "#ecf7f0";
+  g.fillRect(0, 0, S, S);
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  const sc = Math.min(S * (1 - PAD * 2) / iw, S * (1 - PAD * 2) / ih);
+  const dw = iw * sc, dh = ih * sc;
+  g.drawImage(img, (S - dw) / 2, (S - dh) / 2, dw, dh);
+  setIconFromDataUrl(c.toDataURL("image/png"), true);
+}
+
+function buildIconIllustPicker() {
+  const grid = document.getElementById("icon-illust-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  PICKER_ILLUSTS.forEach(it => {
+    const cell = document.createElement("div");
+    cell.className = "illust-cell";
+    cell.title = it.label;
+    const im = document.createElement("img");
+    im.src = it.src; im.alt = it.label;
+    cell.appendChild(im);
+    cell.addEventListener("click", () => {
+      useIllustAsIcon(it.id);
+      toggleIconIllustPanel(false);
+    });
+    grid.appendChild(cell);
+  });
+}
+
+function toggleIconIllustPanel(open) {
+  const panel = document.getElementById("icon-illust-panel");
+  const btn   = document.getElementById("icon-illust-btn");
+  if (!panel || !btn) return;
+  const next = (open === undefined) ? panel.hidden : open;
+  panel.hidden = !next;
+  btn.setAttribute("aria-expanded", String(next));
+  btn.textContent = next ? "閉じる" : "イラストから選ぶ";
+  if (next) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
 // 入力内容をすべて消して初期状態に戻す（保存済みの下書き・アイコンも消す）
 function resetCard() {
   if (!confirm("入力した内容をすべて消して、最初の状態に戻します。よろしいですか？")) return;
@@ -2402,7 +2452,7 @@ function resetCard() {
   if (iconClear) iconClear.style.display = "none";
 
   // イラストは初回アクセスと同じくランダムに選び直す
-  selectedIllusts = pickRandomIllusts();
+  selectedIllusts = [];              // イラスト選択も未選択に戻す
   saveSelectedIllusts();
   updateIllustUI();
 
@@ -2689,6 +2739,9 @@ document.fonts.ready.then(() => {
   mobileShareCb.addEventListener("change", () => { shareCb.checked = mobileShareCb.checked; });
   shareCb.addEventListener("change", () => { mobileShareCb.checked = shareCb.checked; });
   initIconUpload();
+  buildIconIllustPicker();
+  const illustBtn = document.getElementById("icon-illust-btn");
+  if (illustBtn) illustBtn.addEventListener("click", () => toggleIconIllustPanel());
   const resetBtn = document.getElementById("reset-btn");
   if (resetBtn) resetBtn.addEventListener("click", resetCard);
 });
@@ -2772,6 +2825,16 @@ function scrollToSection(section) {
 }
 
 function scrollToField(fieldId) {
+  // アイコン枠は fields-list の外（アイコン設定セクション）にあるので個別に扱う
+  if (fieldId === "__icon") {
+    const sec = document.getElementById("icon-section");
+    if (!sec) return;
+    sec.classList.remove("highlight-flash");
+    void sec.offsetWidth;
+    sec.classList.add("highlight-flash");
+    sec.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
   const container = document.getElementById("fields-list");
   const block = container.querySelector(`[data-field-id="${fieldId}"]`);
   if (!block) {
