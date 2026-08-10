@@ -154,6 +154,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
 .share-x-btn { width: 100%; padding: 13px; background: #000; color: #fff; border: 2px solid var(--ink); border-radius: 12px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 3px 3px 0 #333; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .share-x-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #333; }
 .share-x-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #333; }
+.form-footer { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
 .reset-btn { width: 100%; margin-top: 4px; padding: 10px; background: none; color: var(--text-muted); border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Zen Maru Gothic', var(--jp); font-size: 13px; cursor: pointer; transition: all 0.15s; }
 .reset-btn:hover { border-color: #e0a0a0; color: #c05555; background: #fdf5f5; }
 .mobile-action-bar { display: none; }
@@ -384,6 +385,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); backgrou
         <button class="download-btn" id="download-btn">⬇ 画像をダウンロード（PNG）</button>
         <button class="share-x-btn" id="share-x-btn">𝕏 Xに投稿する</button>
         <p class="download-note">PCの場合：画像を自動保存 → X投稿画面が開きます（画像を手動添付してください）</p>
+      </div>
+      <!-- モバイルでは .download-section をアクションバーに置き換えて非表示にするため、
+           結果メッセージ・注意書き・リセットは別ブロックに出して常に表示する -->
+      <div class="form-footer">
         <div class="card-result" id="card-result" role="alert"></div>
         <p class="download-note" style="margin-top:10px;line-height:1.8;">共有いただいたプロフィールカードはメッセージカードと合わせて本人にお届けする予定です。また、入力された情報をもとに「さとうゆの好きなところ１００」を作成し、こちらもメッセージカードと合わせてお届けする予定です。</p>
         <button class="reset-btn" id="reset-btn">🗑 入力内容をリセットする</button>
