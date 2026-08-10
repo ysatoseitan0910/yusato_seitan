@@ -423,17 +423,18 @@ const CLOUD_CATS = [
 // 雲メモの項目名（カード上の見出し＝入力フォームのラベルと共通）
 const CLOUD_LABELS = [
   "好きな日向坂46の楽曲",
-  "好きな日向坂46のMV",
   "思い出に残っている日向坂46のライブ",
+  "好きな日向坂46のグッズ",
   "佐藤優羽さんの呼び方",
   "佐藤優羽さんを好きになったきっかけ",
-  "好きな佐藤優羽さんとのペア",
+  "佐藤優羽さんにお願いしたいこと",
 ];
 
 // カード上の見出しだけ改行させたいもの（入力フォームのラベルは1行のまま）
 const CLOUD_LABEL_LINES = {
-  3: ["思い出に残っている", "日向坂46のライブ"],       // 雲③（cloud-3）
+  2: ["思い出に残っている", "日向坂46のライブ"],   // 雲②（cloud-2）
   5: ["佐藤優羽さんを", "好きになったきっかけ"],   // 雲⑤（cloud-5）
+  6: ["佐藤優羽さんに", "お願いしたいこと"],       // 雲⑥（cloud-6）
 };
 
 // 背景画像のサイズ（satoyu_osi_profile3.png）
@@ -500,11 +501,11 @@ const SHARED_FIELDS = [
   // 雲メモ（6つ）※カード上の見出しは CLOUD_LABELS と共通
   // ※ 雲・ベスト3は改行を自分で入れられるように複数行入力にしている
   { id: "cloud-1", rows: 2, label: CLOUD_LABELS[0], placeholder: "例：円周率",            multiline: true, sectionStart: "雲メモ（6つ）" },
-  { id: "cloud-2", rows: 2, label: CLOUD_LABELS[1], placeholder: "例：キュン",            multiline: true },
-  { id: "cloud-3", rows: 2, label: CLOUD_LABELS[2], placeholder: "例：それは盛ってるで！", multiline: true },
+  { id: "cloud-2", rows: 2, label: CLOUD_LABELS[1], placeholder: "例：ひなたフェス2026",  multiline: true },
+  { id: "cloud-3", rows: 2, label: CLOUD_LABELS[2], placeholder: "例：推しメンTシャツ",   multiline: true },
   { id: "cloud-4", rows: 2, label: CLOUD_LABELS[3], placeholder: "例：ゆうちゃん",        multiline: true },
   { id: "cloud-5", rows: 2, label: CLOUD_LABELS[4], placeholder: "例：16thひなた坂LIVE",  multiline: true },
-  { id: "cloud-6", rows: 2, label: CLOUD_LABELS[5], placeholder: "例：こさかな×さとうゆ", multiline: true },
+  { id: "cloud-6", rows: 2, label: CLOUD_LABELS[5], placeholder: "例：一緒に麻雀してほしい", multiline: true },
   // さとうゆのすきなところ ベスト3
   { id: "best-1", rows: 2, label: "1.", placeholder: "例：ライブ終わりの「ありがとうございました！」", multiline: true, sectionStart: "佐藤優羽さんのすきなところ ベスト3" },
   { id: "best-2", rows: 2, label: "2.", placeholder: "例：もちもちほっぺ", multiline: true },
@@ -2393,12 +2394,12 @@ async function submitCard() {
     ohishamaHistory: clean("ohisama-history"),
     selfIntro:       clean("self-intro"),
     // 雲メモ（①楽曲／②MV／③ひなあい企画／④呼び方／⑤きっかけ／⑥ペア）
-    song:            clean("cloud-1"),
-    favMV:           clean("cloud-2"),
-    favHinaai:       clean("cloud-3"),
-    yuCallName:      clean("cloud-4"),
-    kikkake:         clean("cloud-5"),
-    favPair:         clean("cloud-6"),
+    song:            clean("cloud-1"),   // 好きな楽曲
+    favLive:         clean("cloud-2"),   // 思い出に残っているライブ
+    favGoods:        clean("cloud-3"),   // 好きなグッズ
+    yuCallName:      clean("cloud-4"),   // 呼び方
+    kikkake:         clean("cloud-5"),   // 好きになったきっかけ
+    request:         clean("cloud-6"),   // お願いしたいこと
     // すきなところ ベスト3 ／ 自由記述
     best1:           clean("best-1"),
     best2:           clean("best-2"),
