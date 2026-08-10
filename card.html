@@ -586,10 +586,14 @@ const ILLUSTS = [
   { id:"yammy",       label:"もぐもぐ",   src:"/images/image/card/yammy.png" },
   { id:"donut",       label:"ドーナツ",   src:"/images/image/card/donut.png" },
   { id:"dai",         label:"大",         src:"/images/image/card/dai.png" },
+  { id:"angel",       label:"天使",       src:"/images/image/card/angel.png" },
+  { id:"ohisama",     label:"おひさま",   src:"/images/image/card/ohisama.png" },
+  { id:"judge",       label:"裁判官",     src:"/images/image/card/judge.png" },
 ];
-// 選択肢は全種類。yuzai / muzai / cho_yuzai はスタンプにも使われるので、
-// 他推しの入力数によっては同じ絵がスタンプとイラストの両方に出ることがある
-const PICKER_ILLUSTS = ILLUSTS;
+// yuzai / muzai / cho_yuzai は他推しの入力数で出るスタンプ専用。
+// 選択肢に入れると同じ絵がカード内に2つ出てしまうので除外する
+const STAMP_ONLY_ILLUSTS = ["yuzai", "muzai", "cho_yuzai"];
+const PICKER_ILLUSTS = ILLUSTS.filter(it => !STAMP_ONLY_ILLUSTS.includes(it.id));
 const MAX_ILLUSTS = 3;   // 推しぷろふぃーるのイラスト枠は3か所
 const illustImgs = {};
 const CARD_ILLUST_SEL_KEY = "satoyu_card_illusts_v1";

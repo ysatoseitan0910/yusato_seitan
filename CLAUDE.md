@@ -225,8 +225,8 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 - 他推しが両方とも空 → 「<呼び方>一推し！」
 - 他推しに入力あり → 「<呼び方>、○○、△△」と「、」でつなぐ（「他推し」の見出しは出さない）
 - スタンプは**他推しの入力件数**で切り替わる（`STAMP_BY_OTHER_OSHI`）：0件=`muzai` / 1件=`yuzai` / 2件=`cho_yuzai`
-- `PICKER_ILLUSTS` は全18種（`yuzai`/`muzai`/`cho_yuzai` も選べる）。スタンプ兼用なので、
-  同じ絵がスタンプとイラストの両方に出ることがある
+- `yuzai` / `muzai` / `cho_yuzai` は**スタンプ専用**（`STAMP_ONLY_ILLUSTS`）で、イラスト選択肢からは除外。
+  入れると同じ絵がカード内に2つ出るため。選択肢（`PICKER_ILLUSTS`）は18種
 
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
