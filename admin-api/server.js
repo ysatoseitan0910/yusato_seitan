@@ -641,7 +641,7 @@ app.get("/messages", auth, async (req, res) => {
   }
 });
 
-// ── 「今週のさとうゆ」週次まとめ生成 ──
+// ── 「weekly さとうゆ」週次まとめ生成 ──
 function jstToday() {
   return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
 }
@@ -766,9 +766,9 @@ app.post("/generate/weekly", auth, async (req, res) => {
     if (mbLines.length)    sec.push(`▼他メンバーブログ登場（${mbLines.length}件）\n` + mbLines.join("\n"));
 
     const rangeLabel = `${mdShort(start)}〜${mdShort(end)}`;
-    const title = `今週のさとうゆ（${rangeLabel}）`;
+    const title = `weekly さとうゆ（${rangeLabel}）`;
     const body =
-      `📅今週のさとうゆ（${rangeLabel}）\n\n` +
+      `📅weekly さとうゆ（${rangeLabel}）\n\n` +
       (sec.length ? sec.join("\n\n") : "今週は大きな更新はありませんでした。");
 
     // 同名の既存レコードをアーカイブ（重複防止）
@@ -801,7 +801,7 @@ app.post("/generate/weekly", auth, async (req, res) => {
   }
 });
 
-// 今週のさとうゆ 本文（Body）を更新
+// weekly さとうゆ 本文（Body）を更新
 app.patch("/topnews/:pageId/body", auth, async (req, res) => {
   const { pageId } = req.params;
   const { body } = req.body || {};
@@ -817,7 +817,7 @@ app.patch("/topnews/:pageId/body", auth, async (req, res) => {
   }
 });
 
-// 今週のさとうゆ OGP画像を保存（毎週作り変え）
+// weekly さとうゆ OGP画像を保存（毎週作り変え）
 const OGP_DIR = "/var/www/satoyu/ogp";
 app.post("/ogp/weekly", auth, async (req, res) => {
   const { imageBase64 } = req.body || {};

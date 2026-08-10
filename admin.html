@@ -231,7 +231,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   font-family: inherit; transition: all 0.15s;
 }
 .list-refresh-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); }
-/* 今週のさとうゆ */
+/* weekly さとうゆ */
 .weekly-gen-card { border: 2px solid var(--border); border-radius: 12px; padding: 18px; background: var(--emerald-pale, #ecf7f0); }
 .weekly-gen-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 12px; }
 .weekly-gen-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
@@ -419,7 +419,7 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" onclick="switchDB('lemino')">🎬 Lemino</button>
     <button class="db-btn" onclick="switchDB('memberblog')">📔 他メンバーブログ</button>
     <div style="height:1px;background:var(--border);margin:8px 4px;"></div>
-    <button class="db-btn" id="weekly-sidebar-btn" onclick="showWeekly()">🗓 今週のさとうゆ</button>
+    <button class="db-btn" id="weekly-sidebar-btn" onclick="showWeekly()">🗓 weekly さとうゆ</button>
     <button class="db-btn" id="messages-sidebar-btn" onclick="showMessages()">✉ メッセージ</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
@@ -798,22 +798,22 @@ header span { font-size: 13px; color: var(--text-muted); }
       <div id="msg-list-content"></div>
     </div>
 
-    <!-- 今週のさとうゆ -->
+    <!-- weekly さとうゆ -->
     <div id="weekly-area" style="display:none;">
       <div class="list-header">
         <div>
-          <span class="list-title">🗓 今週のさとうゆ</span>
+          <span class="list-title">🗓 weekly さとうゆ</span>
         </div>
       </div>
 
       <div class="weekly-gen-card">
-        <p class="weekly-gen-desc">対象週（月曜〜日曜）の <b>できごと・本人ブログ・TikTok・他メンバーブログ登場</b> をまとめて、HPの「今週のさとうゆ」ページ（<a href="/weekly.html" target="_blank" rel="noopener">weekly.html</a>）に追加します（DB_TOP_NEWSに登録）。</p>
+        <p class="weekly-gen-desc">対象週（月曜〜日曜）の <b>できごと・本人ブログ・TikTok・他メンバーブログ登場</b> をまとめて、HPの「weekly さとうゆ」ページ（<a href="/weekly.html" target="_blank" rel="noopener">weekly.html</a>）に追加します（DB_TOP_NEWSに登録）。</p>
         <div class="weekly-gen-row">
           <div class="field" style="margin:0;">
             <label>対象週の日付（この日を含む週）</label>
             <input type="date" id="weekly-date">
           </div>
-          <button class="btn submit-btn" id="weekly-gen-btn" onclick="generateWeekly()">🗓 今週のさとうゆを作成する</button>
+          <button class="btn submit-btn" id="weekly-gen-btn" onclick="generateWeekly()">🗓 weekly さとうゆを作成する</button>
         </div>
         <span class="status" id="weekly-gen-status"></span>
 
@@ -827,7 +827,7 @@ header span { font-size: 13px; color: var(--text-muted); }
               <button class="btn submit-btn" onclick="saveWeeklyBody()">💾 本文を保存</button>
             </div>
           </div>
-          <p class="weekly-note">この本文がHPの「今週のさとうゆ」ページにリンク付きで表示されます。編集して「保存」すると次回ビルドで反映されます（各項目のURL行がハイパーリンクになります）。</p>
+          <p class="weekly-note">この本文がHPの「weekly さとうゆ」ページにリンク付きで表示されます。編集して「保存」すると次回ビルドで反映されます（各項目のURL行がハイパーリンクになります）。</p>
 
           <div class="weekly-ogp-block" style="margin-top:18px;border-top:1px dashed var(--border);padding-top:16px;">
             <label style="font-weight:700;">🖼 OGP画像の文章（自分で指定）</label>
@@ -946,7 +946,7 @@ function switchDB(name) {
   document.querySelectorAll(".form-panel").forEach(p => p.classList.remove("active"));
   event.currentTarget.classList.add("active");
   document.getElementById("panel-" + name).classList.add("active");
-  // メッセージ・今週のさとうゆビューから戻る
+  // メッセージ・weekly さとうゆビューから戻る
   document.getElementById('messages-area').style.display = 'none';
   document.getElementById('weekly-area').style.display = 'none';
   document.getElementById('panel-tabs').style.display = '';
@@ -967,7 +967,7 @@ function showMessages() {
   loadMessages();
 }
 
-// ── 今週のさとうゆ ──
+// ── weekly さとうゆ ──
 function showWeekly() {
   document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
   document.getElementById('weekly-sidebar-btn').classList.add("active");
@@ -1004,7 +1004,7 @@ async function generateWeekly() {
     const d = await res.json();
     if (!res.ok) throw new Error(d.error || 'エラー');
     status.className = 'status ok';
-    status.textContent = `✅ 「今週のさとうゆ」ページに追加しました（できごと${d.counts.events}件 / TikTok${d.counts.tiktok}件 / 他メンバーブログ登場${d.counts.memberblog}件）`;
+    status.textContent = `✅ 「weekly さとうゆ」ページに追加しました（できごと${d.counts.events}件 / TikTok${d.counts.tiktok}件 / 他メンバーブログ登場${d.counts.memberblog}件）`;
     _weeklyPageId = d.pageId;
     document.getElementById('weekly-result').style.display = '';
     document.getElementById('weekly-result-title').textContent = d.title;
@@ -1024,7 +1024,7 @@ async function generateWeekly() {
 var _weeklyPageId = null;
 
 async function saveWeeklyBody() {
-  if (!_weeklyPageId) { alert('先に「今週のさとうゆを作成する」を実行してください'); return; }
+  if (!_weeklyPageId) { alert('先に「weekly さとうゆを作成する」を実行してください'); return; }
   const st = document.getElementById('weekly-save-status');
   const body = document.getElementById('weekly-result-body').value;
   st.className = 'status';
@@ -1060,7 +1060,7 @@ function editTopNews(i) {
   document.getElementById('weekly-result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// ── OGP画像（今週のさとうゆ）を最新週の内容で生成しアップロード ──
+// ── OGP画像（weekly さとうゆ）を最新週の内容で生成しアップロード ──
 function parseWeeklyBody(text) {
   const sections = []; let cur = null;
   for (const raw of String(text || '').split('\n')) {
@@ -1128,7 +1128,7 @@ function drawWeeklyOgp(range, sections, megane) {
 
   // タイトル
   x.textAlign = 'left'; x.textBaseline = 'alphabetic';
-  x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('今週のさとうゆ', 70, 120);
+  x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('weekly さとうゆ', 70, 120);
   x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168);
   x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(textRight, 192); x.stroke();
 
@@ -1228,7 +1228,7 @@ function drawWeeklyOgpManual(range, text, illust) {
   }
   // タイトル
   x.textAlign = 'left'; x.textBaseline = 'alphabetic';
-  x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('今週のさとうゆ', 70, 120);
+  x.fillStyle = '#1f7a52'; x.font = "700 60px " + FAM; x.fillText('weekly さとうゆ', 70, 120);
   if (range) { x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168); }
   x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(textRight, 192); x.stroke();
 

@@ -124,7 +124,7 @@ async function queryDB(dbId, sorts=[{property:"Date",direction:"descending"}]) {
   return published;
 }
 
-// Published を問わず全件取得（今週のさとうゆは非公開でも weekly.html に表示するため）
+// Published を問わず全件取得（weekly さとうゆは非公開でも weekly.html に表示するため）
 async function queryDBAll(dbId, sorts=[{property:"Date",direction:"descending"}]) {
   if (!dbId) return [];
   const all = await queryDBRaw(dbId, sorts);
@@ -1637,8 +1637,8 @@ async function fetchOgpVersion(imageUrl, fallback) {
   return fallback;
 }
 
-// ── 今週のさとうゆ ──
-// DB_TOP_NEWS の「今週のさとうゆ（…）」レコードのBodyをパースしてリンク付きで表示
+// ── weekly さとうゆ ──
+// DB_TOP_NEWS の「weekly さとうゆ（…）」レコードのBodyをパースしてリンク付きで表示
 function renderWeeklyBody(text) {
   const sections = [];
   let cur = null;
@@ -1674,9 +1674,14 @@ function renderWeeklyBody(text) {
 }
 
 async function buildWeekly(tpl) {
-  // 今週のさとうゆは DB_TOP_NEWS で非公開にしていても weekly.html には表示する
+  // weekly さとうゆは DB_TOP_NEWS で非公開にしていても weekly.html には表示する
   const all = await queryDBAll(DB.news, [{ property: "Date", direction: "descending" }]);
-  const weeks = all.filter(p => getText(p, "Name").startsWith("今週のさとうゆ"));
+  // 2026-08 に名称を「今週のさとうゆ」→「weekly さとうゆ」へ変更した。
+  // 既存レコードは旧名のままなので、両方の接頭辞を受け付ける（過去の週が消えないように）
+  const weeks = all.filter(p => {
+    const n = getText(p, "Name");
+    return n.startsWith("weekly さとうゆ") || n.startsWith("今週のさとうゆ");
+  });
 
   const style = `
 <style>
@@ -1698,8 +1703,8 @@ async function buildWeekly(tpl) {
 </style>`;
 
   if (!weeks.length) {
-    const body = `${style}<div class="wk-wrap"><p class="wk-empty">まだ「今週のさとうゆ」はありません。</p></div>`;
-    return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
+    const body = `${style}<div class="wk-wrap"><p class="wk-empty">まだ「weekly さとうゆ」はありません。</p></div>`;
+    return buildPage(tpl, "weekly さとうゆ", "WEEKLY", "weekly <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
   }
 
   // OGP画像：最新週のもの（管理ページ生成時にweekly.pngへ上書き）
@@ -1712,7 +1717,7 @@ async function buildWeekly(tpl) {
   // レコードの更新時刻では ?v= が変わらず X などが古い画像をキャッシュし続けるため。
   const ogpVer = await fetchOgpVersion(`${SITE_URL}/ogp/weekly.png`, fallbackVer);
   const ogpImage = latestEnd ? `${SITE_URL}/ogp/weekly.png?v=${ogpVer}` : "";
-  const ogpDesc = latestLabel ? `今週のさとうゆ（${latestLabel}）｜出来事・ブログ・TikTok・他メンバーブログ登場まとめ` : "";
+  const ogpDesc = latestLabel ? `weekly さとうゆ（${latestLabel}）｜出来事・ブログ・TikTok・他メンバーブログ登場まとめ` : "";
 
   const weekData = weeks.map(p => {
     const title = getText(p, "Name");
@@ -1748,7 +1753,7 @@ async function buildWeekly(tpl) {
   })();</script>`;
 
   const body = `${style}<div class="wk-wrap"><div class="wk-tabs">${tabs}</div>${sections}</div>${script}`;
-  return buildPage(tpl, "今週のさとうゆ", "WEEKLY", "今週の <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html", ogpImage, "", ogpDesc);
+  return buildPage(tpl, "weekly さとうゆ", "WEEKLY", "weekly <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html", ogpImage, "", ogpDesc);
 }
 
 // ── クイズページ ──
