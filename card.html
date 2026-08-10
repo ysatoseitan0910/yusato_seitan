@@ -3,13 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会">
-<meta property="og:title" content="カード作成 | さとうゆほーむ">
-<meta property="og:description" content="佐藤優羽さんの最新情報をお届けするファンサイト｜運営：佐藤優羽生誕祭実行委員会">
+<meta name="description" content="佐藤優羽さんへの「好き」を書き込んで、じぶんだけの推しぷろふぃーるカードが作れます｜運営：佐藤優羽生誕祭実行委員会">
+<meta property="og:title" content="推しぷろふぃーる | さとうゆほーむ">
+<meta property="og:description" content="佐藤優羽さんへの「好き」を書き込んで、じぶんだけの推しぷろふぃーるカードが作れます。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://satoyu.info/card.html">
-<meta property="og:image" content="https://satoyu.info/images/ogp.png">
+<!-- OGPは空のプロフィールカードを1200×630に組んだ専用画像。差し替えるときはXのキャッシュ対策でファイル名かクエリを変えること -->
+<meta property="og:image" content="https://satoyu.info/images/ogp-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="さとうゆ推しぷろふぃーるカード">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://satoyu.info/images/ogp-card.png">
 <link rel="canonical" href="https://satoyu.info/card.html">
 <link rel="icon" href="/images/favicon.png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
@@ -2390,7 +2395,7 @@ async function download() {
   saveCanvasPng(canvas, filename);
 }
 
-const TWEET_TEXT = "#さとうゆ一推しプロフィール\nhttps://satoyu.info";
+const TWEET_TEXT = "#さとうゆ推しプロフィール\nhttps://satoyu.info/card.html";
 
 // スマホ判定。PCの navigator.share は「Windowsの共有シート」であってXの投稿画面ではない。
 // 画像を直接添付して共有できるスマホでだけネイティブ共有を使う。
