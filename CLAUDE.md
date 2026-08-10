@@ -218,7 +218,13 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 ### 委員会への共有（Notion DB_CARDS）
 「入力した情報を委員会に共有する」にチェック → `POST /admin-api/cards` → Notion登録＋カード画像をVPSに保存。
 - カード画像：`/var/www/satoyu/uploads/cards/<uuid>.png`（Basic認証・ユーザー名 `satoyu`）
-- 他推しの有無で `yuzai.png` / `muzai.png` のスタンプが自動で切り替わる
+- 他推しは「他推し１」「他推し２」の2欄。Notionへは分けずに「、」でつないで `OtherOshi` ひとつに入れる
+
+### 推し行とスタンプ（2026-08-10 変更）
+- 他推しが両方とも空 → 「<雲④「佐藤優羽さんの呼び方」>一推し！」。呼び方が未入力なら「佐藤優羽さん」
+- 他推しに入力あり → 「佐藤優羽さん、○○、△△」と「、」でつなぐ（「他推し」の見出しは出さない）
+- スタンプは**他推しの入力件数**で切り替わる（`STAMP_BY_OTHER_OSHI`）：0件=`muzai` / 1件=`yuzai` / 2件=`cho_yuzai`
+- `cho_yuzai` はスタンプ兼用だがイラスト選択肢にも残しているので、2件入力＋cho_yuzai選択だと同じ絵が2つ出る
 
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加

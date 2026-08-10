@@ -490,7 +490,8 @@ const FIELD_DEFAULTS = {
   "wrote-m":    "",
   "wrote-d":    "",
   "oshi-name":  "佐藤優羽さん",
-  "other-oshi": "",
+  "other-oshi":   "",
+  "other-oshi-2": "",
   "birth-year":      "",
   "birth-md":        "",
   "gender":          "無回答",
@@ -518,7 +519,8 @@ const SHARED_FIELDS = [
   { id: "fan-name",   label: "なまえ",           placeholder: "例：さとうゆ推し",            required: true },
   { id: "handle",     label: "X ID（任意）",     placeholder: "例：@satoyu_donguri_funfun" },
   { id: "oshi-name",  label: "推し（固定）",     readonly: true, fixed: "佐藤優羽さん" },
-  { id: "other-oshi", label: "他推し（さとうゆ一推しなら空欄）", placeholder: "例：金村美玖さん" },
+  { id: "other-oshi",   label: "他推し１（省略可）", placeholder: "例：金村美玖さん" },
+  { id: "other-oshi-2", label: "他推し２（省略可）", placeholder: "例：正源寺陽子さん" },
   // じこしょうかい（card.html と同じ構成：誕生年〜おひさま歴 ＋ 自由に自己紹介）
   { id: "birth-year",      label: "誕生年（省略可）",   placeholder: "例：2006年",  omittable: true, sectionStart: "じこしょうかい" },
   { id: "birth-md",        label: "誕生月日（省略可）", placeholder: "例：9月10日", omittable: true },
@@ -1812,6 +1814,25 @@ function opGrid(ctx) {
 }
 
 // ゆう罪／無罪スタンプ：指定した矩形に収めて描く（白い台紙なし・少し傾ける）
+// 他推しの入力数 → スタンプ（0件=無罪／1件=ゆう罪／2件=超ゆう罪）
+const STAMP_BY_OTHER_OSHI = ["muzai", "yuzai", "cho_yuzai"];
+
+// 他推し１・２のうち、入力があるものだけを順に返す
+function getOtherOshiList(getV) {
+  return ["other-oshi", "other-oshi-2"]
+    .map(id => (getV(id) || "").replace(/\s+/g, " ").trim())
+    .filter(v => v && v !== "__OMIT__");
+}
+
+// 「佐藤優羽さんの呼び方」（雲④）。未入力なら「佐藤優羽さん」。
+// 雲④は複数行入力なので1行目だけ使う
+function oshiCallName(getV) {
+  const v = (getV("cloud-4") || "");
+  if (v === "__OMIT__") return "佐藤優羽さん";
+  const first = v.split("\n").map(s => s.trim()).filter(Boolean)[0];
+  return first || "佐藤優羽さん";
+}
+
 function opStamp(ctx, img, x1, y1, x2, y2) {
   if (!img) return;
   const bw = x2 - x1, bh = y2 - y1;
@@ -2064,22 +2085,19 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
     }
   }
 
-  // 推し（固定「佐藤優羽さん」）＋ 他推し（なまえ枠の点線の下 y≈345）
+  // 推し（なまえ枠の点線の下 y≈345）
+  // ・他推しが両方とも空 → 「<佐藤優羽さんの呼び方>一推し！」（呼び方が未入力なら「佐藤優羽さん」）
+  // ・他推しに入力あり → 「佐藤優羽さん、○○、△△」と「、」でつなぐ（「他推し」の見出しは出さない）
+  // 白地は x69〜662 なので、本文の幅は x177 から 470 まで
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.font = f(29, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
   ctx.fillText("推し", 83, 340);
-  const otherOshi = (getV("other-oshi") || "").trim();
-  if (otherOshi) {
-    ctx.font = f(28, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
-    ctx.fillText("佐藤優羽さん", 177, 341);
-    ctx.font = f(22, true, "Zen Maru Gothic"); ctx.fillStyle = OSHI_INK;
-    ctx.fillText("他推し", 358, 345);
-    ctx.font = f(25, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
-    opLineText(ctx, otherOshi, 445, 342, 200, 25, true);
+  const otherOshiList = getOtherOshiList(getV);
+  ctx.fillStyle = OSHI_INK;
+  if (otherOshiList.length) {
+    opLineText(ctx, ["佐藤優羽さん"].concat(otherOshiList).join("、"), 177, 341, 470, 28, true);
   } else {
-    // 他推しが空 → 「佐藤優羽さん一推し！」
-    ctx.font = f(28, false, "Yomogi"); ctx.fillStyle = OSHI_INK;
-    ctx.fillText("佐藤優羽さん一推し！", 177, 341);
+    opLineText(ctx, oshiCallName(getV) + "一推し！", 177, 341, 470, 28, true);
   }
 
   // 写真
@@ -2089,10 +2107,10 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   // 入力項目から文章を組み立て、文字数に応じて自動サイズ＋折り返し
   opSelfIntro(ctx, buildSelfIntroText(getV), 85, 523, 720, 140, 14, 26);
 
-  // ゆう罪／無罪スタンプ（他推しの入力有無で切り替え）
+  // 無罪／ゆう罪／超ゆう罪スタンプ（他推しの入力数で切り替え：0件→無罪・1件→ゆう罪・2件→超ゆう罪）
   // X ID の右側・なまえと上下中心（y=240）を揃えた固定位置に置く。
   // 入力の長短で動かないよう座標は固定（なまえ欄は MAXW でここまで届かないようにしてある）
-  opStamp(ctx, illustImgs[otherOshi ? "yuzai" : "muzai"], 600, 195, 690, 285);
+  opStamp(ctx, illustImgs[STAMP_BY_OTHER_OSHI[otherOshiList.length] || "cho_yuzai"], 600, 195, 690, 285);
 
   // 選んだイラスト（3か所）
   for (let i = 0; i < OSHI_ILLUST_SLOTS.length; i++) {
@@ -2139,6 +2157,7 @@ function drawOshiProfile(ctx, w, getV, ico, measureOnly) {
   fieldZoneMap["wrote-m"]    = { x1: 640, x2: 795, y1: 85,  y2: 165 };
   fieldZoneMap["wrote-d"]    = { x1: 800, x2: 965, y1: 85,  y2: 165 };
   fieldZoneMap["fan-name"]   = { x1: 60,  x2: 660, y1: 185, y2: 330 };
+  fieldZoneMap["other-oshi"] = { x1: 60,  x2: 660, y1: 335, y2: 385 };   // 「推し」の行
   fieldZoneMap["self-intro"] = { x1: 60,  x2: 830, y1: 429, y2: 621 };
   for (let i = 0; i < 6; i++) {
     const s = CLOUD_SPECS[i];
@@ -2669,7 +2688,8 @@ async function submitCard() {
     fanName,
     handle:          clean("handle"),
     wroteDate:       [clean("wrote-y"), clean("wrote-m"), clean("wrote-d")].map(s => s.trim()).filter(Boolean).join("/"),
-    otherOshi:       clean("other-oshi"),
+    // 他推しは1・2を分けず、「、」でつないで OtherOshi ひとつに入れる
+    otherOshi:       [clean("other-oshi"), clean("other-oshi-2")].map(s => s.trim()).filter(Boolean).join("、"),
     // じこしょうかい
     birthYear:       clean("birth-year"),
     birthMD:         clean("birth-md"),
