@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# さとうゆ情報局（仮）（佐藤優羽生誕祭実行委員会 運営）
+# さとうゆほーむ（佐藤優羽生誕祭実行委員会 運営）
 
 ## サイト概要
 日向坂46五期生・佐藤優羽（さとうゆう）さんのファンポータルサイト。運営：佐藤優羽生誕祭実行委員会。
