@@ -267,6 +267,21 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 そうしないと index ディレクティブが `/` を `/index.html` へ内部転送し、`location = /index.html` に
 再マッチしてリダイレクトループ（rewrite or internal redirection cycle）になるため。
 
+### nginx.conf の反映手順（2026-08-17 実測）
+VPSの `/root/newsmind` は **GitHubのクローン**で、newsmind の deploy.yml が push のたびに
+VPS上で `set -e` 付きの `git pull origin main` を実行する。**VPSで直接ファイルを書き換えると
+（scp含む）作業ツリーが汚れ、次の pull が "Your local changes would be overwritten" で失敗して
+newsmind のデプロイごと落ちる**。必ず「ローカルでコミット → push → VPSで pull」の順で行う。
+nginx.conf だけの変更なら、コミットメッセージに `[skip ci]` を付ければ newsmind 本体の
+ビルド・マイグレーション・コンテナ入れ替えを走らせずに済む。
+
+**`nginx -s reload` では反映されない。`docker compose up -d --force-recreate nginx` が必要。**
+nginx.conf は `./nginx/nginx.conf:/etc/nginx/nginx.conf:ro` と**単一ファイルでbind mount**されており、
+`git pull` はファイルを置き換える（inodeが変わる）ためコンテナ側が古いファイルを掴んだままになる。
+`nginx -t` は古い内容を読んで成功するので、**テストが通ったのに301が効かない**という形で現れる。
+確認は `docker compose exec -T nginx grep -c 'location = ' /etc/nginx/nginx.conf` のように
+コンテナ内の実体を見ること。
+
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
 - **DB_LEMINO**：全エントリのMediaが未設定のものにog:imageからサムネイルを追加
