@@ -2,6 +2,12 @@ const { Client } = require("@notionhq/client");
 const fs = require("fs");
 
 const SITE_URL = "https://satoyu.info";
+// トップページ。buildIndex は index.html / top.html の両方を同じ内容で書き出すため、
+// canonical・og:url・<title> はこのファイル名を目印に "/" 向けの値へ差し替える。
+const INDEX_PAGE_FILE = "index.html";
+// トップの <title>。「トップ | さとうゆほーむ」だと検索キーワード（佐藤優羽・日向坂46）が
+// 一切入らないため、サイト名＋説明の形にしている。
+const INDEX_HEAD_TITLE = "さとうゆほーむ | 日向坂46五期生・佐藤優羽さん非公式ファンサイト";
 const DEFAULT_OGP_IMAGE = `${SITE_URL}/images/ogp.png`;
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
@@ -190,8 +196,12 @@ function loadTemplate(active) {
 
 function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage = "", heroClass = "", ogpDesc = "", heroExtra = "", heroLeftExtra = "", customHero = "") {
   const now = new Date().toLocaleString("ja-JP",{timeZone:"Asia/Tokyo"});
-  const ogpTitle = `${title} | さとうゆほーむ`;
-  const ogpUrl = pageFile ? `${SITE_URL}/${pageFile}` : SITE_URL;
+  // トップページは "/" に一本化する。index.html と top.html は同じ内容なので、
+  // どちらも canonical / og:url を "/" に向けて検索評価の分散を防ぐ（nginx側でも301している）。
+  const isIndex = pageFile === INDEX_PAGE_FILE;
+  const headTitle = isIndex ? INDEX_HEAD_TITLE : `${title} | さとうゆほーむ`;
+  const ogpTitle = headTitle;
+  const ogpUrl = (pageFile && !isIndex) ? `${SITE_URL}/${pageFile}` : `${SITE_URL}/`;
   const ogpImg = ogpImage || DEFAULT_OGP_IMAGE;
   const heroClassAttr = heroClass ? ` ${heroClass}` : "";
   const effectiveOgpDesc = (ogpDesc || desc).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
@@ -202,7 +212,7 @@ function buildPage(template, title, tag, h1, desc, body, pageFile = "", ogpImage
     ? customHero
     : `<div class="page-hero${heroClassAttr}">${heroInner}</div>`;
   return template
-    .replace("{{PAGE_TITLE}}", title)
+    .replace("{{HEAD_TITLE}}", headTitle)
     .replaceAll("{{OGP_TITLE}}", ogpTitle)
     .replaceAll("{{OGP_DESC}}", effectiveOgpDesc)
     .replaceAll("{{OGP_URL}}", ogpUrl)   // og:url と canonical の2箇所にあるため replaceAll
