@@ -662,7 +662,11 @@ async function buildIndex(tpl) {
     <span class="hero-pc-dot" style="left:44%;bottom:30px;width:10px;height:10px;background:var(--butter);"></span>
     <div class="hero-pc-text">
       <div class="hero-pc-badge">SATOYU HOME</div>
-      <h1 class="hero-pc-title">さとうゆ<em>ほーむ</em></h1>
+      <!-- PC用ヒーローは div。PC用とモバイル用の両方をDOMに出しているため、
+           h1 をどちらにも置くと1ページに h1 が2つできる。Googleはモバイル版を基準に
+           見るので、h1 はモバイル用ヒーロー側に残している。
+           .hero-pc-title は class セレクタで、リセットCSS（* { margin:0 }）もあるため見た目は変わらない -->
+      <div class="hero-pc-title">さとうゆ<em>ほーむ</em></div>
       <div class="hero-pc-box">
         <p><strong>さとうゆほーむ</strong>は、日向坂46五期生・佐藤優羽さんの情報をまとめた非公式ファンサイトです。</p>
         <p>運営：<a href="about.html">佐藤優羽生誕祭実行委員会</a><a href="site-info.html" class="hero-pc-box-link">このサイトについて →</a></p>

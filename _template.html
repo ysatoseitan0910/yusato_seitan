@@ -19,6 +19,29 @@
 <meta name="twitter:description" content="{{OGP_DESC}}">
 <meta name="twitter:image" content="{{OGP_IMAGE}}">
 <link rel="canonical" href="{{OGP_URL}}">
+<!-- 構造化データ。サイトが何で・誰について書かれ・誰が運営しているかを明示する。
+     人物そのものの詳細（Person）は yu.html 側に置いている -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "さとうゆほーむ",
+  "alternateName": "佐藤優羽さん非公式ファンサイト",
+  "url": "https://satoyu.info/",
+  "inLanguage": "ja",
+  "description": "日向坂46五期生・佐藤優羽さんの情報をまとめた非公式ファンサイトです。",
+  "about": {
+    "@type": "Person",
+    "name": "佐藤優羽",
+    "url": "https://satoyu.info/yu.html"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "佐藤優羽生誕祭実行委員会",
+    "url": "https://satoyu.info/about.html"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
