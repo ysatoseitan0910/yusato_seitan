@@ -1110,8 +1110,14 @@ function _ogpMemberText(s) {
   return String(s || '').replace(/\s*「[^」]*」\s*$/, '').trim();
 }
 
+// canvas の ctx.font に CSS変数（var(--jp)）は使えない。文字列が不正と判断されて
+// 代入そのものが無視され、既定の「10px sans-serif」のまま描かれてしまう。
+// 実際、2adf5e2 で var(--jp) に置き換えて以降、OGP画像の文字がすべて極小になっていた。
+// card.html の JP_FALLBACK と同じく、フォント名は実名で並べること。
+const OGP_FAM = "'Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif";
+
 function drawWeeklyOgp(range, sections, megane) {
-  const W = 1200, H = 630, FAM = "'Zen Maru Gothic',var(--jp)";
+  const W = 1200, H = 630, FAM = OGP_FAM;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, W, H);
@@ -1207,7 +1213,7 @@ function drawWeeklyOgp(range, sections, megane) {
 
 // 手動指定テキストでOGP画像を描画（▼行＝見出しピル／その他＝本文行）
 function drawWeeklyOgpManual(range, text, illust) {
-  const W = 1200, H = 630, FAM = "'Zen Maru Gothic',var(--jp)";
+  const W = 1200, H = 630, FAM = OGP_FAM;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, W, H);
@@ -1236,7 +1242,9 @@ function drawWeeklyOgpManual(range, text, illust) {
   if (range) { x.fillStyle = '#c85f7e'; x.font = "700 36px " + FAM; x.fillText('（' + range + '）', 74, 168); }
   x.strokeStyle = '#9ad3b2'; x.lineWidth = 3; x.beginPath(); x.moveTo(74, 192); x.lineTo(textRight, 192); x.stroke();
 
-  const LX = 74, IX = 84, maxItemW = textRight - IX, maxY = 600, TOP = 240;
+  // 本文の描画領域。maxY はフッター（baseline 596）に食い込まない位置にする。
+  // 以前は 600 で、長い行がフッターと重なる余地があった。
+  const LX = 74, IX = 84, maxItemW = textRight - IX, maxY = 560, TOP = 232;
   const rows = [];
   for (const raw of String(text || '').split('\n')) {
     const line = raw.trim();
@@ -1245,23 +1253,28 @@ function drawWeeklyOgpManual(range, text, illust) {
     else rows.push({ head: false, text: line });
   }
 
-  // 収まるよう本文フォントを自動調整（見出しピルは固定27px）
-  let FS = 30, LH = 40;
-  for (; FS >= 16; FS--) {
-    LH = Math.round(FS * 1.34);
+  // 収まるよう本文フォントを自動調整する。ただし縮め続けると SNS のタイムラインで
+  // 読めなくなるため下限（FS_MIN）を設け、入り切らない分は「…ほか」で省略する。
+  // 以前は下限16のつもりで `FS >= 16` としていたが、収まらないとループが 15 まで
+  // 回り切ってしまい、実際に 15px で描かれていた。
+  const FS_MAX = 32, FS_MIN = 21, GAP = 4;
+  const headH = function (f) { return Math.round(f * 1.58); };
+  let FS = FS_MAX;
+  for (; FS > FS_MIN; FS--) {
+    const lh = Math.round(FS * 1.34);
     x.font = "400 " + FS + "px " + FAM;
     let h = 0;
     for (const r of rows) {
-      if (r.head) h += Math.round(FS * 1.7);
-      else h += _wrapCanvas(x, r.text, maxItemW).length * LH;
-      h += 6;
+      h += r.head ? headH(FS) : _wrapCanvas(x, r.text, maxItemW).length * lh;
+      h += GAP;
     }
     if (TOP + h <= maxY) break;
   }
+  const LH = Math.round(FS * 1.34);
 
-  let yy = TOP;
+  let yy = TOP, truncated = false;
   for (const r of rows) {
-    if (yy > maxY) break;
+    if (yy > maxY) { truncated = true; break; }
     if (r.head) {
       // 見出しピルの文字サイズは本文（小項目）と同じ FS・太字
       x.font = "700 " + FS + "px " + FAM;
@@ -1271,15 +1284,21 @@ function drawWeeklyOgpManual(range, text, illust) {
       if (x.roundRect) { x.beginPath(); x.roundRect(LX, pillTop, lw + padX * 2, pillH, pillH / 2); x.fill(); }
       else x.fillRect(LX, pillTop, lw + padX * 2, pillH);
       x.fillStyle = '#fff'; x.fillText(r.text, LX + padX, yy);
-      yy += Math.round(FS * 1.7) + 6;
+      yy += headH(FS) + GAP;
     } else {
       x.font = "400 " + FS + "px " + FAM; x.fillStyle = '#33463c';
       for (const ln of _wrapCanvas(x, r.text, maxItemW)) {
-        if (yy > maxY) break;
+        if (yy > maxY) { truncated = true; break; }
         x.fillText(ln, IX, yy); yy += LH;
       }
-      yy += 6;
+      if (truncated) break;
+      yy += GAP;
     }
+  }
+  if (truncated) {
+    // 省略した分があることを示す。フッターは右寄せなので左端のこの行とは重ならない
+    x.font = "400 " + FS + "px " + FAM; x.fillStyle = '#6d887a';
+    x.fillText('…ほか', IX, Math.min(yy, 584));
   }
   // フッター
   x.fillStyle = '#6d887a'; x.font = "500 26px " + FAM;

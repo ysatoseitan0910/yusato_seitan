@@ -278,10 +278,14 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     <div class="ctrl-group">
       <span class="ctrl-label">フォント</span>
       <div class="opt-btns" id="font-btns">
-        <button class="opt-btn active" data-font="'Zen Maru Gothic', var(--jp)" style="font-family:'Zen Maru Gothic',var(--jp)">手書き</button>
-        <button class="opt-btn" data-font="'Noto Sans JP', var(--jp)" style="font-family:'Noto Sans JP',var(--jp)">ゴシック</button>
-        <button class="opt-btn" data-font="'Caveat', var(--jp)" style="font-family:'Caveat',var(--jp)">Casual</button>
-        <button class="opt-btn" data-font="'Yomogi', var(--jp)" style="font-family:'Yomogi',var(--jp)">丸文字</button>
+        <!-- data-font はそのまま ctx.font に入る。canvas は CSS変数を解決しないので、
+             var(--jp) を書くと文字列が不正になって代入が丸ごと無視され、既定の
+             「10px sans-serif」で描かれる（＝カード本文が見えなくなる）。
+             フォント名は実名で並べること。style 属性側はCSSなので var(--jp) のままでよい。 -->
+        <button class="opt-btn active" data-font="'Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Zen Maru Gothic',var(--jp)">手書き</button>
+        <button class="opt-btn" data-font="'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Noto Sans JP',var(--jp)">ゴシック</button>
+        <button class="opt-btn" data-font="'Caveat','Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Caveat',var(--jp)">Casual</button>
+        <button class="opt-btn" data-font="'Yomogi','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Yomogi',var(--jp)">丸文字</button>
       </div>
     </div>
 
@@ -352,7 +356,9 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 
   // ── State ──
   var MSG_DRAFT_KEY = 'satoyu_msg_draft_v1';
-  var _msgDefaults = { message: '', name: '', xid: '', font: "'Zen Maru Gothic', var(--jp)", size: 'medium', color: '#1a1a1a' };
+  // font は ctx.font にそのまま入るため、CSS変数ではなく実名のフォント指定を持たせる
+  // （初期値が var(--jp) のままだと、フォントを一度も切り替えずに書いたカードが崩れる）
+  var _msgDefaults = { message: '', name: '', xid: '', font: "'Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif", size: 'medium', color: '#1a1a1a' };
   var _msgSaved = null;
   try { _msgSaved = JSON.parse(localStorage.getItem(MSG_DRAFT_KEY) || 'null'); } catch(e) {}
   var state = Object.assign({}, _msgDefaults, _msgSaved || {});

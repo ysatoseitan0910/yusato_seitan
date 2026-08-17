@@ -446,6 +446,23 @@ font-family: 'Zen Maru Gothic', serif;       /* × 中国語フォントに落�
 ```
 canvas 側（card.html）は `f(size, bold, family)` が `JP_FALLBACK` を自動で付けるので、`ctx.font` を直書きせず必ず `f()` を使う。
 
+### 1-b. canvas の `ctx.font` に CSS変数（`var(--jp)`）を書かない（2026-08-17 実測）
+**canvas は CSS変数を解決しない。** `ctx.font = "30px 'Zen Maru Gothic',var(--jp)"` は文字列全体が
+不正と判定され、**代入そのものが無視されて既定の `10px sans-serif` のまま描画される**。
+エラーも警告も出ないので、「なぜか文字が極小・別フォント」という形でしか気づけない。
+```js
+ctx.font = "30px 'Zen Maru Gothic',var(--jp)";  ctx.font // → "10px sans-serif"（代入されていない）
+ctx.font = "30px 'Zen Maru Gothic'";            ctx.font // → '30px "Zen Maru Gothic"'
+```
+実際に `2adf5e2`（中国語フォント混入の対策）で `sans-serif` を `var(--jp)` に一括置換した際、
+CSSと同じ感覚で canvas 側まで書き換えてしまい、以下が壊れていた（2026-08-17 に修正）。
+- `admin.html` の weekly OGP画像：全文字が極小になった
+- `message.html` のメッセージカード：5374px幅のcanvasに10pxで描かれ、**本文が事実上見えなかった**
+  （`data-font` 属性の値がそのまま `ctx.font` に入る。style属性側はCSSなので `var(--jp)` でよい）
+- `card_old.html` のアイコン文字
+
+canvas に渡すフォントは**実名で並べる**こと（`card.html` の `JP_FALLBACK` / `admin.html` の `OGP_FAM`）。
+
 ### 2. canvas は Google Fonts のサブセットが読まれない（2026-08-10 実測）
 Google Fonts の日本語は `unicode-range` で百数十個に分割配信され、ブラウザは**DOMに現れた文字**のサブセットしか取得しない。
 canvas にしか描かない文字はWebフォントが無いまま描画され、別フォントに落ちる。`々`（U+3005）が典型。

@@ -570,7 +570,8 @@ function drawIconCircle(ctx, img, cx, cy, r, borderColor, borderW) {
   } else {
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
     ctx.fillStyle = "#ecf7f0"; ctx.fill();
-    ctx.font = `${Math.round(r*0.55)}px 'Zen Maru Gothic',var(--jp)`;
+    // canvas は CSS変数を解決しないので実名で並べる（var(--jp) だと代入が無視される）
+    ctx.font = `${Math.round(r*0.55)}px 'Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif`;
     ctx.fillStyle = "#3DAA78"; ctx.textAlign="center"; ctx.textBaseline="middle";
     ctx.fillText("ゆ", cx, cy);
   }
