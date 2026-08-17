@@ -820,7 +820,7 @@ async function buildCommittee(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "委員会News", "COMMITTEE NEWS", "委員会 <em>News</em>", "佐藤優羽生誕祭実行委員会からのお知らせ・活動情報", body, "committee.html");
+  return buildPage(tpl, "佐藤優羽生誕祭実行委員会News", "COMMITTEE NEWS", "委員会 <em>News</em>", "佐藤優羽生誕祭実行委員会からのお知らせ・活動情報", body, "committee.html");
 }
 
 async function buildActivities(tpl) {
@@ -853,7 +853,7 @@ async function buildActivities(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "活動報告", "ACTIVITIES", "活動 <em>報告</em>", "委員会の活動をご紹介します", body, "activities.html");
+  return buildPage(tpl, "佐藤優羽生誕祭実行委員会の活動報告", "ACTIVITIES", "活動 <em>報告</em>", "委員会の活動をご紹介します", body, "activities.html");
 }
 
 async function buildBlog(tpl) {
@@ -892,7 +892,7 @@ async function buildBlog(tpl) {
     showMore();
   })();
   <\/script>`;
-  return buildPage(tpl, "ブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body, "blog.html");
+  return buildPage(tpl, "佐藤優羽さんのブログまとめ", "BLOG", "ブログ <em>まとめ</em>", "佐藤優羽さんの公式ブログをまとめています", body, "blog.html");
 }
 
 function getMemberNames(page) {
@@ -1050,7 +1050,7 @@ async function buildMemberBlog(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "他メンバーブログ", "MEMBER BLOG", "他メンバー <em>ブログ</em>", "佐藤優羽さんの登場している他メンバーのブログをまとめています", body, "member-blog.html");
+  return buildPage(tpl, "佐藤優羽さん登場｜他メンバーブログ", "MEMBER BLOG", "他メンバー <em>ブログ</em>", "佐藤優羽さんの登場している他メンバーのブログをまとめています", body, "member-blog.html");
 }
 
 async function buildInterview(tpl) {
@@ -1061,7 +1061,7 @@ async function buildInterview(tpl) {
     ${cards}
     <!-- GALLERY_END -->
   </div>`;
-  return buildPage(tpl, "インタビュー、雑誌掲載集", "INTERVIEW", "インタビュー、 <em>雑誌掲載集</em>", "佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています", body, "interview.html");
+  return buildPage(tpl, "佐藤優羽さんのインタビュー・雑誌掲載", "INTERVIEW", "インタビュー、 <em>雑誌掲載集</em>", "佐藤優羽さんのインタビュー記事、雑誌掲載をまとめています", body, "interview.html");
 }
 
 async function buildX(tpl) {
@@ -1190,7 +1190,7 @@ async function buildX(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "Xまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さん関連のX投稿をまとめています", body, "x.html");
+  return buildPage(tpl, "佐藤優羽さん登場のXまとめ", "X / TWITTER", "X <em>まとめ</em>", "佐藤優羽さん関連のX投稿をまとめています", body, "x.html");
 }
 
 async function buildTiktok(tpl) {
@@ -1231,7 +1231,7 @@ async function buildTiktok(tpl) {
     showMore();
   })();
   <\/script>`;
-  return buildPage(tpl, "TikTokまとめ", "TIKTOK", "TikTok <em>まとめ</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
+  return buildPage(tpl, "佐藤優羽さん登場のTikTokまとめ", "TIKTOK", "TikTok <em>まとめ</em>", "佐藤優羽さんのTikTok動画をまとめています", body, "tiktok.html");
 }
 
 async function buildInstagram(tpl) {
@@ -1284,7 +1284,7 @@ async function buildInstagram(tpl) {
     showMore();
   })();
   <\/script>`;
-  return buildPage(tpl, "Instagramまとめ", "INSTAGRAM", "Instagram <em>まとめ</em>", "佐藤優羽さん関連のInstagram投稿をまとめています", body, "instagram.html");
+  return buildPage(tpl, "佐藤優羽さん登場のInstagramまとめ", "INSTAGRAM", "Instagram <em>まとめ</em>", "佐藤優羽さん関連のInstagram投稿をまとめています", body, "instagram.html");
 }
 
 async function buildYoutube(tpl) {
@@ -1319,7 +1319,7 @@ async function buildYoutube(tpl) {
     </section>`;
   }).join("\n");
 
-  return buildPage(tpl, "YouTubeまとめ", "YOUTUBE", "YouTube <em>まとめ</em>", "佐藤優羽さんのYouTube動画をまとめています", body, "youtube.html");
+  return buildPage(tpl, "佐藤優羽さん登場のYouTube動画まとめ", "YOUTUBE", "YouTube <em>まとめ</em>", "佐藤優羽さんのYouTube動画をまとめています", body, "youtube.html");
 }
 
 async function buildYuNews(tpl) {
@@ -1389,7 +1389,7 @@ async function buildYuNews(tpl) {
     showMore();
   })();
   <\/script>`;
-  return buildPage(tpl, "佐藤優羽さんNews", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body, "yunews.html");
+  return buildPage(tpl, "佐藤優羽さんニュースまとめ", "YU NEWS", "佐藤優羽さん <em>News</em>", "佐藤優羽さんの最新情報をまとめています", body, "yunews.html");
 }
 
 async function buildLemino(tpl) {
@@ -1486,7 +1486,7 @@ async function buildLemino(tpl) {
   const body = `<div class="lemino-programs">
     ${sections}
   </div>`;
-  return buildPage(tpl, "Leminoまとめ", "LEMINO", "Lemino <em>まとめ</em>", "佐藤優羽さんのLemino配信をまとめています", body, "lemino.html");
+  return buildPage(tpl, "佐藤優羽さん登場のLemino配信まとめ", "LEMINO", "Lemino <em>まとめ</em>", "佐藤優羽さんのLemino配信をまとめています", body, "lemino.html");
 }
 
 
@@ -1500,7 +1500,7 @@ async function buildHistory(tpl) {
 
   if (pages.length === 0) {
     const body = `<p style="color:var(--text-muted);text-align:center;padding:60px 0">データがありません</p>`;
-    return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
+    return buildPage(tpl, "佐藤優羽さんの歩み・年表", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
   }
 
   // Type → 色のパレット（ハッシュで安定割り当て）
@@ -1630,7 +1630,7 @@ details[open] .tl-month-label::before { transform: rotate(90deg); }
 </style>
 <div class="tl-wrap">${sections}</div>`;
 
-  return buildPage(tpl, "ヒストリー", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
+  return buildPage(tpl, "佐藤優羽さんの歩み・年表", "HISTORY", "さとうゆ <em>ヒストリー</em>", "佐藤優羽さんの歩みをまとめた年表です", body, "history.html");
 }
 
 // OGP画像の ?v= を画像ファイルの Last-Modified から作る（取得できなければ fallback）
@@ -1718,7 +1718,7 @@ async function buildWeekly(tpl) {
 
   if (!weeks.length) {
     const body = `${style}<div class="wk-wrap"><p class="wk-empty">まだ「weekly さとうゆ」はありません。</p></div>`;
-    return buildPage(tpl, "weekly さとうゆ", "WEEKLY", "weekly <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
+    return buildPage(tpl, "weekly さとうゆ｜佐藤優羽さんの1週間", "WEEKLY", "weekly <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html");
   }
 
   // OGP画像：最新週のもの（管理ページ生成時にweekly.pngへ上書き）
@@ -1767,7 +1767,7 @@ async function buildWeekly(tpl) {
   })();</script>`;
 
   const body = `${style}<div class="wk-wrap"><div class="wk-tabs">${tabs}</div>${sections}</div>${script}`;
-  return buildPage(tpl, "weekly さとうゆ", "WEEKLY", "weekly <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html", ogpImage, "", ogpDesc);
+  return buildPage(tpl, "weekly さとうゆ｜佐藤優羽さんの1週間", "WEEKLY", "weekly <em>さとうゆ</em>", "佐藤優羽さんの1週間の出来事・ブログ・TikTok・他メンバーブログ登場をまとめています", body, "weekly.html", ogpImage, "", ogpDesc);
 }
 
 // ── クイズページ ──
@@ -2098,7 +2098,7 @@ async function buildQuiz(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "さとうゆクイズ", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム5問に挑戦しよう`, body, "quiz.html");
+  return buildPage(tpl, "佐藤優羽さんクイズ（さとうゆクイズ）", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム5問に挑戦しよう`, body, "quiz.html");
 }
 
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──
