@@ -250,6 +250,23 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 - `yuzai` / `muzai` / `cho_yuzai` は**スタンプ専用**（`STAMP_ONLY_ILLUSTS`）で、イラスト選択肢からは除外。
   入れると同じ絵がカード内に2つ出るため。選択肢（`PICKER_ILLUSTS`）は18種
 
+## トップページURLの一本化（2026-08-17）
+トップは `/` `/index.html` `/top.html` の3URLで同じ内容に到達でき、検索エンジンに別ページとして
+認識されていた。**正規URLは `https://satoyu.info/`** に統一済み。触るときは4点セットで守ること。
+- `build.js`：`INDEX_PAGE_FILE`（= `index.html`）を目印に、canonical / og:url を `SITE_URL + "/"` にする。
+  index.html と top.html は同じ `buildIndex` から出力されるので、top.html の canonical も `/` を指す
+- `<title>`：テンプレートは `{{HEAD_TITLE}}`（完成形を差し込む）。トップだけ `INDEX_HEAD_TITLE` で
+  **「さとうゆほーむ | 日向坂46五期生・佐藤優羽さん非公式ファンサイト」**。「トップ | さとうゆほーむ」だと
+  検索キーワード（佐藤優羽・日向坂46）が1語も入らなかったため。og:title / twitter:title も同じ値になる
+- **ナビのリンクは `/`**（ロゴ・「トップ」とも）。`index.html` / `top.html` を直接リンクしない。
+  静的ページは `_template.html` を使わないので、新規ページを作るときは手で `/` にすること
+- `sitemap.xml` のトップは `https://satoyu.info/`（末尾に index.html を付けない）
+
+**`.htaccess` は効かない**。配信は Apache ではなく nginx（Docker）なので、301は
+`~/newsmind/nginx/nginx.conf` に書く。`location = /` を `try_files /index.html =404;` で直接処理するのは、
+そうしないと index ディレクティブが `/` を `/index.html` へ内部転送し、`location = /index.html` に
+再マッチしてリダイレクトループ（rewrite or internal redirection cycle）になるため。
+
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
 - **DB_LEMINO**：全エントリのMediaが未設定のものにog:imageからサムネイルを追加
