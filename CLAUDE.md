@@ -299,6 +299,14 @@ nginx.conf は `./nginx/nginx.conf:/etc/nginx/nginx.conf:ro` と**単一ファ�
 確認は `docker compose exec -T nginx grep -c 'location = ' /etc/nginx/nginx.conf` のように
 コンテナ内の実体を見ること。
 
+**2026-09-02 更新：newsmind の deploy.yml がこの罠を自動で処理するようになった。**
+入れ替え前に `docker compose run --rm --no-deps nginx nginx -t` で新しい nginx.conf を検査し
+（誤りがあればデプロイが止まり旧設定で動き続ける）、`up -d` のあとに host とコンテナの
+inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行する。
+したがって **nginx.conf の変更に `[skip ci]` を付けてはいけない**（付けると検査も作り直しも
+走らず、上の「テストが通ったのに効かない」状態になる）。普通に push すれば反映される。
+手動の `docker compose up -d --force-recreate nginx` は非常時の手段として残る。
+
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
 - **DB_LEMINO**：全エントリのMediaが未設定のものにog:imageからサムネイルを追加
@@ -368,6 +376,8 @@ nginx.conf は `./nginx/nginx.conf:/etc/nginx/nginx.conf:ro` と**単一ファ�
 - **ドメイン**: `satoyu.info`（Aレコード → `133.88.117.39`）
 - **公開ディレクトリ**: `/var/www/satoyu/`
 - **nginx**: newsmindアプリと同一VPS上のDockerコンテナ（`~/newsmind/nginx/nginx.conf`）
+- **同居するドメイン**: `newsmind.online`（2026-09-02 から。newsmind アプリの入口。同じ nginx・同じ
+  `/etc/letsencrypt` を使う。satoyu.info のブロックには手を入れていない）
 
 ### デプロイの仕組み
 GitHub Actions（deploy.yml）がビルド後にrsyncでVPSへ転送：
@@ -386,9 +396,20 @@ rsync -avz --delete [除外ファイル一覧] ./ root@133.88.117.39:/var/www/sa
 ### nginx設定（~/newsmind/nginx/nginx.conf）
 - `server_name satoyu.info www.satoyu.info` → `/var/www/satoyu` を静的配信（HTTPS）
 - HTTP → HTTPS リダイレクトあり（Let's Encrypt / certbot 設定済み）
-- `server_name _` + `default_server` → newsmindアプリへproxy（IP直アクセス用）
-- SSL証明書：`/etc/letsencrypt/live/satoyu.info/` にマウント（Dockerコンテナ読み取り専用）
-- webroot認証用：`/var/www/certbot` をDockerボリューム共有
+- `server_name _` + `default_server`（80番）→ **2026-09-02 から `https://newsmind.online` へ 301**。
+  それ以前は newsmind アプリへの proxy（IP 直アクセス用）だった。satoyu.info は自分の
+  80番ブロックで受けるので影響しない
+- **443 の既定サーバーは `ssl_reject_handshake on`（2026-09-02 追加）。** 名前が一致しない SNI
+  （IP 直打ちの https・未知のホスト名）は握手の段階で断る。これが無いと satoyu.info の
+  443 ブロックが既定になり、別ドメイン宛ての https でこのサイトが証明書の警告付きで見えていた
+- `newsmind.online` の 443 ブロックは `~/newsmind/nginx/ssl.d/newsmind-ssl.conf`（Git 管理外。
+  newsmind の deploy.yml が証明書の存在を確かめてからテンプレートを複写する）。
+  nginx.conf 本体は `include /etc/nginx/ssl.d/*.conf` で読む
+- SSL証明書：`/etc/letsencrypt/live/satoyu.info/` と `/etc/letsencrypt/live/newsmind.online/`
+  （Dockerコンテナ読み取り専用）。newsmind.online の更新は certbot の deploy-hook が nginx を reload
+- webroot認証用：`/var/www/certbot` をDockerボリューム共有（両ドメイン共通）
+- newsmind のデプロイで nginx.conf が変わると nginx コンテナが作り直される（数秒の断）。
+  satoyu.info も同じコンテナから配信しているので、その間は一緒に止まる
 
 ### VPS操作メモ
 ```bash
