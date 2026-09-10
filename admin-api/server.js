@@ -9,6 +9,9 @@ app.set('trust proxy', 1); // nginx の背後で実際のクライアントIPを
 app.use(express.json({ limit: "5mb" }));
 
 const UPLOADS_DIR = "/var/www/satoyu/uploads/cards";
+// メッセージカード画像。/uploads/cards/ 配下に置くことで nginx の Basic 認証
+//（location /uploads/cards/ の前方一致）がそのまま効き、nginx を変更せずに済む
+const MESSAGE_UPLOADS_DIR = "/var/www/satoyu/uploads/cards/messages";
 
 // ── IPレート制限（メッセージ送信：1時間に3回まで） ──
 const msgRateMap = new Map();
@@ -146,6 +149,18 @@ function isValidPng(base64) {
   try { buf = Buffer.from(base64, "base64"); } catch { return null; }
   if (buf.length < 8 || buf.length > MAX_IMAGE_BYTES) return null;
   return buf.subarray(0, 8).equals(PNG_MAGIC) ? buf : null;
+}
+// PNG に加えて JPEG（FF D8 FF）も検証して受け付ける。メッセージカードは不透明なので
+// JPEG で送らせて転送量を 1/5 程度にしている（2688px で PNG 約2MB → JPEG 約0.4MB）
+const JPEG_MAGIC = Buffer.from([0xff, 0xd8, 0xff]);
+function isValidImage(base64) {
+  if (typeof base64 !== "string" || base64.length === 0) return null;
+  let buf;
+  try { buf = Buffer.from(base64, "base64"); } catch { return null; }
+  if (buf.length < 8 || buf.length > MAX_IMAGE_BYTES) return null;
+  if (buf.subarray(0, 8).equals(PNG_MAGIC)) return { buf, ext: "png" };
+  if (buf.subarray(0, 3).equals(JPEG_MAGIC)) return { buf, ext: "jpg" };
+  return null;
 }
 
 // クイズ
@@ -464,7 +479,7 @@ app.get("/list/:db", auth, async (req, res) => {
 
 // ── メッセージカード（公開エンドポイント・認証不要） ──
 app.post("/messages", async (req, res) => {
-  const { message, name, xid, font, size, color, _hp } = req.body;
+  const { message, name, xid, font, size, color, _hp, imageBase64 } = req.body;
 
   // ハニーポットチェック（ボットは隠しフィールドを埋める）
   if (_hp) return res.status(400).json({ error: "送信に失敗しました" });
@@ -482,6 +497,24 @@ app.post("/messages", async (req, res) => {
   if (name.trim().length > 30)     return res.status(400).json({ error: "お名前は30文字以内です" });
   if (!DB.messages) return res.status(503).json({ error: "メッセージDBが未設定です（DB_MESSAGES環境変数を設定してください）" });
 
+  // カード画像を保存する。画像が不正・保存失敗でもメッセージ本文の登録は止めない（/cards と同じ方針）
+  let imageUrl = null;
+  if (imageBase64) {
+    try {
+      const img = isValidImage(imageBase64);
+      if (!img) {
+        console.warn("メッセージ画像を拒否: PNG/JPEGではない、またはサイズ超過");
+      } else {
+        fs.mkdirSync(MESSAGE_UPLOADS_DIR, { recursive: true });
+        const filename = `${crypto.randomUUID()}.${img.ext}`;
+        fs.writeFileSync(path.join(MESSAGE_UPLOADS_DIR, filename), img.buf);
+        imageUrl = `https://satoyu.info/uploads/cards/messages/${filename}`;
+      }
+    } catch (imgErr) {
+      console.error("メッセージ画像の保存エラー:", imgErr.message);
+    }
+  }
+
   try {
     await notion.pages.create({
       parent: { database_id: DB.messages },
@@ -498,9 +531,11 @@ app.post("/messages", async (req, res) => {
         // UTC だと JST の 0〜9 時の送信が前日扱いになる
         Date:      { date: { start: jstToday() } },
         Published: { checkbox: false },
+        // 画像は外部URLとして files プロパティ（名前は小文字の media）に入れる
+        ...(imageUrl ? { media: { files: [{ name: "message-card", external: { url: imageUrl } }] } } : {}),
       },
     });
-    res.json({ ok: true });
+    res.json({ ok: true, imageUrl });
   } catch (e) {
     console.error(e.message);
     // 未認証エンドポイントなのでNotionの内部エラー文（DB IDやプロパティ名を含む）は返さない
@@ -633,6 +668,7 @@ app.get("/messages", auth, async (req, res) => {
           color:     page.properties.Color?.rich_text?.[0]?.plain_text || "",
           date:      page.properties.Date?.date?.start || "",
           published: page.properties.Published?.checkbox || false,
+          image:     page.properties.media?.files?.[0]?.external?.url || page.properties.media?.files?.[0]?.file?.url || "",
         });
       }
       cursor = resp.has_more ? resp.next_cursor : null;

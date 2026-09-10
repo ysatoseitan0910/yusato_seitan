@@ -1515,6 +1515,9 @@ function renderMessages(items) {
       <td style="max-width:300px;white-space:pre-wrap;font-size:12px;">${escHtml(item.message)}</td>
       <td style="font-size:11px;color:#888;">${escHtml(item.font.replace(/'/g,'').split(',')[0])} / ${escHtml(item.size)}<br>${colorDot}${escHtml(item.color)}</td>
       <td style="font-size:11px;">${escHtml(item.date)}</td>
+      <td>${item.image
+        ? `<a href="${escHtml(item.image)}" target="_blank" rel="noopener" title="画像を開く"><img src="${escHtml(item.image)}" alt="" loading="lazy" style="width:110px;height:auto;border-radius:6px;border:1px solid #ddd;display:block;"></a>`
+        : '<span style="color:#aaa;font-size:11px;">なし</span>'}</td>
       <td>${pub}</td>
     </tr>`;
   }).join('');
@@ -1524,6 +1527,7 @@ function renderMessages(items) {
       <th style="padding:8px;text-align:left;border-bottom:1px solid #eee;">メッセージ</th>
       <th style="padding:8px;text-align:left;border-bottom:1px solid #eee;">スタイル</th>
       <th style="padding:8px;text-align:left;border-bottom:1px solid #eee;">日付</th>
+      <th style="padding:8px;text-align:left;border-bottom:1px solid #eee;">画像</th>
       <th style="padding:8px;border-bottom:1px solid #eee;">状態</th>
     </tr></thead>
     <tbody style="color:#333;">${rows}</tbody>
@@ -1532,9 +1536,9 @@ function renderMessages(items) {
 
 function downloadCSV() {
   if (!_messagesCache.length) return;
-  const header = ['名前', 'メッセージ', 'フォント', 'サイズ', '色', '日付', '状態'];
+  const header = ['名前', 'メッセージ', 'フォント', 'サイズ', '色', '日付', '画像URL', '状態'];
   const rows = _messagesCache.map(m => [
-    m.name, m.message, m.font, m.size, m.color, m.date, m.published ? '公開' : '未確認'
+    m.name, m.message, m.font, m.size, m.color, m.date, m.image || '', m.published ? '公開' : '未確認'
   ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
   const csv = '﻿' + [header.join(','), ...rows].join('\r\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
