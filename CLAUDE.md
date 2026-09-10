@@ -279,7 +279,8 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 ### カード画像の保存（2026-09-10 追加）
 送信時に書き出しと同じ 2688px のカードを **JPEG（品質0.9・約0.4MB）** で `imageBase64` に同梱する。
 - サーバは `isValidImage()` で PNG/JPEG の魔法数とサイズ（5MB）を検証し、
-  `/var/www/satoyu/uploads/cards/messages/<uuid>.jpg` に保存 → Notion の `media`（files）に外部URLで登録
+  `/var/www/satoyu/uploads/cards/messages/<uuid>.jpg` に保存 → Notion の **`URL`（url型）** に登録。
+  あわせて `media`（files）にも外部URLで入れておく（Notion 上でサムネイルが出る）。管理APIは `URL` を優先して読む
 - **保存先を `/uploads/cards/` 配下にしているのは nginx の Basic 認証を流用するため**
   （`location /uploads/cards/` の前方一致）。nginx の変更は不要
 - 画像が作れない・不正・保存失敗のときもメッセージ本文は登録する（`/cards` と同じ方針）。

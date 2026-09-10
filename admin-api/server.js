@@ -531,8 +531,12 @@ app.post("/messages", async (req, res) => {
         // UTC だと JST の 0〜9 時の送信が前日扱いになる
         Date:      { date: { start: jstToday() } },
         Published: { checkbox: false },
-        // 画像は外部URLとして files プロパティ（名前は小文字の media）に入れる
-        ...(imageUrl ? { media: { files: [{ name: "message-card", external: { url: imageUrl } }] } } : {}),
+        // 画像URLは URL プロパティ（url型）に入れる。あわせて files プロパティ（小文字の media）にも
+        // 外部URLとして入れておくと Notion 上でサムネイルが出る
+        ...(imageUrl ? {
+          URL:   { url: imageUrl },
+          media: { files: [{ name: "message-card", external: { url: imageUrl } }] },
+        } : {}),
       },
     });
     res.json({ ok: true, imageUrl });
@@ -668,7 +672,9 @@ app.get("/messages", auth, async (req, res) => {
           color:     page.properties.Color?.rich_text?.[0]?.plain_text || "",
           date:      page.properties.Date?.date?.start || "",
           published: page.properties.Published?.checkbox || false,
-          image:     page.properties.media?.files?.[0]?.external?.url || page.properties.media?.files?.[0]?.file?.url || "",
+          image:     page.properties.URL?.url
+                  || page.properties.media?.files?.[0]?.external?.url
+                  || page.properties.media?.files?.[0]?.file?.url || "",
         });
       }
       cursor = resp.has_more ? resp.next_cursor : null;
