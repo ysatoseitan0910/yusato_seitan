@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -14,12 +14,12 @@
 <meta property="og:title" content="佐藤優羽さんへのお誕生日メッセージ | さとうゆほーむ">
 <meta property="og:description" content="佐藤優羽さんへお誕生日メッセージを書こう！">
 <meta property="og:url" content="https://satoyu.info/message.html">
-<meta property="og:image" content="https://satoyu.info/images/ogp.png">
+<meta property="og:image" content="https://satoyu.info/images/ogp-message.png">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="佐藤優羽さんへのお誕生日メッセージ | さとうゆほーむ">
 <meta name="twitter:description" content="佐藤優羽さんへお誕生日メッセージを書こう！">
-<meta name="twitter:image" content="https://satoyu.info/images/ogp.png">
+<meta name="twitter:image" content="https://satoyu.info/images/ogp-message.png">
 <link rel="canonical" href="https://satoyu.info/message.html">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-F1LS5L1Y7B"></script>
 <script>
@@ -30,7 +30,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=Yomogi&display=swap" rel="stylesheet">
+<!-- カードで選べるフォント。JS の FONTS 配列と対応している（追加するときは両方） -->
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Caveat:wght@500;700&family=Yomogi&family=Yusei+Magic&family=Zen+Kurenaido&family=Hachi+Maru+Pop&family=Shippori+Mincho:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
   /* 日本語の最終フォールバック。素の serif / sans-serif / cursive で終わらせると、
@@ -100,12 +101,19 @@ textarea{resize:none;height:110px;line-height:1.7;}
 input[type="text"]{height:44px;}
 textarea:focus,input[type="text"]:focus{border-color:var(--emerald);}
 .char-count{font-size:11px;color:var(--text-light);text-align:right;margin-top:4px;}
+/* カードに収まっているかの表示。文字数だけでは収まるか分からないため、描画結果から出す */
+.fit-status{font-size:12px;line-height:1.6;margin-top:4px;min-height:1.2em;}
+.fit-status.ok{color:var(--text-light);}
+.fit-status.shrunk{color:var(--emerald-dark);}
+.fit-status.over{color:#b00;font-weight:600;}
 
 /* ── Option buttons ── */
 .opt-btns{display:flex;gap:6px;flex-wrap:wrap;}
 .opt-btn{padding:7px 16px;border:2px solid var(--border);border-radius:20px;background:#fff;cursor:pointer;font-size: 13px;color:var(--text-muted);transition:all 0.15s;font-family:'Zen Maru Gothic',var(--jp);line-height:1;}
 .opt-btn:hover{border-color:var(--emerald-light);color:var(--emerald-dark);}
 .opt-btn.active{border-color:var(--emerald);background:var(--emerald-pale);color:var(--emerald-dark);font-weight:600;}
+/* フォント見本はそのフォントで表示する（少し大きめにして違いを見せる） */
+#font-btns .opt-btn{font-size:15px;padding:8px 14px;}
 
 /* ── Color swatches ── */
 .swatches{display:flex;gap:8px;flex-wrap:wrap;}
@@ -118,9 +126,19 @@ textarea:focus,input[type="text"]:focus{border-color:var(--emerald);}
 .btn-primary,.btn-outline{padding:13px 18px;border-radius:24px;font-family:'Zen Maru Gothic',var(--jp);font-size: 14px;font-weight:600;cursor:pointer;border:2px solid;transition:all 0.2s;width:100%;text-align:center;}
 .btn-primary{background:var(--emerald);border-color:var(--emerald);color:#fff;}
 .btn-primary:hover:not(:disabled){background:var(--emerald-dark);border-color:var(--emerald-dark);}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+.btn-primary:disabled,.btn-outline:disabled{opacity:0.6;cursor:not-allowed;}
 .btn-outline{background:#fff;border-color:var(--border);color:var(--text-muted);}
-.btn-outline:hover{border-color:var(--emerald);color:var(--emerald-dark);}
+.btn-outline:hover:not(:disabled){border-color:var(--emerald);color:var(--emerald-dark);}
+
+/* ── 送信前の確認 ── */
+.confirm-box{background:#fff;border:2px solid var(--emerald);border-radius:14px;padding:16px;box-shadow:0 4px 16px rgba(31,122,82,0.12);}
+.confirm-box[hidden]{display:none;}
+.confirm-title{font-weight:700;color:var(--emerald-dark);margin-bottom:10px;}
+.confirm-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-bottom:10px;}
+.confirm-dl dt{color:var(--text-light);white-space:nowrap;}
+.confirm-dl dd{white-space:pre-wrap;word-break:break-word;}
+.confirm-note{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:12px;}
+.confirm-actions{display:flex;gap:8px;}
 
 /* ── Submit result ── */
 .result-msg{display:none;padding:12px 16px;border-radius:10px;font-size: 13px;line-height:1.6;}
@@ -263,6 +281,7 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
       <label class="ctrl-label" for="msg-text">メッセージ</label>
       <textarea id="msg-text" placeholder="佐藤優羽さんへのメッセージを入力してください…" maxlength="200"></textarea>
       <div class="char-count"><span id="msg-count">0</span> / 200</div>
+      <div id="msg-fit" class="fit-status" aria-live="polite"></div>
     </div>
 
     <div class="ctrl-group">
@@ -277,30 +296,23 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 
     <div class="ctrl-group">
       <span class="ctrl-label">フォント</span>
-      <div class="opt-btns" id="font-btns">
-        <!-- data-font はそのまま ctx.font に入る。canvas は CSS変数を解決しないので、
-             var(--jp) を書くと文字列が不正になって代入が丸ごと無視され、既定の
-             「10px sans-serif」で描かれる（＝カード本文が見えなくなる）。
-             フォント名は実名で並べること。style 属性側はCSSなので var(--jp) のままでよい。 -->
-        <button class="opt-btn active" data-font="'Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Zen Maru Gothic',var(--jp)">手書き</button>
-        <button class="opt-btn" data-font="'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Noto Sans JP',var(--jp)">ゴシック</button>
-        <button class="opt-btn" data-font="'Caveat','Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Caveat',var(--jp)">Casual</button>
-        <button class="opt-btn" data-font="'Yomogi','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif" style="font-family:'Yomogi',var(--jp)">丸文字</button>
-      </div>
+      <!-- ボタンは JS の FONTS 配列から生成する（サーバの ALLOWED_FONTS と対応） -->
+      <div class="opt-btns" id="font-btns" role="group" aria-label="フォント"></div>
     </div>
 
     <div class="ctrl-group">
       <span class="ctrl-label">文字サイズ</span>
-      <div class="opt-btns" id="size-btns">
+      <div class="opt-btns" id="size-btns" role="group" aria-label="文字サイズ">
         <button class="opt-btn" data-size="small">小</button>
         <button class="opt-btn active" data-size="medium">中</button>
         <button class="opt-btn" data-size="large">大</button>
       </div>
+      <div class="fit-status ok">長い文章は、選んだサイズを上限に自動で小さくしてカードに収めます</div>
     </div>
 
     <div class="ctrl-group">
       <span class="ctrl-label">文字色</span>
-      <div class="swatches" id="color-swatches"></div>
+      <div class="swatches" id="color-swatches" role="group" aria-label="文字色"></div>
     </div>
 
     <div class="notice">
@@ -311,9 +323,24 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 
     <div id="result-msg" class="result-msg" role="alert"></div>
 
+    <!-- 送信前の確認。押した瞬間に送られて修正できない状態だったので1段はさむ -->
+    <div id="confirm-box" class="confirm-box" hidden>
+      <p class="confirm-title">この内容で送信しますか？</p>
+      <dl class="confirm-dl">
+        <dt>お名前</dt><dd id="cf-name"></dd>
+        <dt>X ID</dt><dd id="cf-xid"></dd>
+        <dt>メッセージ</dt><dd id="cf-msg"></dd>
+      </dl>
+      <p class="confirm-note">送信後の修正はできません。カードの画像は「PNG保存」で手元に残せます。</p>
+      <div class="confirm-actions">
+        <button id="btn-confirm-send" class="btn-primary" type="button">✉️ 送る</button>
+        <button id="btn-confirm-cancel" class="btn-outline" type="button">戻る</button>
+      </div>
+    </div>
+
     <div class="action-row">
-      <button id="btn-download" class="btn-outline">💾 PNG保存</button>
-      <button id="btn-submit" class="btn-primary">✉️ 佐藤優羽生誕祭実行委員会に送る</button>
+      <button id="btn-download" class="btn-outline" type="button">💾 PNG保存</button>
+      <button id="btn-submit" class="btn-primary" type="button">✉️ 佐藤優羽生誕祭実行委員会に送る</button>
     </div>
 
   </div>
@@ -326,8 +353,29 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
 
 <script>
 (function () {
-  // ── 設定 ──
-  const COLORS = [
+  // ══════════════════════════════════════════════════════
+  //  設定
+  // ══════════════════════════════════════════════════════
+  // canvas の ctx.font は CSS変数を解決しない。var(--jp) を含めると文字列が不正になり
+  // 代入が無視されて 10px sans-serif で描かれる。フォント名は実名で並べる。
+  var JP_FALLBACK = "'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif";
+  var JP_SERIF_FALLBACK = "'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','MS PMincho',serif";
+
+  // 選べるフォント。family はサーバ側 ALLOWED_FONTS と一致させる（先頭のフォント名で照合される）。
+  // <head> の Google Fonts の読み込みにも追加すること。
+  var FONTS = [
+    { family: 'Zen Maru Gothic', label: '手書き',   stack: "'Zen Maru Gothic'," + JP_FALLBACK },
+    { family: 'Yusei Magic',     label: 'マーカー', stack: "'Yusei Magic'," + JP_FALLBACK },
+    { family: 'Zen Kurenaido',   label: 'ペン字',   stack: "'Zen Kurenaido'," + JP_FALLBACK },
+    { family: 'Yomogi',          label: '丸文字',   stack: "'Yomogi'," + JP_FALLBACK },
+    { family: 'Hachi Maru Pop',  label: 'ポップ',   stack: "'Hachi Maru Pop'," + JP_FALLBACK },
+    { family: 'Noto Sans JP',    label: 'ゴシック', stack: "'Noto Sans JP'," + JP_FALLBACK },
+    { family: 'Shippori Mincho', label: '明朝',     stack: "'Shippori Mincho'," + JP_SERIF_FALLBACK },
+    // Caveat は英字専用。日本語は Zen Maru Gothic で受ける
+    { family: 'Caveat',          label: 'Casual',   stack: "'Caveat','Zen Maru Gothic'," + JP_FALLBACK },
+  ];
+
+  var COLORS = [
     { hex: '#1a1a1a', label: '黒' },
     { hex: '#1f7a52', label: 'エメラルド' },
     { hex: '#c84a72', label: 'ピンク' },
@@ -340,267 +388,444 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     { hex: '#ffffff', label: '白' },
   ];
 
-  // フォントサイズ（画像幅に対する比率）
-  const SIZE_RATIO = { small: 0.030, medium: 0.038, large: 0.050 };
-  const LINE_H_RATIO = 1.65;
+  // 描画サイズ。以前は背景画像そのまま（5374×3248＝1,745万px）で描いていて、
+  // iOS Safari の canvas 上限を超えるうえ、2倍書き出し（6,980万px・約280MB）は
+  // スマホで toBlob が失敗する。プレビューは軽く、書き出しは背景の等倍（2688px）に抑える。
+  var PREVIEW_W = 1344;
+  var EXPORT_W  = 2688;
+
+  // 文字サイズ（画像幅に対する比率）。選んだサイズは「上限」で、収まらなければ MIN まで縮める
+  var SIZE_RATIO   = { small: 0.030, medium: 0.038, large: 0.050 };
+  var MIN_FS_RATIO = 0.022;
+  var FS_STEP_RATIO = 0.001;
+  var LINE_H_RATIO = 1.65;
 
   // カード上のテキストゾーン（画像サイズに対する割合）
-  const ZONES = {
-    msg:  { x: 0.050, y: 0.300, maxW: 0.726 },  // メッセージ本文エリア
-    name: { x: 0.210 },                           // x のみ。y は緑線から動的計算
+  // msg.maxY は「From」の名前行に重ならない下限。以前は下限が無く、長文が線の上に乗っていた
+  var ZONES = {
+    msg:  { x: 0.050, y: 0.300, maxW: 0.726, maxY: 0.810 },
+    name: { x: 0.210, maxW: 0.500 },   // 緑線の右端まで。超えたら縮小→省略
   };
+  var FROM_LINE_Y = 0.890;          // From の緑線 y（画像高さ比）
+  var NAME_GAP_RATIO = 0.002;       // 名前の下端と線の余白（画像高さ比）
+  var NAME_MIN_FS_RATIO = 0.020;
 
-  // Fromの横の緑線 y座標（画像高さ比）・文字下端との余白(px)
-  const FROM_LINE_Y = 0.890;
-  const NAME_ABOVE_LINE = 4;
+  // 行頭・行末の禁則（card.html と同じ）
+  var NO_LINE_START = "、。，．・：；？！ー〜～)]}）］｝」』】〉》’”ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ々゛゜?!,.:;";
+  var NO_LINE_END   = "([{（［｛「『【〈《‘“";
 
-  // ── State ──
-  var MSG_DRAFT_KEY = 'satoyu_msg_draft_v1';
-  // font は ctx.font にそのまま入るため、CSS変数ではなく実名のフォント指定を持たせる
-  // （初期値が var(--jp) のままだと、フォントを一度も切り替えずに書いたカードが崩れる）
-  var _msgDefaults = { message: '', name: '', xid: '', font: "'Zen Maru Gothic','Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','YuGothic','Meiryo','MS PGothic',sans-serif", size: 'medium', color: '#1a1a1a' };
-  var _msgSaved = null;
-  try { _msgSaved = JSON.parse(localStorage.getItem(MSG_DRAFT_KEY) || 'null'); } catch(e) {}
-  var state = Object.assign({}, _msgDefaults, _msgSaved || {});
+  // ══════════════════════════════════════════════════════
+  //  State（下書きは localStorage に保存）
+  // ══════════════════════════════════════════════════════
+  // v1 には修正前のフォント指定（var(--jp) 入り）が保存されている端末があり、復元すると
+  // 本文が描けなくなるため、キーを上げたうえで復元値を許可リストで検証する
+  var MSG_DRAFT_KEY = 'satoyu_msg_draft_v2';
+  var _defaults = { message: '', name: '', xid: '', font: FONTS[0].stack, size: 'medium', color: '#1a1a1a' };
+  var _saved = null;
+  try { _saved = JSON.parse(localStorage.getItem(MSG_DRAFT_KEY) || 'null'); } catch (e) {}
+  try { localStorage.removeItem('satoyu_msg_draft_v1'); } catch (e) {}
+  var state = sanitizeState(Object.assign({}, _defaults, _saved || {}));
 
-  var _msgSaveTimer;
-  function saveMsgDraft() {
-    clearTimeout(_msgSaveTimer);
-    _msgSaveTimer = setTimeout(function() {
-      try { localStorage.setItem(MSG_DRAFT_KEY, JSON.stringify(state)); } catch(e) {}
+  function sanitizeState(s) {
+    if (!FONTS.some(function (f) { return f.stack === s.font; })) s.font = FONTS[0].stack;
+    if (!SIZE_RATIO[s.size]) s.size = 'medium';
+    if (!COLORS.some(function (c) { return c.hex === s.color; })) s.color = '#1a1a1a';
+    s.message = String(s.message || '').slice(0, 200);
+    s.name    = String(s.name || '').slice(0, 30);
+    s.xid     = String(s.xid || '').slice(0, 50);
+    return s;
+  }
+  function currentFont() {
+    for (var i = 0; i < FONTS.length; i++) if (FONTS[i].stack === state.font) return FONTS[i];
+    return FONTS[0];
+  }
+
+  var _saveTimer;
+  function saveDraft() {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(function () {
+      try { localStorage.setItem(MSG_DRAFT_KEY, JSON.stringify(state)); } catch (e) {}
     }, 500);
   }
 
   var imgLoaded = false;
+  var overflow = false;     // 本文がカードに収まっていない（保存・送信を止める）
+  var sent = false;         // 送信済み（内容を変えるまで再送信させない）
 
-  // ── Canvas ──
   var canvas = document.getElementById('card-canvas');
   var ctx = canvas.getContext('2d');
   var cardImg = new Image();
 
-  // ── カラースウォッチ生成 ──
+  // ══════════════════════════════════════════════════════
+  //  UI 生成
+  // ══════════════════════════════════════════════════════
+  var fontWrap = document.getElementById('font-btns');
+  FONTS.forEach(function (f) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'opt-btn' + (f.stack === state.font ? ' active' : '');
+    btn.textContent = f.label;
+    btn.style.fontFamily = f.stack;
+    btn.setAttribute('aria-pressed', f.stack === state.font ? 'true' : 'false');
+    btn.addEventListener('click', function () {
+      state.font = f.stack;
+      fontWrap.querySelectorAll('.opt-btn').forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      onChange();
+    });
+    fontWrap.appendChild(btn);
+  });
+
+  var sizeWrap = document.getElementById('size-btns');
+  sizeWrap.querySelectorAll('.opt-btn').forEach(function (b) {
+    b.type = 'button';
+    var on = b.dataset.size === state.size;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  sizeWrap.addEventListener('click', function (e) {
+    var btn = e.target.closest('.opt-btn');
+    if (!btn) return;
+    state.size = btn.dataset.size;
+    sizeWrap.querySelectorAll('.opt-btn').forEach(function (b) {
+      var on = b === btn;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    onChange();
+  });
+
   var swatchWrap = document.getElementById('color-swatches');
   COLORS.forEach(function (c) {
     var btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'swatch' + (c.hex === state.color ? ' active' : '');
     btn.title = c.label;
     btn.setAttribute('aria-label', c.label);
+    btn.setAttribute('aria-pressed', c.hex === state.color ? 'true' : 'false');
     btn.style.background = c.hex;
     if (c.hex === '#ffffff') btn.style.boxShadow = 'inset 0 0 0 1px #ccc';
     btn.addEventListener('click', function () {
-      document.querySelectorAll('.swatch').forEach(function (b) { b.classList.remove('active'); });
-      btn.classList.add('active');
       state.color = c.hex;
-      draw();
-      saveMsgDraft();
+      swatchWrap.querySelectorAll('.swatch').forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      onChange();
     });
     swatchWrap.appendChild(btn);
   });
 
-  // ── オプションボタン ──
-  document.getElementById('font-btns').addEventListener('click', function (e) {
-    var btn = e.target.closest('.opt-btn');
-    if (!btn) return;
-    document.querySelectorAll('#font-btns .opt-btn').forEach(function (b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    state.font = btn.dataset.font;
-    draw();
-    saveMsgDraft();
-  });
-
-  document.getElementById('size-btns').addEventListener('click', function (e) {
-    var btn = e.target.closest('.opt-btn');
-    if (!btn) return;
-    document.querySelectorAll('#size-btns .opt-btn').forEach(function (b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    state.size = btn.dataset.size;
-    draw();
-    saveMsgDraft();
-  });
-
-  // ── テキスト入力 ──
-  var msgText = document.getElementById('msg-text');
-  var msgName = document.getElementById('msg-name');
+  var msgText  = document.getElementById('msg-text');
+  var msgName  = document.getElementById('msg-name');
+  var msgXid   = document.getElementById('msg-xid');
   var msgCount = document.getElementById('msg-count');
+  var btnSubmit   = document.getElementById('btn-submit');
+  var btnDownload = document.getElementById('btn-download');
+  var SUBMIT_LABEL = '✉️ 佐藤優羽生誕祭実行委員会に送る';
 
   msgText.addEventListener('input', function () {
     state.message = msgText.value;
     msgCount.textContent = state.message.length;
-    draw();
-    saveMsgDraft();
+    onChange();
   });
-  msgName.addEventListener('input', function () {
-    state.name = msgName.value;
-    draw();
-    saveMsgDraft();
-  });
-  document.getElementById('msg-xid').addEventListener('input', function () {
-    state.xid = document.getElementById('msg-xid').value;
-    draw();
-    saveMsgDraft();
-  });
+  msgName.addEventListener('input', function () { state.name = msgName.value; onChange(); });
+  msgXid.addEventListener('input',  function () { state.xid  = msgXid.value;  onChange(); });
 
-  // ── 下書き復元 ──
-  if (_msgSaved) {
-    msgText.value = state.message;
-    msgName.value = state.name;
-    document.getElementById('msg-xid').value = state.xid || '';
-    msgCount.textContent = state.message.length;
-    document.querySelectorAll('#font-btns .opt-btn').forEach(function(b) {
-      b.classList.toggle('active', b.dataset.font === state.font);
-    });
-    document.querySelectorAll('#size-btns .opt-btn').forEach(function(b) {
-      b.classList.toggle('active', b.dataset.size === state.size);
-    });
+  // 下書き復元
+  msgText.value = state.message;
+  msgName.value = state.name;
+  msgXid.value  = state.xid;
+  msgCount.textContent = state.message.length;
+
+  // 入力・設定が変わったとき。送信済みフラグは内容が変わったら解除する
+  function onChange() {
+    if (sent) { sent = false; btnSubmit.textContent = SUBMIT_LABEL; hideResult(); }
+    hideConfirm();
+    draw();
+    saveDraft();
   }
 
-  // ── テキスト折り返し描画 ──
-  function wrapText(ctx, text, x, y, maxW, lineH) {
-    if (!text) return y;
-    var lines = text.split('\n');
-    for (var li = 0; li < lines.length; li++) {
-      var line = lines[li];
-      if (!line) { y += lineH; continue; }
-      var cur = '';
-      for (var ci = 0; ci < line.length; ci++) {
-        var ch = line[ci];
-        var test = cur + ch;
-        if (ctx.measureText(test).width > maxW && cur) {
-          ctx.fillText(cur, x, y);
-          cur = ch;
-          y += lineH;
-        } else {
-          cur = test;
-        }
-      }
-      if (cur) { ctx.fillText(cur, x, y); y += lineH; }
+  // ══════════════════════════════════════════════════════
+  //  折り返し（禁則処理つき・card.html と同じ）
+  // ══════════════════════════════════════════════════════
+  // 英数字（と @ . _ - などのつなぎ文字）の連なりは1かたまりとして扱い、途中で改行しない。
+  // これが無いと「2026」→「20/26」、「TikTok」→「Ti/kTok」のように分断される
+  function tokenizeForWrap(s) {
+    var out = [], buf = '';
+    for (var i = 0; i < s.length; i++) {
+      var ch = s[i];
+      if (/[0-9A-Za-z@#&._\-']/.test(ch)) { buf += ch; continue; }
+      if (buf) { out.push(buf); buf = ''; }
+      out.push(ch);
     }
-    return y;
+    if (buf) out.push(buf);
+    return out;
+  }
+  function wrapText(ctx, text, maxW) {
+    var lines = [];
+    var paras = String(text || '').split('\n');
+    for (var pi = 0; pi < paras.length; pi++) {
+      var raw = paras[pi];
+      if (!raw) { lines.push(''); continue; }
+      var toks = tokenizeForWrap(raw);
+      var cur = [];
+      var width = function (a) { return ctx.measureText(a.join('')).width; };
+      var flush = function () { if (cur.length) { lines.push(cur.join('')); cur = []; } };
+      for (var ti = 0; ti < toks.length; ti++) {
+        var t = toks[ti];
+        // 1かたまりで幅を超える長い英数字は、やむを得ず文字単位で分割する
+        if (!cur.length && ctx.measureText(t).width > maxW && t.length > 1) {
+          var part = '';
+          for (var ci = 0; ci < t.length; ci++) {
+            var c = t[ci];
+            if (part && ctx.measureText(part + c).width > maxW) { lines.push(part); part = c; }
+            else part += c;
+          }
+          cur = [part];
+          continue;
+        }
+        if (!cur.length) { cur = [t]; continue; }
+        if (width(cur.concat(t)) <= maxW) { cur.push(t); continue; }
+        // ここで改行する。禁則にかかるときは折り返し位置をずらす
+        if (NO_LINE_START.indexOf(t) !== -1) {
+          // 追い出し：次の行頭が禁則文字でなくなるまで手前も一緒に送る（1文字だけでは解消しないことがある）
+          var moved = [t];
+          while (cur.length > 1 && NO_LINE_START.indexOf(moved[0]) !== -1) moved.unshift(cur.pop());
+          if (NO_LINE_START.indexOf(moved[0]) !== -1) { cur = cur.concat(moved); flush(); }  // 送りきれない→ぶら下げ
+          else { flush(); cur = moved; }
+          continue;
+        }
+        var lastTok = cur[cur.length - 1];
+        if (NO_LINE_END.indexOf(lastTok) !== -1 && cur.length > 1) {
+          cur.pop(); flush(); cur = [lastTok, t];
+          continue;
+        }
+        flush(); cur = [t];
+      }
+      flush();
+    }
+    return lines;
   }
 
-  // ── 描画 ──
-  function draw() {
-    if (!imgLoaded) return;
-    var W = canvas.width, H = canvas.height;
+  // ══════════════════════════════════════════════════════
+  //  レイアウト（プレビューと書き出しで同じ計算を使う。座標はすべて W/H 比）
+  // ══════════════════════════════════════════════════════
+  function layoutMessage(ctx, W, H) {
+    var z = ZONES.msg;
+    var x = Math.round(W * z.x), y0 = Math.round(H * z.y);
+    var maxW = Math.round(W * z.maxW), maxY = Math.round(H * z.maxY);
+    var startFs = W * (SIZE_RATIO[state.size] || SIZE_RATIO.medium);
+    var minFs = W * MIN_FS_RATIO;
+    var fs = startFs, lines = [], lineH = 0, fits = false;
+    for (;;) {
+      var f = Math.round(fs);
+      ctx.font = f + 'px ' + state.font;
+      lineH = Math.round(f * LINE_H_RATIO);
+      lines = wrapText(ctx, state.message, maxW);
+      fits = y0 + lines.length * lineH <= maxY;
+      if (fits || fs <= minFs) { fs = f; break; }
+      fs = Math.max(minFs, fs - W * FS_STEP_RATIO);
+    }
+    var maxLines = Math.max(1, Math.floor((maxY - y0) / lineH));
+    var dropped = fits ? [] : lines.slice(maxLines);
+    return {
+      x: x, y0: y0, fs: fs, lineH: lineH,
+      lines: fits ? lines : lines.slice(0, maxLines),
+      fits: fits,
+      shrunk: fs < Math.round(startFs),
+      overflowChars: dropped.join('').length,
+    };
+  }
 
+  function layoutName(ctx, W, H) {
+    var name = state.name.trim();
+    if (!name) return null;
+    var xid = (state.xid || '').trim();
+    if (xid && xid.charAt(0) !== '@') xid = '@' + xid;
+    var text = xid ? name + '（' + xid + '）' : name;
+    var maxW = Math.round(W * ZONES.name.maxW);
+    var fs = Math.round(W * SIZE_RATIO.small), minFs = Math.round(W * NAME_MIN_FS_RATIO);
+    ctx.font = fs + 'px ' + state.font;
+    while (ctx.measureText(text).width > maxW && fs > minFs) { fs--; ctx.font = fs + 'px ' + state.font; }
+    if (ctx.measureText(text).width > maxW) {
+      while (text.length > 1 && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
+      text += '…';
+    }
+    return { text: text, fs: fs, x: Math.round(W * ZONES.name.x), y: Math.round(H * FROM_LINE_Y) - fs - Math.round(H * NAME_GAP_RATIO) };
+  }
+
+  function render(ctx, W, H) {
     ctx.clearRect(0, 0, W, H);
     ctx.drawImage(cardImg, 0, 0, W, H);
-
-    var fs = Math.round(W * (SIZE_RATIO[state.size] || SIZE_RATIO.medium));
-    var lineH = Math.round(fs * LINE_H_RATIO);
-
     ctx.textBaseline = 'top';
     ctx.fillStyle = state.color;
+    if (state.color === '#ffffff') { ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = Math.round(W * 0.003); }
+    else { ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; }
 
-    // 白文字は影で視認性確保
-    if (state.color === '#ffffff') {
-      ctx.shadowColor = 'rgba(0,0,0,0.45)';
-      ctx.shadowBlur = 4;
-    } else {
-      ctx.shadowColor = 'transparent';
-      ctx.shadowBlur = 0;
-    }
+    var m = layoutMessage(ctx, W, H);
+    ctx.font = m.fs + 'px ' + state.font;
+    var y = m.y0;
+    for (var i = 0; i < m.lines.length; i++) { if (m.lines[i]) ctx.fillText(m.lines[i], m.x, y); y += m.lineH; }
 
-    // メッセージ本文
-    ctx.font = fs + 'px ' + state.font;
-    wrapText(ctx, state.message,
-      Math.round(W * ZONES.msg.x),
-      Math.round(H * ZONES.msg.y),
-      Math.round(W * ZONES.msg.maxW),
-      lineH
-    );
+    var n = layoutName(ctx, W, H);
+    if (n) { ctx.font = n.fs + 'px ' + state.font; ctx.fillText(n.text, n.x, n.y); }
 
-    // お名前（文字の下端が緑線より少し上に来るよう動的計算）
-    var nameFs = Math.round(W * SIZE_RATIO.small);
-    ctx.font = nameFs + 'px ' + state.font;
-    if (state.name) {
-      var xidStr = state.xid ? state.xid.trim() : '';
-      if (xidStr && !xidStr.startsWith('@')) xidStr = '@' + xidStr;
-      var nameText = xidStr ? state.name + '（' + xidStr + '）' : state.name;
-      var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
-      ctx.fillText(nameText, Math.round(W * ZONES.name.x), nameY);
-    }
-
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+    return m;
   }
 
-  // ── 高解像度描画（ダウンロード用） ──
-  function drawHiRes(offCtx, W, H) {
-    offCtx.drawImage(cardImg, 0, 0, W, H);
-    var fs = Math.round(W * (SIZE_RATIO[state.size] || SIZE_RATIO.medium));
-    var lineH = Math.round(fs * LINE_H_RATIO);
-    offCtx.textBaseline = 'top';
-    offCtx.fillStyle = state.color;
-    if (state.color === '#ffffff') { offCtx.shadowColor = 'rgba(0,0,0,0.45)'; offCtx.shadowBlur = 4; }
-    offCtx.font = fs + 'px ' + state.font;
-    wrapText(offCtx, state.message,
-      Math.round(W * ZONES.msg.x), Math.round(H * ZONES.msg.y),
-      Math.round(W * ZONES.msg.maxW), lineH
-    );
-    var nameFs = Math.round(W * SIZE_RATIO.small);
-    offCtx.font = nameFs + 'px ' + state.font;
-    if (state.name) {
-      var xidStr = state.xid ? state.xid.trim() : '';
-      if (xidStr && !xidStr.startsWith('@')) xidStr = '@' + xidStr;
-      var nameText = xidStr ? state.name + '（' + xidStr + '）' : state.name;
-      var nameY = Math.round(H * FROM_LINE_Y) - nameFs - NAME_ABOVE_LINE;
-      offCtx.fillText(nameText, Math.round(W * ZONES.name.x), nameY);
-    }
-    offCtx.shadowColor = 'transparent';
-    offCtx.shadowBlur = 0;
-  }
-
-  // ── PNG保存 ──
-  document.getElementById('btn-download').addEventListener('click', function () {
+  function draw() {
     if (!imgLoaded) return;
-    var scale = 2;
-    var off = document.createElement('canvas');
-    off.width  = canvas.width  * scale;
-    off.height = canvas.height * scale;
-    var offCtx = off.getContext('2d');
-    offCtx.scale(scale, scale);
-    drawHiRes(offCtx, canvas.width, canvas.height);
-    off.toBlob(function (blob) {
+    var m = render(ctx, canvas.width, canvas.height);
+    updateFitStatus(m);
+    ensureGlyphs();
+  }
+
+  function updateFitStatus(m) {
+    var el = document.getElementById('msg-fit');
+    if (!state.message.trim()) { el.textContent = ''; el.className = 'fit-status'; overflow = false; }
+    else if (!m.fits) {
+      el.textContent = '⚠ カードに収まりません。あと' + m.overflowChars + '文字ほど短くしてください';
+      el.className = 'fit-status over'; overflow = true;
+    } else if (m.shrunk) {
+      el.textContent = '文字を少し小さくしてカードに収めています';
+      el.className = 'fit-status shrunk'; overflow = false;
+    } else { el.textContent = 'カードに収まっています'; el.className = 'fit-status ok'; overflow = false; }
+    btnDownload.disabled = overflow;
+    btnSubmit.disabled = overflow || sent;
+  }
+
+  // ══════════════════════════════════════════════════════
+  //  Webフォントのサブセット取り寄せ
+  // ══════════════════════════════════════════════════════
+  // Google Fonts の日本語は unicode-range で分割配信され、ブラウザは DOM に現れた文字の
+  // サブセットしか取得しない。入力欄は Zen Maru Gothic なので、別のフォントを選ぶと
+  // canvas に描く文字のサブセットが未取得のまま別フォントに落ちる。描く文字を集めて
+  // document.fonts.load() で取り寄せ、完了後に描き直す。
+  var _loadedGlyphs = {};
+  var _glyphPending = Promise.resolve();
+  function ensureGlyphs() {
+    if (!document.fonts || !document.fonts.load) return;
+    var fam = currentFont().family;
+    var families = fam === 'Caveat' ? ['Caveat', 'Zen Maru Gothic'] : [fam];
+    var text = state.message + state.name + (state.xid || '');
+    var jobs = [];
+    families.forEach(function (f) {
+      var set = _loadedGlyphs[f] || (_loadedGlyphs[f] = {});
+      var fresh = '';
+      for (var i = 0; i < text.length; i++) {
+        var ch = text[i];
+        if (/\s/.test(ch) || set[ch]) continue;
+        set[ch] = true; fresh += ch;
+      }
+      if (fresh) jobs.push(document.fonts.load("16px '" + f + "'", fresh).catch(function () {}));
+    });
+    if (!jobs.length) return;
+    _glyphPending = Promise.all(jobs).then(function () {
+      if (imgLoaded) updateFitStatus(render(ctx, canvas.width, canvas.height));
+    });
+  }
+
+  // ══════════════════════════════════════════════════════
+  //  PNG保存
+  // ══════════════════════════════════════════════════════
+  // ・toBlob＋ObjectURL（巨大 data URL を避ける）
+  // ・<a> は DOM に追加してから click（Firefox・一部モバイル対策）
+  // ・iOS Safari は download 属性を無視するので Web Share（共有シート）にフォールバック
+  function saveCanvasPng(cv, filename) {
+    var saveViaAnchor = function (url, revoke) {
       var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'satoyu_birthday_message.png';
+      a.href = url; a.download = filename; a.rel = 'noopener'; a.style.display = 'none';
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(a.href);
-    }, 'image/png');
+      setTimeout(function () { a.remove(); if (revoke) URL.revokeObjectURL(url); }, 1500);
+    };
+    var fallbackDataUrl = function () {
+      try { saveViaAnchor(cv.toDataURL('image/png')); }
+      catch (e) { showResult('err', '画像の生成に失敗しました。お手数ですが、カードを長押し（右クリック）して保存してください。'); }
+    };
+    var finish = function (blob) {
+      if (!blob) { fallbackDataUrl(); return; }
+      var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+      var file = null;
+      try { file = new File([blob], filename, { type: 'image/png' }); } catch (e) {}
+      var canShareFile = !!(file && navigator.canShare && navigator.canShare({ files: [file] }));
+      if (isIOS && canShareFile) {
+        navigator.share({ files: [file] }).catch(function () { saveViaAnchor(URL.createObjectURL(blob)); });
+        return;
+      }
+      saveViaAnchor(URL.createObjectURL(blob), true);
+    };
+    try { if (cv.toBlob) cv.toBlob(finish, 'image/png'); else fallbackDataUrl(); }
+    catch (e) { fallbackDataUrl(); }
+  }
+
+  btnDownload.addEventListener('click', function () {
+    if (!imgLoaded || overflow) return;
+    // 取り寄せ中のフォントを待ってから書き出す（待たないと保存画像だけ字形が崩れる）
+    _glyphPending.then(function () {
+      var off = document.createElement('canvas');
+      off.width  = EXPORT_W;
+      off.height = Math.round(EXPORT_W * cardImg.naturalHeight / cardImg.naturalWidth);
+      render(off.getContext('2d'), off.width, off.height);
+      saveCanvasPng(off, 'satoyu_birthday_message.png');
+    });
   });
 
-  // ── 送信 ──
-  document.getElementById('btn-submit').addEventListener('click', async function () {
+  // ══════════════════════════════════════════════════════
+  //  送信（確認 → 送信）
+  // ══════════════════════════════════════════════════════
+  var confirmBox = document.getElementById('confirm-box');
+  function hideConfirm() { confirmBox.hidden = true; }
+
+  btnSubmit.addEventListener('click', function () {
     var message = state.message.trim();
     var name = state.name.trim();
-    if (!message) { showResult('err', 'メッセージを入力してください'); return; }
-    if (!name) { showResult('err', 'お名前・ファンネームを入力してください'); return; }
+    if (!message) { showResult('err', 'メッセージを入力してください'); msgText.focus(); return; }
+    if (!name) { showResult('err', 'お名前・ファンネームを入力してください'); msgName.focus(); return; }
+    if (overflow) { showResult('err', 'メッセージがカードに収まっていません。短くしてから送信してください'); return; }
+    hideResult();
+    document.getElementById('cf-name').textContent = name;
+    document.getElementById('cf-xid').textContent = state.xid.trim() || '（なし）';
+    document.getElementById('cf-msg').textContent = message;
+    confirmBox.hidden = false;
+    confirmBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  document.getElementById('btn-confirm-cancel').addEventListener('click', hideConfirm);
 
-    var btn = document.getElementById('btn-submit');
-    btn.disabled = true;
-    btn.textContent = '送信中…';
-
+  document.getElementById('btn-confirm-send').addEventListener('click', async function () {
+    var sendBtn = this;
+    sendBtn.disabled = true; btnSubmit.disabled = true;
+    sendBtn.textContent = '送信中…';
     try {
       var res = await fetch('/admin-api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message, name: name, xid: document.getElementById('msg-xid').value.trim(), font: state.font, size: state.size, color: state.color, _hp: document.getElementById('hp-url').value }),
+        body: JSON.stringify({
+          message: state.message.trim(), name: state.name.trim(), xid: state.xid.trim(),
+          font: state.font, size: state.size, color: state.color,
+          _hp: document.getElementById('hp-url').value,
+        }),
       });
-      var data = await res.json();
+      var data = await res.json().catch(function () { return {}; });
       if (!res.ok) throw new Error(data.error || '送信に失敗しました');
-      showResult('ok', '🎉 メッセージを送信しました！委員会からまとめて佐藤優羽さんへお届けします♡');
-      // 送信後クリア
-      msgText.value = ''; msgName.value = ''; document.getElementById('msg-xid').value = '';
-      state.message = ''; state.name = '';
-      msgCount.textContent = '0';
-      try { localStorage.removeItem(MSG_DRAFT_KEY); } catch(e) {}
-      draw();
+      hideConfirm();
+      // 送信後も画面の内容は消さない（PNG保存し忘れた人が困る）。下書きだけ消して二重送信を防ぐ
+      sent = true;
+      btnSubmit.textContent = '✅ 送信済み';
+      try { localStorage.removeItem(MSG_DRAFT_KEY); } catch (e) {}
+      showResult('ok', '🎉 メッセージを送信しました！委員会からまとめて佐藤優羽さんへお届けします♡\nカードの画像を残したい場合は「PNG保存」を押してください。');
     } catch (e) {
       showResult('err', e.message || '送信に失敗しました。もう一度お試しください。');
+      btnSubmit.disabled = false;
     } finally {
-      btn.disabled = false;
-      btn.textContent = '✉️ 佐藤優羽生誕祭実行委員会に送る';
+      sendBtn.disabled = false;
+      sendBtn.textContent = '✉️ 送る';
     }
   });
 
@@ -608,30 +833,37 @@ footer{text-align:center;padding:32px 20px;font-size:12px;color:var(--text-light
     var el = document.getElementById('result-msg');
     el.className = 'result-msg ' + type;
     el.textContent = text;
+    el.style.whiteSpace = 'pre-line';
     el.style.display = 'block';
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    if (type === 'ok') setTimeout(function () { el.style.display = 'none'; }, 6000);
   }
+  function hideResult() { document.getElementById('result-msg').style.display = 'none'; }
 
-  // ── 画像読み込み ──
+  // ══════════════════════════════════════════════════════
+  //  背景画像
+  // ══════════════════════════════════════════════════════
   cardImg.onload = function () {
-    canvas.width  = cardImg.naturalWidth;
-    canvas.height = cardImg.naturalHeight;
+    canvas.width  = PREVIEW_W;
+    canvas.height = Math.round(PREVIEW_W * cardImg.naturalHeight / cardImg.naturalWidth);
     imgLoaded = true;
-    document.fonts.ready.then(function () { draw(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw, draw);
+    else draw();
   };
   cardImg.onerror = function () {
     canvas.width = 560; canvas.height = 338;
     ctx.fillStyle = '#ecf7f0';
     ctx.fillRect(0, 0, 560, 338);
     ctx.fillStyle = '#999';
-    ctx.font = '14px sans-serif';
+    ctx.font = "14px 'Zen Maru Gothic'," + JP_FALLBACK;
     ctx.textBaseline = 'middle';
     ctx.fillText('画像を読み込めませんでした', 140, 169);
   };
-  cardImg.src = '/images/image/message_card_2026.png';
+  // 背景は 2688px の WebP（元の PNG 1.4MB → 約200KB）。書き出し上限と同じ幅なので拡大は起きない
+  cardImg.src = '/images/image/message_card_2026.webp';
 
-  // ── ハンバーガーメニュー ──
+  // ══════════════════════════════════════════════════════
+  //  ハンバーガーメニュー
+  // ══════════════════════════════════════════════════════
   (function () {
     var btn = document.getElementById('nav-hamburger');
     var links = document.querySelector('.nav-links');

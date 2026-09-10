@@ -12,7 +12,8 @@ const UPLOADS_DIR = "/var/www/satoyu/uploads/cards";
 
 // ── IPレート制限（メッセージ送信：1時間に3回まで） ──
 const msgRateMap = new Map();
-const MSG_RATE_LIMIT  = 3;
+// 同じWi-Fi（家族・学校・会場）からの送信は同一IPになる。3件だと3人目で弾かれていた
+const MSG_RATE_LIMIT  = 10;
 const MSG_RATE_WINDOW = 60 * 60 * 1000;
 
 function checkMsgRateLimit(ip) {
@@ -85,7 +86,8 @@ app.use((req, res, next) => {
 });
 
 // 公開エンドポイントで受け取る選択値の許可リスト（未認証入力をそのままNotionに入れない）
-const ALLOWED_FONTS = ["Zen Maru Gothic", "Noto Sans JP", "Yomogi", "Caveat"];
+// message.html の FONTS 配列と対応（先頭のフォント名で照合する）
+const ALLOWED_FONTS = ["Zen Maru Gothic", "Yusei Magic", "Zen Kurenaido", "Yomogi", "Hachi Maru Pop", "Noto Sans JP", "Shippori Mincho", "Caveat"];
 const ALLOWED_SIZES = ["small", "medium", "large"];
 function pickAllowed(value, allowed, fallback) {
   const v = String(value || "").replace(/['"]/g, "").split(",")[0].trim();
@@ -469,7 +471,7 @@ app.post("/messages", async (req, res) => {
 
   // IPレート制限
   if (!checkMsgRateLimit(req.ip)) {
-    return res.status(429).json({ error: "送信が多すぎます。しばらく時間をおいてから再度お試しください。" });
+    return res.status(429).json({ error: "同じネットワークからの送信が多いため、しばらく時間をおいてから再度お試しください。" });
   }
 
   // 型チェックを必ず先に行う。文字列以外（数値・オブジェクト等）が来ると
@@ -493,7 +495,8 @@ app.post("/messages", async (req, res) => {
         Size:      { multi_select: [{ name: pickAllowed(size, ALLOWED_SIZES, "medium") }] },
         Color:     { rich_text: t(/^#[0-9a-fA-F]{3,8}$/.test(String(color || "")) ? color : "#1a1a1a") },
         X:         { rich_text: t(String(xid || "").slice(0, 100)) },
-        Date:      { date: { start: new Date().toISOString().slice(0, 10) } },
+        // UTC だと JST の 0〜9 時の送信が前日扱いになる
+        Date:      { date: { start: jstToday() } },
         Published: { checkbox: false },
       },
     });
