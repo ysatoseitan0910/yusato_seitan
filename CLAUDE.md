@@ -56,6 +56,11 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `quiz.html`：さとうゆクイズ（`quiz_questions.json` から10問中5問をランダム出題。4択・解説・参考URLつき）
 - `card.html`：さとうゆ推しぷろふぃーる（Canvas描画・PNG保存）
 - `admin.html`：管理ページ（パスワード認証。Notionへのレコード追加・一覧・削除）
+- `serial_scanner.html`：**委員会の内部ツール**（シリアル番号をカメラで連続読み取り。2026-10-04 配置）。
+  サイト内からリンクしない・sitemap に載せない・`<meta name="robots" content="noindex, nofollow">`。
+  robots.txt には書かない（書くとパスが公開される）。学習データ（約660KB の JSON）を埋め込んでいるので
+  ファイルが大きいが、外部送信は無く、読み取り結果は localStorage のみ。
+  OCR 補助の Tesseract.js を CDN から読むため、**nginx にこのパス専用の CSP がある**（下記 nginx設定）
 
 **注意**: 静的ページは `_template.html` を使用せず独立したCSSを持つ。ナビリンクや共通スタイルは手動で同期が必要。
 - 全ナビに共通リンク：トップ / ブログ / 他メンバーブログ / YouTube / TikTok / Lemino / **クイズ** / Xまとめ / 佐藤優羽さんについて / 委員会について
@@ -467,6 +472,12 @@ docker compose up -d --force-recreate satoyu-admin  # 環境変数を足した�
   `Unexpected token '<', "<html> <h"... is not valid JSON` になる（Express側は5MB）
 - **`docker-compose.yml`**：`satoyu-admin` の volumes に `- /var/www/satoyu/uploads:/var/www/satoyu/uploads`
   無いとカード画像がコンテナ内部にしか書かれず、公開URLが404になる（コンテナ再作成で消失）
+- **`nginx/nginx.conf` の `location = /serial_scanner.html`**（2026-10-04 追加）：このパスだけ専用の CSP
+  （`script-src` に `'wasm-unsafe-eval' blob: https://cdn.jsdelivr.net`、`worker-src blob:`、
+  `connect-src` に `https://cdn.jsdelivr.net https://tessdata.projectnaptha.com`）。
+  共通 CSP のままだと Tesseract.js の読み込みが `script-src` で拒否され、OCR 補助が黙って無効になる
+  （ページ自体は学習済みテンプレートで動く）。location 内の `add_header` は server 側を継承しないので、
+  共通側に CSP 以外の `add_header` を足したときはこのブロックにも足すこと
 - **`nginx/nginx.conf` のCSP**（2026-07-19 追加・instagram.html用）：`script-src` に `https://www.instagram.com https://static.cdninstagram.com`、`frame-src` に `https://www.instagram.com` を追加。
   無いと Instagram の `embed.js` がCSPでブロックされ、埋め込みが表示されない（blockquoteのリンクだけ残る）
 
