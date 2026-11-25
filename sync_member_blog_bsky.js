@@ -3,7 +3,8 @@
 // blogphotobot は日向坂46公式ブログの写真を投稿するボットで、投稿にはメンバー名のハッシュタグと、
 // 画像ごとの説明（alt）に「写っている人」がカンマ区切りで入っている。認証不要の公開APIで読める。
 //
-// 集合写真の扱い：佐藤優羽さんが写っている画像のうち「最も少人数の写真」の人数で判定する。
+// 集合写真の扱い：佐藤優羽さんが写っている画像のうち「最も少人数の写真」の人数で判定する（詳細は classify()）。
+//   ポスター等の公式ビジュアル（20人以上・卒業メンバー入り）→ 登録しない／五期生が集まった写真 → 公開
 //   AUTO_MAX 人以下      → 公開で登録（2ショット・少人数）
 //   REVIEW_MAX 人以下    → 非公開（下書き）で登録。Notion で確認して Published を入れる
 //   それより多い          → 集合写真として登録しない
@@ -78,12 +79,41 @@ function groupByBlog(posts) {
   return [...blogs.values()];
 }
 
+// 写真の判定に使う現役メンバー（members.js ＋ 佐藤優羽さん）と五期生
+const { MEMBERS } = require("./members");
+const CURRENT = [...MEMBERS.map(m => m.name), TARGET];
+const GEN5    = [...MEMBERS.filter(m => m.gen === 5).map(m => m.name), TARGET];
+const POSTER_MIN = 20;   // これ以上が写っている写真は全員集合のポスター・ビジュアルとみなす
+// alt の末尾は切れることがある（「…, 佐藤優」）ので、名前は前方一致で照合する
+const people    = alt => String(alt || "").split(/[,、]/).map(s => s.trim()).filter(Boolean);
+const matchName = (n, list) => list.some(x => x.startsWith(n) || n.startsWith(x));
+
+// 公式ビジュアル（ポスター・キービジュアル等）らしい写真：全員集合、または卒業メンバーが写っている
+// （執筆者本人は卒業後でも除く）
+function isVisual(alt, author) {
+  const ps = people(alt);
+  return ps.length >= POSTER_MIN || ps.some(n => n !== author && !matchName(n, CURRENT));
+}
+// 五期生が集まった写真：執筆者以外が全員五期生で、5人以上
+function isGen5Group(alt, author) {
+  const ps = people(alt).filter(n => n !== author);
+  return ps.length >= 5 && ps.every(n => matchName(n, GEN5));
+}
+
+// 判定（2026-11-25 改定）
+//   公式ビジュアルにしか写っていない → visual（登録しない。Discord には注記つきで送る）
+//   五期生が集まった写真に写っている → auto（人数に関係なく公開）
+//   それ以外は、写っている写真のうち最も少人数の写真で AUTO_MAX / REVIEW_MAX により判定
+// ※ グッズ紹介・メニュー写真など、少人数の公式写真は写真の説明だけでは見分けられない
 function classify(b) {
   if (b.author === TARGET) return { verdict: "self" };
   const hits = b.alts.filter(altHasTarget);
   if (!b.tags.has(TARGET) && !hits.length) return { verdict: "none" };
   if (!hits.length) return { verdict: "review", min: null };    // タグはあるが写真の説明で特定できない
-  const min = Math.min(...hits.map(altCount));
+  const real = hits.filter(a => !isVisual(a, b.author));
+  if (!real.length) return { verdict: "visual", min: Math.min(...hits.map(altCount)) };
+  const min = Math.min(...real.map(altCount));
+  if (real.some(a => isGen5Group(a, b.author))) return { verdict: "auto", min, gen5: true };
   if (min <= AUTO_MAX)   return { verdict: "auto", min };
   if (min <= REVIEW_MAX) return { verdict: "review", min };
   return { verdict: "group", min };
@@ -98,6 +128,8 @@ const NOTE = {
   auto:   "",
   review: "⚠️ 大人数の写真のため、集合写真の可能性あり（サイトには下書きで登録。Notion で確認してください）",
   group:  "⚠️ 集合写真の可能性あり（大人数のため、サイトには登録していません）",
+  visual: "⚠️ ポスター・キービジュアルなど公式の画像に写っているだけの可能性が高いため、サイトには登録していません",
+  gen5:   "🪽 五期生が集まった写真のため、サイトに公開で登録しました",
   tag:    "⚠️ 写真の説明から佐藤優羽さんを特定できませんでした（ハッシュタグのみ）。写真はすべて添付しています",
 };
 
@@ -118,7 +150,7 @@ async function notifyMemberBlog(b, c) {
   const imgs = hits.length ? hits : b.images;                    // 特定できないときは全部
   const files = (await Promise.all(imgs.map(i => fetchImage(i.url)))).filter(Boolean)
     .map((f, n) => ({ ...f, name: `${b.id}_${n + 1}.jpg` }));
-  const note = NOTE[c.min == null ? "tag" : c.verdict];
+  const note = NOTE[c.min == null ? "tag" : c.gen5 ? "gen5" : c.verdict];
   const lines = [
     "📔 **他メンバーのブログに登場**",
     `メンバー：${b.author}`,
@@ -183,7 +215,8 @@ async function main() {
     }
     if (notifyOnly) continue;
 
-    if (c.verdict === "group") { console.log(`  ⏭ 集合写真のため除外: ${label}`); continue; }
+    if (c.verdict === "group")  { console.log(`  ⏭ 集合写真のため除外: ${label}`); continue; }
+    if (c.verdict === "visual") { console.log(`  ⏭ 公式ビジュアルのため除外: ${label}`); continue; }
     if (have.has(b.id))        { console.log(`  ・登録済み: ${label}`); continue; }
     const publish = c.verdict === "auto";
     console.log(`  ${publish ? "✅ 公開で登録" : "📝 下書きで登録（要確認）"}: ${label}`);
