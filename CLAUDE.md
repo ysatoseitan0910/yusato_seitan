@@ -600,6 +600,15 @@ GitHub Actions は **UTC** で動くため、`new Date()` や `toISOString()` �
 
 **所要時間**：改修により約10分26秒 → **約1分23秒**（別途動いていた失敗する Pages ビルド約10分も消滅）
 
+### 30分ごとの起動は VPS の cron が担う（2026-11-25）
+GitHub Actions の `schedule` は混雑時に間引かれ、**実測で1日3〜5回（4〜10時間おき）**しか動いていなかった。
+そこで VPS の cron から `workflow_dispatch` を叩いて起動している（手動実行は間引かれない）。`schedule` は予備として残す。
+- cron：`10,40 * * * * /root/bin/satoyu-dispatch.sh`（混む毎時0分・30分を避けている）
+- トークン：`/root/.satoyu_dispatch_token`（600）。fine-grained PAT・`yusato_seitan` の **Actions: Read and write のみ**・**期限1年（2027-11 頃に切れる）**
+- ログ：`/var/log/satoyu-dispatch.log`（直近1000行）。正常は `HTTP 204`。**期限切れは `HTTP 401`** → 新しいトークンを同じファイルに入れ直すだけ。
+  切れてもサイトは壊れず、間引かれた `schedule` だけに戻る
+- ビルドの中身は deploy.yml のままなので、安全装置（rsync 前の検証）はそのまま効く
+
 ## 注意事項
 - **Notionのプロパティ名は大文字小文字を区別する**。mediaプロパティはDBにより名前が違う（`Media`=委員会News/活動報告/カード/他メンバーブログ、`media`=TikTok/YouTube/Lemino/メッセージ）。コードは固定名を使わず、スキーマから大小無視で解決する実装になっている（固定 "Media" にしていた頃は全書き込みが validation_error で失敗し、1実行あたり約3分半を浪費していた）
 - 佐藤優羽の読み方は「さとうゆう」。ローマ字表記はYu（芸名読み）を使う
