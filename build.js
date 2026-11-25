@@ -506,10 +506,26 @@ async function buildIndex(tpl) {
   const isWeekly = p => { const n = getText(p, "Name"); return n.startsWith("weekly さとうゆ") || n.startsWith("今週のさとうゆ"); };
   let weeklyShown = 0;
   const newsItems = news.filter(p => !isWeekly(p) || ++weeklyShown <= WEEKLY_IN_NEWS);
-  const newsSection = newsItems.length ? `
+
+  // minsaka で参加者募集中の企画を先頭に載せる（締め切りが近い順）。ビルドのたびに主催企画ページを読むので、
+  // 募集が終われば自動で消える。読めなかったときは載せないだけ（ビルドは止めない）
+  let minsakaOpen = [];
+  try {
+    const { ORGANIZER_URL, parseOrganizedEvents } = require("./minsaka");
+    const res = await fetch(ORGANIZER_URL, { headers: { "User-Agent": "Mozilla/5.0" } });
+    if (res.ok) minsakaOpen = parseOrganizedEvents(await res.text()).filter(e => e.open)
+      .sort((a, b) => a.remainingDays - b.remainingDays);
+  } catch (e) { console.log("  ⚠ minsaka の企画を取得できませんでした:", e.message); }
+  const minsakaRows = minsakaOpen.map(e => {
+    const left = e.remainingDays === 0 ? "本日まで" : `あと${e.remainingDays}日`;
+    return `<div class="top-news-item"><span class="top-news-date" style="color:var(--emerald-dark);font-weight:700;">参加者募集中</span><a href="${escAttr(e.url)}" class="top-news-text" target="_blank" rel="noopener">💐 ${escAttr(e.title)}（締め切り${left}）</a></div>`;
+  });
+
+  const newsSection = (newsItems.length || minsakaRows.length) ? `
   <div class="top-news">
     <span class="top-news-label">📢 最新ニュース</span>
     <div class="top-news-items">
+      ${minsakaRows.join("\n      ")}
       ${newsItems.slice(0, 10).map(p => {
         const title = getText(p, "Name");
         const date  = fmtDate(getDate(p));
