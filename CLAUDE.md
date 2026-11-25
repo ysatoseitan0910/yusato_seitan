@@ -351,6 +351,44 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
 走らず、上の「テストが通ったのに効かない」状態になる）。普通に push すれば反映される。
 手動の `docker compose up -d --force-recreate nginx` は非常時の手段として残る。
 
+## 新着の自動検出（2026-11-25 追加）
+更新が滞りがちだったため、手作業で拾っていたものを deploy.yml（30分ごと）で自動検出する。
+どれも `continue-on-error`（失敗してもサイト更新は止めない）。rsync の除外にも入れてある。
+
+### 他メンバーブログ：`sync_member_blog_bsky.js`
+- Bluesky の **blogphotobot**（`blogphotobot.bsky.social`）を公開API（認証不要）で読む。
+  日向坂46公式ブログの写真を投稿するボットで、**画像ごとの alt に写っている人がカンマ区切りで入る**
+- 1/2・2/2 に分かれた投稿は記事ID（`diary/detail/<id>`）でまとめる。本人のブログは除外（DB_BLOG の担当）
+- **集合写真の判定**：佐藤優羽さんが写る画像のうち**最少人数**で決める。
+  4人以下＝公開で登録／5〜8人＝**下書き（Published=false）**で登録／9人以上＝集合写真として登録しない。
+  タグはあるが alt で特定できないものも下書き。alt は長いと「…, 佐藤優」で切れるので前方一致で見る
+- Name・Date は Bluesky から入れ、Member は空で登録 → 直後の `update_member_blog_meta.js` が公式ページから補完
+- 通常は**直近3日分だけ**を見る（誤検出を Notion から消したときに復活させないため）。
+  過去分は `BSKY_SINCE=YYYY-MM-DD` で一度だけ流す
+- **下書きは Notion で確認して Published を入れる**。weekly さとうゆは公開分だけを載せる（`queryByDate(..., true)`）
+
+### Lemino：`sync_lemino.js`
+- 番組ページ（クールごとの「グループ」）の `__NEXT_DATA__` に、各回の `availability_start`（配信開始）・
+  `synopsis_info`（先頭の【…】が副題）と、**同じ番組の他クール（parentContents）**が入っている。
+  起点のグループから他クールを辿るので、**クールが変わっても設定不要**（起点ページの配信期限 2027年12月まで）
+- 出演者は「日向坂46」としか無く、**佐藤優羽さんの出演回は判定できない**。
+  日向坂で会いましょう＝全回公開／まだまだ！日向坂で会いましょう＝あらすじに佐藤・優羽があれば公開、無ければ下書き
+  （従来「まだまだ！」は一部の回だけ登録していたため）
+- Date は配信開始日（JST）。サムネイルは `update_media_thumbnails.js`、年表・Yu News へは build.js の同期が公開分を取り込む
+- 通常は直近14日。過去分は `LEMINO_SINCE=YYYY-MM-DD`
+- 「日向坂になりましょう」は対象外（起点を `PROGRAMS` に足せば同じ仕組みで拾える）
+
+### 年表（DB_HISTORY）
+新しい仕組みは無い。**build.js の `syncToHistory()` が DB_BLOG / DB_LEMINO / DB_INTERVIEW / DB_YOUTUBE の公開分を
+自動で集約している**（2026-07-06 以降の日付のみ）。年表が止まって見えるときは、元の DB が止まっている。
+
+### weekly さとうゆの自動生成（deploy.yml の `Generate weekly さとうゆ`）
+- **月曜 12:00（JST）以降**に「前の週（月〜日）」を作る。日曜深夜放送の Lemino 回は月曜 01:50 に配信開始し、
+  上の同期 → build の年表同期を経てから weekly に入るので、月曜の朝までは待つ
+- 管理API `/generate/weekly` に **`onlyIfMissing`** を渡し、作成済みの週は作り直さない（管理ページでの手直しを上書きしない）
+- 管理APIのパスワードを GitHub に置かないよう、**VPS のコンテナ内から**呼ぶ（`docker compose exec satoyu-admin node -e "fetch(...)"`）
+- **OGP 画像（ogp/weekly.png）は自動では作らない**。管理ページの「プレビューを作成 → このOGP画像を設定」で更新する
+
 ## update_media_thumbnails.js の仕組み
 - **DB_YOUTUBE**：全エントリのMediaが未設定のものに動画IDからYouTubeサムネイルを追加
 - **DB_LEMINO**：全エントリのMediaが未設定のものにog:imageからサムネイルを追加
