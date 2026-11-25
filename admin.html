@@ -425,6 +425,7 @@ header span { font-size: 13px; color: var(--text-muted); }
     <div style="height:1px;background:var(--border);margin:8px 4px;"></div>
     <button class="db-btn" id="weekly-sidebar-btn" onclick="showWeekly()">🗓 weekly さとうゆ</button>
     <button class="db-btn" id="messages-sidebar-btn" onclick="showMessages()">✉ メッセージ</button>
+    <button class="db-btn" id="blogpost-sidebar-btn" onclick="showBlogPost()">✍ ブログ告知の下書き</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
     <!-- デプロイ -->
@@ -802,6 +803,38 @@ header span { font-size: 13px; color: var(--text-muted); }
       <div id="msg-list-content"></div>
     </div>
 
+    <!-- ブログ告知の下書き -->
+    <div id="blogpost-area" style="display:none;">
+      <div class="list-header">
+        <div>
+          <span class="list-title">✍ ブログ告知の下書き</span>
+          <span class="list-count">サイトのブログまとめ（30分ごとに更新）から読み込みます</span>
+        </div>
+        <button class="list-refresh-btn" onclick="loadBlogPosts()">↺ 更新</button>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>ブログ</label>
+        <select id="bp-select" onchange="renderBlogPost()"></select>
+      </div>
+      <div class="field">
+        <label>コメント</label>
+        <textarea id="bp-comment" rows="4" placeholder="ここに書いたコメントが下書きに入ります" oninput="renderBlogPost()"></textarea>
+      </div>
+      <div class="field">
+        <label>引用するポストのURL（任意）</label>
+        <input type="url" id="bp-quote" placeholder="https://x.com/hinatazaka46/status/...（公式のブログ更新ポストを引用する場合）" oninput="renderBlogPost()">
+      </div>
+      <div class="field">
+        <label>下書き <span id="bp-count" class="schema-hint"></span></label>
+        <textarea id="bp-draft" rows="13" readonly style="background:var(--emerald-pale);"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" onclick="copyBlogPost()">📋 コピー</button>
+        <button class="btn" onclick="openBlogPostOnX()">𝕏 投稿画面を開く</button>
+        <span class="status" id="bp-status"></span>
+      </div>
+    </div>
+
     <!-- weekly さとうゆ -->
     <div id="weekly-area" style="display:none;">
       <div class="list-header">
@@ -953,6 +986,7 @@ function switchDB(name) {
   // メッセージ・weekly さとうゆビューから戻る
   document.getElementById('messages-area').style.display = 'none';
   document.getElementById('weekly-area').style.display = 'none';
+  document.getElementById('blogpost-area').style.display = 'none';
   document.getElementById('panel-tabs').style.display = '';
   document.getElementById('panels-wrap').style.display = _currentTab === 'add'  ? '' : 'none';
   document.getElementById('list-area').style.display   = _currentTab === 'list' ? '' : 'none';
@@ -967,8 +1001,75 @@ function showMessages() {
   document.getElementById('panels-wrap').style.display   = 'none';
   document.getElementById('list-area').style.display     = 'none';
   document.getElementById('weekly-area').style.display   = 'none';
+  document.getElementById('blogpost-area').style.display = 'none';
   document.getElementById('messages-area').style.display = '';
   loadMessages();
+}
+
+// ── ブログ告知の下書き ──
+// 公開中の blog.html（build.js が生成）からタイトル・日付・URLを読む。同一オリジンなので API は不要
+var _blogPosts = [];
+function showBlogPost() {
+  document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById('blogpost-sidebar-btn').classList.add("active");
+  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('blogpost-area').style.display = '';
+  if (!_blogPosts.length) loadBlogPosts();
+}
+async function loadBlogPosts() {
+  const sel = document.getElementById('bp-select');
+  sel.innerHTML = '<option>⏳ 読み込み中...</option>';
+  try {
+    const res = await fetch('/blog.html?t=' + Date.now(), { cache: 'no-store' });
+    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+    _blogPosts = [...doc.querySelectorAll('#blog-grid .media-card')].map(c => ({
+      title: (c.querySelector('.media-title')?.textContent || '').trim(),
+      date:  (c.querySelector('.media-date')?.textContent || '').trim(),
+      url:   c.querySelector('a.news-card-link')?.href || '',
+    })).filter(p => p.title && p.url).slice(0, 20);
+    sel.innerHTML = _blogPosts.map((p, i) => `<option value="${i}">${escHtml(p.date)}　${escHtml(p.title)}</option>`).join('')
+      || '<option>ブログが見つかりません</option>';
+  } catch (e) {
+    sel.innerHTML = '<option>❌ 読み込みに失敗しました</option>';
+  }
+  renderBlogPost();
+}
+function blogPostText() {
+  const p = _blogPosts[+document.getElementById('bp-select').value];
+  if (!p) return '';
+  const comment = document.getElementById('bp-comment').value.trim();
+  const quote   = document.getElementById('bp-quote').value.trim();
+  return [
+    '＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／', '',
+    '#佐藤優羽 OFFICIAL BLOG', `「${p.title}」`, '',
+    p.url, '⟡.· ┈┈┈┈┈┈┈┈┈⟡.·', '',
+    comment || '（コメント）', '',
+    '#日向坂46',
+  ].join('\n') + (quote ? '\n' + quote : '');
+}
+// X の文字数：URL は23字、全角などは2字として数える（上限280）
+function xWeightedLength(t) {
+  let n = 0;
+  t = t.replace(/https?:\/\/\S+/g, () => { n += 23; return ''; });
+  for (const ch of t) { const c = ch.codePointAt(0); n += (c <= 0x10FF || (c >= 0x2000 && c <= 0x200D) || (c >= 0x2010 && c <= 0x201F) || (c >= 0x2032 && c <= 0x2037)) ? 1 : 2; }
+  return n;
+}
+function renderBlogPost() {
+  const t = blogPostText();
+  document.getElementById('bp-draft').value = t;
+  const n = xWeightedLength(t), el = document.getElementById('bp-count');
+  el.textContent = t ? `${n} / 280${n > 280 ? '（長すぎます）' : ''}` : '';
+  el.style.color = n > 280 ? '#c00' : '';
+}
+async function copyBlogPost() {
+  const st = document.getElementById('bp-status');
+  try { await navigator.clipboard.writeText(blogPostText()); st.className = 'status ok'; st.textContent = '✅ コピーしました'; }
+  catch { document.getElementById('bp-draft').select(); document.execCommand('copy'); st.className = 'status ok'; st.textContent = '✅ コピーしました'; }
+}
+function openBlogPostOnX() {
+  // クリックと同じタスクで開く（await をはさむとポップアップがブロックされる）
+  const w = window.open('https://x.com/intent/post?text=' + encodeURIComponent(blogPostText()), '_blank');
+  if (w) w.opener = null;
 }
 
 // ── weekly さとうゆ ──
@@ -979,6 +1080,7 @@ function showWeekly() {
   document.getElementById('panels-wrap').style.display   = 'none';
   document.getElementById('list-area').style.display     = 'none';
   document.getElementById('messages-area').style.display = 'none';
+  document.getElementById('blogpost-area').style.display = 'none';
   document.getElementById('weekly-area').style.display   = '';
   // 日付の初期値：昨日（週明けに実行すると前週の月〜日になる）
   const dateInput = document.getElementById('weekly-date');
