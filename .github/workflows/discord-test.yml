@@ -1,0 +1,35 @@
+# Discord への通知の動作確認（手動実行のみ）。
+# 指定したブログ記事の告知下書き＋写真を、先頭に「🔧 テスト送信です」を付けて送る。
+# Webhook の URL は Secrets からだけ読むので、表には出ない。
+name: Discord test
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "ブログ記事のURL"
+        required: true
+      title:
+        description: "ブログのタイトル"
+        required: true
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Send test message
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          BLOG_URL:   ${{ inputs.url }}
+          BLOG_TITLE: ${{ inputs.title }}
+        run: |
+          node -e '
+            const { notifyBlog } = require("./discord");
+            if (!process.env.DISCORD_WEBHOOK_URL) { console.error("DISCORD_WEBHOOK_URL が未設定です"); process.exit(1); }
+            notifyBlog({ url: process.env.BLOG_URL, title: process.env.BLOG_TITLE }, { prefix: "🔧 テスト送信です\n", skipOldCheck: true })
+              .then(() => console.log("✅ 送信しました"))
+              .catch(e => { console.error("❌", e.message); process.exit(1); });'

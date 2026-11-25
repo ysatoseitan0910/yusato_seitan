@@ -8,7 +8,7 @@
 //   --all        全記事を対象（月数制限なし）
 
 const { Client } = require("@notionhq/client");
-const { sendDiscord, fetchImage } = require("./discord");
+const { notifyBlog } = require("./discord");
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const DB_BLOG = process.env.DB_BLOG;
@@ -160,34 +160,6 @@ function buildDescription(article) {
   return `＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／\n\n#佐藤優羽 OFFICIAL BLOG\n「${article.title}」\n\n${cleanUrl}\n⟡.· ┈┈┈┈┈┈┈┈⟡.·`;
 }
 
-// ── Discord へ告知の下書き＋写真を送る（DISCORD_WEBHOOK_URL が無ければ何もしない） ──
-// 写真は委員会内での確認用。記事本文（c-blog-article__text 以降）の diary 画像だけを拾う
-async function fetchArticleImages(url) {
-  try {
-    const html = await (await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } })).text();
-    const body = html.slice(Math.max(0, html.indexOf("c-blog-article__text")));
-    const re = /https:\/\/cdn\.hinatazaka46\.com\/files\/14\/diary\/[^"'\s)]+?\.(?:jpe?g|png|webp|gif)/gi;
-    return [...new Set(body.match(re) || [])];
-  } catch { return []; }
-}
-
-async function notifyDiscord(article) {
-  if (!process.env.DISCORD_WEBHOOK_URL) return;
-  // 取りこぼしを後から拾ったときに古い記事を一斉に送らないよう、3日以内の記事だけ
-  if (article.date && Date.parse(article.date) < Date.now() - 3 * 86400e3) return;
-  // 文面は管理ページの「ブログ告知の下書き」と同じ（X に投稿している実際の書式）
-  const draft = [
-    "＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／", "",
-    "#佐藤優羽 OFFICIAL BLOG", `「${article.title}」`, "",
-    article.url, "⟡.· ┈┈┈┈┈┈┈┈┈⟡.·", "",
-    "（コメント）", "",
-    "#日向坂46",
-  ].join("\n");
-  const urls = await fetchArticleImages(article.url);
-  const files = (await Promise.all(urls.map(fetchImage))).filter(Boolean);
-  await sendDiscord(`📝 **ブログ更新：告知の下書き**（写真${files.length}枚）\n\n${draft}`, files);
-}
-
 async function addToNotion(article, imgUrl, number) {
   const props = {
     Name:        { title: [{ text: { content: article.title } }] },
@@ -238,7 +210,7 @@ async function main() {
       console.log(imgUrl ? `✅ (サムネイルあり)` : `✅ (サムネイルなし)`);
       nextNumber++;
       success++;
-      try { await notifyDiscord(article); } catch (e) { console.log(`  ⚠ Discord: ${e.message}`); }
+      try { await notifyBlog(article); } catch (e) { console.log(`  ⚠ Discord: ${e.message}`); }
     } catch (e) {
       console.log(`❌ ${e.message}`);
       fail++;
