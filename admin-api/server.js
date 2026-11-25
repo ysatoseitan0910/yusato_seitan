@@ -821,6 +821,11 @@ app.post("/generate/weekly", auth, async (req, res) => {
       database_id: DB.topnews,
       filter: { property: "Name", title: { equals: title } },
     });
+    // 自動生成（deploy.yml から毎回呼ばれる）では、既にあれば作り直さない。
+    // 作り直すと管理ページで手直しした本文が毎回上書きされてしまう
+    if (req.body && req.body.onlyIfMissing && existing.results.length) {
+      return res.json({ ok: true, skipped: true, title, start, end });
+    }
     for (const pg of existing.results) {
       await notion.pages.update({ page_id: pg.id, archived: true });
     }

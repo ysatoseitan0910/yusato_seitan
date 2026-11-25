@@ -31,6 +31,22 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:      ${{ secrets.DB_BLOG }}
 
+      # Bluesky の blogphotobot から、他メンバーのブログへの佐藤優羽さんの登場を検出（少人数は公開・中人数は下書き・集合写真は除外）
+      - name: Detect member blog appearances (Bluesky blogphotobot)
+        run: node sync_member_blog_bsky.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
+        env:
+          NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
+          DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
+
+      # Lemino で配信が始まった回を登録（日向坂で会いましょう＝公開／まだまだ！＝あらすじに名前が無ければ下書き）
+      - name: Detect new Lemino episodes
+        run: node sync_lemino.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DB_LEMINO:    ${{ secrets.DB_LEMINO }}
+
       - name: Fill member blog meta (Name/Date/Member from URL)
         run: node update_member_blog_meta.js
         continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
@@ -138,6 +154,8 @@ jobs:
             --exclude='fetch.js' \
             --exclude='fix_member_names.js' \
             --exclude='scrape_member_mentions.js' \
+            --exclude='sync_member_blog_bsky.js' \
+            --exclude='sync_lemino.js' \
             --exclude='_template.html' \
             --exclude='/package.json' \
             --exclude='/package-lock.json' \
@@ -151,6 +169,25 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
             'cd ~/newsmind && docker compose restart satoyu-admin 2>/dev/null || docker compose up -d satoyu-admin'
+
+      # weekly さとうゆを自動生成する。対象は「前の週（月〜日）」で、月曜 12:00（JST）以降に作る。
+      # 日曜深夜放送の Lemino 回は月曜 01:50 に配信が始まり、上の同期で登録されてから年表に入るので、
+      # 月曜の朝までは待つ。onlyIfMissing なので、作成済みの週は作り直さない（手直しを上書きしない）。
+      # 管理APIのパスワードを GitHub に置かないよう、VPS のコンテナ内から呼ぶ。
+      - name: Generate weekly さとうゆ (previous week)
+        continue-on-error: true
+        run: |
+          TARGET=$(node -e '
+            const now = new Date(Date.now() + 9 * 3600e3);                  // JST の壁時計
+            const dow = now.getUTCDay();                                     // 0=日
+            const mon = new Date(now); mon.setUTCDate(now.getUTCDate() - ((dow + 6) % 7)); mon.setUTCHours(0, 0, 0, 0);
+            if (now - mon < 12 * 3600e3) process.exit(0);                    // 月曜 12:00 前は作らない
+            const prev = new Date(mon); prev.setUTCDate(mon.getUTCDate() - 7);
+            console.log(prev.toISOString().slice(0, 10));')
+          if [ -z "$TARGET" ]; then echo "月曜12時前のためスキップ"; exit 0; fi
+          sleep 5   # 直前の satoyu-admin 再起動を待つ
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "cd ~/newsmind && docker compose exec -T satoyu-admin node -e \"fetch('http://localhost:3001/generate/weekly',{method:'POST',headers:{Authorization:'Bearer '+process.env.ADMIN_PASSWORD,'Content-Type':'application/json'},body:JSON.stringify({date:'$TARGET',onlyIfMissing:true})}).then(r=>r.json()).then(j=>console.log(j.skipped?'作成済み: '+j.title:(j.ok?'✅ 作成: '+j.title:'❌ '+JSON.stringify(j))))\""
 
       # GitHub Pages への公開は廃止（2026-08-07）
       # 公開サイト satoyu.info は上の rsync で VPS(nginx) から配信しており、Pages は独自ドメイン無しの
