@@ -71,8 +71,13 @@ async function notifyBlog(article, { prefix = "", skipOldCheck = false } = {}) {
   ].join("\n");
   const urls = await fetchArticleImages(article.url);
   const files = (await Promise.all(urls.map(fetchImage))).filter(Boolean);
-  await sendDiscord(`${prefix}📝 **ブログ更新：告知の下書き**（写真${files.length}枚）\n\n${draft}`, files);
+  await sendDiscord(`${prefix}📝 **ブログ更新：告知の下書き**（写真${files.length}枚）\n${codeBlock(draft)}`, files);
 }
 
-module.exports = { sendDiscord, fetchImage, notifyBlog };
+// 下書き部分をコードブロックで囲む（見出しと投稿文の境目が分かるように）
+function codeBlock(text) {
+  return "```\n" + String(text).replace(/```/g, "ˋˋˋ") + "\n```";
+}
+
+module.exports = { sendDiscord, fetchImage, notifyBlog, codeBlock };
 
