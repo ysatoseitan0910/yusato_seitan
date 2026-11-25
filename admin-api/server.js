@@ -398,6 +398,20 @@ app.delete("/delete/:db/:pageId", auth, async (req, res) => {
 });
 
 // レコード非公開化（Published = false）
+// 公開に戻す（他メンバーブログの確認画面から）
+app.patch("/publish/:db/:pageId", auth, async (req, res) => {
+  const { db: dbKey, pageId } = req.params;
+  if (!DB[dbKey]) return res.status(404).json({ error: "不明なDB" });
+  if (!/^[0-9a-f-]{32,36}$/i.test(pageId)) return res.status(400).json({ error: "不正なID" });
+  try {
+    await notion.pages.update({ page_id: pageId, properties: { Published: { checkbox: true } } });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.patch("/unpublish/:db/:pageId", auth, async (req, res) => {
   const { db: dbKey, pageId } = req.params;
   if (!DB[dbKey]) return res.status(404).json({ error: "不明なDB" });
@@ -469,6 +483,13 @@ app.get("/list/:db", auth, async (req, res) => {
       url: p.properties.URL?.url || null,
       published: p.properties.Published?.checkbox ?? null,
       body: p.properties.Body ? getText(p.properties.Body) : null,
+      // 他メンバーブログの確認画面用：サムネイル（Media / media の先頭）と執筆メンバー
+      image: (() => {
+        const k = Object.keys(p.properties).find(n => n.toLowerCase() === "media");
+        const f = k && (p.properties[k].files || [])[0];
+        return f ? (f.external?.url || f.file?.url || null) : null;
+      })(),
+      members: (p.properties.Member?.multi_select || []).map(o => o.name),
     }));
     res.json({ items, total: items.length });
   } catch (e) {

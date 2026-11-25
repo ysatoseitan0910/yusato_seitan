@@ -427,6 +427,7 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" id="messages-sidebar-btn" onclick="showMessages()">✉ メッセージ</button>
     <button class="db-btn" id="blogpost-sidebar-btn" onclick="showBlogPost()">✍ ブログ告知の下書き</button>
     <button class="db-btn" id="minsaka-sidebar-btn" onclick="showMinsaka()">💐 minsaka 告知の下書き</button>
+    <button class="db-btn" id="mbreview-sidebar-btn" onclick="showMbReview()">🔎 他メンバーブログの確認</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
     <!-- デプロイ -->
@@ -836,6 +837,24 @@ header span { font-size: 13px; color: var(--text-muted); }
       </div>
     </div>
 
+    <!-- 他メンバーブログの確認（自動登録の公開・非公開をボタンで切り替える） -->
+    <div id="mbreview-area" style="display:none;">
+      <div class="list-header">
+        <div>
+          <span class="list-title">🔎 他メンバーブログの確認</span>
+          <span class="list-count" id="mb-count"></span>
+        </div>
+        <button class="list-refresh-btn" onclick="loadMbReview()">↺ 更新</button>
+      </div>
+      <p class="schema-hint" style="margin:8px 0 12px;">自動で登録された記事を確認して、サイトに載せるか決めます。写真は Discord の「他メンバーブログ」スレッドで確認できます。変更はサイトの次の更新（30分以内）で反映されます。</p>
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+        <button class="tag-sug-btn" data-mbf="draft" onclick="setMbFilter('draft')">非公開・下書き</button>
+        <button class="tag-sug-btn" data-mbf="pub" onclick="setMbFilter('pub')">公開中</button>
+        <button class="tag-sug-btn" data-mbf="all" onclick="setMbFilter('all')">すべて</button>
+      </div>
+      <div id="mb-list"></div>
+    </div>
+
     <!-- ブログ告知の下書き -->
     <div id="blogpost-area" style="display:none;">
       <div class="list-header">
@@ -1022,6 +1041,7 @@ function switchDB(name) {
   document.getElementById('weekly-area').style.display = 'none';
   document.getElementById('blogpost-area').style.display = 'none';
   document.getElementById('minsaka-area').style.display = 'none';
+  document.getElementById('mbreview-area').style.display = 'none';
   document.getElementById('panel-tabs').style.display = '';
   document.getElementById('panels-wrap').style.display = _currentTab === 'add'  ? '' : 'none';
   document.getElementById('list-area').style.display   = _currentTab === 'list' ? '' : 'none';
@@ -1038,6 +1058,7 @@ function showMessages() {
   document.getElementById('weekly-area').style.display   = 'none';
   document.getElementById('blogpost-area').style.display = 'none';
   document.getElementById('minsaka-area').style.display = 'none';
+  document.getElementById('mbreview-area').style.display = 'none';
   document.getElementById('messages-area').style.display = '';
   loadMessages();
 }
@@ -1048,7 +1069,7 @@ var _blogPosts = [];
 function showBlogPost() {
   document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
   document.getElementById('blogpost-sidebar-btn').classList.add("active");
-  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','minsaka-area'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','minsaka-area','mbreview-area'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('blogpost-area').style.display = '';
   if (!_blogPosts.length) loadBlogPosts();
 }
@@ -1120,12 +1141,70 @@ function openDraftOnX(textareaId) {
   if (w) w.opener = null;
 }
 
+// ── 他メンバーブログの確認 ──
+var _mbItems = [], _mbFilter = 'draft';
+function showMbReview() {
+  document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById('mbreview-sidebar-btn').classList.add("active");
+  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','blogpost-area','minsaka-area'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('mbreview-area').style.display = '';
+  loadMbReview();
+}
+async function loadMbReview() {
+  const box = document.getElementById('mb-list');
+  box.innerHTML = '<div class="list-loading">⏳ 読み込み中...</div>';
+  try {
+    const res = await fetch(`${API_BASE}/list/memberblog`, { headers: { Authorization: `Bearer ${getPassword()}` } });
+    if (res.status === 401) { logout(); return; }
+    const d = await res.json();
+    _mbItems = (d.items || []).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    renderMbReview();
+  } catch (e) {
+    box.innerHTML = `<div class="list-error">❌ 接続エラー: ${escHtml(e.message)}</div>`;
+  }
+}
+function setMbFilter(f) { _mbFilter = f; renderMbReview(); }
+function renderMbReview() {
+  document.querySelectorAll('[data-mbf]').forEach(b => {
+    const on = b.dataset.mbf === _mbFilter;
+    b.style.background = on ? 'var(--emerald-pale)' : ''; b.style.color = on ? 'var(--emerald-dark)' : ''; b.style.borderColor = on ? 'var(--emerald)' : '';
+  });
+  const items = _mbItems.filter(i => _mbFilter === 'all' || (_mbFilter === 'pub' ? i.published === true : i.published !== true));
+  document.getElementById('mb-count').textContent = `（${items.length}件 / 全${_mbItems.length}件）`;
+  const box = document.getElementById('mb-list');
+  if (!items.length) { box.innerHTML = '<div class="list-empty">該当する記事はありません</div>'; return; }
+  box.innerHTML = items.slice(0, 100).map(i => `
+    <div style="display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:#fff;">
+      ${i.image ? `<img src="${escHtml(i.image)}" alt="" loading="lazy" style="width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0;">` : '<div style="width:72px;height:72px;border-radius:8px;background:var(--emerald-pale);flex-shrink:0;"></div>'}
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;color:var(--text-muted);">${escHtml(i.date || '日付なし')}　${escHtml((i.members || []).join('、') || '（メンバー補完待ち）')}</div>
+        <div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${i.url ? `<a href="${escHtml(i.url)}" target="_blank" rel="noopener">${escHtml(i.name || '（無題）')}</a>` : escHtml(i.name || '（無題）')}</div>
+        <div style="margin-top:4px;">${i.published === true ? '<span class="pub-badge pub-true">公開</span>' : '<span class="pub-badge pub-false">非公開</span>'}</div>
+      </div>
+      <button class="btn" style="flex-shrink:0;padding:8px 14px;" data-id="${escHtml(i.id)}" onclick="toggleMbPublish(this, ${i.published === true ? 'false' : 'true'})">${i.published === true ? '非公開にする' : '公開する'}</button>
+    </div>`).join('');
+}
+async function toggleMbPublish(btn, publish) {
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = '...';
+  try {
+    const res = await fetch(`${API_BASE}/${publish ? 'publish' : 'unpublish'}/memberblog/${btn.dataset.id}`, {
+      method: 'PATCH', headers: { Authorization: `Bearer ${getPassword()}` } });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || res.status);
+    const item = _mbItems.find(i => i.id === btn.dataset.id);
+    if (item) item.published = publish;
+    renderMbReview();
+  } catch (e) {
+    btn.disabled = false; btn.textContent = orig; alert('変更できませんでした: ' + e.message);
+  }
+}
+
 // ── minsaka 告知の下書き ──
 var _minsaka = [];
 function showMinsaka() {
   document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
   document.getElementById('minsaka-sidebar-btn').classList.add("active");
-  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','blogpost-area'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','blogpost-area','mbreview-area'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('minsaka-area').style.display = '';
   if (!_minsaka.length) loadMinsaka();
 }
@@ -1173,6 +1252,7 @@ function showWeekly() {
   document.getElementById('messages-area').style.display = 'none';
   document.getElementById('blogpost-area').style.display = 'none';
   document.getElementById('minsaka-area').style.display = 'none';
+  document.getElementById('mbreview-area').style.display = 'none';
   document.getElementById('weekly-area').style.display   = '';
   // 日付の初期値：昨日（週明けに実行すると前週の月〜日になる）
   const dateInput = document.getElementById('weekly-date');
