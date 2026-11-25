@@ -426,6 +426,7 @@ header span { font-size: 13px; color: var(--text-muted); }
     <button class="db-btn" id="weekly-sidebar-btn" onclick="showWeekly()">🗓 weekly さとうゆ</button>
     <button class="db-btn" id="messages-sidebar-btn" onclick="showMessages()">✉ メッセージ</button>
     <button class="db-btn" id="blogpost-sidebar-btn" onclick="showBlogPost()">✍ ブログ告知の下書き</button>
+    <button class="db-btn" id="minsaka-sidebar-btn" onclick="showMinsaka()">💐 minsaka 告知の下書き</button>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
 
     <!-- デプロイ -->
@@ -803,6 +804,38 @@ header span { font-size: 13px; color: var(--text-muted); }
       <div id="msg-list-content"></div>
     </div>
 
+    <!-- minsaka 告知の下書き（文面は minsaka.js。企画一覧は 30分ごとの更新で minsaka.json に書き出される） -->
+    <div id="minsaka-area" style="display:none;">
+      <div class="list-header">
+        <div>
+          <span class="list-title">💐 minsaka 告知の下書き</span>
+          <span class="list-count" id="ms-updated"></span>
+        </div>
+        <button class="list-refresh-btn" onclick="loadMinsaka()">↺ 更新</button>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>企画</label>
+        <select id="ms-select" onchange="autoKindMinsaka()"></select>
+      </div>
+      <div class="field">
+        <label>お知らせの種類</label>
+        <select id="ms-kind" onchange="renderMinsaka()">
+          <option value="start">募集開始</option>
+          <option value="remind">締め切りリマインド</option>
+          <option value="thanks">募集終了・お礼</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>下書き（ここで直接書き換えられます） <span id="ms-count" class="schema-hint"></span></label>
+        <textarea id="ms-draft" rows="16" oninput="countMinsaka()"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" onclick="copyDraft('ms-draft','ms-status')">📋 コピー</button>
+        <button class="btn" onclick="openDraftOnX('ms-draft')">𝕏 投稿画面を開く</button>
+        <span class="status" id="ms-status"></span>
+      </div>
+    </div>
+
     <!-- ブログ告知の下書き -->
     <div id="blogpost-area" style="display:none;">
       <div class="list-header">
@@ -925,6 +958,7 @@ header span { font-size: 13px; color: var(--text-muted); }
   </div>
 </div>
 
+<script src="minsaka.js"></script>
 <script>
 const API_BASE = "/admin-api";
 
@@ -987,6 +1021,7 @@ function switchDB(name) {
   document.getElementById('messages-area').style.display = 'none';
   document.getElementById('weekly-area').style.display = 'none';
   document.getElementById('blogpost-area').style.display = 'none';
+  document.getElementById('minsaka-area').style.display = 'none';
   document.getElementById('panel-tabs').style.display = '';
   document.getElementById('panels-wrap').style.display = _currentTab === 'add'  ? '' : 'none';
   document.getElementById('list-area').style.display   = _currentTab === 'list' ? '' : 'none';
@@ -1002,6 +1037,7 @@ function showMessages() {
   document.getElementById('list-area').style.display     = 'none';
   document.getElementById('weekly-area').style.display   = 'none';
   document.getElementById('blogpost-area').style.display = 'none';
+  document.getElementById('minsaka-area').style.display = 'none';
   document.getElementById('messages-area').style.display = '';
   loadMessages();
 }
@@ -1012,7 +1048,7 @@ var _blogPosts = [];
 function showBlogPost() {
   document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
   document.getElementById('blogpost-sidebar-btn').classList.add("active");
-  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','minsaka-area'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('blogpost-area').style.display = '';
   if (!_blogPosts.length) loadBlogPosts();
 }
@@ -1072,6 +1108,61 @@ function openBlogPostOnX() {
   if (w) w.opener = null;
 }
 
+// コピー・X 投稿画面（minsaka 用。textarea の内容をそのまま使う）
+async function copyDraft(textareaId, statusId) {
+  const ta = document.getElementById(textareaId), st = document.getElementById(statusId);
+  try { await navigator.clipboard.writeText(ta.value); } catch { ta.select(); document.execCommand('copy'); }
+  st.className = 'status ok'; st.textContent = '✅ コピーしました';
+}
+function openDraftOnX(textareaId) {
+  // クリックと同じタスクで開く（await をはさむとポップアップがブロックされる）
+  const w = window.open('https://x.com/intent/post?text=' + encodeURIComponent(document.getElementById(textareaId).value), '_blank');
+  if (w) w.opener = null;
+}
+
+// ── minsaka 告知の下書き ──
+var _minsaka = [];
+function showMinsaka() {
+  document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById('minsaka-sidebar-btn').classList.add("active");
+  ['panel-tabs','panels-wrap','list-area','messages-area','weekly-area','blogpost-area'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('minsaka-area').style.display = '';
+  if (!_minsaka.length) loadMinsaka();
+}
+async function loadMinsaka() {
+  const sel = document.getElementById('ms-select');
+  sel.innerHTML = '<option>⏳ 読み込み中...</option>';
+  try {
+    const d = await (await fetch('/minsaka.json?t=' + Date.now(), { cache: 'no-store' })).json();
+    // 募集中を先に、その中は締め切りが近い順
+    _minsaka = d.events.slice().sort((a, b) => (b.open - a.open) || ((a.remainingDays ?? 999) - (b.remainingDays ?? 999)));
+    document.getElementById('ms-updated').textContent = '取得: ' + new Date(d.updated).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    sel.innerHTML = _minsaka.map((e, i) =>
+      `<option value="${i}">${e.open ? `【募集中・残り${e.remainingDays}日・${e.participants}人】` : '【終了】'} ${escHtml(e.title)}</option>`).join('');
+  } catch (e) {
+    sel.innerHTML = '<option>❌ 読み込みに失敗しました（30分ごとの更新で作られます）</option>';
+    _minsaka = [];
+  }
+  autoKindMinsaka();
+}
+// 企画の状態に合わせて種類を初期選択する
+function autoKindMinsaka() {
+  const e = _minsaka[+document.getElementById('ms-select').value];
+  if (e) document.getElementById('ms-kind').value = !e.open ? 'thanks' : (e.remainingDays <= 7 ? 'remind' : 'start');
+  renderMinsaka();
+}
+function renderMinsaka() {
+  const e = _minsaka[+document.getElementById('ms-select').value];
+  const kind = document.getElementById('ms-kind').value;
+  document.getElementById('ms-draft').value = e ? Minsaka.DRAFTS[kind].text(e) : '';
+  countMinsaka();
+}
+function countMinsaka() {
+  const t = document.getElementById('ms-draft').value, n = xWeightedLength(t), el = document.getElementById('ms-count');
+  el.textContent = t ? `${n} / 280${n > 280 ? '（長すぎます）' : ''}` : '';
+  el.style.color = n > 280 ? '#c00' : '';
+}
+
 // ── weekly さとうゆ ──
 function showWeekly() {
   document.querySelectorAll(".db-btn").forEach(b => b.classList.remove("active"));
@@ -1081,6 +1172,7 @@ function showWeekly() {
   document.getElementById('list-area').style.display     = 'none';
   document.getElementById('messages-area').style.display = 'none';
   document.getElementById('blogpost-area').style.display = 'none';
+  document.getElementById('minsaka-area').style.display = 'none';
   document.getElementById('weekly-area').style.display   = '';
   // 日付の初期値：昨日（週明けに実行すると前週の月〜日になる）
   const dateInput = document.getElementById('weekly-date');

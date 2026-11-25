@@ -378,6 +378,16 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
 - 通常は直近14日。過去分は `LEMINO_SINCE=YYYY-MM-DD`
 - 「日向坂になりましょう」は対象外（起点を `PROGRAMS` に足せば同じ仕組みで拾える）
 
+### X 告知の下書き（2026-11-25 追加・投稿は人が行う）
+- **管理ページ**：「✍ ブログ告知の下書き」（blog.html から読む）／「💐 minsaka 告知の下書き」（minsaka.json から読む）。
+  コピーか X の投稿画面（intent）を開くだけで、自動投稿はしない
+- **Discord**：GitHub Secret `DISCORD_WEBHOOK_URL`（Webhook URL）があるときだけ送る。共通処理は `discord.js`
+  - 新着ブログ：`add_blog_posts.js` が登録直後に下書き＋**記事の写真（委員会内の確認用）**を添付で送る。3日より古い記事は送らない
+  - minsaka：`notify_minsaka.js` が主催企画一覧（`sakaseru.jp/mina/user/organized-events/244297`）を読み、
+    募集開始／残り7・3・1日のリマインド／募集終了・お礼 を送る。文面は **`minsaka.js` だけ**で管理（管理ページと共用）
+  - 送った記録は `minsaka-state.json`。Actions の実行環境は消えるので **VPS の `/root/satoyu-state/` に置き、前後で scp** する。
+    state が無いときは記録だけして送らない（過去分を一斉に送らないため）。Webhook 未設定の間も記録は進む
+
 ### 年表（DB_HISTORY）
 新しい仕組みは無い。**build.js の `syncToHistory()` が DB_BLOG / DB_LEMINO / DB_INTERVIEW / DB_YOUTUBE の公開分を
 自動で集約している**（2026-07-06 以降の日付のみ）。年表が止まって見えるときは、元の DB が止まっている。

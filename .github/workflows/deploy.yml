@@ -30,6 +30,7 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:      ${{ secrets.DB_BLOG }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}   # 新着ブログの告知下書き＋写真を送る（未設定なら送らない）
 
       # Bluesky の blogphotobot から、他メンバーのブログへの佐藤優羽さんの登場を検出（少人数は公開・中人数は下書き・集合写真は除外）
       - name: Detect member blog appearances (Bluesky blogphotobot)
@@ -132,6 +133,20 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
+      # minsaka の主催企画を見て、募集開始・締め切りリマインド・募集終了の告知下書きを Discord に送る。
+      # 送った記録（minsaka-state.json）は実行環境に残らないので VPS に置き、前後で取ってきて書き戻す。
+      # minsaka.json（企画一覧）は下の rsync で公開され、管理ページの下書き画面が読む。
+      - name: minsaka announcement drafts (Discord)
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          VPS=${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $VPS:/root/satoyu-state/minsaka-state.json . 2>/dev/null || echo "state なし（初回は記録だけ）"
+          node notify_minsaka.js
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $VPS 'mkdir -p /root/satoyu-state'
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no minsaka-state.json $VPS:/root/satoyu-state/minsaka-state.json
+
       - name: Deploy to VPS (satoyu.info)
         run: |
           rsync -avz --delete \
@@ -156,6 +171,9 @@ jobs:
             --exclude='scrape_member_mentions.js' \
             --exclude='sync_member_blog_bsky.js' \
             --exclude='sync_lemino.js' \
+            --exclude='notify_minsaka.js' \
+            --exclude='discord.js' \
+            --exclude='minsaka-state.json' \
             --exclude='_template.html' \
             --exclude='/package.json' \
             --exclude='/package-lock.json' \
