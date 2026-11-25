@@ -12,7 +12,7 @@
 // 環境変数：DISCORD_WEBHOOK_URL（任意）、DRY_RUN=1（送信も state 更新もしない）
 const fs = require("fs");
 const { ORGANIZER_URL, parseOrganizedEvents, parseUnitPrice, DRAFTS } = require("./minsaka");
-const { sendDiscord, codeBlock } = require("./discord");
+const { sendDiscord, codeBlock, THREADS } = require("./discord");
 
 const STATE_FILE = "minsaka-state.json";
 const REMIND_DAYS = [7, 3, 1];
@@ -51,7 +51,7 @@ async function main() {
       console.log(`  📨 ${DRAFTS[kind].label}: ${ev.title}`);
       if (DRY_RUN) { console.log(text.replace(/^/gm, "    | ")); continue; }
       if (webhook) {
-        try { await sendDiscord(`🌸 **minsaka：${DRAFTS[kind].label}の下書き**\n${codeBlock(text)}`); }
+        try { await sendDiscord(`🌸 **minsaka：${DRAFTS[kind].label}の下書き**\n${codeBlock(text)}`, [], THREADS.flower); }
         catch (e) { console.error(`  ❌ ${e.message}`); continue; }   // 失敗したら state を進めず、次の実行で再送
       }
     }

@@ -7,12 +7,21 @@
 
 const MAX_FILES = 10;
 
-async function post(url, payload, files) {
+// 送り先のスレッド（Webhook のチャンネル内のスレッド ID。秘密情報ではない）
+const THREADS = {
+  blog:        "1575148375781671033",   // ブログ告知用：告知の下書き
+  blogPhoto:   "1575148945338933260",   // ブログ写真：記事の写真
+  memberBlog:  "1575148803697147946",   // 他メンバーブログ
+  flower:      "1575149200398753872",   // 祝花：minsaka の告知下書き
+  birthday:    "1575149339293261926",   // 他メンバーお誕生日
+};
+
+async function post(url, payload, files, thread) {
   const fd = new FormData();
   fd.append("payload_json", JSON.stringify(payload));
   files.forEach((f, i) => fd.append(`files[${i}]`, new Blob([f.data], { type: f.type || "application/octet-stream" }), f.name));
   for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await fetch(url + "?wait=true", { method: "POST", body: fd });
+    const res = await fetch(url + "?wait=true" + (thread ? "&thread_id=" + thread : ""), { method: "POST", body: fd });
     if (res.ok) return;
     if (res.status === 429) {                       // レート制限：指示された秒数だけ待って再送
       const j = await res.json().catch(() => ({}));
@@ -24,13 +33,13 @@ async function post(url, payload, files) {
   throw new Error("Discord への送信に失敗（レート制限が続いた）");
 }
 
-async function sendDiscord(content, files = []) {
+async function sendDiscord(content, files = [], thread = null) {
   const url = process.env.DISCORD_WEBHOOK_URL;
   if (!url) return false;
   const base = { flags: 4, allowed_mentions: { parse: [] } };
-  await post(url, { ...base, content: content.slice(0, 2000) }, files.slice(0, MAX_FILES));
+  await post(url, { ...base, content: content.slice(0, 2000) }, files.slice(0, MAX_FILES), thread);
   for (let i = MAX_FILES; i < files.length; i += MAX_FILES) {
-    await post(url, base, files.slice(i, i + MAX_FILES));
+    await post(url, base, files.slice(i, i + MAX_FILES), thread);
   }
   return true;
 }
@@ -71,7 +80,9 @@ async function notifyBlog(article, { prefix = "", skipOldCheck = false } = {}) {
   ].join("\n");
   const urls = await fetchArticleImages(article.url);
   const files = (await Promise.all(urls.map(fetchImage))).filter(Boolean);
-  await sendDiscord(`${prefix}📝 **ブログ更新：告知の下書き**（写真${files.length}枚）\n${codeBlock(draft)}`, files);
+  // 下書きは「ブログ告知用」、写真は「ブログ写真」のスレッドへ分けて送る
+  await sendDiscord(`${prefix}📝 **ブログ更新：告知の下書き**\n${codeBlock(draft)}`, [], THREADS.blog);
+  if (files.length) await sendDiscord(`${prefix}📷 **「${article.title}」の写真**（${files.length}枚）\n<${article.url}>`, files, THREADS.blogPhoto);
 }
 
 // 下書き部分をコードブロックで囲む（見出しと投稿文の境目が分かるように）
@@ -79,5 +90,5 @@ function codeBlock(text) {
   return "```\n" + String(text).replace(/```/g, "ˋˋˋ") + "\n```";
 }
 
-module.exports = { sendDiscord, fetchImage, notifyBlog, codeBlock };
+module.exports = { sendDiscord, fetchImage, notifyBlog, codeBlock, THREADS };
 
