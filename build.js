@@ -500,11 +500,17 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   // ── 最新ニュース ──
-  const newsSection = news.length ? `
+  // weekly さとうゆは毎週自動で増えるので、新しい順に WEEKLY_IN_NEWS 件だけ載せる（古い週は weekly.html で読める）。
+  // Notion の Published は触らず、表示側で間引く。news は Date の降順で来る
+  const WEEKLY_IN_NEWS = 3;
+  const isWeekly = p => { const n = getText(p, "Name"); return n.startsWith("weekly さとうゆ") || n.startsWith("今週のさとうゆ"); };
+  let weeklyShown = 0;
+  const newsItems = news.filter(p => !isWeekly(p) || ++weeklyShown <= WEEKLY_IN_NEWS);
+  const newsSection = newsItems.length ? `
   <div class="top-news">
     <span class="top-news-label">📢 最新ニュース</span>
     <div class="top-news-items">
-      ${news.slice(0, 10).map(p => {
+      ${newsItems.slice(0, 10).map(p => {
         const title = getText(p, "Name");
         const date  = fmtDate(getDate(p));
         const url   = getUrl(p);
