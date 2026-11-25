@@ -4,17 +4,17 @@
 //   募集中 → 募集終了 になった      → 募集終了・お礼の下書き
 // あわせて minsaka.json（企画の一覧）を書き出し、管理ページの下書き画面が読む。
 //
-// 何を送ったかは minsaka-state.json に残す。GitHub Actions の実行環境は毎回消えるので、
+// 何を送ったかは state/minsaka-state.json に残す。GitHub Actions の実行環境は毎回消えるので、
 // deploy.yml が VPS（/root/satoyu-state/）から取ってきて、終わったら書き戻す。
 // state が無い初回は、今ある企画を「既知」として記録するだけで何も送らない（過去分を一斉に送らないため）。
 // Webhook が未設定の間も state は進める（設定した瞬間に溜まった古い通知が届かないように）。
 //
 // 環境変数：DISCORD_WEBHOOK_URL（任意）、DRY_RUN=1（送信も state 更新もしない）
 const fs = require("fs");
-const { ORGANIZER_URL, parseOrganizedEvents, parseUnitPrice, DRAFTS } = require("./minsaka");
+const { ORGANIZER_URL, parseOrganizedEvents, parseUnitPrice, parseIntro, DRAFTS } = require("./minsaka");
 const { sendDiscord, codeBlock, THREADS } = require("./discord");
 
-const STATE_FILE = "minsaka-state.json";
+const STATE_FILE = "state/minsaka-state.json";
 const REMIND_DAYS = [7, 3, 1];
 const DRY_RUN = process.env.DRY_RUN === "1";
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
@@ -29,7 +29,7 @@ async function main() {
   const events = parseOrganizedEvents(await get(ORGANIZER_URL));
   if (!events.length) throw new Error("企画が1件も読み取れない（ページの構造が変わった可能性）");
   for (const ev of events.filter(e => e.open)) {
-    try { ev.price = parseUnitPrice(await get(ev.url)); } catch { ev.price = ""; }
+    try { const h = await get(ev.url); ev.price = parseUnitPrice(h); ev.intro = parseIntro(h); } catch { ev.price = ""; ev.intro = ""; }
   }
   fs.writeFileSync("minsaka.json", JSON.stringify({ updated: new Date().toISOString(), events }, null, 1));
 
@@ -58,7 +58,7 @@ async function main() {
     // 開始の通知を出した直後にリマインドが重ならないよう、過ぎたしきい値は送ったことにする
     state.events[ev.id] = { title: ev.title, open: ev.open, reminded: [...new Set([...((s && s.reminded) || []), ...passed])] };
   }
-  if (!DRY_RUN) fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 1));
+  if (!DRY_RUN) { fs.mkdirSync("state", { recursive: true }); fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 1)); }
 }
 
 main().catch(e => { console.error("❌", e.message); process.exit(1); });

@@ -16,7 +16,9 @@
 // 次の実行で同じものが登録し直されないようにするため。過去分は BSKY_SINCE=YYYY-MM-DD で一度だけ流す。
 //
 // 環境変数：NOTION_TOKEN / DB_MEMBER_BLOG（必須）、BSKY_SINCE（任意）、DRY_RUN=1（書き込まない）
+const fs = require("fs");
 const { Client } = require("@notionhq/client");
+const { sendDiscord, fetchImage, THREADS } = require("./discord");
 
 const ACTOR       = "blogphotobot.bsky.social";
 const TARGET      = "佐藤優羽";
@@ -65,10 +67,11 @@ function groupByBlog(posts) {
     const tags = (r.facets || []).flatMap(f => f.features).map(x => x.tag).filter(Boolean);
     const author = (r.text.match(/^#(\S+)/) || [])[1] || tags[0] || "";
     const title  = (r.text.match(/『([\s\S]*?)』/) || [])[1] || "";
-    const imgs   = ((p.embed && (p.embed.images || (p.embed.media && p.embed.media.images))) || []).map(i => i.alt || "");
-    const b = blogs.get(id) || { id, author, title, createdAt: r.createdAt, tags: new Set(), alts: [] };
+    const imgs   = (p.embed && (p.embed.images || (p.embed.media && p.embed.media.images))) || [];
+    const b = blogs.get(id) || { id, author, title, createdAt: r.createdAt, tags: new Set(), alts: [], images: [] };
     tags.forEach(t => b.tags.add(t));
-    b.alts.push(...imgs);
+    b.alts.push(...imgs.map(i => i.alt || ""));
+    b.images.push(...imgs.map(i => ({ alt: i.alt || "", url: i.fullsize || i.thumb })));
     if (r.createdAt < b.createdAt) b.createdAt = r.createdAt;
     blogs.set(id, b);
   }
@@ -86,6 +89,56 @@ function classify(b) {
   return { verdict: "group", min };
 }
 
+// ── Discord「他メンバーブログ」スレッドへの通知 ──
+// 送った記事IDは state/member-blog-notified.json に残す（deploy.yml が VPS と行き来させる）
+const NOTIFIED_FILE = "state/member-blog-notified.json";
+const blogUrl = id => `https://www.hinatazaka46.com/s/official/diary/detail/${id}?ima=0000&cd=member`;
+
+const NOTE = {
+  auto:   "",
+  review: "⚠️ 大人数の写真のため、集合写真の可能性あり（サイトには下書きで登録。Notion で確認してください）",
+  group:  "⚠️ 集合写真の可能性あり（大人数のため、サイトには登録していません）",
+  tag:    "⚠️ 写真の説明から佐藤優羽さんを特定できませんでした（ハッシュタグのみ）。写真はすべて添付しています",
+};
+
+// 執筆メンバー名は公式ブログの <title>（「片山 紗希公式ブログ | …」）から取る。
+// Bluesky のハッシュタグは「ポカ」のような愛称のことがあるため。取れなければハッシュタグを使う
+async function authorName(b) {
+  try {
+    const html = await (await fetch(blogUrl(b.id), { headers: { "User-Agent": "Mozilla/5.0" } })).text();
+    const m = html.match(/<title[^>]*>\s*([^|<\n]{1,20}?)\s*(?:公式ブログ|のブログ)/);
+    if (m) return m[1].replace(/\s+/g, "");
+  } catch {}
+  return b.author;
+}
+
+async function notifyMemberBlog(b, c) {
+  b.author = await authorName(b);
+  const hits = b.images.filter(i => altHasTarget(i.alt));
+  const imgs = hits.length ? hits : b.images;                    // 特定できないときは全部
+  const files = (await Promise.all(imgs.map(i => fetchImage(i.url)))).filter(Boolean)
+    .map((f, n) => ({ ...f, name: `${b.id}_${n + 1}.jpg` }));
+  const note = NOTE[c.min == null ? "tag" : c.verdict];
+  const lines = [
+    "📔 **他メンバーのブログに登場**",
+    `メンバー：${b.author}`,
+    `タイトル：「${b.title}」`,
+    `日付：${jstDate(b.createdAt)}`,
+    `URL：<${blogUrl(b.id)}>`,
+    `写真：${hits.length ? `佐藤優羽さんが写っている写真 ${files.length}枚（いちばん少ない写真で${c.min}人）` : `${files.length}枚`}`,
+  ];
+  if (note) lines.push(note);
+  await sendDiscord(lines.join("\n"), files, THREADS.memberBlog);
+}
+
+function loadNotified() {
+  try { return new Set(JSON.parse(fs.readFileSync(NOTIFIED_FILE, "utf8")).ids); } catch { return null; }
+}
+function saveNotified(set) {
+  fs.mkdirSync("state", { recursive: true });
+  fs.writeFileSync(NOTIFIED_FILE, JSON.stringify({ ids: [...set].slice(-500) }));
+}
+
 async function existingIds() {
   const ids = new Set();
   let cursor;
@@ -99,19 +152,37 @@ async function existingIds() {
 }
 
 async function main() {
-  if (!process.env.NOTION_TOKEN || !DB_ID) { console.log("NOTION_TOKEN / DB_MEMBER_BLOG 未設定 → スキップ"); return; }
+  // NOTIFY_ONLY=1：Notion には登録せず、Discord への通知だけ行う（過去分をまとめて送るとき。BSKY_SINCE と併用）
+  const notifyOnly = process.env.NOTIFY_ONLY === "1";
+  if (!notifyOnly && (!process.env.NOTION_TOKEN || !DB_ID)) { console.log("NOTION_TOKEN / DB_MEMBER_BLOG 未設定 → スキップ"); return; }
   const since = process.env.BSKY_SINCE
     ? new Date(process.env.BSKY_SINCE + "T00:00:00+09:00").toISOString()
     : new Date(Date.now() - WINDOW_DAYS * 86400e3).toISOString();
   const posts = await fetchFeed(since);
   const blogs = groupByBlog(posts);
-  const have  = await existingIds();
-  console.log(`Bluesky ${posts.length}投稿 → ブログ${blogs.length}件（${since.slice(0, 10)}以降）/ 登録済み ${have.size}件${DRY_RUN ? " [DRY_RUN]" : ""}`);
+  const have  = notifyOnly ? new Set() : await existingIds();
+  // 通知の記録が無い初回は、今見えているものを通知済みにするだけ（一斉に送らない）。NOTIFY_ONLY のときは送る
+  let notified = loadNotified();
+  const firstRun = !notified && !notifyOnly;
+  if (!notified) notified = new Set();
+  const webhook = !!process.env.DISCORD_WEBHOOK_URL;
+  console.log(`Bluesky ${posts.length}投稿 → ブログ${blogs.length}件（${since.slice(0, 10)}以降）/ 登録済み ${have.size}件 / 通知済み ${notified.size}件${DRY_RUN ? " [DRY_RUN]" : ""}${notifyOnly ? " [通知のみ]" : ""}`);
 
   for (const b of blogs.sort((x, y) => x.createdAt.localeCompare(y.createdAt))) {
     const c = classify(b);
     if (c.verdict === "none" || c.verdict === "self") continue;
     const label = `${jstDate(b.createdAt)} ${b.author}「${b.title}」（最少${c.min == null ? "?" : c.min}人）`;
+
+    // Discord（集合写真も「可能性あり」を添えて送る）
+    if ((notifyOnly || !notified.has(b.id)) && !DRY_RUN) {   // 通知のみ（過去分の一括送信）は記録に関係なく送る
+      if (webhook && !firstRun) {
+        try { await notifyMemberBlog(b, c); console.log(`  📨 Discord に送信: ${label}`); await new Promise(r => setTimeout(r, 1500)); }
+        catch (e) { console.error(`  ❌ Discord: ${e.message}`); }
+      }
+      if (webhook || firstRun) notified.add(b.id);
+    }
+    if (notifyOnly) continue;
+
     if (c.verdict === "group") { console.log(`  ⏭ 集合写真のため除外: ${label}`); continue; }
     if (have.has(b.id))        { console.log(`  ・登録済み: ${label}`); continue; }
     const publish = c.verdict === "auto";
@@ -121,13 +192,14 @@ async function main() {
       parent: { database_id: DB_ID },
       properties: {
         Name:      { title: [{ text: { content: b.title.slice(0, 200) } }] },
-        URL:       { url: `https://www.hinatazaka46.com/s/official/diary/detail/${b.id}?ima=0000&cd=member` },
+        URL:       { url: blogUrl(b.id) },
         Date:      { date: { start: jstDate(b.createdAt) } },
         Published: { checkbox: publish },
       },
     });
     have.add(b.id);
   }
+  if (!DRY_RUN) saveNotified(notified);
 }
 
 main().catch(e => { console.error("❌", e.message); process.exit(1); });

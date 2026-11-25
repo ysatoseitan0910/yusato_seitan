@@ -24,6 +24,22 @@ jobs:
       - name: Install dependencies
         run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@0.39.0
 
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      # Discord 通知の「送った記録」（state/*.json）。実行環境は毎回消えるので VPS に置き、
+      # 最初に取ってきて、最後（Save notify state）に書き戻す。取れなくても各スクリプトは初回扱いで動く
+      - name: Restore notify state
+        continue-on-error: true
+        run: |
+          mkdir -p state
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/satoyu-state/*.json" state/ || echo "state なし"
+          ls state
+
       - name: Add new blog posts
         run: node add_blog_posts.js
         continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
@@ -39,6 +55,14 @@ jobs:
         env:
           NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
           DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}   # 「他メンバーブログ」スレッドへ通知
+
+      # 他メンバーのお誕生日の3日前から、お祝いポストの下書きを Discord へ
+      - name: Birthday drafts (Discord)
+        run: node notify_birthday.js
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       # Lemino で配信が始まった回を登録（日向坂で会いましょう＝公開／まだまだ！＝あらすじに名前が無ければ下書き）
       - name: Detect new Lemino episodes
@@ -126,26 +150,27 @@ jobs:
           fi
           echo "✅ 必須HTML ${count} 件を確認しました。デプロイを続行します"
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-      # minsaka の主催企画を見て、募集開始・締め切りリマインド・募集終了の告知下書きを Discord に送る。
-      # 送った記録（minsaka-state.json）は実行環境に残らないので VPS に置き、前後で取ってきて書き戻す。
+      # minsaka の主催企画を見て、募集開始・締め切りリマインド・募集終了の告知下書きを Discord「祝花」へ。
       # minsaka.json（企画一覧）は下の rsync で公開され、管理ページの下書き画面が読む。
       - name: minsaka announcement drafts (Discord)
+        run: node notify_minsaka.js
         continue-on-error: true
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      # Discord 通知の「送った記録」を VPS に書き戻す（ビルドが失敗しても記録は残す）
+      - name: Save notify state
+        if: always()
+        continue-on-error: true
         run: |
+          ls state/*.json >/dev/null 2>&1 || exit 0
           VPS=${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $VPS:/root/satoyu-state/minsaka-state.json . 2>/dev/null || echo "state なし（初回は記録だけ）"
-          node notify_minsaka.js
+          mkdir -p state_remote
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no "$VPS:/root/satoyu-state/*.json" state_remote/ 2>/dev/null || true
+          node merge_state.js state_remote state
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $VPS 'mkdir -p /root/satoyu-state'
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no minsaka-state.json $VPS:/root/satoyu-state/minsaka-state.json
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no state/*.json "$VPS:/root/satoyu-state/"
+          rm -rf state_remote
 
       - name: Deploy to VPS (satoyu.info)
         run: |
@@ -173,7 +198,10 @@ jobs:
             --exclude='sync_lemino.js' \
             --exclude='notify_minsaka.js' \
             --exclude='discord.js' \
-            --exclude='minsaka-state.json' \
+            --exclude='notify_birthday.js' \
+            --exclude='discord_backfill.js' \
+            --exclude='merge_state.js' \
+            --exclude='/state/' \
             --exclude='_template.html' \
             --exclude='/package.json' \
             --exclude='/package-lock.json' \

@@ -42,20 +42,39 @@
     return m ? m[1] : "";
   }
 
+  // 企画ページの「企画概要」から、告知の1文目（いつ・どこで・何に）を組み立てる。
+  // 例：「12月9日10日11日に国立代々木競技場 第一体育館で行われる『ARENA TOUR「ひなくり2026」』にて…」
+  //   → 「12月9日〜11日に国立代々木競技場 第一体育館で開催される『ARENA TOUR「#ひなくり2026 」』に、」
+  // 読み取れない書き方のときは空文字（汎用の文面になる）
+  function parseIntro(html) {
+    const t = strip(html);
+    const i = t.indexOf("企画概要");
+    if (i < 0) return "";
+    const o = t.slice(i + 4, i + 400).trim();
+    const days = s => s.replace(/(\d+月\d+日)((?:\d+日)+)/, (_, a, rest) => `${a}〜${rest.match(/\d+日/g).pop()}`);
+    const tag = s => s.replace(/「([^「」\s]+?\d{4})」/g, "「#$1 」");            // 「ひなくり2026」→「#ひなくり2026 」
+    let m = o.match(/^(\d+月[\d日]+(?:\([^)]*\))?)に(.+?)で(?:行われる|開催される)『(.+?)』(?:にて|で)/);
+    if (m) return `${days(m[1])}に${m[2]}で開催される『${tag(m[3])}』に、`;
+    m = o.match(/^(.+?)が、(\d+月\d+日(?:\([^)]*\))?)に(.+?)にて開催/);
+    if (m) return `${m[2]}に${m[3]}で開催される${m[1].replace(/^日向坂46\s*/, "")}に、`;
+    return "";
+  }
+
   const head = ev => `『${ev.title}』`;
   const when = ev => [ev.date && `📅 ${ev.date}`, ev.place && `📍 ${ev.place}`].filter(Boolean).join("\n");
 
   const DRAFTS = {
     start: {
       label: "募集開始",
+      // 参考：ひなくり東京公演の募集ポスト（2026-11-03）
       text: ev => [
         "＼💐参加者大募集💐／", "",
-        head(ev), "",
-        when(ev), "",
-        "#佐藤優羽 さんへのお祝いを一緒に贈りませんか？✨", "",
+        ev.intro
+          ? `${ev.intro}#佐藤優羽 さんへのお祝いのお花を一緒に贈りませんか？✨`
+          : `${head(ev)}\n\n${when(ev)}\n\n#佐藤優羽 さんへのお祝いを一緒に贈りませんか？✨`,
+        "",
         ev.url, "",
-        (ev.price ? `1口${ev.price}から！\n` : "") + "ご参加者のお名前はパネルに連名で記載させていただきます☀️", "",
-        "#日向坂46",
+        (ev.price ? `1口${ev.price}から！\n` : "") + "ご参加者のお名前はパネルに連名で記載させていただきます☀️",
       ].join("\n"),
     },
     remind: {
@@ -82,7 +101,7 @@
     },
   };
 
-  const api = { ORGANIZER_URL, EVENT_URL, parseOrganizedEvents, parseUnitPrice, DRAFTS };
+  const api = { ORGANIZER_URL, EVENT_URL, parseOrganizedEvents, parseUnitPrice, parseIntro, DRAFTS };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.Minsaka = api;
 })(this);

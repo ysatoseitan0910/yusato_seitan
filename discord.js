@@ -66,11 +66,8 @@ async function fetchArticleImages(url) {
   } catch { return []; }
 }
 
-async function notifyBlog(article, { prefix = "", skipOldCheck = false } = {}) {
-  if (!process.env.DISCORD_WEBHOOK_URL) return;
-  // 取りこぼしを後から拾ったときに古い記事を一斉に送らないよう、3日以内の記事だけ
-  if (!skipOldCheck && article.date && Date.parse(article.date) < Date.now() - 3 * 86400e3) return;
-  // 文面は管理ページの「ブログ告知の下書き」と同じ（X に投稿している実際の書式）
+// 告知の下書きを「ブログ告知用」スレッドへ。文面は管理ページの「ブログ告知の下書き」と同じ（X に投稿している実際の書式）
+async function sendBlogDraft(article, prefix = "") {
   const draft = [
     "＼✨#satoyublog 更新│ ˙ᵕ˙ )꜆✨／", "",
     "#佐藤優羽 OFFICIAL BLOG", `「${article.title}」`, "",
@@ -78,11 +75,24 @@ async function notifyBlog(article, { prefix = "", skipOldCheck = false } = {}) {
     "（コメント）", "",
     "#日向坂46",
   ].join("\n");
+  await sendDiscord(`${prefix}📝 **ブログ更新：告知の下書き**${article.date ? `（${article.date}）` : ""}\n${codeBlock(draft)}`, [], THREADS.blog);
+}
+
+// 記事の写真を「ブログ写真」スレッドへ（タイトルと URL を添える）
+async function sendBlogPhotos(article, prefix = "") {
   const urls = await fetchArticleImages(article.url);
   const files = (await Promise.all(urls.map(fetchImage))).filter(Boolean);
-  // 下書きは「ブログ告知用」、写真は「ブログ写真」のスレッドへ分けて送る
-  await sendDiscord(`${prefix}📝 **ブログ更新：告知の下書き**\n${codeBlock(draft)}`, [], THREADS.blog);
-  if (files.length) await sendDiscord(`${prefix}📷 **「${article.title}」の写真**（${files.length}枚）\n<${article.url}>`, files, THREADS.blogPhoto);
+  if (!files.length) return 0;
+  await sendDiscord(`${prefix}📷 **「${article.title}」の写真**（${article.date ? article.date + "・" : ""}${files.length}枚）\n<${article.url}>`, files, THREADS.blogPhoto);
+  return files.length;
+}
+
+async function notifyBlog(article, { prefix = "", skipOldCheck = false } = {}) {
+  if (!process.env.DISCORD_WEBHOOK_URL) return;
+  // 取りこぼしを後から拾ったときに古い記事を一斉に送らないよう、3日以内の記事だけ
+  if (!skipOldCheck && article.date && Date.parse(article.date) < Date.now() - 3 * 86400e3) return;
+  await sendBlogDraft(article, prefix);
+  await sendBlogPhotos(article, prefix);
 }
 
 // 下書き部分をコードブロックで囲む（見出しと投稿文の境目が分かるように）
@@ -90,5 +100,5 @@ function codeBlock(text) {
   return "```\n" + String(text).replace(/```/g, "ˋˋˋ") + "\n```";
 }
 
-module.exports = { sendDiscord, fetchImage, notifyBlog, codeBlock, THREADS };
+module.exports = { sendDiscord, fetchImage, notifyBlog, sendBlogDraft, sendBlogPhotos, codeBlock, THREADS };
 

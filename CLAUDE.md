@@ -385,8 +385,17 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
   - 新着ブログ：`add_blog_posts.js` が登録直後に下書き＋**記事の写真（委員会内の確認用）**を添付で送る。3日より古い記事は送らない
   - minsaka：`notify_minsaka.js` が主催企画一覧（`sakaseru.jp/mina/user/organized-events/244297`）を読み、
     募集開始／残り7・3・1日のリマインド／募集終了・お礼 を送る。文面は **`minsaka.js` だけ**で管理（管理ページと共用）
-  - 送った記録は `minsaka-state.json`。Actions の実行環境は消えるので **VPS の `/root/satoyu-state/` に置き、前後で scp** する。
-    state が無いときは記録だけして送らない（過去分を一斉に送らないため）。Webhook 未設定の間も記録は進む
+  - 他メンバーブログ：`sync_member_blog_bsky.js` が検出のたびに送る（執筆メンバー名・タイトル・日付・URL・佐藤優羽さんが写る写真）。
+    5人以上の写真は「集合写真の可能性あり」を添える（9人以上はサイトには登録しないが Discord には送る）。
+    執筆メンバー名は公式ブログの `<title>` から取る（Bluesky のハッシュタグは「ポカ」のような愛称のことがある）
+  - お誕生日：`notify_birthday.js` が誕生日の3日前から送る（お祝いポストは当日 0:00 に投稿している）。
+    メンバー・誕生日・サイリウムカラーは **`members.js`**。卒業・加入・カラー変更（例：山下葉留花さんは
+    2026-10-25 から エメラルドグリーン×サクラピンク）があったら直す。ハートはカラーに合わせる（`HEART`）
+  - 送り先のスレッド ID は `discord.js` の `THREADS`（ブログ告知用／ブログ写真／他メンバーブログ／祝花／他メンバーお誕生日）
+  - 送った記録は `state/*.json`。Actions の実行環境は消えるので **VPS の `/root/satoyu-state/` に置き**、deploy.yml の
+    `Restore notify state` で取ってきて `Save notify state` で書き戻す（`merge_state.js` で VPS 側とまとめてから）。
+    記録が無いときは記録だけして送らない（過去分を一斉に送らないため）
+  - 過去分をまとめて送るときは手動ワークフロー **Discord backfill**（`discord-backfill.yml`）。動作確認は **Discord test**
 
 ### 年表（DB_HISTORY）
 新しい仕組みは無い。**build.js の `syncToHistory()` が DB_BLOG / DB_LEMINO / DB_INTERVIEW / DB_YOUTUBE の公開分を
