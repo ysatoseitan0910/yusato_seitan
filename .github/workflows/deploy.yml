@@ -22,7 +22,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@0.39.0
+        run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@1.7.0
 
       - name: Setup SSH
         run: |
@@ -56,6 +56,7 @@ jobs:
           NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
           DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}   # 「他メンバーブログ」スレッドへ通知
+          ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}     # 写真が普段の写真か公式の画像かを判定（photo_judge.js）
 
       # 他メンバーのお誕生日の3日前から、お祝いポストの下書きを Discord へ
       - name: Birthday drafts (Discord)
@@ -200,7 +201,7 @@ jobs:
             --exclude='discord.js' \
             --exclude='notify_birthday.js' \
             --exclude='discord_backfill.js' \
-            --exclude='merge_state.js' \
+            --exclude='merge_state.js' \n            --exclude='photo_judge.js' \
             --exclude='/state/' \
             --exclude='_template.html' \
             --exclude='/package.json' \

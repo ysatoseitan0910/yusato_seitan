@@ -102,21 +102,42 @@ function isGen5Group(alt, author) {
 
 // 判定（2026-11-25 改定）
 //   公式ビジュアルにしか写っていない → visual（登録しない。Discord には注記つきで送る）
+//     ・写真の説明から：20人以上・卒業メンバー入り
+//     ・Claude の画像判定（judgeBlog）で official とされた写真（グッズ・メニュー・ポスター等）
 //   五期生が集まった写真に写っている → auto（人数に関係なく公開）
 //   それ以外は、写っている写真のうち最も少人数の写真で AUTO_MAX / REVIEW_MAX により判定
-// ※ グッズ紹介・メニュー写真など、少人数の公式写真は写真の説明だけでは見分けられない
+//   Claude が「普段の写真」と言い切れなかった（unsure だけ）ときは、公開せず下書きにする
 function classify(b) {
   if (b.author === TARGET) return { verdict: "self" };
-  const hits = b.alts.filter(altHasTarget);
+  const hits = b.images.filter(i => altHasTarget(i.alt));
   if (!b.tags.has(TARGET) && !hits.length) return { verdict: "none" };
   if (!hits.length) return { verdict: "review", min: null };    // タグはあるが写真の説明で特定できない
-  const real = hits.filter(a => !isVisual(a, b.author));
-  if (!real.length) return { verdict: "visual", min: Math.min(...hits.map(altCount)) };
-  const min = Math.min(...real.map(altCount));
-  if (real.some(a => isGen5Group(a, b.author))) return { verdict: "auto", min, gen5: true };
-  if (min <= AUTO_MAX)   return { verdict: "auto", min };
-  if (min <= REVIEW_MAX) return { verdict: "review", min };
-  return { verdict: "group", min };
+  const real = hits.filter(i => !isVisual(i.alt, b.author) && !(i.judge && i.judge.kind === "official"));
+  if (!real.length) return { verdict: "visual", min: Math.min(...hits.map(i => altCount(i.alt))) };
+  const min = Math.min(...real.map(i => altCount(i.alt)));
+  const unsure = real.every(i => i.judge && i.judge.kind === "unsure");
+  let c;
+  if (real.some(i => isGen5Group(i.alt, b.author))) c = { verdict: "auto", min, gen5: true };
+  else if (min <= AUTO_MAX)   c = { verdict: "auto", min };
+  else if (min <= REVIEW_MAX) c = { verdict: "review", min };
+  else c = { verdict: "group", min };
+  if (unsure && c.verdict === "auto") c = { ...c, verdict: "review", unsure: true };
+  return c;
+}
+
+// Claude に写真を見てもらい、各画像に judge = { kind, reason } を付ける（APIキーが無ければ何もしない）。
+// 説明文から公式ビジュアルと分かっている写真は送らない（費用を抑えるため）
+const { judgePhotos } = require("./photo_judge");
+async function judgeBlog(b) {
+  if (!process.env.ANTHROPIC_API_KEY) return;
+  const targets = b.images.filter(i => altHasTarget(i.alt) && !isVisual(i.alt, b.author) && !i.judge);
+  if (!targets.length) return;
+  const files = await Promise.all(targets.map(i => fetchImage(i.url)));
+  const ok = targets.filter((_, k) => files[k]);
+  try {
+    const r = await judgePhotos(files.filter(Boolean));
+    if (r) ok.forEach((img, k) => { img.judge = r[k]; });
+  } catch (e) { console.error(`  ⚠ 画像判定に失敗（説明文だけで判定します）: ${e.message}`); }
 }
 
 // ── Discord「他メンバーブログ」スレッドへの通知 ──
@@ -128,7 +149,8 @@ const NOTE = {
   auto:   "",
   review: "⚠️ 大人数の写真のため、集合写真の可能性あり（サイトには下書きで登録。Notion で確認してください）",
   group:  "⚠️ 集合写真の可能性あり（大人数のため、サイトには登録していません）",
-  visual: "⚠️ ポスター・キービジュアルなど公式の画像に写っているだけの可能性が高いため、サイトには登録していません",
+  visual: "⚠️ ポスター・グッズ・メニューなど公式の画像に写っているだけの可能性が高いため、サイトには登録していません",
+  unsure: "🤖 普段の写真かどうか判定しきれなかったため、サイトには下書きで登録しました（Notion で確認してください）",
   gen5:   "🪽 五期生が集まった写真のため、サイトに公開で登録しました",
   tag:    "⚠️ 写真の説明から佐藤優羽さんを特定できませんでした（ハッシュタグのみ）。写真はすべて添付しています",
 };
@@ -150,7 +172,7 @@ async function notifyMemberBlog(b, c) {
   const imgs = hits.length ? hits : b.images;                    // 特定できないときは全部
   const files = (await Promise.all(imgs.map(i => fetchImage(i.url)))).filter(Boolean)
     .map((f, n) => ({ ...f, name: `${b.id}_${n + 1}.jpg` }));
-  const note = NOTE[c.min == null ? "tag" : c.gen5 ? "gen5" : c.verdict];
+  const note = NOTE[c.min == null ? "tag" : c.unsure ? "unsure" : c.gen5 ? "gen5" : c.verdict];
   const lines = [
     "📔 **他メンバーのブログに登場**",
     `メンバー：${b.author}`,
@@ -160,7 +182,12 @@ async function notifyMemberBlog(b, c) {
     `写真：${hits.length ? `佐藤優羽さんが写っている写真 ${files.length}枚（いちばん少ない写真で${c.min}人）` : `${files.length}枚`}`,
   ];
   if (note) lines.push(note);
-  await sendDiscord(lines.join("\n"), files, THREADS.memberBlog);
+  const judged = hits.filter(i => i.judge);
+  if (judged.length) {
+    const label = { candid: "普段の写真", official: "公式の画像", unsure: "判定できず" };
+    lines.push("🤖 画像判定：" + judged.map((i, n) => `${n + 1}枚目＝${label[i.judge.kind]}（${i.judge.reason}）`).join("／"));
+  }
+  await sendDiscord(lines.join("\n").slice(0, 1990), files, THREADS.memberBlog);
 }
 
 function loadNotified() {
@@ -201,9 +228,17 @@ async function main() {
   console.log(`Bluesky ${posts.length}投稿 → ブログ${blogs.length}件（${since.slice(0, 10)}以降）/ 登録済み ${have.size}件 / 通知済み ${notified.size}件${DRY_RUN ? " [DRY_RUN]" : ""}${notifyOnly ? " [通知のみ]" : ""}`);
 
   for (const b of blogs.sort((x, y) => x.createdAt.localeCompare(y.createdAt))) {
+    const c0 = classify(b);
+    if (c0.verdict === "none" || c0.verdict === "self") continue;
+    // 通知か登録をするものだけ Claude に画像を見てもらう（済んだものに費用をかけない）
+    const pending = notifyOnly || !notified.has(b.id) || (!have.has(b.id) && !["group", "visual"].includes(c0.verdict));
+    if (pending && !firstRun) await judgeBlog(b);
     const c = classify(b);
-    if (c.verdict === "none" || c.verdict === "self") continue;
     const label = `${jstDate(b.createdAt)} ${b.author}「${b.title}」（最少${c.min == null ? "?" : c.min}人）`;
+    if (DRY_RUN) {
+      console.log(`  [${c.verdict}${c.gen5 ? "・五期生" : ""}${c.unsure ? "・判定できず" : ""}] ${label}`);
+      b.images.filter(i => i.judge).forEach(i => console.log(`      ${i.judge.kind}: ${i.judge.reason}`));
+    }
 
     // Discord（集合写真も「可能性あり」を添えて送る）
     if ((notifyOnly || !notified.has(b.id)) && !DRY_RUN) {   // 通知のみ（過去分の一括送信）は記録に関係なく送る

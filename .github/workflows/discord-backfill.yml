@@ -20,18 +20,22 @@ on:
       flower:
         description: "祝花：募集中の企画の告知文案を送る（yes/no）"
         default: "no"
+      dry_run:
+        description: "他メンバーブログを送らずに判定結果だけ表示する（yes/no）"
+        default: "no"
 
 jobs:
   send:
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm install @notionhq/client@2.2.15
+      - run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@1.7.0
       - name: Setup SSH / restore state
         run: |
           mkdir -p ~/.ssh state
@@ -52,6 +56,7 @@ jobs:
         env:
           NOTIFY_ONLY: "1"
           BSKY_SINCE: ${{ inputs.member_blog_since }}
+          DRY_RUN: ${{ inputs.dry_run == 'yes' && '1' || '' }}
       - name: お誕生日
         if: inputs.birthday_days != '0'
         run: node notify_birthday.js
