@@ -733,7 +733,8 @@ function truncate(s, n) {
   s = String(s || "").replace(/\s+/g, " ").trim();
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }
-async function queryByDate(dbId, start, end) {
+// onlyPublished：他メンバーブログは自動検出で「下書き（Published=false）」を作るので、公開分だけに絞る
+async function queryByDate(dbId, start, end, onlyPublished = false) {
   const results = [];
   let cursor;
   do {
@@ -744,6 +745,7 @@ async function queryByDate(dbId, start, end) {
       filter: { and: [
         { property: "Date", date: { on_or_after: start } },
         { property: "Date", date: { on_or_before: end } },
+        ...(onlyPublished ? [{ property: "Published", checkbox: { equals: true } }] : []),
       ] },
       sorts: [{ property: "Date", direction: "ascending" }],
     });
@@ -771,7 +773,7 @@ app.post("/generate/weekly", auth, async (req, res) => {
     const [histRaw, tt, mb] = await Promise.all([
       queryByDate(DB.history, start, addDays(end, 1)),
       DB.tiktok     ? queryByDate(DB.tiktok, start, end)     : Promise.resolve([]),
-      DB.memberblog ? queryByDate(DB.memberblog, start, end) : Promise.resolve([]),
+      DB.memberblog ? queryByDate(DB.memberblog, start, end, true) : Promise.resolve([]),
     ]);
 
     // 実効日付（日曜深夜放送の補正）を付けて、この週に入るものだけに絞る
