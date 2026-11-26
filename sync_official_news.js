@@ -34,6 +34,8 @@ const strip = h => String(h || "").replace(/<script[\s\S]*?<\/script>/g, "").rep
   .replace(/<br\s*\/?>/g, "\n").replace(/<[^>]+>/g, "\n").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
   .replace(/&ldquo;|&rdquo;/g, "\"").replace(/&nbsp;/g, " ").replace(/[ \t]+/g, " ").replace(/\n\s*\n+/g, "\n").trim();
 const norm = s => String(s || "").normalize("NFKC").replace(/[\s「」『』"“”・@＠]/g, "").toLowerCase();
+// かっこ書き（補足）を除いた名前。ヒストリーとの重複判定に使う（「緊急生配信（…）」の表記違いなど）
+const base = s => norm(String(s || "").replace(/[（(][^）)]*[）)]/g, ""));
 
 // ── ニュース一覧 ──
 async function newsList(since) {
@@ -101,6 +103,8 @@ function prompt(n, body, existing) {
 
 ## 取り出し方
 - 日付ごとに1件（複数日の公演は日ごとに分ける）。date は YYYY-MM-DD
+- 同じ日・同じ会場で行われる一連のもの（例：リアルミート＆グリートとリアルサイン会）は1件にまとめる
+- 記事の主題でない予定（特典のお知らせの中に出てくる発売日など）も、既存のスケジュールに無ければ取り出してよい
 - name は既存のスケジュールの書き方に合わせる。例：
   - 「ARENA Tour「ひなくり2026」@国立代々木競技場 第一体育館」（公演名@会場）
   - 「18thシングル『イチャイチャ虫』発売」
@@ -148,10 +152,14 @@ const urlOf = p => p.properties.URL?.url || "";
 
 function historyType(name) {
   if (/誕生日/.test(name)) return "誕生日";
-  if (/ミート＆グリート|ミーグリ|サイン会|握手|個別トーク|イベント|感謝祭|コメンタリー/.test(name)) return "イベント";
+  if (/ラジオ|文化放送|ニッポン放送|TBSラジオ|bayfm|J-WAVE|FM/i.test(name)) return "ラジオ";
+  if (/月号|増刊|写真集|雑誌|グラビア|表紙/.test(name)) return "出版";
+  if (/ミート＆グリート|ミーグリ|サイン会|握手|個別トーク|感謝祭|コメンタリー|イベント/.test(name)) return "イベント";
+  if (/MUSIC VIDEO|MV|発売|リリース|先行配信/i.test(name)) return "リリース";
   if (/LIVE|ライブ|Tour|ツアー|ひな誕祭|ひなくり|フェス|万博|公演|ステージ/i.test(name)) return "ライブ";
-  if (/発売|リリース|配信開始/.test(name)) return "リリース";
-  if (/放送|出演|テレビ|TV|ラジオ/.test(name)) return /ラジオ/.test(name) ? "ラジオ" : "地上波";
+  if (/YouTube|日向坂ちゃんねる/i.test(name)) return "YouTube";
+  if (/配信|Lemino|ABEMA/i.test(name)) return "ネット配信";
+  if (/放送|テレビ|TV|出演/.test(name)) return "地上波";
   return "その他";
 }
 
@@ -172,9 +180,9 @@ async function main() {
     const news = (await newsList(since)).filter(n => CATEGORIES.includes(n.category) && !seen.has(n.id) && !schedUrls.has(n.url))
       .filter(n => n.category !== "メディア" || /佐藤優羽|五期生|日向坂46/.test(n.title));
     console.log(`公式ニュース：${since}以降・未処理 ${news.length}件${DRY_RUN ? " [DRY_RUN]" : ""}`);
-    // 既存のスケジュールは今日の前後だけを Claude に見せる（重複判定用）
-    const existing = schedule.filter(p => dateOf(p) >= since).map(p => `${dateOf(p)} ${title(p)}`).sort().join("\n");
     for (const n of news) {
+      // 既存のスケジュール（この実行で足した分も含む）を Claude に見せて重複を判定させる
+      const existing = schedule.filter(p => dateOf(p) >= since).map(p => `${dateOf(p)} ${title(p)}`).sort().join("\n");
       let r;
       try { r = await extract(client, n, await newsBody(n.url), existing); }
       catch (e) { console.error(`  ❌ ${n.id} ${e.message}`); continue; }      // 失敗したら次回また読む
@@ -203,12 +211,12 @@ async function main() {
   // ── 2) スケジュール → ヒストリー（日付が過ぎたもの） ──
   if (DB_HISTORY) {
     const history = await queryAll(DB_HISTORY);
-    const hist = history.map(p => ({ date: dateOf(p), name: norm(title(p)), url: urlOf(p) }));
+    const hist = history.map(p => ({ date: dateOf(p), name: base(title(p)), url: urlOf(p) }));
     const today = todayJst();
     const done = schedule.filter(p => p.properties.Published?.checkbox && dateOf(p) >= HISTORY_SINCE && dateOf(p) <= today);
     let added = 0;
     for (const p of done) {
-      const d = dateOf(p), name = title(p), n = norm(name), url = urlOf(p);
+      const d = dateOf(p), name = title(p), n = base(name), url = urlOf(p);
       // 同じ日に、名前が同じ・どちらかがもう一方を含む・URL が同じ記録があれば追加しない
       if (hist.some(h => h.date === d && (h.name === n || h.name.includes(n) || n.includes(h.name) || (url && h.url === url)))) continue;
       const [Y, M, D] = d.split("-");
