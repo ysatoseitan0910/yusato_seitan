@@ -403,8 +403,19 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
     記録が無いときは記録だけして送らない（過去分を一斉に送らないため）
   - 過去分をまとめて送るときは手動ワークフロー **Discord backfill**（`discord-backfill.yml`）。動作確認は **Discord test**
 
+### 公式ニュース → スケジュール・ヒストリー：`sync_official_news.js`（2026-11-26 追加）
+- 公式ニュース一覧（`news/list?dy=YYYYMM`）のイベント／リリース／ミート＆グリート／その他／メディアの記事本文を
+  **Claude（claude-opus-5-5）に読ませ**、新しく決まった予定（ライブ・イベント・発売・ミーグリ・佐藤優羽さんのメディア出演）を
+  1日1行で DB_SCHEDULE に公開で登録（URL はニュース記事）。チケット・注意事項・グッズ・特典・期間限定タイアップは入れない。
+  **「ひなた坂46」の活動は佐藤優羽さんが明記されているときだけ**（18th で表題選抜だったのに ひなた坂46 LIVE が入りかけた）
+- 重複は Claude に既存スケジュール（この実行で足した分を含む）を見せて判定＋日付と名前の一致でも見る
+- 読んだ記事IDは `state/official-news.json`（VPS と行き来）。通常は直近10日、過去分は Discord backfill の `news_since`（`dry_run` で試せる）
+- **日付が過ぎた公開スケジュールは DB_HISTORY に移す**（2026-09-01 以降・手入力の予定も対象）。Type は名前から（`historyType`）。
+  ヒストリーとの重複はかっこ書きを除いた名前の一致・包含・URL で判定
+- 2026-11-26 に 9月以降を流し込み済み（スケジュール約23件・ヒストリー9件）
+
 ### 年表（DB_HISTORY）
-新しい仕組みは無い。**build.js の `syncToHistory()` が DB_BLOG / DB_LEMINO / DB_INTERVIEW / DB_YOUTUBE の公開分を
+`sync_official_news.js` がスケジュールの過ぎた予定を入れる（上記）ほかは、**build.js の `syncToHistory()` が DB_BLOG / DB_LEMINO / DB_INTERVIEW / DB_YOUTUBE の公開分を
 自動で集約している**（2026-07-06 以降の日付のみ）。年表が止まって見えるときは、元の DB が止まっている。
 
 ### weekly さとうゆの自動生成（deploy.yml の `Generate weekly さとうゆ`）
