@@ -28,9 +28,18 @@
 .sg-panel { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; margin-top: 14px; }
 @media (max-width: 760px) { .sg-panel { grid-template-columns: 1fr; } }
 .sg-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
-/* サイコロの欄は画面の下に貼りつける（盤面が大きく、毎回スクロールしなくて済むように） */
-#sg-play { position: sticky; bottom: 8px; z-index: 6; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
 @media (max-width: 760px) { #sg-play { padding: 12px; } .sg-msg { min-height: 2.4em; margin-top: 8px; } .sg-status { margin-bottom: 8px; } }
+/* 操作バー：サイコロの欄が画面の外にあるとき（盤面が画面を占めるスマホなど）だけ、画面の下に出す。
+   以前は欄そのものを position: sticky にしていたが、sticky は親（.sg-panel）の範囲でしか効かず、盤面の下に隠れていた */
+.sg-bar { position: fixed; left: 50%; bottom: 10px; transform: translateX(-50%); width: min(560px, calc(100% - 20px)); z-index: 900;
+  background: #fff; border: 2px solid var(--emerald); border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.22);
+  padding: 8px 10px; display: none; align-items: center; gap: 10px; }
+.sg-bar.show { display: flex; }
+.sg-bar .sg-dice { width: 46px; height: 46px; font-size: 24px; border-radius: 12px; border-width: 2px; }
+.sg-bar .sg-btn { padding: 10px 12px; font-size: 15px; box-shadow: 0 3px 0 var(--emerald-dark); }
+.sg-bar-info { font-size: 11px; line-height: 1.5; min-width: 92px; }
+.sg-bar-info .you { color: var(--emerald-dark); font-weight: 700; }
+.sg-bar-info .cpu { color: #b2386b; font-weight: 700; }
 .sg-status { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
 .sg-chip { flex: 1; min-width: 140px; border-radius: 12px; padding: 8px 12px; font-size: 13px; }
 .sg-chip b { font-size: 16px; }
@@ -133,6 +142,12 @@
 
   <div class="sg-section-title">🏆 ランキング（サイコロを振った回数が少ない順）</div>
   <div class="sg-card"><table class="sg-rank"><thead><tr><th>順位</th><th>なまえ</th><th style="text-align:right;">回数</th><th>結果</th><th>日付</th></tr></thead><tbody id="sg-rank-body"><tr><td colspan="5">読み込み中…</td></tr></tbody></table></div>
+</div>
+
+<div class="sg-bar" id="sg-bar" aria-hidden="true">
+  <div class="sg-dice" id="sg-bar-dice">？</div>
+  <div class="sg-bar-info"><div class="you" id="sg-bar-you"></div><div class="cpu" id="sg-bar-cpu"></div></div>
+  <button class="sg-btn" id="sg-bar-roll" onclick="sgTurn()" tabindex="-1">サイコロを振る</button>
 </div>
 
 <div class="sg-modal" id="sg-modal" role="dialog" aria-modal="true" aria-labelledby="sg-modal-title">
@@ -260,6 +275,18 @@
     $("sg-you-sub").textContent = `サイコロ ${state.rolls}回` + (state.youRest ? `・あと${state.youRest}回休み` : "");
     $("sg-cpu-sub").textContent = state.cpuRest ? `あと${state.cpuRest}回休み` : "";
     $("sg-roll").textContent = state.youRest ? "お休み中（次へ）" : "サイコロを振る";
+    $("sg-bar-roll").textContent = $("sg-roll").textContent;
+    $("sg-bar-you").textContent = "あなた " + posLabel(state.you);
+    $("sg-bar-cpu").textContent = "CPU " + posLabel(state.cpu);
+  }
+  // サイコロの欄が画面に見えていない間だけ操作バーを出す
+  let playVisible = true;
+  function syncBar() {
+    const on = !!state && !state.done && $("sg-game").style.display !== "none" && !playVisible;
+    $("sg-bar").classList.toggle("show", on);
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(es => { playVisible = es[0].isIntersecting; syncBar(); }, { threshold: 0.6 }).observe($("sg-play"));
   }
   function showSquare(n) {
     const s = SQ && SQ[n];
@@ -277,14 +304,14 @@
     return "🔗 関連ページ";
   }
   let closeModal = null;
-  function popup(n, who) {
+  function popup(n, who, note) {
     const s = SQ && SQ[n];
     if (!s) return Promise.resolve();
     $("sg-modal-who").textContent = who ? (who === "you" ? "あなたが止まったマス" : "コンピューターが止まったマス") : (n >= GOAL ? "ゴール" : n + "マス目");
     $("sg-modal-who").style.background = who === "cpu" ? "#e0679b" : "";
     $("sg-modal-date").textContent = n >= GOAL ? "" : s.date;
     $("sg-modal-title").textContent = s.title;
-    $("sg-modal-text").textContent = s.text || "このマスは指示なし。";
+    $("sg-modal-text").textContent = note || s.text || "このマスは指示なし。";
     $("sg-modal-links").innerHTML = (s.links || []).map(x => {
       const u = typeof x === "string" ? x : x.u, label = typeof x === "string" ? "" : `（${esc(x.label)}）`;
       return `<a href="${esc(u)}" target="_blank" rel="noopener">${linkLabel(u)}${label}</a>`;
@@ -321,9 +348,9 @@
   async function rollDice(n) {
     const d = $("sg-dice");
     d.classList.add("rolling");
-    for (let i = 0; i < 8; i++) { d.textContent = 1 + Math.floor(Math.random() * 6); await wait(60); }
+    for (let i = 0; i < 8; i++) { d.textContent = $("sg-bar-dice").textContent = 1 + Math.floor(Math.random() * 6); await wait(60); }
     d.classList.remove("rolling");
-    d.textContent = n;
+    d.textContent = n; $("sg-bar-dice").textContent = n;
     await wait(250);
   }
 
@@ -364,6 +391,8 @@
       if (e.type === "goal") {
         msg(`${name}がゴール！${e.winner ? "🎉" : ""}`); log(e.who, e.winner ? "1着でゴール！" : "ゴール！");
         showSquare(GOAL);
+        // コンピューターが先にゴールしたことは、メッセージ欄が画面外でも気づけるようにポップアップで知らせる
+        if (e.who === "cpu" && e.winner) await popup(GOAL, "cpu", "コンピューターが先にゴールしました。あなたもゴールを目指して続けましょう！（ランキングには登録できます）");
         await wait(900);
       }
     }
@@ -384,11 +413,11 @@
   };
   function enterGame() {
     $("sg-intro").style.display = "none"; $("sg-goal").style.display = "none"; $("sg-game").style.display = "";
-    sgShowBoard(boardOf(pos.you)); ring(pos.you); status();
+    sgShowBoard(boardOf(pos.you)); ring(pos.you); status(); syncBar();
   }
   window.sgTurn = async function () {
     if (busy || !token) return;
-    busy = true; $("sg-roll").disabled = true;
+    busy = true; $("sg-roll").disabled = true; $("sg-bar-roll").disabled = true;
     try {
       const j = await api("/turn", { token });
       await play(j.events);
@@ -401,13 +430,13 @@
       }
       if (state.done) finish();
     } catch (e) { alert(e.message); }
-    busy = false; $("sg-roll").disabled = false;
+    busy = false; $("sg-roll").disabled = false; $("sg-bar-roll").disabled = false; syncBar();
   };
   window.sgRestart = function () {
     if (state && !state.done && !confirm("最初からやり直しますか？（今のゲームは消えます）")) return;
     token = null; state = null; save(); sgTurn.cpuNoted = false;
     $("sg-game").style.display = "none"; $("sg-goal").style.display = "none"; $("sg-intro").style.display = "";
-    ring(0); place(); sgShowBoard(1);
+    ring(0); place(); sgShowBoard(1); syncBar();
   };
   function finish() {
     $("sg-game").style.display = "none";
@@ -421,6 +450,9 @@
       <div id="sg-reg-msg" style="margin-top:8px;font-size:13px;"></div>
       <div style="margin-top:14px;"><button class="sg-btn secondary" onclick="sgRestart()">もう一度遊ぶ</button></div>`;
     g.style.display = "";
+    syncBar();
+    // スマホでは結果の欄が盤面の下にあるので、そこまでスクロールする
+    g.scrollIntoView({ behavior: "smooth", block: "center" });
   }
   window.sgRegister = async function () {
     const name = $("sg-name").value.trim();
@@ -430,6 +462,7 @@
       const j = await api("/finish", { token, name });
       myRankName = name;
       $("sg-reg-msg").innerHTML = j.rank ? `<b>${j.rank}位</b>で登録しました！` : "登録しました！";
+      $("sg-reg").style.display = "none"; $("sg-name").disabled = true;
       token = null; save();
       loadRanking();
     } catch (e) { $("sg-reg-msg").textContent = e.message; $("sg-reg").disabled = false; }
