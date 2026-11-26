@@ -41,7 +41,7 @@ const altCount     = alt => String(alt || "").split(/[,、]/).map(s => s.trim())
 async function fetchFeed(since) {
   const posts = [];
   let cursor;
-  for (let page = 0; page < 30; page++) {
+  for (let page = 0; page < (+process.env.BSKY_MAX_PAGES || 30); page++) {   // 過去分を遡るときは BSKY_MAX_PAGES で増やす
     const url = `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${ACTOR}&limit=100` + (cursor ? `&cursor=${encodeURIComponent(cursor)}` : "");
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Bluesky API ${res.status}`);
@@ -72,7 +72,7 @@ function groupByBlog(posts) {
     const b = blogs.get(id) || { id, author, title, createdAt: r.createdAt, tags: new Set(), alts: [], images: [] };
     tags.forEach(t => b.tags.add(t));
     b.alts.push(...imgs.map(i => i.alt || ""));
-    b.images.push(...imgs.map(i => ({ alt: i.alt || "", url: i.fullsize || i.thumb })));
+    b.images.push(...imgs.map(i => ({ alt: i.alt || "", url: i.fullsize || i.thumb, thumb: i.thumb || i.fullsize })));
     if (r.createdAt < b.createdAt) b.createdAt = r.createdAt;
     blogs.set(id, b);
   }
@@ -198,13 +198,28 @@ function saveNotified(set) {
   fs.writeFileSync(NOTIFIED_FILE, JSON.stringify({ ids: [...set].slice(-500) }));
 }
 
+// サイトのカードに出す画像：佐藤優羽さんが写っている写真のうち、公式の画像でないもの。
+// Claude が「普段の写真」と判定したものを優先し、その中で写っている人数が少ないものを選ぶ
+function pickPhoto(b) {
+  const c = b.images.filter(i => altHasTarget(i.alt) && !isVisual(i.alt, b.author) && !(i.judge && i.judge.kind === "official"));
+  c.sort((x, y) => ((x.judge && x.judge.kind === "candid") ? 0 : 1) - ((y.judge && y.judge.kind === "candid") ? 0 : 1)
+    || altCount(x.alt) - altCount(y.alt));
+  return c.length ? c[0].thumb || c[0].url : null;
+}
+const mediaProp = url => ({ Media: { files: [{ name: "satoyu", type: "external", external: { url } }] } });
+
+// 登録済みの記事：記事ID → { pageId, media }（Published を問わず全件。下書きや非公開を二重登録しないため）
 async function existingIds() {
-  const ids = new Set();
+  const ids = new Map();
   let cursor;
   do {
     // Published を問わず全件。下書きや非公開を二重登録しないため
     const r = await notion.databases.query({ database_id: DB_ID, start_cursor: cursor, page_size: 100 });
-    for (const p of r.results) { const id = detailId(p.properties.URL && p.properties.URL.url); if (id) ids.add(id); }
+    for (const p of r.results) {
+      const id = detailId(p.properties.URL && p.properties.URL.url);
+      const f = (p.properties.Media && p.properties.Media.files || [])[0];
+      if (id) ids.set(id, { pageId: p.id, media: f ? (f.external && f.external.url) || (f.file && f.file.url) : null });
+    }
     cursor = r.has_more ? r.next_cursor : undefined;
   } while (cursor);
   return ids;
@@ -219,7 +234,20 @@ async function main() {
     : new Date(Date.now() - WINDOW_DAYS * 86400e3).toISOString();
   const posts = await fetchFeed(since);
   const blogs = groupByBlog(posts);
-  const have  = notifyOnly ? new Set() : await existingIds();
+  const have  = notifyOnly ? new Map() : await existingIds();
+  // SET_MEDIA=1：登録済みの記事のカード画像を、佐藤優羽さんが写っている写真に差し替えるだけ（過去分用。BSKY_SINCE と併用）
+  if (process.env.SET_MEDIA === "1") {
+    let n = 0;
+    for (const b of blogs) {
+      const h = have.get(b.id), url = h && pickPhoto(b);
+      if (!url || h.media === url) continue;
+      console.log(`  🖼 ${jstDate(b.createdAt)} ${b.author}「${b.title}」`);
+      if (!DRY_RUN) await notion.pages.update({ page_id: h.pageId, properties: mediaProp(url) });
+      n++;
+    }
+    console.log(`カード画像を差し替え：${n}件`);
+    return;
+  }
   // 通知の記録が無い初回は、今見えているものを通知済みにするだけ（一斉に送らない）。NOTIFY_ONLY のときは送る
   let notified = loadNotified();
   const firstRun = !notified && !notifyOnly;
@@ -263,9 +291,10 @@ async function main() {
         URL:       { url: blogUrl(b.id) },
         Date:      { date: { start: jstDate(b.createdAt) } },
         Published: { checkbox: publish },
+        ...(pickPhoto(b) ? mediaProp(pickPhoto(b)) : {}),   // カード画像は佐藤優羽さんが写っている写真（無ければ後で記事の1枚目が入る）
       },
     });
-    have.add(b.id);
+    have.set(b.id, {});
   }
   if (!DRY_RUN) saveNotified(notified);
 }

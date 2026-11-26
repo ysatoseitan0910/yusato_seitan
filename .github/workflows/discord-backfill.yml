@@ -20,6 +20,9 @@ on:
       flower:
         description: "祝花：募集中の企画の告知文案を送る（yes/no）"
         default: "no"
+      member_media_since:
+        description: "他メンバーブログのカード画像を佐藤優羽さんの写真に差し替え：この日以降（YYYY-MM-DD・空=しない）"
+        default: ""
       news_since:
         description: "公式ニュース→スケジュール・ヒストリー：この日以降（YYYY-MM-DD・空=しない）"
         default: ""
@@ -68,6 +71,16 @@ jobs:
       - name: 祝花
         if: inputs.flower == 'yes'
         run: node discord_backfill.js flower
+      - name: 他メンバーブログのカード画像
+        if: inputs.member_media_since != ''
+        run: node sync_member_blog_bsky.js
+        env:
+          NOTION_TOKEN:   ${{ secrets.NOTION_TOKEN }}
+          DB_MEMBER_BLOG: ${{ secrets.DB_MEMBER_BLOG }}
+          SET_MEDIA: "1"
+          BSKY_SINCE: ${{ inputs.member_media_since }}
+          BSKY_MAX_PAGES: "200"
+          DRY_RUN: ${{ inputs.dry_run == 'yes' && '1' || '' }}
       - name: 公式ニュース → スケジュール・ヒストリー
         if: inputs.news_since != ''
         run: node sync_official_news.js
