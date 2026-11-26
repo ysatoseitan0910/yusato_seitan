@@ -394,6 +394,10 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
     Claude が candid と言い切れない（unsure のみ）ときは下書き。判定は通知・登録するときだけ行う（費用を抑えるため）。
     9月以降の32件で、ユーザー指定の 71571（公開）・71493 / 71790（除外）どおりになることを確認済み
   - 管理ページ「🔎 他メンバーブログの確認」で公開・非公開をボタンで切り替えられる（API `/publish` `/unpublish`）
+  - **カード画像は佐藤優羽さんが写っている写真**（2026-11-26〜）：登録時に `pickPhoto()`（公式の画像を除き、Claude の candid 優先・
+    少人数順）で Bluesky の画像 URL（`cdn.bsky.app`）を `Media` に入れる。Media が入っていれば update_blog_thumbnails.js は
+    記事の1枚目で上書きしない。過去分は Discord backfill の `member_media_since` で差し替え済み（175件中162件。残りは Bluesky に無い古い記事）。
+    縦長写真が多いので member-blog.html のカードは `object-position:center 20%`
   - お誕生日：`notify_birthday.js` が誕生日の3日前から送る（お祝いポストは当日 0:00 に投稿している）。
     メンバー・誕生日・サイリウムカラーは **`members.js`**。卒業・加入・カラー変更（例：山下葉留花さんは
     2026-10-25 から エメラルドグリーン×サクラピンク）があったら直す。ハートはカラーに合わせる（`HEART`）
