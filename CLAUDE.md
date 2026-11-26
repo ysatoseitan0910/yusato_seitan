@@ -255,6 +255,22 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 - `yuzai` / `muzai` / `cho_yuzai` は**スタンプ専用**（`STAMP_ONLY_ILLUSTS`）で、イラスト選択肢からは除外。
   入れると同じ絵がカード内に2つ出るため。選択肢（`PICKER_ILLUSTS`）は18種
 
+## sugoroku.html（さとうゆすごろく・2026-11-26 追加）
+ユーザーが描いた盤面2枚（2025/3〜2026/4・2026/4〜ゴール）で遊ぶ、あなた vs コンピューターのすごろく。
+**入口（サイト内リンク）は未定のため noindex・sitemap 未掲載**（`build.js` の `buildSugoroku` で noindex を付けている）。
+- **画面**：`sugoroku_body.html`（盤面・演出）を `buildSugoroku` が `_template.html` に差し込んで生成。
+  マスの座標 `XY` は盤面を 2000×845 に縮めたときの雲の中心（1〜40＝前半 board1、41〜67＝後半 board2、68＝ゴール）。
+  盤面は `images/sugoroku/board1.webp` / `board2.webp`（3200px・各約330KB）。元の PNG（7115px）は手元だけ（.gitignore）。
+  コマは盤面の自転車の絵を切り出した `piece_you.webp` / `piece_cpu.webp`
+- **ルール・マスの文面・サイコロ・ランキングはサーバー**（`admin-api/sugoroku.js`、`server.js` から `register(app, auth)`）。
+  不正防止のため進行はすべてサーバー：状態は HMAC 署名トークン（鍵は ADMIN_PASSWORD 由来）でブラウザに持たせ、
+  サイコロは「ゲームID・手番・誰・何個目」から決まる（古いトークンを送り直しても同じ目＝振り直し不可）。
+  サーバーに状態を持たないので、デプロイのたびの satoyu-admin 再起動でもゲームは続く
+- 止まったマスの指示で移動した先の指示は無視（連鎖しない）。ゴールは超えてもよい。5/1 の偶数・奇数判定のサイコロは回数に数えない
+- **ランキング**：ゴールしたトークンでだけ登録（同じゲームは1回）。`/var/www/satoyu/uploads/cards/sugoroku/ranking.json`
+  （Basic 認証のかかった場所。公開は API 経由のみ）。不適切な名前は `GET/DELETE /sugoroku/admin/ranking`（管理者認証）で消せる
+- API：`GET /sugoroku/board`・`POST /sugoroku/start`・`POST /sugoroku/turn`・`POST /sugoroku/finish`・`GET /sugoroku/ranking`
+
 ## message.html（お誕生日メッセージカード）
 背景画像に本文と名前を重ねてPNG保存／委員会へ送信するページ。card.html と同じ設計方針で作り直した。
 - 公開状態：**一般公開済み**（2026-09-10 に準備中オーバーレイを削除。複数人の実機テスト後に公開）

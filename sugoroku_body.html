@@ -1,0 +1,365 @@
+<!-- さとうゆすごろく（build.js の buildSugoroku が _template.html に差し込んで sugoroku.html を作る）
+     ルール・マスの文面・サイコロ・ランキングはサーバー（admin-api/sugoroku.js）。ここは盤面の表示と演出だけ。
+     マスの座標は盤面画像を 2000×845 に縮めたときのピクセル（雲の中心）。画像を差し替えたら測り直すこと -->
+<style>
+.sg-wrap { max-width: 1200px; margin: 0 auto; }
+.sg-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.sg-tab { padding: 6px 16px; border-radius: 99px; border: 1.5px solid var(--border); background: #fff; cursor: pointer;
+  font-family: 'Zen Maru Gothic', var(--jp); font-weight: 700; color: var(--text-muted); }
+.sg-tab.active { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+.sg-board { position: relative; border-radius: 14px; overflow-x: auto; overflow-y: hidden; border: 2px solid var(--emerald-light);
+  -webkit-overflow-scrolling: touch; background: #7fbfa3; }
+.sg-stage { position: relative; width: 100%; aspect-ratio: 2000 / 845; }
+.sg-stage img.sg-bg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+@media (max-width: 760px) { .sg-stage { width: 1150px; } }
+.sg-piece { position: absolute; width: 5.2%; transform: translate(-50%, -78%); transition: left .28s ease, top .28s ease;
+  border-radius: 10px; border: 3px solid #fff; box-shadow: 0 3px 10px rgba(0,0,0,.35); overflow: hidden; z-index: 3; background: #fff; }
+.sg-piece img { width: 100%; display: block; }
+.sg-piece.you { border-color: var(--emerald-dark); z-index: 4; }
+.sg-piece.cpu { border-color: #e0679b; }
+.sg-piece-label { position: absolute; left: 50%; bottom: -1.6em; transform: translateX(-50%); font-size: 11px; font-weight: 700;
+  white-space: nowrap; color: #fff; padding: 1px 6px; border-radius: 99px; }
+.sg-piece.you .sg-piece-label { background: var(--emerald-dark); }
+.sg-piece.cpu .sg-piece-label { background: #e0679b; }
+.sg-ring { position: absolute; width: 7%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
+  border: 4px solid #ffd54a; box-shadow: 0 0 0 4px rgba(255,213,74,.35); animation: sgPulse 1.2s ease-in-out infinite; z-index: 2; pointer-events: none; }
+@keyframes sgPulse { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.12); } }
+
+.sg-panel { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; margin-top: 14px; }
+@media (max-width: 760px) { .sg-panel { grid-template-columns: 1fr; } }
+.sg-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+/* サイコロの欄は画面の下に貼りつける（盤面が大きく、毎回スクロールしなくて済むように） */
+#sg-play { position: sticky; bottom: 8px; z-index: 6; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+@media (max-width: 760px) { #sg-play { padding: 12px; } .sg-msg { min-height: 2.4em; margin-top: 8px; } .sg-status { margin-bottom: 8px; } }
+.sg-status { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.sg-chip { flex: 1; min-width: 140px; border-radius: 12px; padding: 8px 12px; font-size: 13px; }
+.sg-chip b { font-size: 16px; }
+.sg-chip.you { background: var(--emerald-pale); color: var(--emerald-dark); }
+.sg-chip.cpu { background: #fde8f0; color: #b2386b; }
+.sg-roll-row { display: flex; align-items: center; gap: 14px; }
+.sg-dice { width: 74px; height: 74px; border-radius: 16px; background: #fff; border: 3px solid var(--emerald-dark);
+  display: grid; place-items: center; font-size: 40px; font-weight: 800; color: var(--emerald-dark); flex-shrink: 0;
+  font-family: 'Zen Maru Gothic', var(--jp); }
+.sg-dice.rolling { animation: sgShake .12s linear infinite; }
+@keyframes sgShake { 0% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } 100% { transform: rotate(-8deg); } }
+.sg-btn { flex: 1; padding: 14px 18px; border: none; border-radius: 14px; background: var(--emerald); color: #fff; font-size: 17px;
+  font-weight: 800; cursor: pointer; font-family: 'Zen Maru Gothic', var(--jp); box-shadow: 0 4px 0 var(--emerald-dark); }
+.sg-btn:disabled { opacity: .5; cursor: default; }
+.sg-btn.secondary { background: #fff; color: var(--emerald-dark); border: 2px solid var(--emerald); box-shadow: none; font-size: 14px; padding: 10px 14px; }
+.sg-msg { margin-top: 12px; font-size: 14px; line-height: 1.7; min-height: 3.4em; }
+.sg-square-date { font-size: 12px; color: var(--text-muted); }
+.sg-square-title { font-weight: 700; margin: 4px 0; line-height: 1.5; }
+.sg-square-text { color: var(--emerald-dark); font-weight: 700; }
+.sg-log { margin-top: 10px; max-height: 160px; overflow-y: auto; font-size: 12px; color: var(--text-muted); line-height: 1.7; border-top: 1px dashed var(--border); padding-top: 8px; }
+.sg-log .you { color: var(--emerald-dark); }
+.sg-log .cpu { color: #b2386b; }
+.sg-rules { font-size: 13px; line-height: 1.8; color: var(--text-muted); }
+.sg-rules li { margin-left: 1.2em; }
+.sg-goal { text-align: center; }
+.sg-goal h3 { font-family: 'Zen Maru Gothic', var(--jp); font-size: 22px; color: var(--emerald-dark); margin-bottom: 6px; }
+.sg-goal input { width: 100%; max-width: 260px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 16px; margin: 10px 0; }
+.sg-rank { width: 100%; border-collapse: collapse; font-size: 14px; }
+.sg-rank th, .sg-rank td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.sg-rank th { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.sg-rank td.num { text-align: right; font-weight: 700; color: var(--emerald-dark); }
+.sg-rank tr.me td { background: var(--emerald-pale); }
+.sg-section-title { font-family: 'Zen Maru Gothic', var(--jp); font-weight: 800; font-size: 18px; color: var(--emerald-dark); margin: 26px 0 10px; }
+</style>
+
+<div class="sg-wrap">
+  <div class="sg-tabs">
+    <button class="sg-tab active" data-board="1" onclick="sgShowBoard(1, true)">前半（2025年3月〜2026年4月）</button>
+    <button class="sg-tab" data-board="2" onclick="sgShowBoard(2, true)">後半（2026年4月〜ゴール）</button>
+  </div>
+  <div class="sg-board" id="sg-board">
+    <div class="sg-stage" id="sg-stage">
+      <img class="sg-bg" id="sg-bg" src="images/sugoroku/board1.webp" alt="さとうゆすごろくの盤面" width="3200" height="1352">
+      <div class="sg-ring" id="sg-ring" style="display:none"></div>
+      <div class="sg-piece cpu" id="sg-piece-cpu" style="display:none"><img src="images/sugoroku/piece_cpu.webp" alt="コンピューター"><span class="sg-piece-label">コンピューター</span></div>
+      <div class="sg-piece you" id="sg-piece-you" style="display:none"><img src="images/sugoroku/piece_you.webp" alt="あなた"><span class="sg-piece-label">あなた</span></div>
+    </div>
+  </div>
+
+  <div class="sg-panel">
+    <div class="sg-card" id="sg-play">
+      <div id="sg-intro">
+        <ul class="sg-rules">
+          <li>あなたとコンピューターが交互にサイコロを振って進みます</li>
+          <li>止まったマスの指示（◯マス進む・戻る、◯回休み、ふりだしに戻る など）に従います</li>
+          <li>ゴールはぴったりでなくてもOK。先にゴールした方の勝ち！</li>
+          <li>ゴールまでにサイコロを振った回数が少ないほど上位のランキングに登録できます</li>
+        </ul>
+        <div style="margin-top:14px;"><button class="sg-btn" id="sg-start" onclick="sgStart()">ゲームを始める</button></div>
+      </div>
+      <div id="sg-game" style="display:none;">
+        <div class="sg-status">
+          <div class="sg-chip you">あなた：<b id="sg-you-pos">-</b><div id="sg-you-sub" style="font-size:11px;"></div></div>
+          <div class="sg-chip cpu">コンピューター：<b id="sg-cpu-pos">-</b><div id="sg-cpu-sub" style="font-size:11px;"></div></div>
+        </div>
+        <div class="sg-roll-row">
+          <div class="sg-dice" id="sg-dice">？</div>
+          <button class="sg-btn" id="sg-roll" onclick="sgTurn()">サイコロを振る</button>
+        </div>
+        <div class="sg-msg" id="sg-msg"></div>
+        <div style="text-align:right;margin-top:6px;"><button class="sg-btn secondary" onclick="sgRestart()">最初からやり直す</button></div>
+      </div>
+      <div id="sg-goal" class="sg-goal" style="display:none;"></div>
+    </div>
+
+    <div class="sg-card">
+      <div id="sg-square"><div class="sg-square-date">止まったマス</div><div class="sg-square-title">ゲームを始めると、ここに止まったマスのできごとが出ます</div></div>
+      <div class="sg-log" id="sg-log"></div>
+    </div>
+  </div>
+
+  <div class="sg-section-title">🏆 ランキング（サイコロを振った回数が少ない順）</div>
+  <div class="sg-card"><table class="sg-rank"><thead><tr><th>順位</th><th>なまえ</th><th style="text-align:right;">回数</th><th>結果</th><th>日付</th></tr></thead><tbody id="sg-rank-body"><tr><td colspan="5">読み込み中…</td></tr></tbody></table></div>
+</div>
+
+<script>
+(function () {
+  const API = "/admin-api/sugoroku";
+  // 各マスの雲の中心（2000×845 の盤面上のピクセル）。1〜40＝前半、41〜68＝後半（68＝ゴール）
+  const XY = [null,
+    [120,95],[385,110],[620,100],[830,150],[1085,95],[1310,160],[1555,100],[1790,90],[1860,235],[1605,265],
+    [1350,300],[1100,265],[840,295],[615,255],[385,260],[130,230],[140,390],[390,425],[615,390],[855,440],
+    [1110,440],[1360,460],[1605,455],[1820,370],[1830,510],[1620,580],[1360,610],[1110,570],[870,585],[630,550],
+    [395,570],[140,575],[160,720],[405,720],[650,720],[890,730],[1140,730],[1390,745],[1620,725],[1860,660],
+    [120,690],[345,745],[555,700],[785,745],[1000,700],[1220,750],[1420,660],[1210,560],[975,550],[750,600],
+    [520,560],[215,560],[105,375],[360,395],[620,385],[850,430],[1090,420],[1320,420],[1200,285],[915,285],
+    [600,240],[370,265],[150,180],[380,95],[735,115],[1105,95],[1310,170],[1700,170]];
+  const SPLIT = 40;                                  // 40 マス目までが前半
+  const boardOf = n => (n <= SPLIT ? 1 : 2);
+  const KEY = "satoyu_sugoroku_v1";
+  const $ = id => document.getElementById(id);
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  let SQ = null, GOAL = 68, token = null, state = null, busy = false, shown = 1, myRankName = null;
+  const pos = { you: 1, cpu: 1 };
+
+  // 再読み込みしても続きから遊べるよう、トークンと最後の状態を保存する（無くても遊べる）
+  const save = () => { try {
+    if (token && state && !state.done) { localStorage.setItem(KEY, token); localStorage.setItem(KEY + "_state", JSON.stringify(state)); }
+    else { localStorage.removeItem(KEY); localStorage.removeItem(KEY + "_state"); }
+  } catch (e) {} };
+  const load = () => { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+
+  async function api(path, body) {
+    const res = await fetch(API + path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(j.error || "通信できませんでした");
+    return j;
+  }
+
+  // ── 盤面 ──
+  window.sgShowBoard = function (b, byUser) {
+    shown = b;
+    $("sg-bg").src = `images/sugoroku/board${b}.webp`;
+    document.querySelectorAll(".sg-tab").forEach(t => t.classList.toggle("active", +t.dataset.board === b));
+    place();
+  };
+  function setXY(el, n, dx) {
+    const [x, y] = XY[n];
+    el.style.left = (x / 2000 * 100 + dx) + "%";
+    el.style.top = (y / 845 * 100) + "%";
+  }
+  function place() {
+    for (const who of ["you", "cpu"]) {
+      const el = $("sg-piece-" + who);
+      if (!state) { el.style.display = "none"; continue; }
+      const same = pos.you === pos.cpu;
+      el.style.display = boardOf(pos[who]) === shown ? "" : "none";
+      setXY(el, pos[who], same ? (who === "you" ? -1.8 : 1.8) : 0);
+    }
+  }
+  function ring(n) {
+    const r = $("sg-ring");
+    if (!n || boardOf(n) !== shown) { r.style.display = "none"; return; }
+    r.style.display = ""; setXY(r, n, 0);
+  }
+  // スマホで盤面を横スクロールしているとき、コマが見える位置へ寄せる
+  function follow(n) {
+    const box = $("sg-board");
+    if (box.scrollWidth <= box.clientWidth) return;
+    const x = XY[n][0] / 2000 * box.scrollWidth - box.clientWidth / 2;
+    box.scrollTo({ left: Math.max(0, x), behavior: "smooth" });
+  }
+  async function moveTo(who, to, stepwise) {
+    const from = pos[who];
+    if (boardOf(from) !== shown) sgShowBoard(boardOf(from));
+    const dir = to > from ? 1 : -1;
+    if (stepwise && Math.abs(to - from) <= 12) {
+      for (let n = from; n !== to; ) {
+        n += dir; pos[who] = n;
+        if (boardOf(n) !== shown) sgShowBoard(boardOf(n)); else place();
+        follow(n);
+        await wait(230);
+      }
+    } else {
+      pos[who] = to;
+      if (boardOf(to) !== shown) sgShowBoard(boardOf(to)); else place();
+      follow(to);
+      await wait(450);
+    }
+  }
+
+  // ── 表示 ──
+  const posLabel = n => n >= GOAL ? "ゴール！" : `${n}マス目`;
+  function status() {
+    $("sg-you-pos").textContent = posLabel(state.you);
+    $("sg-cpu-pos").textContent = posLabel(state.cpu);
+    $("sg-you-sub").textContent = `サイコロ ${state.rolls}回` + (state.youRest ? `・あと${state.youRest}回休み` : "");
+    $("sg-cpu-sub").textContent = state.cpuRest ? `あと${state.cpuRest}回休み` : "";
+    $("sg-roll").textContent = state.youRest ? "お休み中（次へ）" : "サイコロを振る";
+  }
+  function showSquare(n) {
+    const s = SQ && SQ[n];
+    if (!s) return;
+    $("sg-square").innerHTML = `<div class="sg-square-date">${n >= GOAL ? "" : n + "マス目　"}${esc(s.date)}</div>
+      <div class="sg-square-title">${esc(s.title)}</div>${s.text ? `<div class="sg-square-text">${esc(s.text)}</div>` : ""}`;
+  }
+  function log(who, html) {
+    const d = document.createElement("div");
+    d.innerHTML = `<span class="${who}">${who === "you" ? "あなた" : "コンピューター"}</span>：${html}`;
+    $("sg-log").prepend(d);
+  }
+  const msg = h => { $("sg-msg").innerHTML = h; };
+  async function rollDice(n) {
+    const d = $("sg-dice");
+    d.classList.add("rolling");
+    for (let i = 0; i < 8; i++) { d.textContent = 1 + Math.floor(Math.random() * 6); await wait(60); }
+    d.classList.remove("rolling");
+    d.textContent = n;
+    await wait(250);
+  }
+
+  // ── 進行 ──
+  async function play(events) {
+    for (const e of events) {
+      const name = e.who === "you" ? "あなた" : "コンピューター";
+      if (e.type === "rest") {
+        msg(`${name}はお休み中…`); log(e.who, "お休み"); await wait(600); continue;
+      }
+      if (e.type === "roll") {
+        msg(`${name}のばん！`);
+        await rollDice(e.dice);
+        msg(`${name}は <b>${e.dice}</b> が出た！`);
+        log(e.who, `${e.dice}が出て${posLabel(e.to)}`);
+        await moveTo(e.who, e.to, true);
+        ring(e.to); showSquare(e.to);
+        await wait(e.who === "you" ? 900 : 700);
+        continue;
+      }
+      if (e.type === "effect") {
+        let t;
+        if (e.kind === "forward") t = `${e.n}マス進む！`;
+        else if (e.kind === "back") t = `${e.n}マス戻る…`;
+        else if (e.kind === "rest") t = `${e.n}回休み…`;
+        else if (e.kind === "start") t = "ふりだしに戻る！";
+        else if (e.kind === "parity") {
+          msg(`${name}は判定のサイコロ！（偶数なら無罪・奇数なら有罪）`);
+          await rollDice(e.dice);
+          t = e.ok ? `${e.dice}（偶数）で無罪！` : `${e.dice}（奇数）で有罪…ふりだしに戻る！`;
+        }
+        msg(`${name}：${t}`); log(e.who, t);
+        if (e.to !== e.from) { await moveTo(e.who, e.to, e.kind !== "start" && !(e.kind === "parity")); ring(e.to); showSquare(e.to); }
+        await wait(800);
+        continue;
+      }
+      if (e.type === "goal") {
+        msg(`${name}がゴール！${e.winner ? "🎉" : ""}`); log(e.who, e.winner ? "1着でゴール！" : "ゴール！");
+        showSquare(GOAL);
+        await wait(900);
+      }
+    }
+  }
+
+  window.sgStart = async function () {
+    if (busy) return; busy = true;
+    try {
+      const j = await api("/start", {});
+      token = j.token; state = j.state; save();
+      pos.you = state.you; pos.cpu = state.cpu;
+      $("sg-log").innerHTML = ""; $("sg-dice").textContent = "？";
+      enterGame();
+      msg("サイコロを振ってスタート！");
+      showSquare(1);
+    } catch (e) { alert(e.message); }
+    busy = false;
+  };
+  function enterGame() {
+    $("sg-intro").style.display = "none"; $("sg-goal").style.display = "none"; $("sg-game").style.display = "";
+    sgShowBoard(boardOf(pos.you)); ring(pos.you); status();
+  }
+  window.sgTurn = async function () {
+    if (busy || !token) return;
+    busy = true; $("sg-roll").disabled = true;
+    try {
+      const j = await api("/turn", { token });
+      await play(j.events);
+      token = j.token; state = j.state; save(); status();
+      // 次は自分の番なので、自分のコマが見えるように戻す
+      if (!state.done) { if (boardOf(pos.you) !== shown) sgShowBoard(boardOf(pos.you)); follow(pos.you); }
+      if (state.winner === "cpu" && !state.done && !sgTurn.cpuNoted) {
+        sgTurn.cpuNoted = true;
+        msg("コンピューターが先にゴール…。あなたもゴールを目指して続けましょう！（ランキングには登録できます）");
+      }
+      if (state.done) finish();
+    } catch (e) { alert(e.message); }
+    busy = false; $("sg-roll").disabled = false;
+  };
+  window.sgRestart = function () {
+    if (state && !state.done && !confirm("最初からやり直しますか？（今のゲームは消えます）")) return;
+    token = null; state = null; save(); sgTurn.cpuNoted = false;
+    $("sg-game").style.display = "none"; $("sg-goal").style.display = "none"; $("sg-intro").style.display = "";
+    ring(0); place(); sgShowBoard(1);
+  };
+  function finish() {
+    $("sg-game").style.display = "none";
+    const g = $("sg-goal");
+    const won = state.winner === "you";
+    g.innerHTML = `<h3>${won ? "🎉 あなたの勝ち！" : "ゴール！"}</h3>
+      <div>サイコロを振った回数：<b style="font-size:22px;color:var(--emerald-dark);">${state.rolls}回</b></div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${won ? "コンピューターより先にゴールしました" : "コンピューターが先にゴールしていました"}</div>
+      <div><input id="sg-name" maxlength="12" placeholder="なまえ（12文字まで）"></div>
+      <button class="sg-btn" id="sg-reg" style="max-width:260px;" onclick="sgRegister()">ランキングに登録する</button>
+      <div id="sg-reg-msg" style="margin-top:8px;font-size:13px;"></div>
+      <div style="margin-top:14px;"><button class="sg-btn secondary" onclick="sgRestart()">もう一度遊ぶ</button></div>`;
+    g.style.display = "";
+  }
+  window.sgRegister = async function () {
+    const name = $("sg-name").value.trim();
+    if (!name) { $("sg-reg-msg").textContent = "なまえを入力してください"; return; }
+    $("sg-reg").disabled = true;
+    try {
+      const j = await api("/finish", { token, name });
+      myRankName = name;
+      $("sg-reg-msg").innerHTML = j.rank ? `<b>${j.rank}位</b>で登録しました！` : "登録しました！";
+      token = null; save();
+      loadRanking();
+    } catch (e) { $("sg-reg-msg").textContent = e.message; $("sg-reg").disabled = false; }
+  };
+  async function loadRanking() {
+    try {
+      const j = await api("/ranking");
+      $("sg-rank-body").innerHTML = j.list.length ? j.list.map(r =>
+        `<tr class="${r.name === myRankName ? "me" : ""}"><td>${r.rank}</td><td>${esc(r.name)}</td><td class="num">${r.rolls}回</td><td>${r.won ? "勝ち" : "ゴール"}</td><td>${esc(r.date.replace(/-/g, "."))}</td></tr>`).join("")
+        : `<tr><td colspan="5">まだ記録がありません。最初の記録を作ろう！</td></tr>`;
+    } catch (e) { $("sg-rank-body").innerHTML = `<tr><td colspan="5">ランキングを読み込めませんでした</td></tr>`; }
+  }
+
+  // ── 起動：マスの文面を読み、途中のゲームがあれば続きから ──
+  (async function init() {
+    loadRanking();
+    try { const b = await api("/board"); SQ = b.squares; GOAL = b.goal; } catch (e) { msg("サーバーに接続できませんでした。時間をおいて再読み込みしてください"); }
+    const saved = load();
+    if (saved) {
+      try {
+        const st = JSON.parse(localStorage.getItem(KEY + "_state") || "null");
+        if (st && !st.done) { token = saved; state = st; pos.you = st.you; pos.cpu = st.cpu; enterGame(); showSquare(st.you); msg("前回の続きから遊べます"); }
+      } catch (e) {}
+    }
+  })();
+})();
+</script>

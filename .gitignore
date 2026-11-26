@@ -7,3 +7,6 @@ MEMO.md
 *.csv
 screenshot.jpg
 .claude/
+
+# すごろくの元画像（7115px・計8MB）は手元だけ。サイトでは board1/2.webp を使う
+images/sugoroku/*.png

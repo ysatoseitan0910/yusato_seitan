@@ -907,4 +907,7 @@ app.post("/ogp/weekly", auth, async (req, res) => {
   }
 });
 
+// さとうゆすごろく（公開エンドポイント。ルール・マスの文面・ランキングは sugoroku.js）
+require("./sugoroku").register(app, auth);
+
 app.listen(3001, () => console.log("satoyu admin API running on :3001"));

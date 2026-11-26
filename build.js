@@ -2336,6 +2336,16 @@ async function syncToHistory() {
 }
 
 // ── DB_QUIZからquiz_questions.jsonを生成 ──
+// さとうゆすごろく：本体（盤面・演出）は sugoroku_body.html、ルールとランキングは admin-api/sugoroku.js。
+// サイト内の入口が決まるまでは検索に出さない（noindex）。公開するときはこの noindex を外し、sitemap に足す
+async function buildSugoroku(tpl) {
+  const body = fs.readFileSync("sugoroku_body.html", "utf-8");
+  const html = buildPage(tpl, "さとうゆすごろく（佐藤優羽さんの歩みをすごろくで）", "SATOYU SUGOROKU", "さとうゆ <em>すごろく</em>",
+    "佐藤優羽さんの加入から20歳までの歩みをたどるすごろく。コンピューターと対戦して、少ない回数でゴールを目指そう！",
+    body, "sugoroku.html", `${SITE_URL}/images/sugoroku/board1.webp`);
+  return html.replace("</head>", '<meta name="robots" content="noindex">\n</head>');
+}
+
 async function buildQuizJson() {
   if (!DB.quiz) { console.log("  DB_QUIZ未設定 → スキップ"); return; }
   const pages = await queryDB(DB.quiz);
@@ -2379,6 +2389,7 @@ const PAGE_ALIASES = {
   lemino:     ["lemino.html"],
   history:    ["history.html"],
   quiz:       ["quiz.html"],
+  sugoroku:   ["sugoroku.html"],
 };
 
 async function main() {
@@ -2426,6 +2437,7 @@ async function main() {
     "history.html":   { fn: buildHistory,   active: "HISTORY" },
     "weekly.html":    { fn: buildWeekly,    active: "WEEKLY" },
     "quiz.html":       { fn: buildQuiz,      active: "QUIZ" },
+    "sugoroku.html":   { fn: buildSugoroku,  active: "SUGOROKU" },
   };
 
   for (const [filename, { fn, active }] of Object.entries(pages)) {
