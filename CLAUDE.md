@@ -272,7 +272,7 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 - API：`GET /sugoroku/board`・`POST /sugoroku/start`・`POST /sugoroku/turn`・`POST /sugoroku/finish`・`GET /sugoroku/ranking`
 - **マスのポップアップ**：自分のコマが止まると、日付・できごと・指示を大きく表示（閉じると指示が実行される）。
   盤面の雲をタップしても開ける（`.sg-hit` の透明ボタン）。盤面の文字が小さく読みにくいため（2026-11-26）
-- **関連リンク**：`admin-api/sugoroku.js` の `LINKS`（マス番号 → URL）。ヒストリー DB から日付と内容が合うものを選んだ（49マス）。
+- **関連リンク**：`admin-api/sugoroku.js` の `LINKS`（マス番号 → URL）。ヒストリー DB から日付と内容が合うものを選んだ（54マス）。
   ボタンの文言は URL から自動（YouTube／Lemino／ブログ／公式サイト／掲載誌）。同じ種類が並ぶときは `{ u, label }` で補足
 
 ## message.html（お誕生日メッセージカード）
