@@ -558,7 +558,16 @@ async function buildIndex(tpl) {
   }).join("\n");
 
   // ── 佐藤優羽さんNews: 均一グリッド ──
-  const yuNewsSlice = yuNews.slice(0, 12);
+  // 他メンバーブログ（公開分）も日付順に混ぜて載せる。DB_YU_NEWS には入れず、表示のときだけ合わせる
+  //（Notion に複製を作らないので、他メンバーブログ側で非公開にすればここからも消える）。
+  // バッジは「◯◯さんBlog」（執筆メンバー名。未補完のときは「メンバーBlog」）
+  let memberBlogs = [];
+  try { memberBlogs = DB.memberBlog ? await queryDB(DB.memberBlog) : []; }
+  catch (e) { console.log("  ⚠ 他メンバーブログを取得できませんでした（News には載せずに続行）:", e.message); }
+  const memberBadge = new Map(memberBlogs.map(p => [p.id, `${getMemberNames(p)[0] || "メンバー"}さんBlog`]));
+  const yuNewsSlice = [...yuNews, ...memberBlogs]
+    .sort((a, b) => (getDate(b) || "").localeCompare(getDate(a) || ""))
+    .slice(0, 12);
 
   // TikTokは保存済みURLが期限切れになるため常にoEmbedから取得
   const tiktokTargetsIdx = yuNewsSlice.map(p =>
@@ -580,8 +589,9 @@ async function buildIndex(tpl) {
     const url      = getUrl(p);
     const title    = getText(p, "Name") || "詳細を見る";
     const date     = fmtDate(getDate(p));
-    const platform = getSelect(p, "Platform");
-    const badge    = platform ? `<span class="${badgeClass(platform)}" style="font-size:9px;padding:2px 7px;">${platform}</span>` : "";
+    const isMember = memberBadge.has(p.id);
+    const platform = isMember ? memberBadge.get(p.id) : getSelect(p, "Platform");
+    const badge    = platform ? `<span class="${isMember ? "badge badge-blog" : badgeClass(platform)}" style="font-size:9px;padding:2px 7px;">${platform}</span>` : "";
 
     // サムネイル: TikTokは常にoEmbed → Notion保存済み → Leminoはog:image → YouTube自動生成 → なし
     let img = tiktokThumbs[i] || "";
