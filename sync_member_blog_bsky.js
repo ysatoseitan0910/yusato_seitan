@@ -72,11 +72,23 @@ function groupByBlog(posts) {
     const b = blogs.get(id) || { id, author, title, createdAt: r.createdAt, tags: new Set(), alts: [], images: [] };
     tags.forEach(t => b.tags.add(t));
     b.alts.push(...imgs.map(i => i.alt || ""));
-    b.images.push(...imgs.map(i => ({ alt: i.alt || "", url: i.fullsize || i.thumb, thumb: i.thumb || i.fullsize })));
+    // 「『タイトル』 2/3」の番号。フィードは新しい順なので、あとで番号順に並べ直す（公式ブログの写真の順と一致する）
+    const part = +((r.text.match(/』\s*(\d+)\/\d+/) || [])[1] || 1);
+    b.images.push(...imgs.map((i, k) => ({ alt: i.alt || "", url: i.fullsize || i.thumb, thumb: i.thumb || i.fullsize, part, k })));
     if (r.createdAt < b.createdAt) b.createdAt = r.createdAt;
     blogs.set(id, b);
   }
+  for (const b of blogs.values()) b.images.sort((x, y) => x.part - y.part || x.k - y.k);
   return [...blogs.values()];
+}
+
+// 公式ブログ本文の写真 URL（掲載順）。Bluesky の n 枚目＝公式ブログの n 枚目（2026-11-26 に縦横比で全数一致を確認）
+async function officialImages(id) {
+  try {
+    const html = await (await fetch(blogUrl(id), { headers: { "User-Agent": "Mozilla/5.0" } })).text();
+    const body = html.slice(Math.max(0, html.indexOf("c-blog-article__text")));
+    return [...body.matchAll(/<img[^>]+src="(https:\/\/cdn\.hinatazaka46\.com\/files\/14\/diary\/[^"]+)"/g)].map(m => m[1]);
+  } catch { return []; }
 }
 
 // 写真の判定に使う現役メンバー（members.js ＋ 佐藤優羽さん）と五期生
@@ -204,7 +216,15 @@ function pickPhoto(b) {
   const c = b.images.filter(i => altHasTarget(i.alt) && !isVisual(i.alt, b.author) && !(i.judge && i.judge.kind === "official"));
   c.sort((x, y) => ((x.judge && x.judge.kind === "candid") ? 0 : 1) - ((y.judge && y.judge.kind === "candid") ? 0 : 1)
     || altCount(x.alt) - altCount(y.alt));
-  return c.length ? c[0].thumb || c[0].url : null;
+  return c[0] || null;
+}
+// カード画像の URL：選んだ写真と同じ位置の、公式ブログの写真 URL を使う（画像は公式サイトから表示する）。
+// 枚数が合わないとき（記事の編集など）は取り違えを避けて null（→ update_blog_thumbnails.js が記事の1枚目を入れる）
+async function photoUrl(b) {
+  const p = pickPhoto(b);
+  if (!p) return null;
+  const off = await officialImages(b.id);
+  return off.length === b.images.length ? off[b.images.indexOf(p)] : null;
 }
 const mediaProp = url => ({ Media: { files: [{ name: "satoyu", type: "external", external: { url } }] } });
 
@@ -239,7 +259,13 @@ async function main() {
   if (process.env.SET_MEDIA === "1") {
     let n = 0;
     for (const b of blogs) {
-      const h = have.get(b.id), url = h && pickPhoto(b);
+      const h = have.get(b.id), url = h && await photoUrl(b);
+      // 公式の URL が取れないとき、今 Bluesky の画像なら空にする（次の update_blog_thumbnails.js が記事の1枚目を入れる）
+      if (!url && h && /cdn\.bsky\.app/.test(h.media || "")) {
+        console.log(`  ↩ ${jstDate(b.createdAt)} ${b.author}「${b.title}」（公式の写真と対応が取れないため記事の1枚目に戻す）`);
+        if (!DRY_RUN) await notion.pages.update({ page_id: h.pageId, properties: { Media: { files: [] } } });
+        continue;
+      }
       if (!url || h.media === url) continue;
       console.log(`  🖼 ${jstDate(b.createdAt)} ${b.author}「${b.title}」`);
       if (!DRY_RUN) await notion.pages.update({ page_id: h.pageId, properties: mediaProp(url) });
@@ -284,6 +310,7 @@ async function main() {
     const publish = c.verdict === "auto";
     console.log(`  ${publish ? "✅ 公開で登録" : "📝 下書きで登録（要確認）"}: ${label}`);
     if (DRY_RUN) continue;
+    const photo = await photoUrl(b);
     await notion.pages.create({
       parent: { database_id: DB_ID },
       properties: {
@@ -291,7 +318,7 @@ async function main() {
         URL:       { url: blogUrl(b.id) },
         Date:      { date: { start: jstDate(b.createdAt) } },
         Published: { checkbox: publish },
-        ...(pickPhoto(b) ? mediaProp(pickPhoto(b)) : {}),   // カード画像は佐藤優羽さんが写っている写真（無ければ後で記事の1枚目が入る）
+        ...(photo ? mediaProp(photo) : {}),   // カード画像は佐藤優羽さんが写っている写真（公式ブログの URL。無ければ後で記事の1枚目が入る）
       },
     });
     have.set(b.id, {});
