@@ -39,7 +39,7 @@ jobs:
           DB_LEMINO:           ${{ secrets.DB_LEMINO }}
           DB_WEB:              ${{ secrets.DB_WEB }}
           DB_SCHEDULE:         ${{ secrets.DB_SCHEDULE }}
-          DB_QUIZ:             ${{ secrets.DB_QUIZ }}
+          DB_QUIZ:             ${{ secrets.DB_QUIZ_ID }}   # Secret の名前は DB_QUIZ_ID（DB_QUIZ という Secret は無く、長らくクイズが Notion から更新されていなかった）
           DB_HISTORY:          ${{ secrets.DB_HISTORY }}
           DB_TOP_NEWS:         ${{ secrets.DB_TOP_NEWS }}
 
