@@ -8,7 +8,7 @@
 //    複数日の公演は1日1行（スケジュールの書き方に合わせる）。既にある予定とは Claude と名前・日付の両方で重複を見る。
 //    読んだ記事のIDは state/official-news.json に残し、同じ記事は二度読まない（deploy.yml が VPS と行き来させる）。
 // 2) スケジュール → ヒストリー
-//    公開中のスケジュールのうち、日付が今日以前で、ヒストリーにまだ無いものを追加する（SINCE 以降のみ）。
+//    公開中のスケジュールのうち、ヒストリーにまだ無いものを追加する（SINCE 以降のみ。先の予定も入れる）。
 //    手で入れた予定も対象。Type は名前から決める（ライブ／イベント／リリース／誕生日など）。
 //
 // 通常は直近 WINDOW_DAYS 日のニュースだけを見る。過去分は NEWS_SINCE=YYYY-MM-DD で一度だけ流す。
@@ -211,12 +211,13 @@ async function main() {
     }
   } else console.log("ANTHROPIC_API_KEY 未設定 → ニュースの読み取りはスキップ");
 
-  // ── 2) スケジュール → ヒストリー（日付が過ぎたもの） ──
+  // ── 2) スケジュール → ヒストリー（先の予定も含む） ──
   if (DB_HISTORY) {
     const history = await queryAll(DB_HISTORY);
     const hist = history.map(p => ({ date: dateOf(p), name: base(title(p)), url: urlOf(p) }));
     const today = todayJst();
-    const done = schedule.filter(p => p.properties.Published?.checkbox && dateOf(p) >= HISTORY_SINCE && dateOf(p) <= today);
+    // 先の予定もヒストリーに入れる（2026-11-26〜。history.html では未来の日付に「予定」の印が付く）
+    const done = schedule.filter(p => p.properties.Published?.checkbox && dateOf(p) >= HISTORY_SINCE);
     let added = 0;
     for (const p of done) {
       const d = dateOf(p), name = title(p), n = base(name), url = urlOf(p);

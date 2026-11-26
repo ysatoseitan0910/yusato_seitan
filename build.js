@@ -1581,11 +1581,15 @@ async function buildHistory(tpl) {
         const typeBadge = type
           ? `<span class="tl-type" style="${typeStyle(type)}">${type}</span>`
           : "";
+        // 先の予定（今日より後の日付）には「予定」の印を付ける
+        const futureBadge = (getDate(p) || "").slice(0, 10) > todayJst()
+          ? `<span class="tl-type" style="background:var(--emerald-pale);color:var(--emerald-dark);border:1px solid var(--emerald-light)">予定</span>`
+          : "";
         return `
           <div class="tl-item">
             <div class="tl-dot"></div>
             <span class="tl-date">${date}</span>
-            ${typeBadge}
+            ${typeBadge}${futureBadge}
             <p class="tl-title">${titleHtml}</p>
           </div>`;
       }).join("\n");
