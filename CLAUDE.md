@@ -395,8 +395,11 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
     9月以降の32件で、ユーザー指定の 71571（公開）・71493 / 71790（除外）どおりになることを確認済み
   - 管理ページ「🔎 他メンバーブログの確認」で公開・非公開をボタンで切り替えられる（API `/publish` `/unpublish`）
   - **カード画像は佐藤優羽さんが写っている写真**（2026-11-26〜）：登録時に `pickPhoto()`（公式の画像を除き、Claude の candid 優先・
-    少人数順）で Bluesky の画像 URL（`cdn.bsky.app`）を `Media` に入れる。Media が入っていれば update_blog_thumbnails.js は
-    記事の1枚目で上書きしない。過去分は Discord backfill の `member_media_since` で差し替え済み（175件中162件。残りは Bluesky に無い古い記事）。
+    少人数順）で選び、**同じ位置の公式ブログの写真 URL（`cdn.hinatazaka46.com`）**を `Media` に入れる。
+    Bluesky の写真は「『タイトル』 1/2」の番号順に並べ直すと公式ブログ本文の写真と1枚ずつ対応する（縦横比で全数一致を確認）。
+    枚数が合わないときは取り違えを避けて入れない（→ update_blog_thumbnails.js が記事の1枚目を入れる）。
+    **画像を自サーバーにダウンロードして置き直すことはしない**（著作権上の配慮。公式の URL を参照して表示する）。
+    過去分は Discord backfill の `member_media_since` で差し替え済み（150件が佐藤優羽さんの写真・12件は対応が取れず1枚目）。
     縦長写真が多いので member-blog.html のカードは `object-position:center 20%`
   - お誕生日：`notify_birthday.js` が誕生日の3日前から送る（お祝いポストは当日 0:00 に投稿している）。
     メンバー・誕生日・サイリウムカラーは **`members.js`**。卒業・加入・カラー変更（例：山下葉留花さんは
