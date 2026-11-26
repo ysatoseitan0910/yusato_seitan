@@ -1923,7 +1923,7 @@ async function buildQuiz(tpl) {
       <h2>さとうゆクイズ</h2>
       <p>
         佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！<br>
-        全${total}問からランダム5問に挑戦しよう♪
+        全${total}問からランダム10問に挑戦しよう♪
       </p>
       ${total === 0
         ? `<p style="font-size:12px;color:var(--text-light);">問題を準備中です…もうしばらくお待ちください</p>`
@@ -1981,7 +1981,7 @@ async function buildQuiz(tpl) {
 <script>
 (function(){
   var ALL_QUESTIONS = ${questionsJson};
-  var QUIZ_SIZE = Math.min(5, ALL_QUESTIONS.length);
+  var QUIZ_SIZE = Math.min(10, ALL_QUESTIONS.length);
 
   var state = { questions: [], idx: 0, score: 0 };
 
@@ -2121,7 +2121,7 @@ async function buildQuiz(tpl) {
 })();
 <\/script>`;
 
-  return buildPage(tpl, "佐藤優羽さんクイズ（さとうゆクイズ）", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム5問に挑戦しよう`, body, "quiz.html");
+  return buildPage(tpl, "佐藤優羽さんクイズ（さとうゆクイズ）", "SATOYU QUIZ", "さとうゆ <em>クイズ</em>", `佐藤優羽さんの過去の出演番組や出演ライブ、ブログ等から出題！全${total}問からランダム10問に挑戦しよう`, body, "quiz.html");
 }
 
 // ── 自動集約: 各DBの新着をYu Newsへ追加 ──

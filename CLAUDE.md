@@ -53,7 +53,7 @@ $env:NOTION_TOKEN="xxx"; $env:DB_YU_NEWS="xxx"; node build.js
 - `about.html`：当委員会について
 - `terms.html`：生誕委員規約
 - `join.html`：ご参加希望の方へ
-- `quiz.html`：さとうゆクイズ（`quiz_questions.json` から10問中5問をランダム出題。4択・解説・参考URLつき）
+- `quiz.html`：さとうゆクイズ（`quiz_questions.json`（Notion の DB_QUIZ から生成）の全問からランダムに10問を出題。4択・解説・参考URLつき）
 - `card.html`：さとうゆ推しぷろふぃーる（Canvas描画・PNG保存）
 - `admin.html`：管理ページ（パスワード認証。Notionへのレコード追加・一覧・削除）
 - `serial_scanner.html`：**委員会の内部ツール**（シリアル番号をカメラで連続読み取り。2026-10-04 配置）。
