@@ -270,6 +270,10 @@ PCで投稿画面が開かない不具合が2つ同時にあった。**この2�
 - **ランキング**：ゴールしたトークンでだけ登録（同じゲームは1回）。`/var/www/satoyu/uploads/cards/sugoroku/ranking.json`
   （Basic 認証のかかった場所。公開は API 経由のみ）。不適切な名前は `GET/DELETE /sugoroku/admin/ranking`（管理者認証）で消せる
 - API：`GET /sugoroku/board`・`POST /sugoroku/start`・`POST /sugoroku/turn`・`POST /sugoroku/finish`・`GET /sugoroku/ranking`
+- **マスのポップアップ**：自分のコマが止まると、日付・できごと・指示を大きく表示（閉じると指示が実行される）。
+  盤面の雲をタップしても開ける（`.sg-hit` の透明ボタン）。盤面の文字が小さく読みにくいため（2026-11-26）
+- **関連リンク**：`admin-api/sugoroku.js` の `LINKS`（マス番号 → URL）。ヒストリー DB から日付と内容が合うものを選んだ（49マス）。
+  ボタンの文言は URL から自動（YouTube／Lemino／ブログ／公式サイト／掲載誌）。同じ種類が並ぶときは `{ u, label }` で補足
 
 ## message.html（お誕生日メッセージカード）
 背景画像に本文と名前を重ねてPNG保存／委員会へ送信するページ。card.html と同じ設計方針で作り直した。

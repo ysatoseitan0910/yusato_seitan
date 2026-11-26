@@ -87,6 +87,70 @@ const SQUARES = [
   { date: "ゴール", title: "ゴール！", text: "これからも日向坂46の佐藤優羽をよろしくお願いします！" },
 ];
 const GOAL = SQUARES.length - 1;   // 68
+
+// マスに関連するリンク（ヒストリー DB の登録から、日付と内容が合うものを選んだ。2026-11-26）。
+// 種類はブラウザ側で URL から判定してボタンの文言を変える（YouTube／Lemino／ブログ／公式サイト など）。
+// 同じ種類が並ぶときは { u: URL, label: "前半" } のように補足を付ける
+const Y = id => `https://www.youtube.com/watch?v=${id}`;
+const L = c => `https://lemino.docomo.ne.jp/contents/${c}`;
+const BLOG = id => `https://www.hinatazaka46.com/s/official/diary/detail/${id}?ima=0000&cd=member`;
+const PAGE = p => `https://www.hinatazaka46.com/s/official/page/${p}`;
+const LINKS = {
+  1: [Y("509d3942xJs")],
+  2: [PAGE("6th-anniversary")],
+  4: ["https://zasshi.tv/products/51649/"],
+  5: [Y("F-16wnHQLLw")],
+  6: [PAGE("5th_omotenashi")],
+  7: [PAGE("over_the_rainbow")],
+  8: [Y("aLwWR9C1cus")],
+  9: [Y("j1qLcPOrEPw")],
+  10: [Y("aqDMzy2w7TU")],
+  11: [{ u: L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNsNDY="), label: "前半" }, { u: L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWI4bzNsdTE="), label: "後半" }],
+  12: [Y("YyGPXrzvfYk")],
+  14: [PAGE("tour2025")],
+  15: [BLOG(65925)],
+  16: [BLOG(66205)],
+  18: [Y("s83NHIJ3D4c")],
+  20: ["https://www.byakuya-shobo.co.jp/book/b10152629.html"],
+  21: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWV0cXZocGM=")],
+  22: ["https://www.byakuya-shobo.co.jp/book/b10153204.html"],
+  25: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWV1czEzdXo=")],
+  26: [BLOG(66754)],
+  27: [PAGE("shinzanmono2025")],
+  28: [PAGE("16th_single?ima=0000")],
+  29: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltamtkY28=")],
+  30: [Y("2WEOnuwvoXE")],
+  31: ["https://l-tike.com/concert/lawson50th_260125/"],
+  32: [Y("MlNNxI0MNDI")],
+  33: [PAGE("km_graduation_ceremony")],
+  34: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltaHM3M28=")],
+  35: [PAGE("16thSG_hiraganalive")],
+  37: [BLOG(68296)],
+  38: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbWltaHNjMDY=")],
+  40: [PAGE("7th-anniversary?ima=0000"), BLOG(68826)],
+  41: [BLOG(68875)],
+  43: [BLOG(69127)],
+  44: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04ajdvNDA=")],
+  45: [Y("SileUBDdAqU")],
+  47: ["https://zasshi.tv/products/58779/"],
+  48: [Y("5lBX4kt4eUI"), BLOG(69373)],
+  49: ["https://www.hinatazaka46.com/s/official/media/detail/11681?ima=0000"],
+  51: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL3ZvZC8wMDAwMDAwMDAwXzAwbW04aHM1dW0=")],
+  52: [PAGE("17thSG_hiraganalive?ima=0000")],
+  53: ["https://www.byakuya-shobo.co.jp/book/b10171452.html"],
+  54: ["https://www.tv-tokyo.co.jp/plus/entertainment/entry/202606/19451.html"],
+  55: [Y("5lBX4kt4eUI")],
+  57: [L("Y3JpZDovL3BsYWxhLmlwdHZmLmpwL2dyb3VwL2IxMDRlZGM=")],
+  58: [PAGE("5th_generation_live")],
+  59: [PAGE("18th_single?ima=0000")],
+  60: [BLOG(70555)],
+  61: [Y("UC1D0U0s8tw")],
+  62: [BLOG(70609)],
+  63: [PAGE("18th_single?ima=0000")],
+  64: [Y("OAM2ulVoa4Y")],
+  65: [BLOG(70958)],
+  67: [PAGE("18th_single?ima=0000")],
+};
 const START = 1;
 
 const SECRET = crypto.createHash("sha256").update("satoyu-sugoroku:" + (process.env.ADMIN_PASSWORD || "")).digest();
@@ -166,7 +230,7 @@ function limited(ip, key, max, windowMs) {
 
 function register(app, auth) {
   app.get("/sugoroku/board", (req, res) => {
-    res.json({ goal: GOAL, squares: SQUARES.map(s => s && { date: s.date, title: s.title, text: s.text || "" }) });
+    res.json({ goal: GOAL, squares: SQUARES.map((s, i) => s && { date: s.date, title: s.title, text: s.text || "", links: LINKS[i] || [] }) });
   });
 
   app.post("/sugoroku/start", (req, res) => {

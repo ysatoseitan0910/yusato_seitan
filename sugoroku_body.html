@@ -63,6 +63,25 @@
 .sg-rank th { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 .sg-rank td.num { text-align: right; font-weight: 700; color: var(--emerald-dark); }
 .sg-rank tr.me td { background: var(--emerald-pale); }
+/* 盤面の雲をタップして中身を大きく見るための当たり判定（見た目は無し） */
+.sg-hit { position: absolute; width: 10%; height: 15%; transform: translate(-50%, -50%); background: transparent; border: none;
+  cursor: pointer; z-index: 1; border-radius: 40%; padding: 0; }
+.sg-hit:hover, .sg-hit:focus-visible { background: rgba(255,255,255,.25); outline: 2px solid rgba(255,255,255,.8); }
+/* マスのポップアップ */
+.sg-modal { position: fixed; inset: 0; background: rgba(15,30,22,.55); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+.sg-modal.open { display: flex; }
+.sg-modal-box { background: #fff; border-radius: 22px; max-width: 460px; width: 100%; padding: 26px 22px 20px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3); border: 4px solid var(--emerald-light); animation: sgPop .22s ease-out; max-height: 90vh; overflow-y: auto; }
+@keyframes sgPop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.sg-modal-who { display: inline-block; font-size: 12px; font-weight: 700; color: #fff; background: var(--emerald-dark); border-radius: 99px; padding: 2px 12px; margin-bottom: 8px; }
+.sg-modal-date { font-size: 14px; color: var(--text-muted); font-weight: 700; }
+.sg-modal-title { font-family: 'Zen Maru Gothic', var(--jp); font-size: 20px; font-weight: 800; line-height: 1.5; margin: 8px 0 12px; color: var(--text); }
+.sg-modal-text { background: var(--emerald-pale); color: var(--emerald-dark); border-radius: 14px; padding: 12px 14px; font-weight: 700; font-size: 16px; line-height: 1.6; }
+.sg-modal-links { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.sg-modal-links a { display: block; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--border); text-decoration: none; color: var(--text); font-weight: 700; font-size: 14px; }
+.sg-modal-links a:hover { border-color: var(--emerald); background: var(--emerald-pale); }
+.sg-modal-ok { margin-top: 16px; width: 100%; }
+
 .sg-section-title { font-family: 'Zen Maru Gothic', var(--jp); font-weight: 800; font-size: 18px; color: var(--emerald-dark); margin: 26px 0 10px; }
 </style>
 
@@ -116,6 +135,17 @@
   <div class="sg-card"><table class="sg-rank"><thead><tr><th>順位</th><th>なまえ</th><th style="text-align:right;">回数</th><th>結果</th><th>日付</th></tr></thead><tbody id="sg-rank-body"><tr><td colspan="5">読み込み中…</td></tr></tbody></table></div>
 </div>
 
+<div class="sg-modal" id="sg-modal" role="dialog" aria-modal="true" aria-labelledby="sg-modal-title">
+  <div class="sg-modal-box">
+    <div class="sg-modal-who" id="sg-modal-who"></div>
+    <div class="sg-modal-date" id="sg-modal-date"></div>
+    <div class="sg-modal-title" id="sg-modal-title"></div>
+    <div class="sg-modal-text" id="sg-modal-text"></div>
+    <div class="sg-modal-links" id="sg-modal-links"></div>
+    <button class="sg-btn sg-modal-ok" id="sg-modal-ok">OK</button>
+  </div>
+</div>
+
 <script>
 (function () {
   const API = "/admin-api/sugoroku";
@@ -157,7 +187,7 @@
     shown = b;
     $("sg-bg").src = `images/sugoroku/board${b}.webp`;
     document.querySelectorAll(".sg-tab").forEach(t => t.classList.toggle("active", +t.dataset.board === b));
-    place();
+    place(); hits();
   };
   function setXY(el, n, dx) {
     const [x, y] = XY[n];
@@ -219,6 +249,51 @@
     $("sg-square").innerHTML = `<div class="sg-square-date">${n >= GOAL ? "" : n + "マス目　"}${esc(s.date)}</div>
       <div class="sg-square-title">${esc(s.title)}</div>${s.text ? `<div class="sg-square-text">${esc(s.text)}</div>` : ""}`;
   }
+  // ── マスのポップアップ（自分のコマが止まったとき・雲をタップしたとき） ──
+  function linkLabel(u) {
+    if (/youtube\.com|youtu\.be/.test(u)) return "▶ YouTube で見る";
+    if (/lemino\.docomo/.test(u)) return "▶ Lemino で見る";
+    if (/diary\/detail/.test(u)) return "📝 ブログを読む";
+    if (/hinatazaka46\.com/.test(u)) return "🌐 公式サイトで見る";
+    if (/zasshi\.tv|byakuya-shobo|hanmoto/.test(u)) return "📖 掲載誌の詳細";
+    return "🔗 関連ページ";
+  }
+  let closeModal = null;
+  function popup(n, who) {
+    const s = SQ && SQ[n];
+    if (!s) return Promise.resolve();
+    $("sg-modal-who").textContent = who ? (who === "you" ? "あなたが止まったマス" : "コンピューターが止まったマス") : (n >= GOAL ? "ゴール" : n + "マス目");
+    $("sg-modal-who").style.background = who === "cpu" ? "#e0679b" : "";
+    $("sg-modal-date").textContent = n >= GOAL ? "" : s.date;
+    $("sg-modal-title").textContent = s.title;
+    $("sg-modal-text").textContent = s.text || "このマスは指示なし。";
+    $("sg-modal-links").innerHTML = (s.links || []).map(x => {
+      const u = typeof x === "string" ? x : x.u, label = typeof x === "string" ? "" : `（${esc(x.label)}）`;
+      return `<a href="${esc(u)}" target="_blank" rel="noopener">${linkLabel(u)}${label}</a>`;
+    }).join("");
+    $("sg-modal-ok").textContent = who ? "OK（つづける）" : "とじる";
+    $("sg-modal").classList.add("open");
+    $("sg-modal-ok").focus();
+    return new Promise(res => { closeModal = () => { $("sg-modal").classList.remove("open"); closeModal = null; res(); }; });
+  }
+  $("sg-modal-ok").addEventListener("click", () => closeModal && closeModal());
+  $("sg-modal").addEventListener("click", e => { if (e.target.id === "sg-modal" && closeModal) closeModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && closeModal) closeModal(); });
+  // 盤面の雲に当たり判定を置く（今表示している盤面の分だけ）
+  function hits() {
+    document.querySelectorAll(".sg-hit").forEach(b => b.remove());
+    const st = $("sg-stage");
+    for (let n = 1; n < XY.length; n++) {
+      if (boardOf(n) !== shown) continue;
+      const b = document.createElement("button");
+      b.className = "sg-hit"; b.type = "button";
+      b.setAttribute("aria-label", n >= GOAL ? "ゴール" : n + "マス目を見る");
+      b.style.left = XY[n][0] / 20 + "%"; b.style.top = XY[n][1] / 8.45 + "%";
+      b.onclick = () => { if (!closeModal && SQ) popup(n, null); };
+      st.appendChild(b);
+    }
+  }
+
   function log(who, html) {
     const d = document.createElement("div");
     d.innerHTML = `<span class="${who}">${who === "you" ? "あなた" : "コンピューター"}</span>：${html}`;
@@ -248,7 +323,7 @@
         log(e.who, `${e.dice}が出て${posLabel(e.to)}`);
         await moveTo(e.who, e.to, true);
         ring(e.to); showSquare(e.to);
-        await wait(e.who === "you" ? 900 : 700);
+        if (e.who === "you") { await wait(250); await popup(e.to, "you"); } else await wait(700);
         continue;
       }
       if (e.type === "effect") {
@@ -352,6 +427,7 @@
   // ── 起動：マスの文面を読み、途中のゲームがあれば続きから ──
   (async function init() {
     loadRanking();
+    hits();   // ゲームを始める前でも雲をタップして中身を見られるように
     try { const b = await api("/board"); SQ = b.squares; GOAL = b.goal; } catch (e) { msg("サーバーに接続できませんでした。時間をおいて再読み込みしてください"); }
     const saved = load();
     if (saved) {
