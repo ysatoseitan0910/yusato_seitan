@@ -14,7 +14,8 @@
 @media (max-width: 760px) { .sg-stage { width: 1150px; } }
 .sg-piece { position: absolute; width: 5.2%; transform: translate(-50%, -78%); transition: left .28s ease, top .28s ease;
   border-radius: 10px; border: 3px solid #fff; box-shadow: 0 3px 10px rgba(0,0,0,.35); overflow: hidden; z-index: 3; background: #fff; }
-.sg-piece img { width: 100%; display: block; }
+.sg-piece img { width: 100%; display: block; transition: transform .15s; }
+.sg-piece img.flip { transform: scaleX(-1); }
 .sg-piece.you { border-color: var(--emerald-dark); z-index: 4; }
 .sg-piece.cpu { border-color: #e0679b; }
 .sg-piece-label { position: absolute; left: 50%; bottom: -1.6em; transform: translateX(-50%); font-size: 11px; font-weight: 700;
@@ -225,6 +226,8 @@
       const same = pos.you === pos.cpu;
       el.style.display = boardOf(pos[who]) === shown ? "" : "none";
       setXY(el, pos[who], same ? (who === "you" ? -1.8 : 1.8) : 0);
+      // 元の絵は「あなた」が左向き・「コンピューター」が右向き。進む向きと違うときだけ左右を反転する
+      el.querySelector("img").classList.toggle("flip", facing[who] !== BASE_FACING[who]);
     }
     // タブに、それぞれのコマがどちらの盤面にいるかを出す
     document.querySelectorAll(".sg-tab").forEach(t => {
@@ -250,21 +253,36 @@
   }
   // コマを動かす。盤面を切り替えるのは自分のコマのときだけ。
   // コンピューターが今の盤面の外にいる間は、見えないので待たずに位置だけ進める
+  // コマの向き：a マスから b マスへ動くときの左右。真上・真下への移動では向きを変えない。
+  // 前半の最後（40）と後半の最初（41）は盤面をまたぐ：前半は右端から出て、後半は左端から入るので、進む＝右向き
+  const BASE_FACING = { you: "left", cpu: "right" };
+  const facing = { you: "right", cpu: "right" };
+  function face(who, a, b) {
+    if (a === b || !XY[a] || !XY[b]) return;
+    if (boardOf(a) !== boardOf(b)) { facing[who] = b > a ? "right" : "left"; return; }
+    const dx = XY[b][0] - XY[a][0];
+    if (Math.abs(dx) > 30) facing[who] = dx > 0 ? "right" : "left";
+  }
+  // 止まっているときは、次のマスの方を向く
+  const faceAhead = who => { if (pos[who] < GOAL) face(who, pos[who], pos[who] + 1); };
   async function moveTo(who, to, stepwise) {
     const from = pos[who];
     if (who === "you" && boardOf(from) !== shown) sgShowBoard(boardOf(from));
     const dir = to > from ? 1 : -1;
     if (stepwise && Math.abs(to - from) <= 12) {
       for (let n = from; n !== to; ) {
+        face(who, n, n + dir);
         n += dir; pos[who] = n;
         if (who === "you" && boardOf(n) !== shown) sgShowBoard(boardOf(n)); else place();
         if (boardOf(n) === shown) { follow(n); await wait(230); }
       }
     } else {
+      face(who, from, to);
       pos[who] = to;
       if (who === "you" && boardOf(to) !== shown) sgShowBoard(boardOf(to)); else place();
       if (boardOf(to) === shown) { follow(to); await wait(450); }
     }
+    faceAhead(who); place();
   }
 
   // ── 表示 ──
@@ -418,6 +436,7 @@
   };
   function enterGame() {
     $("sg-intro").style.display = "none"; $("sg-goal").style.display = "none"; $("sg-game").style.display = "";
+    faceAhead("you"); faceAhead("cpu");
     sgShowBoard(boardOf(pos.you)); ring(pos.you); status(); syncBar();
   }
   window.sgTurn = async function () {
