@@ -2348,7 +2348,8 @@ async function buildSugoroku(tpl) {
 
 async function buildQuizJson() {
   if (!DB.quiz) { console.log("  DB_QUIZ未設定 → スキップ"); return; }
-  const pages = await queryDB(DB.quiz);
+  // クイズ DB には Date が無いので、作成日時の順で取る（既定の Date ソートだと Notion がエラーを返す）
+  const pages = await queryDB(DB.quiz, [{ timestamp: "created_time", direction: "ascending" }]);
   const questions = pages.map(p => ({
     q:           getText(p, "Name"),
     options: [
