@@ -20,8 +20,11 @@ on:
       flower:
         description: "祝花：募集中の企画の告知文案を送る（yes/no）"
         default: "no"
+      news_since:
+        description: "公式ニュース→スケジュール・ヒストリー：この日以降（YYYY-MM-DD・空=しない）"
+        default: ""
       dry_run:
-        description: "他メンバーブログを送らずに判定結果だけ表示する（yes/no）"
+        description: "他メンバーブログ・公式ニュースを書き込まずに判定結果だけ表示する（yes/no）"
         default: "no"
 
 jobs:
@@ -65,6 +68,15 @@ jobs:
       - name: 祝花
         if: inputs.flower == 'yes'
         run: node discord_backfill.js flower
+      - name: 公式ニュース → スケジュール・ヒストリー
+        if: inputs.news_since != ''
+        run: node sync_official_news.js
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DB_SCHEDULE:  ${{ secrets.DB_SCHEDULE }}
+          DB_HISTORY:   ${{ secrets.DB_HISTORY }}
+          NEWS_SINCE:   ${{ inputs.news_since }}
+          DRY_RUN: ${{ inputs.dry_run == 'yes' && '1' || '' }}
 
       - name: Save state
         if: always()

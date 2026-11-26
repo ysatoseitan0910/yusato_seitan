@@ -73,6 +73,16 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_LEMINO:    ${{ secrets.DB_LEMINO }}
 
+      # 公式サイトのニュースから新しいライブ・イベント等を検知してスケジュールへ。日付が過ぎた予定はヒストリーへ
+      - name: Detect official news (schedule / history)
+        run: node sync_official_news.js
+        continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
+        env:
+          NOTION_TOKEN:      ${{ secrets.NOTION_TOKEN }}
+          DB_SCHEDULE:       ${{ secrets.DB_SCHEDULE }}
+          DB_HISTORY:        ${{ secrets.DB_HISTORY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
       - name: Fill member blog meta (Name/Date/Member from URL)
         run: node update_member_blog_meta.js
         continue-on-error: true   # 収集失敗でサイト更新は止めない（ビルドのみ致命的）
@@ -203,6 +213,7 @@ jobs:
             --exclude='discord_backfill.js' \
             --exclude='merge_state.js' \
             --exclude='photo_judge.js' \
+            --exclude='sync_official_news.js' \
             --exclude='/state/' \
             --exclude='_template.html' \
             --exclude='/package.json' \
