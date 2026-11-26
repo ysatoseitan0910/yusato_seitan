@@ -966,7 +966,8 @@ async function buildMemberBlog(tpl) {
     const badges = [memberBadges, blogBadge].filter(Boolean).join(" ");
     const membersAttr = escAttr(members.join(","));
     const imgTag = img
-      ? `<img class="media-img" src="${img}" alt="${escAttr(title)}" loading="lazy">`
+      // 写真は縦長が多く、16:9 に切り抜くと顔が切れるので上寄りを見せる
+      ? `<img class="media-img" src="${img}" alt="${escAttr(title)}" loading="lazy" style="object-position:center 20%;">`
       : `<div class="media-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>`;
     const link = url ? `<a href="${url}" class="news-card-link" target="_blank" rel="noopener">ブログを読む →</a>` : "";
     return `
