@@ -183,11 +183,20 @@
   }
 
   // ── 盤面 ──
-  window.sgShowBoard = function (b, byUser) {
-    shown = b;
-    $("sg-bg").src = `images/sugoroku/board${b}.webp`;
+  // 盤面は「自分のコマがいる側」を表示し続ける。コンピューターが別の盤面にいるときは切り替えない
+  //（以前はコンピューターが動くたびに切り替わり、毎ターン前半と後半を行き来していた）
+  let ringN = 0;
+  window.sgShowBoard = function (b) {
+    if (b !== shown) {
+      shown = b;
+      $("sg-bg").src = `images/sugoroku/board${b}.webp`;
+      // 盤面を替えたときにコマが前の盤面の位置から滑ってこないよう、いったんアニメーションを止める
+      document.querySelectorAll(".sg-piece").forEach(el => { el.style.transition = "none"; });
+      requestAnimationFrame(() => requestAnimationFrame(() =>
+        document.querySelectorAll(".sg-piece").forEach(el => { el.style.transition = ""; })));
+    }
     document.querySelectorAll(".sg-tab").forEach(t => t.classList.toggle("active", +t.dataset.board === b));
-    place(); hits();
+    place(); hits(); ring(ringN);
   };
   function setXY(el, n, dx) {
     const [x, y] = XY[n];
@@ -202,8 +211,17 @@
       el.style.display = boardOf(pos[who]) === shown ? "" : "none";
       setXY(el, pos[who], same ? (who === "you" ? -1.8 : 1.8) : 0);
     }
+    // タブに、それぞれのコマがどちらの盤面にいるかを出す
+    document.querySelectorAll(".sg-tab").forEach(t => {
+      const b = +t.dataset.board;
+      const marks = state ? [boardOf(pos.you) === b ? "🟢あなた" : "", boardOf(pos.cpu) === b ? "🩷コンピューター" : ""].filter(Boolean).join(" ") : "";
+      let m = t.querySelector(".sg-tab-mark");
+      if (!m) { m = document.createElement("span"); m.className = "sg-tab-mark"; m.style.cssText = "margin-left:6px;font-size:11px;"; t.appendChild(m); }
+      m.textContent = marks;
+    });
   }
   function ring(n) {
+    ringN = n;
     const r = $("sg-ring");
     if (!n || boardOf(n) !== shown) { r.style.display = "none"; return; }
     r.style.display = ""; setXY(r, n, 0);
@@ -211,26 +229,26 @@
   // スマホで盤面を横スクロールしているとき、コマが見える位置へ寄せる
   function follow(n) {
     const box = $("sg-board");
-    if (box.scrollWidth <= box.clientWidth) return;
+    if (box.scrollWidth <= box.clientWidth || boardOf(n) !== shown) return;
     const x = XY[n][0] / 2000 * box.scrollWidth - box.clientWidth / 2;
     box.scrollTo({ left: Math.max(0, x), behavior: "smooth" });
   }
+  // コマを動かす。盤面を切り替えるのは自分のコマのときだけ。
+  // コンピューターが今の盤面の外にいる間は、見えないので待たずに位置だけ進める
   async function moveTo(who, to, stepwise) {
     const from = pos[who];
-    if (boardOf(from) !== shown) sgShowBoard(boardOf(from));
+    if (who === "you" && boardOf(from) !== shown) sgShowBoard(boardOf(from));
     const dir = to > from ? 1 : -1;
     if (stepwise && Math.abs(to - from) <= 12) {
       for (let n = from; n !== to; ) {
         n += dir; pos[who] = n;
-        if (boardOf(n) !== shown) sgShowBoard(boardOf(n)); else place();
-        follow(n);
-        await wait(230);
+        if (who === "you" && boardOf(n) !== shown) sgShowBoard(boardOf(n)); else place();
+        if (boardOf(n) === shown) { follow(n); await wait(230); }
       }
     } else {
       pos[who] = to;
-      if (boardOf(to) !== shown) sgShowBoard(boardOf(to)); else place();
-      follow(to);
-      await wait(450);
+      if (who === "you" && boardOf(to) !== shown) sgShowBoard(boardOf(to)); else place();
+      if (boardOf(to) === shown) { follow(to); await wait(450); }
     }
   }
 
@@ -323,7 +341,8 @@
         log(e.who, `${e.dice}が出て${posLabel(e.to)}`);
         await moveTo(e.who, e.to, true);
         ring(e.to); showSquare(e.to);
-        if (e.who === "you") { await wait(250); await popup(e.to, "you"); } else await wait(700);
+        if (e.who === "you") { await wait(250); await popup(e.to, "you"); }
+        else { if (boardOf(e.to) !== shown) msg(`コンピューターは${boardOf(e.to) === 1 ? "前半" : "後半"}の盤面で${posLabel(e.to)}へ（タブで見られます）`); await wait(700); }
         continue;
       }
       if (e.type === "effect") {
@@ -375,7 +394,7 @@
       await play(j.events);
       token = j.token; state = j.state; save(); status();
       // 次は自分の番なので、自分のコマが見えるように戻す
-      if (!state.done) { if (boardOf(pos.you) !== shown) sgShowBoard(boardOf(pos.you)); follow(pos.you); }
+      if (!state.done) { if (boardOf(pos.you) !== shown) sgShowBoard(boardOf(pos.you)); ring(pos.you); follow(pos.you); }
       if (state.winner === "cpu" && !state.done && !sgTurn.cpuNoted) {
         sgTurn.cpuNoted = true;
         msg("コンピューターが先にゴール…。あなたもゴールを目指して続けましょう！（ランキングには登録できます）");
