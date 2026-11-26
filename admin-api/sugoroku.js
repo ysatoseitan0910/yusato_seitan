@@ -218,6 +218,37 @@ function saveRanking(r) {
 const sorted = list => list.slice().sort((a, b) => a.rolls - b.rolls || a.at.localeCompare(b.at));
 const publicRow = (x, i) => ({ rank: i + 1, name: x.name, rolls: x.rolls, won: x.won, date: x.at.slice(0, 10) });
 
+// ── Lemino の配信状況 ──
+// Lemino は配信期間（1〜2年）が過ぎると、番組ページの __NEXT_DATA__ から番組情報（items.item）が消える。
+// 番組情報が無い／配信終了日を過ぎている回を「非公開」とし、リンクは残したまま（現在非公開）と表示する。
+// 6時間ごとに確かめ直す。取得に失敗した回は「非公開」にしない（一時的な通信エラーで誤表示しないため）
+const LEMINO_TTL = 6 * 3600e3;
+let leminoCache = { at: 0, closed: new Set(), pending: null };
+async function leminoClosed() {
+  if (Date.now() - leminoCache.at < LEMINO_TTL) return leminoCache.closed;
+  if (leminoCache.pending) return leminoCache.pending;
+  const urls = [...new Set(Object.values(LINKS).flat().map(x => typeof x === "string" ? x : x.u).filter(u => /lemino\.docomo/.test(u)))];
+  leminoCache.pending = (async () => {
+    const closed = new Set();
+    await Promise.all(urls.map(async u => {
+      try {
+        const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 10000);
+        const r = await fetch(u, { headers: { "User-Agent": "Mozilla/5.0" }, signal: ctl.signal });
+        clearTimeout(tm);
+        if (r.status === 404) { closed.add(u); return; }   // 配信が終わった回はページ自体が 404 になる（2026-11-26 確認）
+        if (!r.ok) return;
+        const m = (await r.text()).match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+        if (!m) return;
+        const item = ((JSON.parse(m[1]).props.pageProps || {}).items || {}).item;
+        if (!item || (item.availability_end && new Date(item.availability_end) < new Date())) closed.add(u);
+      } catch { /* 失敗した回は非公開扱いにしない */ }
+    }));
+    leminoCache = { at: Date.now(), closed, pending: null };
+    return closed;
+  })();
+  return leminoCache.pending;
+}
+
 // IP ごとの簡単な回数制限
 const rate = new Map();
 function limited(ip, key, max, windowMs) {
@@ -229,8 +260,15 @@ function limited(ip, key, max, windowMs) {
 }
 
 function register(app, auth) {
-  app.get("/sugoroku/board", (req, res) => {
-    res.json({ goal: GOAL, squares: SQUARES.map((s, i) => s && { date: s.date, title: s.title, text: s.text || "", links: LINKS[i] || [] }) });
+  app.get("/sugoroku/board", async (req, res) => {
+    let closed = new Set();
+    try { closed = await leminoClosed(); } catch (e) { console.error("lemino check:", e.message); }
+    // リンクは { u, label?, closed? } に揃えて返す。closed＝Lemino で配信が終わっている（ブラウザ側で「（現在非公開）」と付ける）
+    const norm = x => (typeof x === "string" ? { u: x } : { ...x });
+    res.json({ goal: GOAL, squares: SQUARES.map((s, i) => s && {
+      date: s.date, title: s.title, text: s.text || "",
+      links: (LINKS[i] || []).map(norm).map(l => closed.has(l.u) ? { ...l, closed: true } : l),
+    }) });
   });
 
   app.post("/sugoroku/start", (req, res) => {

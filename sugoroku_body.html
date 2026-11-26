@@ -315,8 +315,11 @@
     $("sg-modal-text").textContent = note || s.text || "";
     $("sg-modal-text").style.display = (note || s.text) ? "" : "none";
     $("sg-modal-links").innerHTML = (s.links || []).map(x => {
-      const u = typeof x === "string" ? x : x.u, label = typeof x === "string" ? "" : `（${esc(x.label)}）`;
-      return `<a href="${esc(u)}" target="_blank" rel="noopener">${linkLabel(u)}${label}</a>`;
+      const l = typeof x === "string" ? { u: x } : x;
+      const label = l.label ? `（${esc(l.label)}）` : "";
+      // Lemino で配信が終わった回は、リンクは残して（現在非公開）と付ける（判定はサーバー側）
+      const closed = l.closed ? `<span style="color:var(--text-muted);font-weight:600;">（現在非公開）</span>` : "";
+      return `<a href="${esc(l.u)}" target="_blank" rel="noopener"${l.closed ? ' style="opacity:.75;"' : ""}>${linkLabel(l.u)}${label}${closed}</a>`;
     }).join("");
     $("sg-modal-ok").textContent = who ? "OK（つづける）" : "とじる";
     $("sg-modal").classList.add("open");
