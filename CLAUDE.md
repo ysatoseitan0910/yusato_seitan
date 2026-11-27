@@ -436,6 +436,12 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
   - 送った記録は `state/*.json`。Actions の実行環境は消えるので **VPS の `/root/satoyu-state/` に置き**、deploy.yml の
     `Restore notify state` で取ってきて `Save notify state` で書き戻す（`merge_state.js` で VPS 側とまとめてから）。
     記録が無いときは記録だけして送らない（過去分を一斉に送らないため）
+  - **画像まとめ（2026-11-27 追加）**：別チャンネルのスレッド2つへ写真を貯めていく。Webhook はチャンネルごとなので
+    Secret **`DISCORD_WEBHOOK_URL_2`**、スレッド ID は `discord.js` の `ARCHIVE`。
+    「#satoyublog画像まとめ」＝本人ブログの写真すべて（`sendBlogArchive`・2026-06-08 以降）／
+    もう一方＝他メンバーブログのうち佐藤優羽さんが写っている写真だけ（`archiveMemberBlog`・2025-11-12 以降。
+    公式の画像は除く・集合写真は送る・公式ブログの元画質）。送った記事は `state/archive-blog.json` / `archive-member.json`。
+    過去分・テストは手動ワークフロー **Discord archive**（`discord-archive.yml`）
   - 過去分をまとめて送るときは手動ワークフロー **Discord backfill**（`discord-backfill.yml`）。動作確認は **Discord test**
 
 ### 公式ニュース → スケジュール・ヒストリー：`sync_official_news.js`（2026-11-26 追加）

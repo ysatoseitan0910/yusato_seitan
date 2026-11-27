@@ -47,6 +47,7 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DB_BLOG:      ${{ secrets.DB_BLOG }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}   # 新着ブログの告知下書き＋写真を送る（未設定なら送らない）
+          DISCORD_WEBHOOK_URL_2: ${{ secrets.DISCORD_WEBHOOK_URL_2 }}   # 画像まとめスレッド（別チャンネル）へ写真を送る
 
       # Bluesky の blogphotobot から、他メンバーのブログへの佐藤優羽さんの登場を検出（少人数は公開・中人数は下書き・集合写真は除外）
       - name: Detect member blog appearances (Bluesky blogphotobot)
@@ -56,6 +57,7 @@ jobs:
           NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
           DB_MEMBER_BLOG:  ${{ secrets.DB_MEMBER_BLOG }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}   # 「他メンバーブログ」スレッドへ通知
+          DISCORD_WEBHOOK_URL_2: ${{ secrets.DISCORD_WEBHOOK_URL_2 }}   # 画像まとめスレッド（別チャンネル）へ写真を送る
           ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}     # 写真が普段の写真か公式の画像かを判定（photo_judge.js）
 
       # 他メンバーのお誕生日の3日前から、お祝いポストの下書きを Discord へ

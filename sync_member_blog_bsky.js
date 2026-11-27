@@ -319,6 +319,7 @@ async function main() {
   const firstRun = !notified && !notifyOnly;
   if (!notified) notified = new Set();
   const webhook = !!process.env.DISCORD_WEBHOOK_URL;
+  const archived = loadIds(ARCHIVE_FILE);
   console.log(`Bluesky ${posts.length}投稿 → ブログ${blogs.length}件（${since.slice(0, 10)}以降）/ 登録済み ${have.size}件 / 通知済み ${notified.size}件${DRY_RUN ? " [DRY_RUN]" : ""}${notifyOnly ? " [通知のみ]" : ""}`);
 
   for (const b of blogs.sort((x, y) => x.createdAt.localeCompare(y.createdAt))) {
@@ -341,6 +342,15 @@ async function main() {
         catch (e) { console.error(`  ❌ Discord: ${e.message}`); }
       }
       if (webhook || firstRun) notified.add(b.id);
+    }
+    // 画像まとめスレッドへ（佐藤優羽さんが写っている写真だけ・1記事1回）
+    if (!DRY_RUN && !firstRun && !notifyOnly && process.env[ARCHIVE.hook] && !archived.has(b.id)) {
+      try {
+        await judgeBlog(b);
+        const k = await archiveMemberBlog(b);
+        if (k) console.log(`  🖼 画像まとめに送信（${k}枚）: ${label}`);
+        archived.add(b.id); saveIds(ARCHIVE_FILE, archived);
+      } catch (e) { console.error(`  ❌ 画像まとめ: ${e.message}`); }
     }
     if (notifyOnly) continue;
 
