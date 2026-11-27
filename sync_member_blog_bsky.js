@@ -19,7 +19,7 @@
 // 環境変数：NOTION_TOKEN / DB_MEMBER_BLOG（必須）、BSKY_SINCE（任意）、DRY_RUN=1（書き込まない）
 const fs = require("fs");
 const { Client } = require("@notionhq/client");
-const { sendDiscord, fetchImage, THREADS } = require("./discord");
+const { sendDiscord, fetchImage, THREADS, ARCHIVE, loadIds, saveIds } = require("./discord");
 
 const ACTOR       = "blogphotobot.bsky.social";
 const TARGET      = "佐藤優羽";
@@ -202,6 +202,23 @@ async function notifyMemberBlog(b, c) {
   await sendDiscord(lines.join("\n").slice(0, 1990), files, THREADS.memberBlog);
 }
 
+// ── 画像まとめ（別チャンネルのスレッド）へ：佐藤優羽さんが写っている写真だけ ──
+// 公式の画像（ポスター・グッズ等）は除く。写真は公式ブログの同じ位置のもの（元の画質）を使い、
+// 枚数が合わないときだけ Bluesky のものを使う。送った記事IDは state/archive-member.json
+const ARCHIVE_FILE = "state/archive-member.json";
+async function archiveMemberBlog(b, prefix = "") {
+  const picks = b.images.filter(i => altHasTarget(i.alt) && !isVisual(i.alt, b.author) && !(i.judge && i.judge.kind === "official"));
+  if (!picks.length) return 0;
+  const off = await officialImages(b.id);
+  const same = off.length === b.images.length;
+  const files = (await Promise.all(picks.map(i => fetchImage(same ? off[b.images.indexOf(i)] : i.url)))).filter(Boolean)
+    .map((f, n) => ({ ...f, name: `${b.id}_${n + 1}.${(f.name.match(/\.(jpe?g|png|webp|gif)$/i) || [, "jpg"])[1]}` }));
+  if (!files.length) return 0;
+  const author = await authorName(b);
+  await sendDiscord(`${prefix}📔 ${jstDate(b.createdAt).replace(/-/g, ".")} ${author}「${b.title}」\n<${blogUrl(b.id)}>`, files, ARCHIVE.member, ARCHIVE.hook);
+  return files.length;
+}
+
 function loadNotified() {
   try { return new Set(JSON.parse(fs.readFileSync(NOTIFIED_FILE, "utf8")).ids); } catch { return null; }
 }
@@ -247,11 +264,11 @@ async function existingIds() {
 
 async function main() {
   // NOTIFY_ONLY=1：Notion には登録せず、Discord への通知だけ行う（過去分をまとめて送るとき。BSKY_SINCE と併用）
-  const notifyOnly = process.env.NOTIFY_ONLY === "1";
+  const notifyOnly = process.env.NOTIFY_ONLY === "1" || process.env.ARCHIVE_ONLY === "1";
   if (!notifyOnly && (!process.env.NOTION_TOKEN || !DB_ID)) { console.log("NOTION_TOKEN / DB_MEMBER_BLOG 未設定 → スキップ"); return; }
   const since = process.env.BSKY_SINCE
     ? new Date(process.env.BSKY_SINCE + "T00:00:00+09:00").toISOString()
-    : new Date(Date.now() - WINDOW_DAYS * 86400e3).toISOString();
+    : new Date(Date.now() - (process.env.ARCHIVE_TEST === "1" ? 30 : WINDOW_DAYS) * 86400e3).toISOString();
   const posts = await fetchFeed(since);
   const blogs = groupByBlog(posts);
   const have  = notifyOnly ? new Map() : await existingIds();
@@ -272,6 +289,29 @@ async function main() {
       n++;
     }
     console.log(`カード画像を差し替え：${n}件`);
+    return;
+  }
+  // ARCHIVE_ONLY=1：画像まとめへ過去分を送るだけ（BSKY_SINCE と併用）。ARCHIVE_TEST=1 は最新の1件だけ・記録しない
+  if (process.env.ARCHIVE_ONLY === "1") {
+    if (!process.env[ARCHIVE.hook]) throw new Error("DISCORD_WEBHOOK_URL_2 が未設定です");
+    const test = process.env.ARCHIVE_TEST === "1";
+    const done = loadIds(ARCHIVE_FILE);
+    let list = blogs.filter(b => !["none", "self"].includes(classify(b).verdict)).sort((x, y) => x.createdAt.localeCompare(y.createdAt));
+    if (test) list = list.reverse();
+    console.log(`Bluesky ${posts.length}投稿 → 佐藤優羽さんが登場するブログ ${list.length}件（${since.slice(0, 10)}以降）/ 送信済み ${done.size}件`);
+    let sent = 0;
+    for (const b of list) {
+      if (!test && done.has(b.id)) continue;
+      await judgeBlog(b);
+      const label = `${jstDate(b.createdAt)} ${b.author}「${b.title}」`;
+      if (DRY_RUN) { console.log(`  ${label}`); continue; }
+      const k = await archiveMemberBlog(b, test ? "🔧 テスト送信です\n" : "");
+      console.log(`  ${k ? "✅ 写真" + k + "枚" : "・写真なし（公式の画像のみ）"}: ${label}`);
+      if (!test) { done.add(b.id); saveIds(ARCHIVE_FILE, done); }
+      if (k) { sent++; await new Promise(r => setTimeout(r, 1500)); }
+      if (test && sent) break;
+    }
+    console.log(`画像まとめへ送信：${sent}件`);
     return;
   }
   // 通知の記録が無い初回は、今見えているものを通知済みにするだけ（一斉に送らない）。NOTIFY_ONLY のときは送る

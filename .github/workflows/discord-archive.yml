@@ -1,0 +1,62 @@
+# Discord の「画像まとめ」スレッド（別チャンネル・Webhook は DISCORD_WEBHOOK_URL_2）へ写真を送る（手動実行のみ）。
+#   #satoyublog画像まとめ … 本人ブログの写真
+#   他メンバーブログの佐藤優羽さんの写真
+# test=yes は、それぞれ最新の1件だけを「テスト送信」として送る（記録しない）。
+# test=no は、指定した日以降をまとめて送る。送った記事は VPS（/root/satoyu-state/）に記録し、二度送らない。
+name: Discord archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      blog_since:
+        description: "本人ブログ：この日以降（YYYY-MM-DD・空=送らない）"
+        default: "2026-06-08"
+      member_since:
+        description: "他メンバーブログ：この日以降（YYYY-MM-DD・空=送らない）"
+        default: "2025-11-12"
+      test:
+        description: "テスト送信（最新の1件ずつ・記録しない）（yes/no）"
+        default: "yes"
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL_2: ${{ secrets.DISCORD_WEBHOOK_URL_2 }}
+      ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+      ARCHIVE_TEST:          ${{ inputs.test == 'yes' && '1' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install @notionhq/client@2.2.15 @anthropic-ai/sdk@1.7.0
+      - name: Setup SSH / restore state
+        run: |
+          mkdir -p ~/.ssh state
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          scp -i ~/.ssh/id_rsa "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/satoyu-state/*.json" state/ || true
+
+      - name: 本人ブログの写真
+        if: inputs.blog_since != ''
+        run: node discord_backfill.js blogarchive ${{ inputs.blog_since }}
+      - name: 他メンバーブログの佐藤優羽さんの写真
+        if: inputs.member_since != ''
+        run: node sync_member_blog_bsky.js
+        env:
+          ARCHIVE_ONLY: "1"
+          BSKY_SINCE: ${{ inputs.test == 'yes' && '' || inputs.member_since }}
+          BSKY_MAX_PAGES: "300"
+
+      - name: Save state
+        if: always() && inputs.test != 'yes'
+        run: |
+          ls state/*.json >/dev/null 2>&1 || exit 0
+          VPS=${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
+          mkdir -p state_remote
+          scp -i ~/.ssh/id_rsa "$VPS:/root/satoyu-state/*.json" state_remote/ 2>/dev/null || true
+          node merge_state.js state_remote state
+          ssh -i ~/.ssh/id_rsa $VPS 'mkdir -p /root/satoyu-state'
+          scp -i ~/.ssh/id_rsa state/*.json "$VPS:/root/satoyu-state/"

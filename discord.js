@@ -16,6 +16,20 @@ const THREADS = {
   birthday:    "1575149339293261926",   // 他メンバーお誕生日
 };
 
+// 画像まとめ（別チャンネルのスレッド。Webhook は DISCORD_WEBHOOK_URL_2）
+const ARCHIVE = {
+  hook:   "DISCORD_WEBHOOK_URL_2",
+  blog:   "1399681755274809344",   // #satoyublog画像まとめ：本人ブログの写真（2026-06-08 以降）
+  member: "1399692160999362691",   // 他メンバーブログの佐藤優羽さんの写真（2025-11-12 以降）
+};
+
+// 画像まとめへ送った記録（state/archive-*.json の ids）。deploy.yml が VPS と行き来させる
+const fs = require("fs");
+function loadIds(file) { try { return new Set(JSON.parse(fs.readFileSync(file, "utf8")).ids); } catch { return new Set(); } }
+function saveIds(file, set) { fs.mkdirSync("state", { recursive: true }); fs.writeFileSync(file, JSON.stringify({ ids: [...set] })); }
+const ARCHIVE_BLOG_FILE = "state/archive-blog.json";
+const articleId = url => (String(url).match(/diary\/detail\/(\d+)/) || [])[1] || url;
+
 async function post(url, payload, files, thread) {
   const fd = new FormData();
   fd.append("payload_json", JSON.stringify(payload));
@@ -33,8 +47,9 @@ async function post(url, payload, files, thread) {
   throw new Error("Discord への送信に失敗（レート制限が続いた）");
 }
 
-async function sendDiscord(content, files = [], thread = null) {
-  const url = process.env.DISCORD_WEBHOOK_URL;
+// hookEnv：Webhook の URL が入っている環境変数名（Webhook はチャンネルごと。別チャンネルへは別の Webhook が要る）
+async function sendDiscord(content, files = [], thread = null, hookEnv = "DISCORD_WEBHOOK_URL") {
+  const url = process.env[hookEnv];
   if (!url) return false;
   const base = { flags: 4, allowed_mentions: { parse: [] } };
   await post(url, { ...base, content: content.slice(0, 2000) }, files.slice(0, MAX_FILES), thread);
@@ -87,12 +102,26 @@ async function sendBlogPhotos(article, prefix = "") {
   return files.length;
 }
 
+// 記事の写真を「#satoyublog画像まとめ」へ（1記事1回。送ったら記録する）
+async function sendBlogArchive(article, { prefix = "", record = true } = {}) {
+  if (!process.env[ARCHIVE.hook]) return 0;
+  const done = loadIds(ARCHIVE_BLOG_FILE), id = articleId(article.url);
+  if (record && done.has(id)) return 0;
+  const urls = await fetchArticleImages(article.url);
+  const files = (await Promise.all(urls.map(fetchImage))).filter(Boolean);
+  if (!files.length) return 0;
+  await sendDiscord(`${prefix}📷 ${article.date ? article.date.replace(/-/g, ".") + " " : ""}「${article.title}」\n<${article.url}>`, files, ARCHIVE.blog, ARCHIVE.hook);
+  if (record) { done.add(id); saveIds(ARCHIVE_BLOG_FILE, done); }
+  return files.length;
+}
+
 async function notifyBlog(article, { prefix = "", skipOldCheck = false } = {}) {
   if (!process.env.DISCORD_WEBHOOK_URL) return;
   // 取りこぼしを後から拾ったときに古い記事を一斉に送らないよう、3日以内の記事だけ
   if (!skipOldCheck && article.date && Date.parse(article.date) < Date.now() - 3 * 86400e3) return;
   await sendBlogDraft(article, prefix);
   await sendBlogPhotos(article, prefix);
+  try { await sendBlogArchive(article, { prefix }); } catch (e) { console.error(`  ❌ 画像まとめ: ${e.message}`); }
 }
 
 // 下書き部分をコードブロックで囲む（見出しと投稿文の境目が分かるように）
@@ -100,5 +129,5 @@ function codeBlock(text) {
   return "```\n" + String(text).replace(/```/g, "ˋˋˋ") + "\n```";
 }
 
-module.exports = { sendDiscord, fetchImage, notifyBlog, sendBlogDraft, sendBlogPhotos, codeBlock, THREADS };
+module.exports = { sendDiscord, fetchImage, notifyBlog, sendBlogDraft, sendBlogPhotos, sendBlogArchive, codeBlock, THREADS, ARCHIVE, loadIds, saveIds };
 
