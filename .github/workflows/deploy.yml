@@ -214,6 +214,7 @@ jobs:
             --exclude='merge_state.js' \
             --exclude='photo_judge.js' \
             --exclude='sync_official_news.js' \
+            --exclude='tiktok_meta.js' \
             --exclude='sugoroku_body.html' \
             --exclude='/state/' \
             --exclude='_template.html' \

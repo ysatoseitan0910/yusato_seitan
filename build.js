@@ -305,18 +305,9 @@ async function fetchLeminoThumbnail(url) {
   }
 }
 
+// TikTok のサムネイル（oEmbed で取れなければ動画ページから。詳しくは tiktok_meta.js）
 async function fetchOembedThumbnail(url) {
-  try {
-    const res = await fetch(
-      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
-      { signal: AbortSignal.timeout(8000) }
-    );
-    if (!res.ok) return "";
-    const data = await res.json();
-    return data.thumbnail_url || "";
-  } catch {
-    return "";
-  }
+  try { return (await require("./tiktok_meta").fetchTikTokMeta(url)).thumbnail || ""; } catch { return ""; }
 }
 
 function tiktokCard(page, thumbUrl = "") {

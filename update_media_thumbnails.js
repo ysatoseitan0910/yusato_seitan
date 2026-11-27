@@ -14,18 +14,10 @@ const HEADERS = {
 
 // ── oEmbed / サムネイル取得 ──
 
+const { fetchTikTokMeta, dateFromId } = require("./tiktok_meta");
 async function getTikTokOembed(url) {
-  try {
-    const res = await fetch(
-      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
-      { signal: AbortSignal.timeout(8000) }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.title ? { title: data.title } : null;
-  } catch {
-    return null;
-  }
+  const m = await fetchTikTokMeta(url);
+  return m.title ? { title: m.title } : null;
 }
 
 function getYoutubeThumbnail(url) {
@@ -232,7 +224,19 @@ async function processTiktokDB(dbId) {
   const pages = await queryAll(dbId);
   // Name が空のものだけ処理する。以前は URL があれば全件に oEmbed を叩いて
   // 毎回 Name を上書きしていたため、実行のたびに数分を浪費していた
-  const targets = pages.filter(p => !!p.properties["URL"]?.url && !hasName(p));
+  // 日付が空のものは、動画IDから投稿日を入れる（管理ページから URL だけで登録すると日付が空になり、
+  // 日付順の一覧で最後に回って「反映されていない」ように見えていた）
+  for (const p of pages) {
+    const url = p.properties["URL"]?.url || "";
+    if (p.properties["Date"]?.date?.start || !url) continue;
+    const d = dateFromId(url);
+    if (!d) continue;
+    try { await notion.pages.update({ page_id: p.id, properties: { Date: { date: { start: d } } } }); console.log(`  📅 日付を補完: ${d} ${url.slice(-25)}`); }
+    catch (e) { console.log(`  ❌ 日付の補完に失敗: ${e.message}`); }
+  }
+  // Name が空、または URL のまま（管理ページでタイトルを省くと URL が入る）のものに説明文を入れる
+  const nameIsUrl = p => /^https?:///.test(getName(p).trim());
+  const targets = pages.filter(p => !!p.properties["URL"]?.url && (!hasName(p) || nameIsUrl(p)));
   console.log(`  ${pages.length}件中 Name未設定: ${targets.length}件`);
   if (targets.length === 0) return;
 

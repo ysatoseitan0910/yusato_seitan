@@ -255,7 +255,10 @@ app.post("/add/tiktok", auth, async (req, res) => {
   if (!url) return res.status(400).json({ error: "URLは必須です" });
   try {
     const props = { Name: { title: t(name || url) }, Published: { checkbox: true } };
-    if (date) props.Date = { date: { start: date } };
+    // 日付を省いたときは、動画IDの上位32ビット（UNIX秒）から投稿日（JST）を入れる
+    let d = date;
+    if (!d) { const m = String(url).match(/\/video\/(\d+)/); try { if (m) d = new Date(Number(BigInt(m[1]) >> 32n) * 1000 + 9 * 3600e3).toISOString().slice(0, 10); } catch {} }
+    if (d) props.Date = { date: { start: d } };
     props.URL = { url };
     await notion.pages.create({ parent: { database_id: DB.tiktok }, properties: props });
     res.json({ ok: true });
