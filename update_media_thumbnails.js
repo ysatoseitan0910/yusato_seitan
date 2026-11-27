@@ -235,7 +235,7 @@ async function processTiktokDB(dbId) {
     catch (e) { console.log(`  ❌ 日付の補完に失敗: ${e.message}`); }
   }
   // Name が空、または URL のまま（管理ページでタイトルを省くと URL が入る）のものに説明文を入れる
-  const nameIsUrl = p => /^https?:///.test(getName(p).trim());
+  const nameIsUrl = p => getName(p).trim().startsWith("http");
   const targets = pages.filter(p => !!p.properties["URL"]?.url && (!hasName(p) || nameIsUrl(p)));
   console.log(`  ${pages.length}件中 Name未設定: ${targets.length}件`);
   if (targets.length === 0) return;
