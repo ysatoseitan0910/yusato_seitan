@@ -307,7 +307,7 @@ async function fetchLeminoThumbnail(url) {
 
 // TikTok のサムネイル（oEmbed で取れなければ動画ページから。詳しくは tiktok_meta.js）
 async function fetchOembedThumbnail(url) {
-  try { return (await require("./tiktok_meta").fetchTikTokMeta(url)).thumbnail || ""; } catch { return ""; }
+  try { return (await require("./tiktok_meta").fetchTikTokThumb(url)) || ""; } catch { return ""; }
 }
 
 function tiktokCard(page, thumbUrl = "") {

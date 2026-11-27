@@ -40,4 +40,62 @@ async function fetchTikTokMeta(url) {
   return out;
 }
 
-module.exports = { fetchTikTokMeta, dateFromId, videoId };
+// ── サムネイルの控え（state/tiktok-thumbs.json） ──
+// 動画ページを一度に100件以上取りに行くと TikTok に弾かれる回があり、その回のビルドでは
+// サムネイルがほぼ全滅していた（2026-11-27：107件中2件）。サムネイルの URL は署名付きで
+// 約2日有効なので、取れた URL を控えておき、期限が近いものだけを少しずつ取り直す。
+// 取り直しに失敗しても、期限内なら控えを使う。state/ は deploy.yml が VPS と行き来させる。
+// （画像そのものは保存しない。TikTok の URL を参照するだけ）
+const fs = require("fs");
+const path = require("path");
+const THUMB_FILE = path.join(__dirname, "state", "tiktok-thumbs.json");
+const REFRESH_BEFORE = 18 * 3600;   // 期限まで18時間を切ったら取り直す
+const MAX_FETCH = 4;                // 同時に取りに行く数
+
+let thumbs = null, dirty = false;
+function loadThumbs() {
+  if (thumbs) return thumbs;
+  try { thumbs = JSON.parse(fs.readFileSync(THUMB_FILE, "utf8")); } catch { thumbs = {}; }
+  process.on("exit", () => {
+    if (!dirty) return;
+    try { fs.mkdirSync(path.dirname(THUMB_FILE), { recursive: true }); fs.writeFileSync(THUMB_FILE, JSON.stringify(thumbs)); } catch {}
+  });
+  return thumbs;
+}
+
+const expiresOf = u => Number((String(u).match(/[?&]x-expires=(\d+)/) || [])[1]) || 0;
+
+let running = 0;
+const waiting = [];
+async function limited(fn) {
+  if (running >= MAX_FETCH) await new Promise(r => waiting.push(r));
+  running++;
+  try { return await fn(); } finally { running--; const next = waiting.shift(); if (next) next(); }
+}
+
+const inflight = new Map();   // 同じ動画を1回のビルドで何度も取りに行かない（トップ・Yu News・TikTok で重なる）
+function fetchTikTokThumb(url) {
+  const id = videoId(url);
+  if (!id) return Promise.resolve("");
+  if (inflight.has(id)) return inflight.get(id);
+  const p = (async () => {
+    const cache = loadThumbs();
+    const now = Date.now() / 1000;
+    const hit = cache[id];
+    if (hit && hit.exp - now > REFRESH_BEFORE) return hit.u;
+    let fresh = "";
+    for (let i = 0; i < 2 && !fresh; i++) {
+      fresh = await limited(async () => (await fetchTikTokMeta(url)).thumbnail);
+    }
+    if (fresh) {
+      cache[id] = { u: fresh, exp: expiresOf(fresh) || now + 24 * 3600 };
+      dirty = true;
+      return fresh;
+    }
+    return hit && hit.exp > now ? hit.u : "";
+  })();
+  inflight.set(id, p);
+  return p;
+}
+
+module.exports = { fetchTikTokMeta, fetchTikTokThumb, dateFromId, videoId };

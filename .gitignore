@@ -10,3 +10,6 @@ screenshot.jpg
 
 # すごろくの元画像（7115px・計8MB）は手元だけ。サイトでは board1/2.webp を使う
 images/sugoroku/*.png
+
+# 実行時の記録（VPS の /root/satoyu-state/ と行き来する。リポジトリには入れない）
+/state/
