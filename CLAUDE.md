@@ -142,7 +142,12 @@ x.html とトップページサイドバーで適用。
 - Notionに保存済みMediaがあればそれを使用、なければビルド時に `fetchLeminoThumbnail()` でog:imageを取得
 
 ### TikTokサムネイル
-oEmbed API（`https://www.tiktok.com/oembed?url=...`）をビルド時に並列取得。期限切れ問題を避けるためNotionには保存しない。
+`tiktok_meta.js` の `fetchTikTokThumb()` で取る。期限切れ問題を避けるためNotionには保存しない。
+- 2026-11 ごろから oEmbed が title / thumbnail_url を返さなくなったので、動画ページに埋め込まれた JSON（desc / cover）から取る
+- **取れた URL は `state/tiktok-thumbs.json` に控える**（2026-11-27）。URL は署名付きで約2日有効。期限まで18時間を切ったものだけ、
+  同時4件までで取り直し、失敗しても期限内なら控えを使う。毎回100件以上を一度に取りに行くと TikTok に弾かれ、
+  その回のビルドでサムネイルがほぼ全滅していた（107件中2件）。`state/` は deploy.yml が VPS と行き来させる（`.gitignore` 済み）
+- 画像そのものは保存しない（TikTok の URL を参照するだけ）
 
 ### 他メンバーブログ（buildMemberBlog）
 - DB_MEMBER_BLOGを日付降順で全件取得
