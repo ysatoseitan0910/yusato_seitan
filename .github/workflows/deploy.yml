@@ -110,6 +110,15 @@ jobs:
           DB_YU_NEWS:   ${{ secrets.DB_YU_NEWS }}
           DB_TIKTOK:    ${{ secrets.DB_TIKTOK }}
 
+      # minsaka で募集中の企画を委員会News（Notion）に登録し、募集が終わったら「募集終了」にして外す。
+      # トップの「生誕委員会からのお知らせ」に出すため、ビルドの前に行う
+      - name: Sync minsaka projects to committee news
+        run: node sync_minsaka_committee.js
+        continue-on-error: true
+        env:
+          NOTION_TOKEN:      ${{ secrets.NOTION_TOKEN }}
+          DB_COMMITTEE_NEWS: ${{ secrets.DB_COMMITTEE_NEWS }}
+
       - name: Build all pages
         run: node build.js
         env:
@@ -210,6 +219,7 @@ jobs:
             --exclude='sync_member_blog_bsky.js' \
             --exclude='sync_lemino.js' \
             --exclude='notify_minsaka.js' \
+            --exclude='sync_minsaka_committee.js' \
             --exclude='discord.js' \
             --exclude='notify_birthday.js' \
             --exclude='discord_backfill.js' \

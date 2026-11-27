@@ -444,6 +444,15 @@ inode を比べて違えば `up -d --force-recreate --no-deps nginx` を実行�
     過去分・テストは手動ワークフロー **Discord archive**（`discord-archive.yml`）
   - 過去分をまとめて送るときは手動ワークフロー **Discord backfill**（`discord-backfill.yml`）。動作確認は **Discord test**
 
+### minsaka の募集中企画 → 委員会News：`sync_minsaka_committee.js`（2026-11-27 追加）
+- 主催企画一覧で募集中の企画を **DB_COMMITTEE_NEWS に公開で登録**（URL で照合・Published を問わず登録済みなら作らない＝
+  Notion での手直しは上書きしない）。トップの「生誕委員会からのお知らせ」と committee.html に出すため、ビルドの前に動く
+- 入れる内容：Name＝企画名／Date＝開催日／締め切り＝今日（JST）＋「残り N 日」／Status＝募集中（multi_select）／
+  Description＝企画概要・1口の金額・URL／Media＝企画ページの og:image（外部URL）／Priority＝締め切りが近いほど小さい負の数（手入力より上）
+- **Status が「募集中」のまま募集が終わった企画は、Status＝募集終了・Published を外す**（お知らせから消える）
+- 企画一覧が読めないときは何もしない（読めないだけで閉じてしまわないため）
+- トップの「最新ニュース」の募集中表示（build.js が直接 minsaka を読む）とは別の仕組みで、両方に出る
+
 ### 公式ニュース → スケジュール・ヒストリー：`sync_official_news.js`（2026-11-26 追加）
 - 公式ニュース一覧（`news/list?dy=YYYYMM`）のイベント／リリース／ミート＆グリート／その他／メディアの記事本文を
   **Claude（claude-opus-5-5）に読ませ**、新しく決まった予定（ライブ・イベント・発売・ミーグリ・佐藤優羽さんのメディア出演）を
